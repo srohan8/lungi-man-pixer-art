@@ -12,6 +12,7 @@
 //   --solo        keep only the biggest connected figure in each pose (drops small figures drawn beside it)
 //   --solo-alpha N  how opaque a pixel must be to count when splitting figures (default 24; use 220 when outlines touch)
 //   --halo        turn a light sticker outline (white or pale grey ring around the figure) into the dark outline
+//   --soft        glow sprites (beams, flares): keep soft alpha, no outline, no hard-edge, no palette limit (use with alpha-keyed input)
 //   --list        only print what was found
 // Steps: find each pose (2D, small gaps such as flames and sparks are merged), shrink to fit with the feet on the bottom edge,
 // hard-edge the alpha, limit the palette, add the 1 px dark outline.
@@ -107,7 +108,7 @@ const OUTLINE = [0x12, 0x0a, 0x1c];
     const placed = await sharp({ create: { width: w, height: h, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } })
       .composite([{ input: resized, left, top }]).raw().toBuffer();
     const px = Buffer.from(placed);
-    for (let q = 0; q < w * h; q++) px[q * 4 + 3] = px[q * 4 + 3] > 110 ? 255 : 0;
+    if (!flag('soft')) for (let q = 0; q < w * h; q++) px[q * 4 + 3] = px[q * 4 + 3] > 110 ? 255 : 0;
     const op = (x, y) => x >= 0 && y >= 0 && x < w && y < h && px[(y * w + x) * 4 + 3] === 255;
     if (flag('halo')) for (let pass = 0; pass < 3; pass++) {
       const mark = [];
@@ -118,9 +119,9 @@ const OUTLINE = [0x12, 0x0a, 0x1c];
     }
     const edge = [];
     for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (!op(x, y) && (op(x + 1, y) || op(x - 1, y) || op(x, y + 1) || op(x, y - 1))) edge.push((y * w + x) * 4);
-    for (const o of edge) { px[o] = OUTLINE[0]; px[o + 1] = OUTLINE[1]; px[o + 2] = OUTLINE[2]; px[o + 3] = 255 }
+    if (!flag('soft')) for (const o of edge) { px[o] = OUTLINE[0]; px[o + 1] = OUTLINE[1]; px[o + 2] = OUTLINE[2]; px[o + 3] = 255 }
     const file = path.join(OUT, `${name}_${i}.png`);
-    await sharp(px, { raw: { width: w, height: h, channels: 4 } }).png({ palette: true, colors }).toFile(file);
+    await sharp(px, { raw: { width: w, height: h, channels: 4 } }).png(flag('soft') ? {} : { palette: true, colors }).toFile(file);
     console.log('  wrote', path.relative(process.cwd(), file), `${w}x${h} (pose ${p.pw}x${p.ph})`);
   }
 })();
