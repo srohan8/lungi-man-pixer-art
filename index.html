@@ -1261,7 +1261,7 @@ function drawDeath(cx){
      if(P.dk==='water')k=t<14?0:t<30?1:t<46?2:t<70?3:t<95?4:5;
      else k=t<7?0:t<15?1:!P.dl?1:((t-P.dl)>>4)%2?3:2;
      const img=F[k],pic=(P.bk?P.f<=0:P.f>0)?img:flipOf(img),px=Math.round(P.x+P.w/2-cx),
-       by=P.dk==='water'?GY+10:Math.round(P.y+P.h)+1,bob=P.dk==='water'?Math.round(Math.sin(t*.25)*1.2):0;
+       by=P.dk==='water'?GY+19:Math.round(P.y+P.h)+1,bob=P.dk==='water'?Math.round(Math.sin(t*.25)*1.2):0;
      g.drawImage(pic,px-Math.round(img.width/2),by-img.height+bob);return}}
   const HA=heroArt(),fi=P.f>0?0:1,s=HA?HA[1][fi]:PSPR.i0[fi],px=Math.round(P.x+P.w/2-cx),t=P.dt;
   if(P.dk==='water'){
