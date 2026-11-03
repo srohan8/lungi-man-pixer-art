@@ -335,7 +335,7 @@ const BOSSDEF={
   komban:{w:80,h:60,foot:59,hb:[14,8,52,46],hp:30,name:'PEY KOMBAN',sub:'DEMON OF THE TUSKS'}};
 /* Boss art from PNG files (assets/art/bosses/<boss>_<frame>.png, made by tools/make-sprite.js from the reference sheets).
    Used only when the file loads and has the same size as the generated frame; otherwise the generated sprite stays. */
-const ART={},ART_FILES=['chathan_0','chathan_1','yakshi_0','yakshi_1','odiyan_0','odiyan_1','odiyan_2','karin_0','karin_1','karin_2','komban_0','komban_1','komban_2','hero_0','hero_1','hero_2','hero_3'];
+const ART={},ART_FILES=['chathan_0','chathan_1','yakshi_0','yakshi_1','odiyan_0','odiyan_1','odiyan_2','karin_0','karin_1','karin_2','komban_0','komban_1','komban_2','hero_0','hero_1','hero_2','hero_3','heroidle_0','heroidle_1','heroidle_2','heroidle_3','heroswing_0','heroswing_1','heroswing_2'];
 if(typeof Image!=='undefined')ART_FILES.forEach(n=>{const im=new Image();
   im.onload=()=>{const c=document.createElement('canvas');c.width=im.width;c.height=im.height;c.getContext('2d').drawImage(im,0,0);ART[n]=c;
     if(A&&A.boss&&LV[lvl]&&LV[lvl].boss)A.boss=bossFrames(LV[lvl].boss)};
@@ -350,7 +350,7 @@ function bossFrames(t){
   else if(t==='karin')fr=[genKarin(0),genKarin(1),genKarin(2)];
   else if(t==='komban')fr=[genKomban(0),genKomban(1),genKomban(2)];
   else fr=[genKallan(0,0),genKallan(1,0),genKallan(0,1),genKallan(1,1)];
-  fr=fr.map((c,i)=>{const a=ART[t+'_'+i];return a&&a.width===c.width&&a.height===c.height?a:c});
+  fr=fr.map((c,i)=>{const a=ART[t+'_'+i];return a&&a.width===c.width&&a.height===c.height?flipC(a):c});
   return fr.map(c=>({n:c,f:flipC(c),w:tint(c,'#ffffff'),wf:tint(flipC(c),'#ffffff')}));
 }
 
@@ -1041,6 +1041,21 @@ function drawFoe(e,cx){
     case 'decoy':{g.globalAlpha=.55;const F=A.boss[0];g.drawImage(e.dir>0?F.f:F.n,sx-7,sy-3);g.globalAlpha=1;break}
   }
 }
+/* Code-drawn extras on top of boss PNG art (positions are in the art's own right-facing pixels).
+   Dark sprites get a pulsing red rim and glowing eyes (Kazhukan mark); the bull gets angry nose smoke. */
+const BOSS_EYES={odiyan_0:[[35,6],[37,6]],odiyan_1:[[41,35]],odiyan_2:[[47,30]],komban_0:[[47,4]],komban_1:[[47,19]],komban_2:[[49,19]]},BRIM=new WeakMap();
+function drawBossFx(b,im,i,flip,cx){
+  const key=b.t+'_'+i;if(!ART[key]||!BOSS_EYES[key])return false;
+  const bx=Math.round(b.x-cx),by=Math.round(b.y),w=im.width,p=Math.sin(tick*.12);
+  let r=BRIM.get(im);if(!r){r=tint(im,'#ff3a2a');BRIM.set(im,r)}
+  g.globalAlpha=.3+.25*p;for(const [ox,oy] of [[-1,0],[1,0],[0,-1],[0,1]])g.drawImage(r,bx+ox,by+oy);g.globalAlpha=1;
+  g.drawImage(im,bx,by);
+  for(const [ex,ey] of BOSS_EYES[key]){const x=bx+(flip?ex:w-1-ex),y=by+ey;
+    g.fillStyle='rgba(255,58,42,'+(.25+.15*p).toFixed(2)+')';g.fillRect(x-2,y-2,5,5);g.fillStyle='#ff3a2a';g.fillRect(x-1,y,2,1);g.fillStyle='#ffd0c0';g.fillRect(x,y,1,1)}
+  if(b.t==='odiyan'&&i===2){const d=flip?1:-1,nx=bx+(flip?51:w-1-51),ny=by+38;
+    for(let k=0;k<3;k++){const ph=(tick*1.6+k*14)%42,a=1-ph/42;g.fillStyle='rgba(235,235,245,'+(a*.8).toFixed(2)+')';const sz=ph<14?2:3;g.fillRect(Math.round(nx+d*ph*.45),Math.round(ny-ph*.32),sz,sz)}}
+  return true;
+}
 function drawBoss(cx){
   const b=boss;if(!b.active||b.dead)return;let i=0;
   if(b.t==='crab')i=(b.tk>>4)%2;else if(b.t==='yakshi')i=b.arm>0?1:0;else if(b.t==='chathan')i=b.arm>0?1:0;else if(b.t==='odiyan')i=b.form;else if(b.t==='karin')i=b.state===3?1:(b.state===1||b.state===2)?2:0;else if(b.t==='komban')i=b.stun>0?2:(b.state===1?1:0);else if(b.t==='monkey')i=b.arm>0?1:0;else i=(b.on&&b.state===0?(b.tk>>3)%2:0)+(b.arm>0?2:0);
@@ -1049,7 +1064,7 @@ function drawBoss(cx){
   if(b.vuln===false&&(b.t==='chathan'||b.t==='odiyan'||b.t==='komban'||b.t==='karin')){const base=flip?F.f:F.n;let r=SHLD.get(base);if(!r){r=tint(base,'#9ad0ff');SHLD.set(base,r)}
     const sx0=Math.round(b.x-cx),sy0=Math.round(b.y);g.globalAlpha=.3+.25*Math.sin(tick*.2);for(const [ox,oy] of [[-1,0],[1,0],[0,-1],[0,1]])g.drawImage(r,sx0+ox,sy0+oy);g.globalAlpha=1}
   if(b.puff>0)g.globalAlpha=.35+.3*Math.sin(tick*.8);
-  g.drawImage(white?(flip?F.wf:F.w):(flip?F.f:F.n),Math.round(b.x-cx),Math.round(b.y));
+  if(white||!drawBossFx(b,flip?F.f:F.n,i,flip,cx))g.drawImage(white?(flip?F.wf:F.w):(flip?F.f:F.n),Math.round(b.x-cx),Math.round(b.y));
   g.globalAlpha=1;
   if(((b.t==='chathan'&&b.state===3)||(b.t==='komban'&&b.state===1)||(b.t==='odiyan'&&b.form===2&&b.wind>0))&&tick%10<6)ptext('!',Math.round(b.x-cx+b.w/2),Math.round(b.y)-16,2,'#ff4040','center');
   if(b.stun>0)for(let k=0;k<3;k++){const a=tick*.2+k*2.1;g.fillStyle='#ffe070';g.fillRect(Math.round(b.x-cx+b.w/2+Math.cos(a)*10),Math.round(b.y+(b.t==='komban'?-4:-6)+Math.sin(a)*3),2,2)}
@@ -1076,12 +1091,15 @@ function drawShot(s,cx){const x=Math.round(s.x-cx),y=Math.round(s.y);
 /* hero frames from PNG (hero_0..3: run cycle). Used only when all four loaded; otherwise (and on the bike) the generated hero stays. */
 let HERO_ART=null;
 function heroArt(){if(HERO_ART)return HERO_ART;const f=[0,1,2,3].map(i=>ART['hero_'+i]);if(f.every(Boolean))HERO_ART=f.map(c=>[c,flipC(c)]);return HERO_ART}
+let HERO_IDLE=null,HERO_SWING=null;
+function artSet(pre,n){const f=[...Array(n)].map((_,i)=>ART[pre+'_'+i]);return f.every(Boolean)?f.map(c=>[c,flipC(c)]):null}
 function drawPlayer(cx){
   if(state==='play'&&P.inv>0&&tick%6<3)return;
   if(LV[lvl].bike)g.drawImage(BIKE_SPR[(P.step>>2)%2],Math.round(P.x-cx)-8,Math.round(P.y)+P.h-16);
   const lg=LV[lvl].bike?'i':!P.on?'j':P.vx?((P.step>>2)%2?'a':'b'):'i';
   const HA=heroArt();
-  if(HA&&!LV[lvl].bike){const s=HA[!P.on?2:P.vx?(P.step>>2)%4:1][P.f>0?0:1];g.drawImage(s,Math.round(P.x+P.w/2-s.width/2-cx),Math.round(P.y+P.h-s.height))}
+  if(HA&&!LV[lvl].bike){const I=HERO_IDLE||(HERO_IDLE=artSet('heroidle',4)),S=HERO_SWING||(HERO_SWING=artSet('heroswing',3));
+    const fr=P.vine&&S?S[1]:!P.on?HA[2]:P.vx?HA[(P.step>>2)%4]:I?I[(tick>>5)%4]:HA[1],s=fr[P.f>0?0:1];g.drawImage(s,Math.round(P.x+P.w/2-s.width/2-cx),Math.round(P.y+P.h-s.height))}
   else g.drawImage(PSPR[lg+(shootCd>6?1:0)][P.f>0?0:1],Math.round(P.x-cx-1),Math.round(P.y));
   if(P.sp||P.chaiT>0){g.fillStyle='#9be06a';g.fillRect(Math.round(P.x-cx+5),Math.round(P.y)-3,4,1)}
   if(P.aru&&slashT<=0){const f=P.f,hx=Math.round(P.x-cx)+(f>0?14:-1),hy=Math.round(P.y)+11;
