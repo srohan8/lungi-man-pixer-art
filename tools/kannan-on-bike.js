@@ -12,6 +12,8 @@ const path = require('path');
   const opaque = (x, y) => x >= 0 && y >= 0 && x < w && y < h && px[at(x, y) + 3] === 255;
   // 1. bare chest: the white tank top becomes brown skin (two tones for a little shading)
   for (let y = 9; y <= 16; y++) for (let x = 16; x <= 27; x++) { const i = at(x, y); if (px[i + 3] && px[i] > 170 && px[i + 1] > 160 && px[i + 2] > 140) set(x, y, (x + y) % 3 ? '#b06a40' : '#c47a4a') }
+  // 1b. the mundu is folded above the knee: shin and foot are bare skin, only the thigh stays white
+  for (let y = 20; y <= 28; y++) for (let x = 23; x <= 30; x++) { const i = at(x, y); if (px[i + 3] && px[i] > 165 && px[i + 1] > 150 && px[i + 2] > 130) set(x, y, (x + y) % 3 ? '#a8623a' : '#bc7444') }
   // 2. afro behind and above the head (face stays on the right side)
   for (let y = 1; y <= 10; y++) for (let x = 22; x <= 32; x++) { const dx = x - 27.5, dy = y - 5.8; if (dx * dx / 18 + dy * dy / 12 <= 1 && !(x >= 29 && y >= 7) ) set(x, y, (x * 3 + y) % 7 === 0 ? '#2a1a14' : '#150c0a') }
   // 3. aviators and mustache
