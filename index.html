@@ -36,11 +36,11 @@ const isTouch=matchMedia('(hover:none)').matches;
 
 /* =================== input =================== */
 const keys={},touch={l:0,r:0,j:0,s:0};
-addEventListener('keydown',e=>{if(e.code==='KeyM'){toggleSnd();return}keys[e.code]=true;if(['Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code))e.preventDefault();startIfNeeded()});
+addEventListener('keydown',e=>{if(e.code==='KeyM'){toggleSnd();return}keys[e.code]=true;if(['Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code))e.preventDefault();if(!e.repeat)startIfNeeded(e.code)});
 addEventListener('keyup',e=>{keys[e.code]=false});
 document.querySelectorAll('[data-k]').forEach(b=>{
   const k=b.dataset.k;
-  const on=e=>{e.preventDefault();try{b.setPointerCapture(e.pointerId)}catch(_){}touch[k]=1;b.classList.add('on');startIfNeeded()};
+  const on=e=>{e.preventDefault();try{b.setPointerCapture(e.pointerId)}catch(_){}touch[k]=1;b.classList.add('on');startIfNeeded(k)};
   const off=e=>{e.preventDefault();touch[k]=0;b.classList.remove('on')};
   b.addEventListener('pointerdown',on);
   ['pointerup','pointercancel','lostpointercapture'].forEach(t=>b.addEventListener(t,off));
@@ -48,6 +48,7 @@ document.querySelectorAll('[data-k]').forEach(b=>{
 cv.addEventListener('pointerdown',e=>{
   const r=cv.getBoundingClientRect(),x=(e.clientX-r.left)/r.width*W,y=(e.clientY-r.top)/r.height*H;
   if(x>W-48&&y<44){toggleSnd();return}
+  if(state==='title'&&splashT<=0&&y>146&&y<186&&(x<W*.3||x>W*.7)){pickLevel(x<W*.5?-1:1);return}
   startIfNeeded()});
 addEventListener('contextmenu',e=>e.preventDefault());
 const inp={
@@ -716,8 +717,8 @@ function genBush(seed,C){const r=rng(seed),b=buf(40,20);
 
 /* =================== game state =================== */
 /* Tunable numbers for coconuts, lives and the Sun Staff */
-const TUNE={ammoStart:40,ammoMax:60,ammoPerKill:2,ammoRegenBelow:5,ammoRegenFrames:180,lifeEvery:1000,lifeMax:6,rayRange:150};
-let ammo=40,ammoT=0,lifeBank=0,rings=[];
+const TUNE={levelSelectAll:true,ammoStart:40,ammoMax:60,ammoPerKill:2,ammoRegenBelow:5,ammoRegenFrames:180,lifeEvery:1000,lifeMax:6,rayRange:150};
+let ammo=40,ammoT=0,lifeBank=0,rings=[],pick=-1;
 /* Palm sway: how far (px) the crown moves per level; the trunk base stays put */
 const WIND={pro:1.2,a1:1,a2:1.5,a3:2,a4:3.4,a5:1.2};
 let state='title',lockT=0,tick=0,deadT=0,clearT=0,shootCd=0,jumpPrev=false,shake=0,prevBottom=0,slashT=0,swingId=0;
@@ -791,8 +792,15 @@ function placePlayer(x){
   camx=Math.max(0,x-60);cp=x;bestX=x;bullets=[];shots=[];locked=!!LV[lvl].arena;jumpPrev=true;shootCd=0;slashT=0;
 }
 function begin(i,x){lives=i>=1?4:3;actScore=actScore||0;ammo=TUNE.ammoStart;ammoT=0;lifeBank=Math.floor(score/TUNE.lifeEvery);loadLevel(i);placePlayer(x);state='play';banner={a:LV[i].act,b:LV[i].name,t:150}}
-function newGame(){score=0;actScore=0;if(!seen&&SCENES.start){loadLevel(0);const snap=snapshotBackdrop(0);state='story';startStory(SCENES.start,()=>begin(0,40),snap);return}begin(seen?Math.max(1,Math.min(resume,LV.length-1)):0,40)}
-function startIfNeeded(){
+/* Title screen level selector: left / right (arrows, A / D, or tap the arrows). TUNE.levelSelectAll=false limits it to the levels reached so far. */
+function pickMax(){return TUNE.levelSelectAll?LV.length-1:Math.max(0,Math.min(resume,LV.length-1))}
+function pickDefault(){return seen?Math.max(1,Math.min(resume,LV.length-1)):0}
+function pickLevel(d){if(pick<0)pick=pickDefault();pick=Math.max(0,Math.min(pickMax(),pick+d));beep(520+pick*30,.05,'square',.04)}
+function newGame(){score=0;actScore=0;const st=pick<0?pickDefault():Math.min(pick,pickMax());pick=-1;
+  if(st===0&&!seen&&SCENES.start){loadLevel(0);const snap=snapshotBackdrop(0);state='story';startStory(SCENES.start,()=>begin(0,40),snap);return}
+  begin(st,40)}
+function startIfNeeded(src){
+  if(state==='title'&&splashT<=0){if(src==='ArrowLeft'||src==='KeyA'||src==='l'){pickLevel(-1);return}if(src==='ArrowRight'||src==='KeyD'||src==='r'){pickLevel(1);return}}
   goFull();
   if(!AUD.go){AUD.go=true;try{actx()&&ac.resume()}catch(e){}SFX_NAMES.forEach(n=>loadBuf(n,'sfx'))}
   if(splashT>0){splashT=0;return}
@@ -1731,9 +1739,11 @@ function draw(){
     ptext('LUNGI MAN',W/2,46,6,'#f0c040','center');
     ptext('THE CURSE OF KANJIRAVANAM',W/2,96,2,'#f4ecd0','center');
     ptext('KANNAN MUST SEAL THE PORTAL.',W/2,112,2,'#f4ecd0','center');
-    ptext('PROLOGUE  +  5 ACTS',W/2,134,2,'#cfe9c8','center');
-    if((tick>>5)%2===0)ptext(seen&&resume>1?(isTouch?'TAP TO CONTINUE ':'PRESS KEY TO CONTINUE ')+LV[Math.min(resume,LV.length-1)].act:(isTouch?'TAP TO START':'PRESS ANY KEY'),W/2,164,seen&&resume>1?2:3,'#ffe58a','center');
-    if(!isTouch)ptext('ARROWS MOVE   SPACE JUMP   X THROW',W/2,200,2,'#b8b0d0','center');
+    {const pk=pick<0?pickDefault():pick,L=LV[pk],sh=(tick>>4)%2;
+      for(const d of [-1,1]){const on=d<0?pk>0:pk<pickMax(),ax=Math.round(W/2+d*Math.min(120,W*.3))+(on?d*sh*2:0),ay=156;g.fillStyle=on?'#ffe58a':'#4a4060';for(let i=0;i<7;i++)g.fillRect(ax-d*i,ay-i,1,i*2+1)}
+      ptext(L.act||'PROLOGUE',W/2,148,3,'#ffe58a','center');ptext(L.name||'',W/2,172,1,'#f4ecd0','center');
+      if((tick>>5)%2===0)ptext(isTouch?'TAP TO START':'PRESS SPACE TO START',W/2,192,2,'#cfe9c8','center')}
+    if(!isTouch)ptext('LEFT RIGHT CHOOSE   SPACE JUMP   X THROW',W/2,222,1,'#b8b0d0','center');
   }
   if(state==='over'){overlay();ptext('GAME OVER',W/2,80,5,'#e8402e','center');ptext('SCORE '+score,W/2,118,2,'#f4ecd0','center');if(lockT<=0)ptext(isTouch?'TAP TO CONTINUE':'PRESS ANY KEY',W/2,146,2,'#ffe58a','center')}
   if(state==='win'){overlay();ptext('PORTAL SEALED!',W/2,70,5,'#f0c040','center');ptext('KANNAN SAVED KANJIRAVANAM.',W/2,108,2,'#f4ecd0','center');ptext('SCORE '+score+(score>=hi?'  NEW BEST':''),W/2,126,2,'#cfe9c8','center');if(lockT<=0)ptext(isTouch?'TAP TO PLAY AGAIN':'PRESS ANY KEY',W/2,156,2,'#ffe58a','center')}
