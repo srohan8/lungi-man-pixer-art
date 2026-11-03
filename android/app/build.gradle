@@ -1,5 +1,9 @@
 apply plugin: 'com.android.application'
 
+// CI passes -Pvc=<run number> so every Play upload has a higher versionCode, and -Pvn=<name> for the version players see.
+def appVersionCode = Integer.parseInt((project.findProperty("vc") ?: "1").toString())
+def appVersionName = (project.findProperty("vn") ?: "1.0").toString()
+
 android {
     namespace = "studio.moonga.lungiman"
     compileSdk = rootProject.ext.compileSdkVersion
@@ -7,9 +11,8 @@ android {
         applicationId "studio.moonga.lungiman"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        // CI passes -Pvc=<run number> so every Play upload has a higher versionCode
-        versionCode (project.findProperty("vc") ?: "1").toInteger()
-        versionName (project.findProperty("vn") ?: "1.0")
+        versionCode appVersionCode
+        versionName appVersionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
