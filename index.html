@@ -394,7 +394,7 @@ const LV_OLD=[
  motes:'fly',foes:['goon','bat','cobra','bat','goon'],boss:'kallan',len:3300}
 ];
 const LV0=[
-Object.assign({},LV_OLD[0],{act:'PROLOGUE',name:'THE SWINGING AWAKENING',foes:['crab'],boss:null,len:600,endVine:true,
+Object.assign({},LV_OLD[0],{act:'PROLOGUE',name:'THE SWINGING AWAKENING',mid:Object.assign({},LV_OLD[0].mid,{deco:'village',win:'#ffd870',glow:'#d89060'}),foes:['crab'],boss:null,len:600,endVine:true,
   fixed:[{x:480,k:'parotta'}],
   tut:[{x:40,a:'MOVE',b:'LEFT AND RIGHT BUTTONS',d:0},{x:230,a:'THROW',b:'HOLD THROW. COCONUTS NEVER RUN OUT',d:0},{x:400,a:'JUMP',b:'TAP JUMP. STOMP CRABS TOO',d:0},{x:540,a:'VINE',b:'JUMP INTO THE VINE TO SWING',d:0}],
   clear:['BHADRAKALI SMILES','THE FOREST GIVES YOU ITS POWER'],
@@ -445,10 +445,10 @@ Object.assign({},LV_OLD[0],{act:'PROLOGUE',name:'THE SWINGING AWAKENING',foes:['
  sky:['#0a1214','#14222a','#1e343c','#2c4a50','#44666a','#6a8a88'],stars:0,
  sun:{y:56,r:14,c:['#98aeb0','#70888c','#44666a']},cloud:['#5a7478','#3a5258','#24383c'],
  far:{c:'#1e343c',rim:'#5a8a88',rim2:'#2c4a50',mist:'#44666a',base:GY-84},
- mid:{c:'#142a30',rim:'#3a7270',mist:'#2c4a50',deco:'palm',dark:'#0e2024'},
+ mid:{c:'#142a30',rim:'#3a7270',mist:'#2c4a50',deco:'mangrove',dark:'#0e2024',win:'#a8f0e0',glow:'#2a7a70'},
  jung:{kind:'jungle',base:'#0a1e1c',mid:'#143a32',hl:'#24604a',rim:'#6ac0a0',trunk:'#080e0e',vine:'#143a32',under:'#06100e'},
  canopy:['#050e0c','#0a1a16','#16342a','#06100c','#10281c'],
- pit:{kind:'water',cols:['#3a6a68','#2c5658','#224448','#18343a','#10262e','#081820'],foam:'#8ac0b8',shine:['#b8d8d0','#8ac0b8'],tint:'#0e2a30'},
+ pit:{kind:'water',cols:['#3a6a68','#2c5658','#224448','#18343a','#10262e','#081820'],foam:'#8ac0b8',shine:['#b8d8d0','#8ac0b8'],tint:'#0e2a30',lily:['#245a48','#4a9a70','#f0a0c0']},
  ground:{style:'brick',bw:18,bh:9,top:['#5aa060','#3e8048','#2c6038'],blocks:['#3e4a46','#4a5a54','#323e3a'],light:'#6a8078',dark:'#1e2a26',mortar:'#141c1a',speck:'#2a3a34',edge:'#0a100e',topEdge:'#1e4a2c',drip:['#2c6038','#1e4a2c'],tuft:['#3e8048','#7ac070'],flowers:['#a0e0d0','#ffffff']},
  palm:['#3a2c1c','#5a4630','#1a1208','#2a2014','#14301e','#1e4a2c','#2c6038','#4a8a50'],palms:true,ruins:true,
  bush:['#0a1e1c','#143a32','#24604a','#a0e0d0','#ffffff'],
@@ -538,6 +538,27 @@ function genMid(L,seed){const M=L.mid,b=buf(480,GY+12,true),r=rng(11+seed),d=M.d
   /* lantern: warm 3x3 core with a dithered halo (no gradients except dithered) */
   const lantern=(x,y,c,gl)=>{x=Math.round(x);y=Math.round(y);for(let j=-4;j<=4;j++)for(let i=-4;i<=4;i++){const dd=Math.hypot(i,j);if(dd<=1.5)b.set(x+i,y+j,c);else if(dd<=4.2&&bay(x+i&255,y+j&255)>dd/4.4)b.set(x+i,y+j,gl)}};
   const ln=(x0,y0,x1,y1,c)=>{const n=Math.max(Math.abs(x1-x0),Math.abs(y1-y0))|0;for(let i=0;i<=n;i++)b.set(x0+(x1-x0)*i/n,y0+(y1-y0)*i/n,c)};
+  if(M.deco==='mangrove'){
+    /* tall leaning palms standing in the water, arching prop roots, a few pale lantern glows */
+    for(let x=8;x<480;x+=20+r()*34){x=Math.round(x);const t=top(x)+6,h=46+r()*44|0,lean=r()<.5?-1:1;let cx=x;
+      for(let i=0;i<h;i++){cx=x+lean*Math.pow(i/h,1.5)*12;b.set(cx,t-i,d);b.set(cx+1,t-i,d)}
+      for(let k=-1;k<=1;k+=2)ln(x+k*7,t+1,x+k*1,t-8,d);
+      const cy=t-h;for(const a of[3.2,3.8,4.4,4.9,5.5,6.1]){const Lf=12+r()*6;for(let s2=0;s2<Lf;s2++){const q=s2/Lf,X=cx+Math.cos(a)*s2,Y=cy+Math.sin(a)*s2+q*q*Lf*.9;b.set(X,Y,d);b.set(X,Y+1,d);if(s2%3===0)b.set(X,Y+2,d)}}}
+    for(let k=0;k<5;k++)lantern(20+r()*440,top(20)+(-26-r()*40),M.win,M.glow);
+  }
+  if(M.deco==='village'){
+    /* sunset village: gopuram-style temple tower, a hall with lit doorways, hut roofs and palms */
+    const wx=Math.round(90+r()*60),bs=top(wx)+8;
+    rect(b,wx-22,bs-12,44,12,d);rect(b,wx-22,bs-12,44,1,M.rim);
+    for(const dx of [-12,0,12]){rect(b,wx+dx-2,bs-8,5,8,M.win)}
+    for(let k=0;k<7;k++){const w=28-k*3,y=bs-13-k*6;rect(b,wx-Math.round(w/2),y-5,w,6,d);rect(b,wx-Math.round(w/2)-1,y,w+2,1,M.rim);if(k<5){b.set(wx-Math.round(w/4),y-3,M.win);b.set(wx+Math.round(w/4),y-3,M.win)}}
+    rect(b,wx-1,bs-13-7*6-4,3,5,d);b.set(wx,bs-13-7*6-5,M.rim);lantern(wx,bs-13-7*6-2,M.win,M.glow);
+    for(let x=200;x<480;x+=48+r()*40){x=Math.round(x);const bsx=top(x)+8,w=20+(r()*10|0);
+      rect(b,x,bsx-8,w,8,d);for(let k=0;k<6;k++)rect(b,x-3+k,bsx-8-k,w+6-2*k,1,k===5?M.rim:d);rect(b,x+w/2-1,bsx-6,3,3,M.win)}
+    for(let x=24;x<480;x+=60+r()*50){if(Math.abs(x-wx)<40)continue;x=Math.round(x);const t=top(x)+4,h=26+r()*24|0,lean=r()<.5?-1:1;let cx=x;
+      for(let i=0;i<h;i++){cx=x+lean*Math.pow(i/h,1.6)*8;b.set(cx,t-i,d);b.set(cx+1,t-i,d)}
+      const cy=t-h;for(const a of[3.3,3.9,4.5,5.0,5.6,6.2]){const Lf=10+r()*5;for(let s2=0;s2<Lf;s2++){const q=s2/Lf,X=cx+Math.cos(a)*s2,Y=cy+Math.sin(a)*s2+q*q*Lf*.8;b.set(X,Y,d);if(s2%2===0)b.set(X,Y+1,d)}}}
+  }
   if(M.deco==='carnival'){
     /* old Ferris wheel, one per tile, lit gondolas */
     const wx=300+(r()*60|0),R=29,base=top(wx)+8,hy=base-R-9;
@@ -1045,6 +1066,8 @@ function pitFx(L,cx){
   if(L.pit.kind==='water'){
     const sx=Math.round(W*.72);
     for(let y=GY+14;y<H;y+=2){const w=Math.round(10+(y-GY)*.35+Math.sin(tick*.08+y)*4);g.fillStyle=(y>>1)%2?L.pit.shine[0]:L.pit.shine[1];g.fillRect(Math.round(sx-w/2+Math.sin(tick*.05+y*.7)*3),y,w,1)}
+    if(L.pit.lily){const Lc=L.pit.lily;for(let k=0;k<9;k++){const x=Math.round((((k*83-cx*.9+Math.sin(tick*.02+k)*3)%(W+60))+W+60)%(W+60)-30),y=GY+15+(k%4)*7,w=7+(k%3)*2;
+      g.fillStyle=Lc[0];g.fillRect(x,y,w,2);g.fillRect(x+1,y-1,w-2,1);g.fillStyle=Lc[1];g.fillRect(x+1,y-1,w-3,1);if(k%3===0){g.fillStyle=Lc[2];g.fillRect(x+3,y-2,2,1)}}}
     g.fillStyle=L.pit.foam;
     for(let k=0;k<18;k++){const x=(((k*61-cx*.9+tick*.25)%(W+40))+W+40)%(W+40)-20;g.fillRect(Math.round(x),GY+16+(k%5)*9,6+(k%3)*3,1)}
   }else{
