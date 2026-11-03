@@ -1154,10 +1154,10 @@ function drawMotes(L,cx){
   else{g.fillStyle='rgba(255,255,255,.14)';for(const m of motes){const sx=(((m.x+tick*.3-cx*.6)%(W+40))+W+40)%(W+40)-20;g.fillRect(Math.round(sx),Math.round(m.y),10,2)}}
 }
 const RIMS=new WeakMap(),SHLD=new WeakMap();
-function dE(img,x,y,w,eyes,flip,e){
+function dE(img,x,y,w,eyes,flip,e,soft){
   let r=RIMS.get(img);if(!r){r=tint(img,'#ff3a2a');RIMS.set(img,r)}
   const ph=tick*.12+e.x*.05;
-  g.globalAlpha=.5+.5*Math.sin(ph);
+  g.globalAlpha=soft?.14+.16*Math.sin(ph):.5+.5*Math.sin(ph);
   g.drawImage(r,x-1,y);g.drawImage(r,x+1,y);g.drawImage(r,x,y-1);g.drawImage(r,x,y+1);
   g.globalAlpha=1;g.drawImage(img,x,y);
   const ea=.75+.25*Math.sin(tick*.2+e.x);
@@ -1173,7 +1173,7 @@ function dE(img,x,y,w,eyes,flip,e){
    ground = feet on the hitbox bottom; otherwise centred (flyers). */
 function foeArt(e,sx,sy,img,faceRight,ground){
   if(!img)return false;const pic=faceRight?img:flipOf(img),x=Math.round(sx+e.w/2-img.width/2),y=Math.round(ground?sy+e.h-img.height:sy+e.h/2-img.height/2);
-  dE(pic,x,y,img.width,[],!faceRight,e);return true}
+  dE(pic,x,y,img.width,[],!faceRight,e,true);return true}
 function adxNear(e){return P&&Math.abs(P.x-e.x)<170}
 function drawFoe(e,cx){
   if(e.hurt>0&&tick%4<2)return;const sx=Math.round(e.x-cx),sy=Math.round(e.y),fr=(tick>>3)%2,right=P&&P.x>e.x;
