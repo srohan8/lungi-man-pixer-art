@@ -338,7 +338,7 @@ const BOSSDEF={
   komban:{w:80,h:60,foot:59,hb:[14,8,52,46],hp:30,name:'PEY KOMBAN',sub:'DEMON OF THE TUSKS'}};
 /* Boss art from PNG files (assets/art/bosses/<boss>_<frame>.png, made by tools/make-sprite.js from the reference sheets).
    Used only when the file loads and has the same size as the generated frame; otherwise the generated sprite stays. */
-const ART={},ART_FILES=['chathan_0','chathan_1','yakshi_0','yakshi_1','odiyan_0','odiyan_1','odiyan_2','karin_0','karin_1','karin_2','komban_0','komban_1','komban_2','hero_0','hero_1','hero_2','hero_3','heroidle_0','heroidle_1','heroidle_2','heroidle_3','heroswing_0','heroswing_1','heroswing_2','croc_0','croc_1','croc_2','croc_3','bike_0','bike_1','bike_2','bike_3','ravi_0','ravi_1','biju_0','biju_1','soniya_0','thoma_0','maveli_0','mooppan_0','scenehero_0','soniya_1','thoma_1','maveli_1','mooppan_1','scenehero_1','soniya_2','thoma_2','maveli_2','mooppan_2','scenehero_2','soniya_3','thoma_3','maveli_3','mooppan_3','scenehero_3','kili_0','kili_1','kili_2','stall_0','palm_0','palm_1','palm_2','dc1_0','dc1_1','dc1_2','dc1_3','dc1_4','dc1_5','dc2_0','dc2_1','dc2_2','dc2_3','dc2_4','dc2_5','da1_0','da1_1','da1_2','da1_3','da1_4','da1_5','da2_0','da2_1','da2_2','da2_3','da2_4','da2_5','da3_0','da3_1','da3_2','da3_3','da3_4','da3_5'];
+const ART={},ART_FILES=['chathan_0','chathan_1','yakshi_0','yakshi_1','odiyan_0','odiyan_1','odiyan_2','karin_0','karin_1','karin_2','komban_0','komban_1','komban_2','hero_0','hero_1','hero_2','hero_3','heroidle_0','heroidle_1','heroidle_2','heroidle_3','heroswing_0','heroswing_1','heroswing_2','croc_0','croc_1','croc_2','croc_3','bike_0','bike_1','bike_2','bike_3','ravi_0','ravi_1','biju_0','biju_1','soniya_0','thoma_0','maveli_0','mooppan_0','scenehero_0','soniya_1','thoma_1','maveli_1','mooppan_1','scenehero_1','soniya_2','thoma_2','maveli_2','mooppan_2','scenehero_2','soniya_3','thoma_3','maveli_3','mooppan_3','scenehero_3','kili_0','kili_1','kili_2','stall_0','devi_0','palm_0','palm_1','palm_2','dc1_0','dc1_1','dc1_2','dc1_3','dc1_4','dc1_5','dc2_0','dc2_1','dc2_2','dc2_3','dc2_4','dc2_5','da1_0','da1_1','da1_2','da1_3','da1_4','da1_5','da2_0','da2_1','da2_2','da2_3','da2_4','da2_5','da3_0','da3_1','da3_2','da3_3','da3_4','da3_5'];
 if(typeof Image!=='undefined')ART_FILES.forEach(n=>{const im=new Image();
   im.onload=()=>{const c=document.createElement('canvas');c.width=im.width;c.height=im.height;c.getContext('2d').drawImage(im,0,0);ART[n]=c;
     if(A&&A.boss&&LV[lvl]&&LV[lvl].boss)A.boss=bossFrames(LV[lvl].boss);if(n.startsWith('palm_')&&A&&A.palms&&LV[lvl]&&!LV[lvl].bamboo){const pa=palmArt(LV[lvl]);if(pa)A.palms=pa}};
@@ -863,8 +863,8 @@ function update(){
 
   shootCd--;
   if(S&&shootCd<=0&&P.aru){shootCd=16;slashT=8;swingId++;if(!sfx('slash'))beep(220,.08,'sawtooth',.05)}
-  else if(S&&shootCd<=0&&ammo<=0){shootCd=18;beep(150,.04,'square',.03)}
-  else if(S&&shootCd<=0){shootCd=14;ammo--;const bx=P.x+P.w/2+P.f*8,by=P.y+14;(P.sp?[-.9,0,.9]:[0]).forEach(vy=>bullets.push({x:bx,y:by,vx:P.f*5,vy,life:70}));if(!sfx('throw'))beep(300,.06,'triangle',.05)}
+  else if(S&&shootCd<=0&&ammo<=0&&!locked){shootCd=18;beep(150,.04,'square',.03)}
+  else if(S&&shootCd<=0){shootCd=14;if(!locked)ammo--;const bx=P.x+P.w/2+P.f*8,by=P.y+14;(P.sp?[-.9,0,.9]:[0]).forEach(vy=>bullets.push({x:bx,y:by,vx:P.f*5,vy,life:70}));if(!sfx('throw'))beep(300,.06,'triangle',.05)}
   const cx=Math.round(camx);
   for(const b of bullets){b.x+=b.vx;b.y+=b.vy;b.life--}
   bullets=bullets.filter(b=>b.life>0&&b.x>cx-10&&b.x<cx+W+10);
@@ -1284,7 +1284,7 @@ const PORT={MAVELI:'#e0b030',KANNAN:'#b06a40',BHADRAKALI:'#c0303a',YAKSHI:'#dcd8
 /* Dialogue portraits: the speaker's own face, cropped from the character sprite (head only; the eye and the crow use the whole sprite).
    Speakers without art yet (Bhadrakali, Devi, Basheer) keep the coloured badge. */
 const PORTC={};
-const PORT_SRC={KANNAN:'scenehero_0',RAVI:'ravi_0',BIJU:'biju_0',THOMA:'thoma_0',SONIYA:'soniya_0',MAVELI:'maveli_1',VELU:'mooppan_0',KILI:'kili_0',YAKSHI:'yakshi_0',CHATHAN:'chathan_0',ODIYAN:'odiyan_0',KOMBAN:'komban_0',KARINKANNI:'karin_1'};
+const PORT_SRC={KANNAN:'scenehero_0',RAVI:'ravi_0',BIJU:'biju_0',THOMA:'thoma_0',SONIYA:'soniya_0',MAVELI:'maveli_1',VELU:'mooppan_0',KILI:'kili_0',YAKSHI:'yakshi_0',CHATHAN:'chathan_0',ODIYAN:'odiyan_0',KOMBAN:'komban_0',KARINKANNI:'karin_1',DEVI:'devi_0'};
 const PORT_WHOLE={KARINKANNI:1,KILI:1},PORT_LEFT={VELU:1};
 function portraitCrop(who){
   if(PORTC[who])return PORTC[who];const src=ART[PORT_SRC[who]];if(!src)return null;
