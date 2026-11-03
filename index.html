@@ -335,7 +335,7 @@ const BOSSDEF={
   komban:{w:80,h:60,foot:59,hb:[14,8,52,46],hp:30,name:'PEY KOMBAN',sub:'DEMON OF THE TUSKS'}};
 /* Boss art from PNG files (assets/art/bosses/<boss>_<frame>.png, made by tools/make-sprite.js from the reference sheets).
    Used only when the file loads and has the same size as the generated frame; otherwise the generated sprite stays. */
-const ART={},ART_FILES=['chathan_0','chathan_1','yakshi_0','yakshi_1','odiyan_0','odiyan_1','odiyan_2','karin_0','karin_1','karin_2','komban_0','komban_1','komban_2','hero_0','hero_1','hero_2','hero_3','heroidle_0','heroidle_1','heroidle_2','heroidle_3','heroswing_0','heroswing_1','heroswing_2','croc_0','croc_1','croc_2','croc_3','bike_0','bike_1','bike_2','bike_3','ravi_0','ravi_1','biju_0','biju_1','soniya_0','thoma_0','maveli_0','mooppan_0','scenehero_0','soniya_1','thoma_1','maveli_1','mooppan_1','scenehero_1','soniya_2','thoma_2','maveli_2','mooppan_2','scenehero_2','soniya_3','thoma_3','maveli_3','mooppan_3','scenehero_3','kili_0','kili_1','kili_2'];
+const ART={},ART_FILES=['chathan_0','chathan_1','yakshi_0','yakshi_1','odiyan_0','odiyan_1','odiyan_2','karin_0','karin_1','karin_2','komban_0','komban_1','komban_2','hero_0','hero_1','hero_2','hero_3','heroidle_0','heroidle_1','heroidle_2','heroidle_3','heroswing_0','heroswing_1','heroswing_2','croc_0','croc_1','croc_2','croc_3','bike_0','bike_1','bike_2','bike_3','ravi_0','ravi_1','biju_0','biju_1','soniya_0','thoma_0','maveli_0','mooppan_0','scenehero_0','soniya_1','thoma_1','maveli_1','mooppan_1','scenehero_1','soniya_2','thoma_2','maveli_2','mooppan_2','scenehero_2','soniya_3','thoma_3','maveli_3','mooppan_3','scenehero_3','kili_0','kili_1','kili_2','dc1_0','dc1_1','dc1_2','dc1_3','dc1_4','dc1_5','dc2_0','dc2_1','dc2_2','dc2_3','dc2_4','dc2_5','da1_0','da1_1','da1_2','da1_3','da1_4','da1_5','da2_0','da2_1','da2_2','da2_3','da2_4','da2_5','da3_0','da3_1','da3_2','da3_3','da3_4','da3_5'];
 if(typeof Image!=='undefined')ART_FILES.forEach(n=>{const im=new Image();
   im.onload=()=>{const c=document.createElement('canvas');c.width=im.width;c.height=im.height;c.getContext('2d').drawImage(im,0,0);ART[n]=c;
     if(A&&A.boss&&LV[lvl]&&LV[lvl].boss)A.boss=bossFrames(LV[lvl].boss)};
@@ -887,8 +887,8 @@ function updFoes(cx){
       case 'decoy':e.dir=sg;e.x+=e.dir*1.2;e.x=Math.max(e.s1,Math.min(e.s2,e.x));
         if(--e.life<=0){e.alive=false;burst(e.x+9,e.y+16,['#a070d0','#e0c0ff'],8)}break;
       case 'dancer':e.vy=(e.vy||0)+.35;e.y+=e.vy;
-        if(e.y>=GY-18){e.y=GY-18;e.vy=0;e.hop=0;if(!e.calm&&--e.cd<=0){e.cd=70+(Math.random()*40|0);e.vy=-4.6;e.hop=1}}
-        if(e.calm)e.x+=Math.sin(tick*.08+e.cd)*.5;else{e.dir=sg;e.x+=e.dir*(e.hop||e.y<GY-18?1.7:1.2)}
+        if(e.y>=GY-24){e.y=GY-24;e.vy=0;e.hop=0;if(!e.calm&&--e.cd<=0){e.cd=70+(Math.random()*40|0);e.vy=-4.6;e.hop=1}}
+        if(e.calm)e.x+=Math.sin(tick*.08+e.cd)*.5;else{e.dir=sg;e.x+=e.dir*(e.hop||e.y<GY-24?1.7:1.2)}
         e.x=Math.max(0,Math.min(W-14,e.x));break;
       case 'bat':if(e.mode===0){e.x-=.7;e.y=e.y0+Math.sin(tick*.06+e.x*.1)*22;
           if(adx<110){e.mode=1;const ddy=P.y+10-e.y,d=Math.hypot(dx,ddy)||1;e.vx=dx/d*2.2;e.vy=ddy/d*2.2}}
@@ -1139,7 +1139,10 @@ function drawFoe(e,cx){
     case 'imp':dE(IMP[(tick>>4)%2][right?1:0],sx-1,sy,12,[[3,4],[6,4]],right,e);break;
     case 'wisp':g.drawImage(WISP[(tick>>3)%2],sx,sy);break;
     case 'dog':dE(DOG[(tick>>3)%2][e.dir>0?1:0],sx,sy,16,[[1,3]],e.dir>0,e);break;
-    case 'dancer':{const dy=e.calm?(tick>>3)%2:0;if(e.calm)g.drawImage(DANCER[e.dir>0?1:0],sx,sy+dy);else dE(DANCER[e.dir>0?1:0],sx,sy,12,[[4,4],[7,4]],e.dir>0,e);break}
+    case 'dancer':{const k=(e.k||0)%6,fr=e.calm?[ART['dc1_'+k],ART['dc2_'+k]]:[ART['da1_'+k],ART['da2_'+k],ART['da3_'+k]];
+      if(fr.every(Boolean)){const im=fr[e.calm?(tick>>4)%2:(tick>>3)%3],pic=e.dir>=0?im:flipOf(im),bx=sx-4,by=sy+e.h-30;
+        if(e.calm)g.drawImage(pic,bx,by+((tick>>3)%2));else dE(pic,bx,by,20,[],e.dir<0,e)}
+      else{const dy=e.calm?(tick>>3)%2:0;if(e.calm)g.drawImage(DANCER[e.dir>0?1:0],sx,sy+dy);else dE(DANCER[e.dir>0?1:0],sx,sy,12,[[4,4],[7,4]],e.dir>0,e)}break}
     case 'decoy':{g.globalAlpha=.55;const F=A.boss[0];g.drawImage(e.dir>0?F.f:F.n,sx-7,sy-3);g.globalAlpha=1;break}
   }
 }
@@ -1246,11 +1249,11 @@ function drawDlg(){
   ptext(dlg.who,bx+26,by+3,1,'#f0c040');ptext(lines[0],bx+26,by+10,1,'#f4ecd0');if(lines[1])ptext(lines[1],bx+26,by+17,1,'#f4ecd0');
 }
 /* ---------- interlude arena, throne scene, ending ---------- */
-function mkDancer(x,calm){return {t:'dancer',x,y:GY-18,w:12,h:18,alive:true,hp:1,hurt:0,cd:Math.floor(Math.random()*60),dir:1,arm:0,seen:true,calm,s1:-20,s2:W+20,vy:0}}
+function mkDancer(x,calm,k){return {t:'dancer',k:k===undefined?(Math.random()*6|0):k,x,y:GY-24,w:12,h:24,alive:true,hp:1,hurt:0,cd:Math.floor(Math.random()*60),dir:1,arm:0,seen:true,calm,s1:-20,s2:W+20,vy:0}}
 function arenaTick(){
   const L=LV[lvl];if(!arena)arena={t:0,kills:0,hostile:false,done:false};
   arena.t++;
-  if(arena.t===20){banner={a:'DANCE!',b:'THE FLOOR IS YOURS',t:150};for(let k=0;k<6;k++)enemies.push(mkDancer(70+k*(W-140)/5,true))}
+  if(arena.t===20){banner={a:'DANCE!',b:'THE FLOOR IS YOURS',t:150};for(let k=0;k<6;k++)enemies.push(mkDancer(70+k*(W-140)/5,true,k))}
   if(arena.t===340){arena.hostile=true;banner={a:'RED EYES!',b:'THE DANCERS TURN',t:110};beep(120,.5,'sawtooth',.07);shake=14}
   if(arena.hostile&&!arena.done){
     if((arena.t-340)%25===0){const c=enemies.find(e=>e.alive&&e.t==='dancer'&&e.calm);if(c)c.calm=false}
