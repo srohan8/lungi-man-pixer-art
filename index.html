@@ -335,7 +335,7 @@ const BOSSDEF={
   komban:{w:80,h:60,foot:59,hb:[14,8,52,46],hp:30,name:'PEY KOMBAN',sub:'DEMON OF THE TUSKS'}};
 /* Boss art from PNG files (assets/art/bosses/<boss>_<frame>.png, made by tools/make-sprite.js from the reference sheets).
    Used only when the file loads and has the same size as the generated frame; otherwise the generated sprite stays. */
-const ART={},ART_FILES=['chathan_0','chathan_1','yakshi_0','yakshi_1','odiyan_0','odiyan_1','odiyan_2','karin_0','karin_1','karin_2','komban_0','komban_1','komban_2','hero_0','hero_1','hero_2','hero_3','heroidle_0','heroidle_1','heroidle_2','heroidle_3','heroswing_0','heroswing_1','heroswing_2','croc_0','croc_1','croc_2','croc_3','bike_0'];
+const ART={},ART_FILES=['chathan_0','chathan_1','yakshi_0','yakshi_1','odiyan_0','odiyan_1','odiyan_2','karin_0','karin_1','karin_2','komban_0','komban_1','komban_2','hero_0','hero_1','hero_2','hero_3','heroidle_0','heroidle_1','heroidle_2','heroidle_3','heroswing_0','heroswing_1','heroswing_2','croc_0','croc_1','croc_2','croc_3','bike_0','bike_1','bike_2','bike_3'];
 if(typeof Image!=='undefined')ART_FILES.forEach(n=>{const im=new Image();
   im.onload=()=>{const c=document.createElement('canvas');c.width=im.width;c.height=im.height;c.getContext('2d').drawImage(im,0,0);ART[n]=c;
     if(A&&A.boss&&LV[lvl]&&LV[lvl].boss)A.boss=bossFrames(LV[lvl].boss)};
@@ -1177,12 +1177,13 @@ let HERO_IDLE=null,HERO_SWING=null;
 function artSet(pre,n){const f=[...Array(n)].map((_,i)=>ART[pre+'_'+i]);return f.every(Boolean)?f.map(c=>[c,flipC(c)]):null}
 function drawPlayer(cx){
   if(state==='play'&&P.inv>0&&tick%6<3)return;
-  if(LV[lvl].bike&&ART.bike_0){/* rider on Ravi's green Bullet, from the reference art; stays on the bike when it stops */
-    const s=ART.bike_0,mv=state==='play'&&P.on,bob=mv?(P.step>>2)%2:0,bx=Math.round(P.x+7-s.width*.46-cx),by=Math.round(P.y+P.h-s.height+bob);
-    if(state==='play'&&P.on)for(let k=0;k<3;k++){const ph=(tick*1.4+k*9)%27,a=1-ph/27;g.fillStyle='rgba(216,200,168,'+(a*.55).toFixed(2)+')';const z=2+(ph>12?1:0);g.fillRect(bx+6-Math.round(ph),Math.round(P.y+P.h-4-ph*.18),z,z)}
+  const BK=[0,1,2,3].map(i=>ART['bike_'+i]),bikeArt=LV[lvl].bike&&BK.every(Boolean);
+  if(bikeArt&&state!=='clear'){/* Kannan on Ravi's Bullet (reference art): two riding frames, wheelie while rising, level frame while falling */
+    const rising=!P.on&&P.vy<0,s=!P.on?(rising?BK[1]:BK[2]):((P.step>>3)%2?BK[2]:BK[0]),bx=Math.round(P.x+7-s.width*.46-cx),by=Math.round(P.y+P.h-s.height);
+    if(state==='play'&&P.on)for(let k=0;k<3;k++){const ph=(tick*1.4+k*9)%27,a=1-ph/27;g.fillStyle='rgba(216,200,168,'+(a*.55).toFixed(2)+')';const z=2+(ph>12?1:0);g.fillRect(bx+4-Math.round(ph),Math.round(P.y+P.h-4-ph*.18),z,z)}
     g.drawImage(s,bx,by);if(P.sp||P.chaiT>0){g.fillStyle='#9be06a';g.fillRect(Math.round(P.x-cx+5),Math.round(P.y)-3,4,1)}return}
   const hop=LV[lvl].bike&&state==='clear',ho=hop?30:0,onBike=LV[lvl].bike&&!hop;
-  if(LV[lvl].bike)g.drawImage(BIKE_SPR[hop?0:(P.step>>2)%2],Math.round(P.x-cx)-8,Math.round(P.y)+P.h-16);
+  if(LV[lvl].bike){if(hop&&bikeArt){const b3=BK[3];g.drawImage(b3,Math.round(P.x+7-b3.width*.46-cx),Math.round(P.y+P.h-b3.height))}else g.drawImage(BIKE_SPR[hop?0:(P.step>>2)%2],Math.round(P.x-cx)-8,Math.round(P.y)+P.h-16)}
   const lg=onBike?'i':!P.on?'j':P.vx&&!hop?((P.step>>2)%2?'a':'b'):'i';
   const HA=heroArt();
   if(HA&&!onBike){const I=HERO_IDLE||(HERO_IDLE=artSet('heroidle',4)),S=HERO_SWING||(HERO_SWING=artSet('heroswing',3));
