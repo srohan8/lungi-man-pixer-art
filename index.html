@@ -1324,27 +1324,62 @@ function drawMaveli(cx){
 }
 /* Interlude: an 80s Kerala disco-cabaret bar, indoors (no sky, trees or water). The lights turn red when the crowd turns hostile. */
 function drawDiscoBar(){
-  const hot=!!(arena&&arena.hostile),pk=hot?'#ff4a4a':'#ff7ae0',cy=hot?'#ff9a50':'#40e0ff',R=(x,y,w,h,c)=>{g.fillStyle=c;g.fillRect(x,y,w,h)};
-  R(0,0,W,GY+12,'#14082a');
-  for(let x=0;x<W;x+=40)R(x,18,2,GY-18,'#1c0c38');
-  R(0,0,W,16,'#0a0418');R(0,16,W,2,'#2a1450');
-  for(let x=24,i=0;x<W;x+=48,i++){R(x-4,8,8,6,'#2a1450');R(x-2,12,4,3,i%2?pk:cy)}
-  /* neon arches along the back wall */
-  for(let k=0;k<4;k++){const ax=Math.round(W*(.34+.17*k)),on=Math.sin(tick*.07+k*1.7)>-.55,col=k%2?cy:pk;
-    R(ax-14,GY-90,28,90,'#0c0620');for(let y=-14;y<=0;y++){const w=Math.floor(Math.sqrt(196-y*y));R(ax-w,GY-90+y,w*2,1,'#0c0620')}
-    if(on){R(ax-14,GY-90,2,90,col);R(ax+12,GY-90,2,90,col);for(let a=0;a<=Math.PI;a+=.1)R(Math.round(ax-Math.cos(a)*14),Math.round(GY-90-Math.sin(a)*14),2,2,col)}}
-  /* neon sign */
-  if(tick%120>5){ptext('DISCO',W/2+2,34,4,hot?'#7a1a1a':'#2a8aa0');ptext('DISCO',W/2,32,4,pk)}
+  const hot=!!(arena&&arena.hostile),pk=hot?'#ff4a4a':'#ff7ae0',cy=hot?'#ff9a50':'#40e0ff',am=hot?'#ff7040':'#ffb830',R=(x,y,w,h,c)=>{g.fillStyle=c;g.fillRect(x,y,w,h)};
+  /* glow = dithered halo; neon = a rectangle outline with a soft halo */
+  const glow=(x,y,r,c,a)=>{g.globalAlpha=a;g.fillStyle=c;for(let j=-r;j<=r;j++)for(let i=-r;i<=r;i++){const d=Math.hypot(i,j);if(d<r&&bay((x+i)&255,(y+j)&255)>d/r)g.fillRect(x+i,y+j,1,1)}g.globalAlpha=1};
+  const neon=(x,y,w,h,c)=>{g.globalAlpha=.2;R(x-2,y-2,w+4,h+4,c);g.globalAlpha=1;R(x,y,w,1,c);R(x,y+h-1,w,1,c);R(x,y,1,h,c);R(x+w-1,y,1,h,c)};
+  const cx=Math.round(W/2),flick=tick%150>6;
+  R(0,0,W,GY+12,'#150a2c');
+  for(let x=0;x<W;x+=40)R(x,24,2,GY-24,'#1e0e3c');
+  /* ceiling with two glowing rings around the ball, light rigs and truss lamps */
+  R(0,0,W,22,'#0a0418');R(0,22,W,2,'#2a1450');
+  for(const [rx,ry,col] of [[Math.min(150,W*.27),10,pk],[Math.min(95,W*.17),6,cy]])
+    for(let a=0;a<6.2832;a+=.025){const x=Math.round(cx+Math.cos(a)*rx),y=Math.round(12+Math.sin(a)*ry);g.globalAlpha=.2;R(x-1,y-1,3,3,col);g.globalAlpha=1;R(x,y,1,1,col)}
+  for(let x=24,i=0;x<W;x+=48,i++){R(x-4,10,8,6,'#2a1450');R(x-2,15,4,3,i%2?pk:cy)}
+  for(const sxr of [.1,.9]){const x=Math.round(W*sxr);R(x-4,18,8,6,'#1a1030');R(x-2,24,4,3,cy);glow(x,28,9,cy,.5);
+    g.globalAlpha=.08;g.fillStyle=cy;for(let y=30;y<GY;y++){const t=(y-30)/(GY-30),bx=x+(cx-x)*t*.35,hw=3+t*12;g.fillRect(Math.round(bx-hw),y,Math.round(hw*2),1)}g.globalAlpha=1}
+  /* light cones from the ball */
+  g.globalAlpha=.1;g.fillStyle=pk;for(const sg of [-1,1])for(let y=30;y<GY;y++){const t=(y-30)/(GY-30),bx=cx+sg*(4+t*30),hw=3+t*10;g.fillRect(Math.round(bx-hw),y,Math.round(hw*2),1)}g.globalAlpha=1;
+  /* far wall neon edges */
+  neon(2,44,9,GY-70,cy);neon(W-11,44,9,GY-70,am);
+  /* carved pillars with a neon edge */
+  for(const px of [Math.round(W*.27),Math.round(W*.73)]){
+    R(px-9,26,18,GY-26,'#2a1a48');R(px-12,24,24,6,'#3a2460');R(px-12,GY-8,24,8,'#3a2460');R(px-9,26,1,GY-26,'#4a3478');
+    for(let y=40;y<GY-12;y+=14){R(px-5,y,10,1,'#4a3478');R(px-3,y+3,6,1,'#3a2460')}
+    R(px+7,32,1,GY-44,cy);glow(px+7,70,7,cy,.35)}
+  /* tall neon panels beside the stage */
+  for(const pxr of [.37,.63]){const x=Math.round(W*pxr);neon(x-3,GY-98,6,88,pk)}
+  /* stage, steps, neon ring and sign, speaker stacks */
+  const sw=Math.round(W*.2),sx0=cx-Math.round(sw/2);
+  R(sx0-6,GY-12,sw+12,12,'#1a0e30');R(sx0-12,GY-6,sw+24,6,'#241440');
+  g.globalAlpha=.3;R(sx0,GY-11,sw,3,cy);R(sx0-6,GY-7,sw+12,3,cy);R(sx0-12,GY-3,sw+24,3,cy);g.globalAlpha=1;
+  R(sx0,GY-10,sw,1,cy);R(sx0-6,GY-6,sw+12,1,cy);R(sx0-12,GY-2,sw+24,1,cy);
+  for(let a=0;a<6.2832;a+=.03){const x=Math.round(cx+Math.cos(a)*30),y=Math.round(GY-106+Math.sin(a)*30);g.globalAlpha=.22;R(x-1,y-1,3,3,pk);g.globalAlpha=1;R(x,y,1,1,pk)}
+  if(flick){ptext('KERALA',cx+1,GY-124,2,hot?'#7a1a1a':'#2a8aa0');ptext('KERALA',cx,GY-125,2,pk);ptext('DISCO',cx,GY-106,2,cy)}
+  for(const sg of [-1,1]){
+    const bx=sg<0?sx0-36:sx0+sw+14;
+    R(bx,GY-52,22,40,'#0a0616');neon(bx,GY-52,22,40,cy);
+    for(const cyy of [GY-42,GY-25]){const rr=5+((tick>>3)%2);for(let y=-rr;y<=rr;y++){const w=Math.floor(Math.sqrt(rr*rr-y*y));R(bx+11-w,cyy+y,w*2,1,'#14204a')}R(bx+10,cyy-1,3,3,cy)}
+    const sb=sg<0?bx-14:bx+24;R(sb,GY-30,12,18,'#0a0616');neon(sb,GY-30,12,18,cy);R(sb+4,GY-23,4,4,'#14204a')}
+  /* potted palms by the stage */
+  for(const sg of [-1,1]){const px=cx+sg*(Math.round(sw/2)+58);R(px-5,GY-9,10,9,'#2a4a90');R(px-5,GY-9,10,1,'#4a74c8');
+    for(const [dx,dy] of [[-9,-12],[-5,-17],[0,-20],[5,-17],[9,-12],[-11,-6],[11,-6]]){for(let k=0;k<=6;k++){const t=k/6;R(px+Math.round(dx*t),GY-9+Math.round(dy*t+t*t*3),1,1,k%2?'#1a8a5a':'#2ab070')}}}
+  /* pendant lamps */
+  for(const pxr of [.17,.33,.67,.83]){const x=Math.round(W*pxr),ln=30+((pxr*100)%3)*10;R(x,24,1,ln,'#3a2460');R(x-3,24+ln,7,6,am);R(x-2,24+ln+1,2,2,'#fff0b0');glow(x,24+ln+3,14,am,.5)}
+  /* neon signs on the side walls */
+  if(tick%200>8)ptext('FEVER',Math.round(W*.15),38,2,am);
+  ptext('BAR',Math.round(W*.86),66,2,cy);glow(Math.round(W*.86)+12,72,16,cy,.3);
   /* bar with a bottle shelf on the left */
   for(const sy of [GY-84,GY-58]){R(8,sy,88,3,'#3a1a60');R(8,sy,88,1,'#6a3aa0');
     for(let i=0;i<10;i++){const bh=8+(i%3)*3,bc=['#ffb830','#40e0b0','#ff7ae0','#80e050','#ff8040'][(i+(sy>GY-70?2:0))%5],bx=11+i*8;
       R(bx,sy-bh,4,bh,bc);R(bx+1,sy-bh-3,2,3,bc);R(bx,sy-bh,1,bh,'rgba(255,255,255,.35)')}}
   R(6,GY-26,92,26,'#2a1450');R(6,GY-28,92,3,pk);for(let x=10;x<96;x+=8)R(x,GY-22,2,18,'#3a1a60');
   for(let k=0;k<3;k++){const x=20+k*28;R(x-2,GY-12,2,12,'#1a0c30');R(x-7,GY-15,12,3,k%2?cy:pk)}
-  /* speaker stack on the right */
-  for(const [sy,sh] of [[GY-34,34],[GY-72,34]]){R(W-48,sy,42,sh,'#0a0616');R(W-48,sy,42,2,'#3a1a60');
-    for(const cyy of [sy+10,sy+24]){const rr=5+((tick>>3)%2);for(let y=-rr;y<=rr;y++){const w=Math.floor(Math.sqrt(rr*rr-y*y));R(W-27-w,cyy+y,w*2,1,'#1a1030')}R(W-28,cyy-1,3,3,'#6a3aa0')}}
-  /* disco ball light spots drifting over the walls */
+  /* tables and stools on the right, warm lit */
+  for(const tx of [Math.round(W*.79),Math.round(W*.79)+40]){
+    R(tx-11,GY-22,22,3,'#4a2a50');R(tx-11,GY-22,22,1,am);R(tx-1,GY-19,2,19,'#2a1450');glow(tx,GY-24,10,am,.25);
+    for(const sd of [-1,1]){R(tx+sd*17-4,GY-12,8,2,'#6a3aa0');R(tx+sd*17-1,GY-10,2,10,'#2a1450')}}
+  /* light spots from the ball drifting over the walls */
   for(let k=0;k<26;k++){const sx=((k*53+tick*(k%2?.55:-.45))%W+W)%W,sy=24+((k*37+Math.sin(tick*.02+k)*10)%(GY-44));
     g.globalAlpha=.55;R(Math.round(sx),Math.round(sy),k%3?2:3,k%3?2:3,['#ffffff',pk,cy][k%3]);g.globalAlpha=1}
   if(hot){g.globalAlpha=.1+.06*Math.sin(tick*.1);R(0,0,W,H,'#ff1010');g.globalAlpha=1}
@@ -1354,6 +1389,10 @@ function drawDiscoFloor(){
   for(let y=GY-1,r=0;y<H;y+=9,r++)for(let x=0,c=0;x<W;x+=18,c++){const lit=(c*3+r*5+t)%9===0,a=(c+r)%2;
     g.fillStyle=lit?(a?(hot?'#9a1a2a':'#9a2aa8'):(hot?'#601020':'#2a9ab0')):(a?'#2a1252':'#1c0c3a');g.fillRect(x,y,17,8)}
   g.fillStyle=hot?'#ff4a4a':'#ff7ae0';g.fillRect(0,GY-1,W,2);
+  /* reflections of the neon on the polished floor */
+  const pk=hot?'#ff4a4a':'#ff7ae0',cy=hot?'#ff9a50':'#40e0ff',am=hot?'#ff7040':'#ffb830';
+  for(const [fx,col,wd] of [[.06,cy,8],[.37,pk,6],[.63,pk,6],[.5,pk,26],[.27,cy,4],[.73,cy,4],[.94,am,8],[.17,am,6],[.83,am,6]]){
+    const x=Math.round(W*fx);g.fillStyle=col;g.globalAlpha=.16;g.fillRect(x-wd,GY+1,wd*2,46);g.globalAlpha=.12;g.fillRect(x-Math.round(wd/2),GY+1,wd,70);g.globalAlpha=1}
 }
 /* =================== story scenes ===================
    Short coded scenes between levels (no animation sheets): a backdrop, the characters of that moment, one or two speech boxes.
