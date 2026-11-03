@@ -335,7 +335,7 @@ const BOSSDEF={
   komban:{w:80,h:60,foot:59,hb:[14,8,52,46],hp:30,name:'PEY KOMBAN',sub:'DEMON OF THE TUSKS'}};
 /* Boss art from PNG files (assets/art/bosses/<boss>_<frame>.png, made by tools/make-sprite.js from the reference sheets).
    Used only when the file loads and has the same size as the generated frame; otherwise the generated sprite stays. */
-const ART={},ART_FILES=['chathan_0','chathan_1','yakshi_0','yakshi_1','odiyan_0','odiyan_1','odiyan_2','karin_0','karin_1','karin_2','komban_0','komban_1','komban_2','hero_0','hero_1','hero_2','hero_3','heroidle_0','heroidle_1','heroidle_2','heroidle_3','heroswing_0','heroswing_1','heroswing_2','croc_0','croc_1','croc_2','croc_3','bike_0','bike_1','bike_2','bike_3','ravi_0','ravi_1','biju_0','biju_1','soniya_0','thoma_0','maveli_0','mooppan_0','scenehero_0','soniya_1','thoma_1','maveli_1','mooppan_1','scenehero_1','soniya_2','thoma_2','maveli_2','mooppan_2','scenehero_2','soniya_3','thoma_3','maveli_3','mooppan_3','scenehero_3','kili_0','kili_1','kili_2','dc1_0','dc1_1','dc1_2','dc1_3','dc1_4','dc1_5','dc2_0','dc2_1','dc2_2','dc2_3','dc2_4','dc2_5','da1_0','da1_1','da1_2','da1_3','da1_4','da1_5','da2_0','da2_1','da2_2','da2_3','da2_4','da2_5','da3_0','da3_1','da3_2','da3_3','da3_4','da3_5'];
+const ART={},ART_FILES=['chathan_0','chathan_1','yakshi_0','yakshi_1','odiyan_0','odiyan_1','odiyan_2','karin_0','karin_1','karin_2','komban_0','komban_1','komban_2','hero_0','hero_1','hero_2','hero_3','heroidle_0','heroidle_1','heroidle_2','heroidle_3','heroswing_0','heroswing_1','heroswing_2','croc_0','croc_1','croc_2','croc_3','bike_0','bike_1','bike_2','bike_3','ravi_0','ravi_1','biju_0','biju_1','soniya_0','thoma_0','maveli_0','mooppan_0','scenehero_0','soniya_1','thoma_1','maveli_1','mooppan_1','scenehero_1','soniya_2','thoma_2','maveli_2','mooppan_2','scenehero_2','soniya_3','thoma_3','maveli_3','mooppan_3','scenehero_3','kili_0','kili_1','kili_2','stall_0','dc1_0','dc1_1','dc1_2','dc1_3','dc1_4','dc1_5','dc2_0','dc2_1','dc2_2','dc2_3','dc2_4','dc2_5','da1_0','da1_1','da1_2','da1_3','da1_4','da1_5','da2_0','da2_1','da2_2','da2_3','da2_4','da2_5','da3_0','da3_1','da3_2','da3_3','da3_4','da3_5'];
 if(typeof Image!=='undefined')ART_FILES.forEach(n=>{const im=new Image();
   im.onload=()=>{const c=document.createElement('canvas');c.width=im.width;c.height=im.height;c.getContext('2d').drawImage(im,0,0);ART[n]=c;
     if(A&&A.boss&&LV[lvl]&&LV[lvl].boss)A.boss=bossFrames(LV[lvl].boss)};
@@ -1058,7 +1058,22 @@ function drinkChai(x){
   const cured=P.rev>0||P.freeze>0;if(LV[lvl].sayChai&&!chaiSaid){chaiSaid=true;say(LV[lvl].sayChai[0],LV[lvl].sayChai[1])}P.rev=0;P.freeze=0;if(!P.aru)P.chaiT=600;if(!sfx('chai')){beep(660,.1,'triangle',.05);beep(880,.14,'triangle',.04)}
   burst(x,GY-20,['#ffffff','#ffe8a0'],6);pops.push({x,y:GY-44,s:cured?'CHAI! FEELING CLEAR':(P.aru?'CHAI! CHECKPOINT':'CHAI! TRIPLE THROW'),t:70});
 }
+/* dithered halo (warm lights): solid pixels thinning out from the centre */
+function glowAt(x,y,r,c,a){g.globalAlpha=a;g.fillStyle=c;for(let j=-r;j<=r;j++)for(let i=-r;i<=r;i++){const d=Math.hypot(i,j);if(d<r&&bay((x+i)&255,(y+j)&255)>d/r)g.fillRect(x+i,y+j,1,1)}g.globalAlpha=1}
+/* Chayakada: the stall from the reference art, kettle steam in code, and Soniya beside it who serves when you come near. */
 function drawStall(x,cx,lit){
+  const st=ART.stall_0;if(!st)return drawStallOld(x,cx,lit);
+  const sx=Math.round(x-cx);if(sx<-70||sx>W+70)return;
+  const bx=sx-Math.round(st.width/2),by=GY+2-st.height;
+  if(lit)glowAt(sx,GY-26,30,'#ffb840',.4);
+  const so=[0,1,2,3].map(i=>ART['soniya_'+i]);
+  if(so.every(Boolean)){const near=Math.abs(P.x+7-x)<110,k=near?((tick>>4)%2?2:3):((tick>>6)%2?1:0),img=so[k],hop=near&&(tick>>3)%2?-1:0;
+    g.drawImage(flipOf(img),sx+36,GY+2-img.height+hop)}
+  g.drawImage(st,bx,by);
+  for(let k=0;k<4;k++){const t=(tick*.55+k*8)%26,a=Math.max(0,.6-t/42);g.fillStyle='rgba(255,255,255,'+a.toFixed(2)+')';g.fillRect(Math.round(bx+36+Math.sin(t*.35+k*1.7)*2.5),Math.round(by+26-t),2,2)}
+  if(lit){g.fillStyle='rgba(255,224,150,.5)';g.fillRect(bx+10,by+17,38,1)}
+}
+function drawStallOld(x,cx,lit){
   const sx=Math.round(x-cx);if(sx<-40||sx>W+40)return;
   if(lit){g.fillStyle='rgba(255,200,90,.14)';g.fillRect(sx-22,GY-40,44,40)}
   g.fillStyle='#6a4a2a';g.fillRect(sx-14,GY-28,2,28);g.fillRect(sx+12,GY-28,2,28);
