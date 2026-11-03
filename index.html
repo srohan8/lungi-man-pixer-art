@@ -439,16 +439,16 @@ Object.assign({},LV_OLD[0],{act:'PROLOGUE',name:'THE SWINGING AWAKENING',
  clear:['SECOND TREE AWAKENED','CHATHAN HANDS OVER THE RELIC'],
  sayStart:['RAVI','MACHANE! THE KUTTICHATHAN LOVES A PARTY. HIT THE REAL ONE!'],sayBoss:['CHATHAN','CATCH ME IF YOU CAN, TODDY BOY! HEHE!'],sayClear:['CHATHAN','FINE, FINE... TAKE THE RELIC. SPOILSPORT.']},
 {act:'ACT III',name:"ODIYAN'S HUNT",
- sky:['#6f8f8a','#8eaaa2','#aac4b8','#c4d9cb','#d8e8d8','#e8f4e6'],stars:0,
- sun:{y:56,r:14,c:['#f4faf0','#dbe8dc','#b8cfc0'],crater:'#c8d8cc'},cloud:['#f0f8ee','#d4e4d8','#b4cabc'],
- far:{c:'#a9c2b8',rim:'#d0e2d6',rim2:'#bcd2c6',mist:'#d8e8dc',base:GY-92},
- mid:{c:'#86a89c',rim:'#b4d0c4',mist:'#c8dcd0',deco:'conifer',dark:'#5f8478'},
- jung:{kind:'tea',base:'#2f5a3c',mid:'#487a4a',hl:'#76a468',rim:'#c0dca0',trunk:'#4a3a2e',vine:'#487a4a',under:'#1c3a28'},
+ sky:['#0c121e','#16202e','#22304a','#344a62','#506a7c','#7a92a0'],stars:14,
+ sun:{y:54,r:15,c:['#e8ecf0','#b8c0c8','#6a7e8a'],crater:'#98a8aa'},cloud:['#7a8e9a','#506470','#344454'],
+ far:{c:'#243448',rim:'#7a92a0',rim2:'#344a62',mist:'#506a7c',base:GY-92},
+ mid:{c:'#1a2838',rim:'#58707e',mist:'#344a5c',deco:'conifer',dark:'#121e2a'},
+ jung:{kind:'tea',base:'#0e2016',mid:'#183222',hl:'#2a4e34',rim:'#7aa88a',trunk:'#2a2a2a',vine:'#183222',under:'#0a160e'},
  canopy:null,
  pit:{kind:'mist',cols:['#c8d4d8','#a8b8c0','#8aa0aa','#6a8494','#4e6878','#384e60'],foam:'#e8f0f2',shine:['#ffffff','#e8f0f2'],tint:'#4a6070'},
  ground:{style:'earth',top:['#7ab060','#58903f','#3e7030'],blocks:['#5a3a2a','#684434','#4a2e22'],light:'#8a5a40',dark:'#321e14',mortar:'#321e14',speck:'#4a3020',edge:'#1a0e0a',topEdge:'#2c5a28',drip:['#58903f','#3e7030'],tuft:['#58903f','#c0f080'],flowers:['#e8e8f0','#c0e070'],stone:['#4a4a50','#6a6a72','#8a8a94']},
- palm:LV_OLD[0].palm,palms:false,aru:true,rocks:true,
- bush:['#2f5a3c','#487a4a','#76a468','#d83030','#ffd0c0'],
+ palm:LV_OLD[0].palm,palms:false,aru:true,rocks:true,fog:true,
+ bush:['#16301e','#244a2c','#3a6a40','#d83030','#ffd0c0'],
  motes:'mist',foes:['dog','bat','cobra','dog'],boss:'odiyan',len:3200,prints:4,
  clear:['THIRD TREE AWAKENED','A BITE BURNS... THE WORLD SPINS'],
  sayStart:['VELU','HE WEARS THREE FORMS. READ THE HOOF-PRINTS. LEARN HIS PATTERN.'],sayBoss:['ODIYAN','YOU CANNOT CATCH WHAT YOU CANNOT SEE.'],sayClear:['ODIYAN','THE FOG LIFTS. I REMEMBER MYSELF NOW.']},
@@ -1386,6 +1386,16 @@ function drawStory(){
   g.globalAlpha=1;
   if(t>30&&(tick>>5)%2===0)ptext(isTouch?'TAP TO SKIP':'ANY KEY TO SKIP',W-10,H-12,1,'#b8b0d0','right');
 }
+/* Drifting fog (levels with fog:true): dithered blobs on a tiling strip, three layers (far hills, mid hills, ground mist). */
+let FOGC=null;
+function genFog(){const b=buf(480,56,true),r=rng(91);
+  for(let n=0;n<14;n++){const cx=Math.round(r()*480),cy=Math.round(18+r()*20),rx=Math.round(24+r()*40),ry=Math.round(6+r()*8);
+    for(let y=-ry;y<=ry;y++)for(let x=-rx;x<=rx;x++){const d=(x*x)/(rx*rx)+(y*y)/(ry*ry);if(d<=1){const t=1-d;if(t>bay((cx+x)&255,(cy+y)&255)*.9)b.set(cx+x,cy+y,t>.55?'#c8d8dc':'#9fb4bc')}}}
+  return b.done()}
+function drawFog(L,cx,layer){
+  if(!L.fog)return;if(!FOGC)FOGC=genFog();
+  const [par,al,y,sp]=[[.18,.5,GY-92,.2],[.3,.42,GY-58,.35],[.7,.3,GY-26,.6]][layer];
+  g.globalAlpha=al;const o=-Math.floor((cx*par+tick*sp)%480);for(let x=o;x<W;x+=480)g.drawImage(FOGC,x,y);g.globalAlpha=1}
 /* mossy boulders and stacked-stone walls (Act III hills) */
 function drawRockProp(p,sx){
   const x=Math.round(sx),B=GY+3,R=(a,b,w,h,c)=>{g.fillStyle=c;g.fillRect(x+Math.round(a),B+b,w,h)},v=p.v;
@@ -1477,7 +1487,7 @@ function draw(){
   g.save();if(shake>0)g.translate((Math.random()*4-2)|0,(Math.random()*4-2)|0);
   if(L.arena){drawDiscoBar();drawDisco()}else{
   g.drawImage(A.sky,0,0);
-  tile(A.clouds,.06,cx);tile(A.far,.12,cx);tile(A.mid,.3,cx);tile(A.jung,.55,cx);drawBikeBack(cx);drawBikeForest(cx);
+  tile(A.clouds,.06,cx);tile(A.far,.12,cx);drawFog(L,cx,0);tile(A.mid,.3,cx);drawFog(L,cx,1);tile(A.jung,.55,cx);drawBikeBack(cx);drawBikeForest(cx);
   g.drawImage(A.pit,0,GY+12);pitFx(L,cx);drawCrocs(cx)}
   for(const p of props){if(L.arena)break;const sx=p.x-cx;if(sx<-60||sx>W+60)continue;
     if(p.k==='pillar'){const c=A.pillars[p.v];g.drawImage(c,Math.round(sx-7),GY-c.height+4)}else if(p.k==='palm'){const s=A.palms[p.v];g.drawImage(s.c,Math.round(sx-s.ax),GY-s.c.height+4)}else if(p.k==='rock'||p.k==='wall')drawRockProp(p,sx);else g.drawImage(A.bushes[p.v],Math.round(sx-20),GY-17)}
@@ -1488,7 +1498,7 @@ function draw(){
   plats.forEach((p,k)=>{const sx=p[0]-cx;if(sx<W&&sx+p[2]>0){if(L.arena){const hot=!!(arena&&arena.hostile),x=Math.round(sx),y=p[1],c=hot?'#ff4a4a':'#ff7ae0',c2=hot?'#ff9a50':'#40e0ff';
     g.fillStyle='#1c0c3a';g.fillRect(x,y,p[2],7);g.fillStyle=c;g.fillRect(x,y-1,p[2],2);g.fillStyle=c2;g.fillRect(x,y+7,p[2],1);g.globalAlpha=.25;g.fillStyle=c2;g.fillRect(x,y+8,p[2],3);g.globalAlpha=1;
     for(let q=6;q<p[2]-4;q+=12){g.fillStyle=(q/12|0)%2?c:c2;g.fillRect(x+q,y+3,6,1)}}else g.drawImage(A.platC[k],Math.round(sx),p[1]-4)}});
-  drawBikeFront(cx);
+  drawBikeFront(cx);drawFog(L,cx,2);
   for(const v of vines)drawVine(v,cx);
   if(L.scene)drawMaveli(cx);
   if(L.rootWalls)drawRoots(cx);
