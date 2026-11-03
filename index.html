@@ -340,8 +340,6 @@ if(typeof Image!=='undefined')ART_FILES.forEach(n=>{const im=new Image();
   im.onload=()=>{const c=document.createElement('canvas');c.width=im.width;c.height=im.height;c.getContext('2d').drawImage(im,0,0);ART[n]=c;
     if(A&&A.boss&&LV[lvl]&&LV[lvl].boss)A.boss=bossFrames(LV[lvl].boss)};
   im.src='assets/art/bosses/'+n+'.png'});
-const SBG={};
-if(typeof Image!=='undefined')['prologue','act1','act2','act3','act4','act5','pathalam','disco','bike_festival','bike_jungle'].forEach(n=>{const im=new Image();im.onload=()=>{SBG[n]=im};im.src='assets/art/bg/'+n+'.png'});
 function bossFrames(t){
   let fr;
   if(t==='crab')fr=[genCrabKing(1),genCrabKing(0)];
@@ -760,7 +758,7 @@ function placePlayer(x){
   camx=Math.max(0,x-60);cp=x;bestX=x;bullets=[];shots=[];locked=!!LV[lvl].arena;jumpPrev=true;shootCd=0;slashT=0;
 }
 function begin(i,x){lives=i>=1?4:3;actScore=actScore||0;loadLevel(i);placePlayer(x);state='play';banner={a:LV[i].act,b:LV[i].name,t:150}}
-function newGame(){score=0;actScore=0;if(!seen&&SCENES.start){state='story';startStory(SCENES.start,()=>begin(0,40));return}begin(seen?Math.max(1,Math.min(resume,LV.length-1)):0,40)}
+function newGame(){score=0;actScore=0;if(!seen&&SCENES.start){loadLevel(0);const snap=snapshotBackdrop(0);state='story';startStory(SCENES.start,()=>begin(0,40),snap);return}begin(seen?Math.max(1,Math.min(resume,LV.length-1)):0,40)}
 function startIfNeeded(){
   goFull();
   if(!AUD.go){AUD.go=true;try{actx()&&ac.resume()}catch(e){}SFX_NAMES.forEach(n=>loadBuf(n,'sfx'))}
@@ -795,7 +793,9 @@ function update(){
   if(innerHeight>innerWidth&&isTouch)return;
   if(state==='title'){camx=(camx+.4)%(bossX-W);return}
   if(state==='dead'){P.vy+=.4;P.y+=P.vy;if(--deadT<=0){if(lives<=0){state='over';lockT=60;saveHi()}else respawn()}return}
-  if(state==='clear'){if(--clearT<=0){if(lvl<LV.length-1){if(lvl===0){seen=true;try{localStorage.setItem('lungiman-prologue','1')}catch(e){}}actScore=score;resume=lvl+1;try{localStorage.setItem('lungiman-act',resume)}catch(e){}const sk=LV[lvl].key,go=()=>{loadLevel(lvl+1);placePlayer(40);state='play';banner={a:LV[lvl].act,b:LV[lvl].name,t:150}};if(SCENES[sk]){state='story';startStory(SCENES[sk],go)}else go()}else{state='ending';endT=0;saveHi();resume=1;try{localStorage.setItem('lungiman-act','1')}catch(e){}}}return}
+  if(state==='clear'){if(--clearT<=0){if(lvl<LV.length-1){if(lvl===0){seen=true;try{localStorage.setItem('lungiman-prologue','1')}catch(e){}}actScore=score;resume=lvl+1;try{localStorage.setItem('lungiman-act',resume)}catch(e){}const sk=LV[lvl].key,ni=lvl+1,go=()=>{loadLevel(ni);placePlayer(40);state='play';banner={a:LV[lvl].act,b:LV[lvl].name,t:150}};
+    if(SCENES[sk]){const bgk=SCENES[sk].bg;let cxs=Math.round(camx);if(bgk==='next'){loadLevel(ni);cxs=0}else if(bgk!=='cur'){loadLevel(LV.findIndex(l=>l.key===bgk));cxs=0}
+      const snap=snapshotBackdrop(cxs);state='story';startStory(SCENES[sk],go,snap)}else go()}else{state='ending';endT=0;saveHi();resume=1;try{localStorage.setItem('lungiman-act','1')}catch(e){}}}return}
   if(state==='story'){storyTick();return}
   if(state==='ending'){endTick();return}
   if(state==='scene'){sceneTick();return}
@@ -1314,33 +1314,42 @@ function drawDiscoFloor(){
    Each ends by itself, any tap or key skips it, and it only plays when you advance to a new level (never on continue or retry). */
 let story=null;
 const SCENES={
- start:{bg:'prologue',actors:[{id:'scenehero',who:'KANNAN',x:.26,talk:2},{id:'biju',who:'BIJU',x:.52,f:-1,from:1,talk:1},{id:'thoma',who:'THOMA',x:.78,f:-1,from:1,talk:2}],
+ start:{bg:'pro',actors:[{id:'scenehero',who:'KANNAN',x:.26,talk:2},{id:'biju',who:'BIJU',x:.52,f:-1,from:1,talk:1},{id:'thoma',who:'THOMA',x:.78,f:-1,from:1,talk:2}],
   lines:[{who:'BIJU',text:'THE FOREST IS RESTLESS AGAIN. TAKE THIS COCONUT.'},{who:'THOMA',text:'STAY ON THE TREES. THE GROUND BELONGS TO THEM NOW.'}]},
- pro:{bg:'act1',actors:[{id:'scenehero',who:'KANNAN',x:.5}],caption:['THE GOLDEN HOUR ENDS.','HE GOES IN.']},
- a1:{bg:'bike_festival',actors:[{id:'ravi',who:'RAVI',x:.24,talk:1,from:-1},{id:'scenehero',who:'KANNAN',x:.44},{id:'bike',pose:3,who:'',x:.7,from:1,sc:2}],
+ pro:{bg:'next',actors:[{id:'scenehero',who:'KANNAN',x:.5}],caption:['THE GOLDEN HOUR ENDS.','HE GOES IN.']},
+ a1:{bg:'next',actors:[{id:'ravi',who:'RAVI',x:.24,talk:1,from:-1},{id:'scenehero',who:'KANNAN',x:.44},{id:'bike',pose:3,who:'',x:.7,from:1,sc:2}],
   lines:[{who:'RAVI',text:'ONE GROVE DOWN. TAKE THE BIKE, MACHANE.'},{who:'RAVI',text:'THE CARNIVAL STARTED WITHOUT US. HOLD TIGHT!'}]},
- bike:{bg:'bike_jungle',actors:[{id:'bike',pose:3,who:'',x:.32,sc:2},{id:'scenehero',who:'KANNAN',x:.62,f:-1,talk:2}],
+ bike:{bg:'cur',actors:[{id:'bike',pose:3,who:'',x:.32,sc:2},{id:'scenehero',who:'KANNAN',x:.62,f:-1,talk:2}],
   lines:[{who:'KANNAN',text:'THE FOREST CLOSED IN. FROM HERE, ON FOOT.'}]},
- a2:{bg:'act3',actors:[{id:'scenehero',who:'KANNAN',x:.5}],caption:['TWO GROVES FREED. THE EMBERS GO COOL.','THE HIGHLAND FOG IS WAITING.']},
- a3:{bg:'act3',actors:[{id:'scenehero',who:'KANNAN',x:.3,talk:2},{id:'mooppan',who:'VELU',x:.66,f:-1,from:1,talk:1},{id:'kili',who:'',x:.88,pose:0,f:-1,sc:2}],
+ a2:{bg:'next',actors:[{id:'scenehero',who:'KANNAN',x:.5}],caption:['TWO GROVES FREED. THE EMBERS GO COOL.','THE HIGHLAND FOG IS WAITING.']},
+ a3:{bg:'cur',actors:[{id:'scenehero',who:'KANNAN',x:.3,talk:2},{id:'mooppan',who:'VELU',x:.66,f:-1,from:1,talk:1},{id:'kili',who:'',x:.88,pose:0,f:-1,sc:2}],
   lines:[{who:'VELU',text:'THE DOG BITES DEEPER THAN YOU FEEL.'},{who:'KANNAN',text:'...MY ANKLE. IT BURNS.'}]},
- disco:{bg:'act3',actors:[{id:'scenehero',who:'KANNAN',x:.36,lying:1},{id:'ravi',who:'RAVI',x:.66,f:-1,from:1,talk:1}],
+ disco:{bg:'a3',actors:[{id:'scenehero',who:'KANNAN',x:.36,lying:1},{id:'ravi',who:'RAVI',x:.66,f:-1,from:1,talk:1}],
   lines:[{who:'RAVI',text:'YOU KEPT SHOUTING LEFT AND RIGHT.'},{who:'RAVI',text:"ODIYAN'S VENOM. YOU'LL BE ALL RIGHT. PROBABLY."}]},
- a4:{bg:'pathalam',actors:[{id:'scenehero',who:'KANNAN',x:.34},{id:'maveli',who:'MAVELI',x:.7,f:-1,from:1,talk:2}],
+ a4:{bg:'next',actors:[{id:'scenehero',who:'KANNAN',x:.34},{id:'maveli',who:'MAVELI',x:.7,f:-1,from:1,talk:2}],
   lines:[{who:'MAVELI',text:'I BROUGHT YOU DOWN. I HOPE THAT WAS ACCEPTABLE.'}]},
- path:{bg:'act5',actors:[{id:'scenehero',who:'KANNAN',x:.26},{id:'thoma',who:'THOMA',x:.52,f:-1,from:1,talk:3},{id:'soniya',who:'SONIYA',x:.78,f:-1,from:1,talk:2}],
+ path:{bg:'next',actors:[{id:'scenehero',who:'KANNAN',x:.26},{id:'thoma',who:'THOMA',x:.52,f:-1,from:1,talk:3},{id:'soniya',who:'SONIYA',x:.78,f:-1,from:1,talk:2}],
   lines:[{who:'THOMA',text:'STAY. ON. THE. TREES. PROMISE ME.'},{who:'SONIYA',text:"I BROUGHT EVERYTHING. DON'T YOU DARE DIE."}]}
 };
 const STORY_START=40,STORY_BOX=150;
-function startStory(sc,next){const n=Math.max(1,(sc.lines||[]).length);story={sc,next,t:0,skip:false,total:STORY_START+n*STORY_BOX+(sc.lines?0:20)};dlg=null}
+/* Draws the real scenery (sky, hills, trees, water, ground, canopy) of the loaded level once and keeps it as the scene backdrop,
+   so the scene looks like the level you are about to play. */
+function snapshotBackdrop(cx){
+  const L=LV[lvl];g.drawImage(A.sky,0,0);tile(A.clouds,.06,cx);tile(A.far,.12,cx);tile(A.mid,.3,cx);tile(A.jung,.55,cx);drawBikeBack(cx);drawBikeForest(cx);
+  g.drawImage(A.pit,0,GY+12);pitFx(L,cx);
+  segs.forEach((sg,k)=>{const sx=sg[0]-cx;if(sx<W&&sx+(sg[1]-sg[0])>0)g.drawImage(A.segC[k],Math.round(sx),GY-6)});
+  tile(A.canopy,1.25,cx);drawBikeCanopy(cx);
+  const c=document.createElement('canvas');c.width=W;c.height=H;c.getContext('2d').drawImage(cv,0,0);return c;
+}
+function startStory(sc,next,snap){const n=Math.max(1,(sc.lines||[]).length);story={sc,next,snap,t:0,skip:false,total:STORY_START+n*STORY_BOX+(sc.lines?0:20)};dlg=null}
 function storyTick(){const st=story;st.t++;if(st.t>=st.total||st.skip){const n=st.next;story=null;dlg=null;n()}}
 const FLIPS=new WeakMap();const flipOf=c=>{let f=FLIPS.get(c);if(!f){f=flipC(c);FLIPS.set(c,f)}return f};
 function drawStory(){
   const st=story,sc=st.sc,t=st.t,al=Math.max(0,Math.min(1,t/20,(st.total-t)/20)),B=sc.lines||[];
-  const bi=t<STORY_START?-1:Math.min(B.length-1,Math.floor((t-STORY_START)/STORY_BOX)),cur=bi>=0?B[bi]:null,feet=H-26;
+  const bi=t<STORY_START?-1:Math.min(B.length-1,Math.floor((t-STORY_START)/STORY_BOX)),cur=bi>=0?B[bi]:null,feet=GY+2;
   g.fillStyle='#0a0814';g.fillRect(0,0,W,H);g.globalAlpha=al;
-  const bg=SBG[sc.bg];if(bg)g.drawImage(bg,Math.round((W-640)/2),0);
-  g.fillStyle='rgba(8,6,20,.3)';g.fillRect(0,0,W,H);
+  if(st.snap)g.drawImage(st.snap,0,0);
+  g.fillStyle='rgba(8,6,20,.18)';g.fillRect(0,0,W,H);
   sc.actors.forEach((ac,i)=>{
     const talking=cur&&ac.who&&cur.who===ac.who,scl=ac.sc||3;
     let pose=ac.pose||0;if(talking&&ac.talk!==undefined&&(t>>3)%2)pose=ac.talk;

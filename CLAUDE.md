@@ -97,5 +97,5 @@ Dialogue rule still holds: at most 3 boxes per act; the throne scene and the end
 ## Story scenes (owner-approved exception to the no-cutscene rule)
 - A short scene between two levels: a backdrop, the characters of that moment, one or two speech boxes. Drawn and moved by code (slide in, bob, hop when speaking), not animated sheets. Table in `SCENES` in index.html, wording in docs/STORY_CARDS.md.
 - Plays only when advancing to a new level (and once before the Prologue on the very first play). Never on "tap to continue" or after game over. Ends by itself (about 5 to 7 s), any tap or key skips it after half a second. Never during play, never required to progress.
-- Backdrops are in assets/art/bg (made by tools/make-backdrop.js from assets/reference/bg_*.png). Characters are in assets/art/bosses (made by tools/make-sprite.js).
+- The backdrop is the real scenery of the level (sky, hills, trees, water, ground), captured once when the scene starts, so a scene looks like the level you are about to play. Characters are in assets/art/bosses (made by tools/make-sprite.js from assets/reference). The bg_*.png files in assets/reference are inspiration for level props and palettes only.
 - Do not add more than one scene per transition, or any choice or input to a scene.
