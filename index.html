@@ -807,9 +807,11 @@ function respawn(){
   if(boss.active&&!boss.dead){boss.x=bossX+W-boss.w-20;boss.y=GY-1-boss.foot;boss.vx=0;boss.vy=0;boss.state=0}
   state='play';jumpPrev=true;
 }
-function die(force){if(state!=='play'||P.inv>0)return;
+function die(force,water){if(state!=='play'||P.inv>0)return;
   if(blessing&&!force){blessing=false;P.inv=150;beep(880,.2,'triangle',.06);burst(P.x+7,P.y+10,['#ffe070','#ffffff'],14);pops.push({x:P.x+7,y:P.y-8,s:'BLESSING!',t:70});return}
-  lives--;state='dead';deadT=70;P.vy=-6;if(!sfx('die'))beep(150,.4,'sawtooth',.06);burst(P.x+7,P.y+10,['#f2ead2','#e0b030','#b06a40'],10)}
+  lives--;state='dead';P.dt=0;P.dk=water?'water':'land';P.vine=null;
+  if(water){deadT=115;P.vy=0;P.y0=P.y;if(!sfx('splash')&&!sfx('die'))beep(220,.3,'sine',.06);burst(P.x+7,GY,['#bfe8ff','#ffffff','#7ac0ff'],14)}
+  else{deadT=95;P.vy=-4;P.vx=-P.f*1.6;if(!sfx('die'))beep(150,.4,'sawtooth',.06);burst(P.x+7,P.y+10,['#f2ead2','#e0b030','#b06a40'],8)}}
 function saveHi(){if(score>hi){hi=score;try{localStorage.setItem('lungiman-hi',hi)}catch(e){}}}
 const hit=(a,b)=>a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y;
 function shot(x,y,vx,vy,gr,k){shots.push({x,y,vx,vy,g:gr,k,life:260})}
@@ -823,7 +825,11 @@ function update(){
   for(const p of parts){p.x+=p.vx;p.vy+=.15;p.y+=p.vy;p.l--}parts=parts.filter(p=>p.l>0);
   if(innerHeight>innerWidth&&isTouch)return;
   if(state==='title'){camx=(camx+.4)%(bossX-W);return}
-  if(state==='dead'){P.vy+=.4;P.y+=P.vy;if(--deadT<=0){if(lives<=0){state='over';lockT=60;saveHi()}else respawn()}return}
+  if(state==='dead'){P.dt++;
+    if(P.dk==='water'){const t=P.dt;P.x+=Math.sin(t*.3)*.25;P.y=t<16?GY+10-34*Math.sin(t/16*Math.PI):GY-24+(t-16)*.42;if(t===26||t===60)pops.push({x:P.x+7,y:GY-34,s:t===26?'GLUB!':'GLUB GLUB...',t:50})}
+    else{P.vy+=.4;P.y+=P.vy;P.x+=P.vx;P.vx*=.94;
+      if(P.vy>=0){for(const [x1,x2,top] of segs.map(s=>[s[0],s[1],GY]).concat(plats.map(p=>[p[0],p[0]+p[2],p[1]])))if(P.x+P.w>x1&&P.x<x2&&P.y+P.h-P.vy<=top+2&&P.y+P.h>=top){P.y=top-P.h;if(P.vy>1.5){burst(P.x+7,top,['#d8c8a0','#a89878'],6);shake=Math.max(shake,3)}P.vy=0;P.vx*=.5;if(!P.dl)P.dl=P.dt;break}}}
+  if(--deadT<=0){if(lives<=0){state='over';lockT=60;saveHi()}else respawn()}return}
   if(state==='clear'){if(--clearT<=0){if(lvl<LV.length-1){if(lvl===0){seen=true;try{localStorage.setItem('lungiman-prologue','1')}catch(e){}}actScore=score;resume=lvl+1;try{localStorage.setItem('lungiman-act',resume)}catch(e){}const sk=LV[lvl].key,ni=lvl+1,go=()=>{loadLevel(ni);placePlayer(40);ammo=Math.max(ammo,TUNE.ammoStart);state='play';banner={a:LV[lvl].act,b:LV[lvl].name,t:150}};
     if(SCENES[sk]){const bgk=SCENES[sk].bg;let cxs=Math.round(camx);if(bgk==='next'){loadLevel(ni);cxs=0}else if(bgk!=='cur'){loadLevel(LV.findIndex(l=>l.key===bgk));cxs=0}
       const snap=snapshotBackdrop(cxs);state='story';startStory(SCENES[sk],go,snap)}else go()}else{state='ending';endT=0;saveHi();resume=1;try{localStorage.setItem('lungiman-act','1')}catch(e){}}}return}
@@ -851,7 +857,7 @@ function update(){
   if(P.inv>0)P.inv--;if(P.chaiT>0)P.chaiT--;
   if(ammo<TUNE.ammoRegenBelow&&!P.aru){if(++ammoT>=TUNE.ammoRegenFrames){ammoT=0;ammo++}}else ammoT=0;
   {const lb=Math.floor(score/TUNE.lifeEvery);if(lb>lifeBank){lives=Math.min(TUNE.lifeMax,lives+lb-lifeBank);lifeBank=lb;pops.push({x:P.x+7,y:P.y-8,s:'EXTRA LIFE!',t:80});if(!sfx('powerup'))beep(1000,.2,'triangle',.06)}}
-  if(P.y>GY+14){P.inv=0;die(true);return}
+  if(P.y>GY+14){P.inv=0;die(true,true);return}
   bestX=Math.max(bestX,P.x);
   if(!locked){camx=Math.min(Math.max(camx,P.x-W*.38),bossX);if(camx>=bossX&&!boss.dead){locked=true;if(!boss.active)spawnBoss()}}
   else camx=bossX;
@@ -1085,9 +1091,10 @@ function drawStall(x,cx,lit){
   const bx=sx-Math.round(st.width/2),by=GY+2-st.height;
   if(lit)glowAt(sx,GY-26,30,'#ffb840',.4);
   const so=[0,1,2,3].map(i=>ART['soniya_'+i]);
-  if(so.every(Boolean)){const near=Math.abs(P.x+7-x)<110,k=near?((tick>>4)%2?2:3):((tick>>6)%2?1:0),img=so[k],hop=near&&(tick>>3)%2?-1:0;
-    g.drawImage(flipOf(img),sx+36,GY+2-img.height+hop)}
   g.drawImage(st,bx,by);
+  /* Soniya stands in front of the stall, facing the player */
+  if(so.every(Boolean)){const near=Math.abs(P.x+7-x)<110,k=near?((tick>>4)%2?2:3):((tick>>6)%2?1:0),img=so[k],hop=near&&(tick>>3)%2?-1:0;
+    g.drawImage(flipOf(img),sx+2,GY+6-img.height+hop)}
   for(let k=0;k<4;k++){const t=(tick*.55+k*8)%26,a=Math.max(0,.6-t/42);g.fillStyle='rgba(255,255,255,'+a.toFixed(2)+')';g.fillRect(Math.round(bx+36+Math.sin(t*.35+k*1.7)*2.5),Math.round(by+26-t),2,2)}
   if(lit){g.fillStyle='rgba(255,224,150,.5)';g.fillRect(bx+10,by+17,38,1)}
 }
@@ -1233,7 +1240,30 @@ let HERO_ART=null;
 function heroArt(){if(HERO_ART)return HERO_ART;const f=[0,1,2,3].map(i=>ART['hero_'+i]);if(f.every(Boolean))HERO_ART=f.map(c=>[c,flipC(c)]);return HERO_ART}
 let HERO_IDLE=null,HERO_SWING=null;
 function artSet(pre,n){const f=[...Array(n)].map((_,i)=>ART[pre+'_'+i]);return f.every(Boolean)?f.map(c=>[c,flipC(c)]):null}
+/* Death poses, drawn in code: topple over backwards and lie flat with circling stars, or flail in the water with bubbles and floating sunglasses. */
+function drawDeath(cx){
+  const HA=heroArt(),fi=P.f>0?0:1,s=HA?HA[1][fi]:PSPR.i0[fi],px=Math.round(P.x+P.w/2-cx),t=P.dt;
+  if(P.dk==='water'){
+    const sw=Math.round(GY+8),sink=t>16;
+    g.save();g.beginPath();g.rect(0,0,W,sw);g.clip();
+    g.drawImage(s,px-Math.round(s.width/2),Math.round(P.y+P.h-s.height));
+    /* both arms up, waving */
+    const wv=(t>>3)%2,hy=Math.round(P.y)-3-(wv?1:0);g.fillStyle='#b06a40';g.fillRect(px-8,hy+(wv?0:2),3,3);g.fillRect(px+5,hy+(wv?2:0),3,3);g.fillRect(px-7,hy+3,1,5);g.fillRect(px+6,hy+3,1,5);
+    g.restore();
+    /* ripples and bubbles */
+    g.fillStyle='#e8f8ff';for(let k=0;k<3;k++){const r=((t*.7+k*9)%26);g.globalAlpha=Math.max(0,1-r/26);g.fillRect(px-Math.round(r),sw-1+k%2,Math.round(r*2),1)}g.globalAlpha=1;
+    for(let k=0;k<5;k++){const bt=(t*1.1+k*13)%40,bx=px-6+((k*7)%13)+Math.round(Math.sin(bt*.3+k)*2);g.fillStyle='#e8f8ff';g.fillRect(bx,sw-Math.round(bt*.9),2,2);g.fillStyle='#7ac0ff';g.fillRect(bx,sw-Math.round(bt*.9)+1,1,1)}
+    /* once he is under: only the sunglasses float back up */
+    if(t>78){g.fillStyle='#120a1c';g.fillRect(px-5,sw-2+((t>>4)%2),4,2);g.fillRect(px+1,sw-2+((t>>4)%2),4,2);g.fillRect(px-1,sw-2+((t>>4)%2),2,1)}
+    return}
+  /* land: tips over backwards, then lies flat; stars circle his head */
+  const a=Math.min(1,t/20)*Math.PI/2,dir=P.f>0?-1:1,gx=px,gy=Math.round(P.y+P.h);
+  g.save();g.translate(gx,gy);g.rotate(a*dir);g.drawImage(s,-Math.round(s.width/2),-s.height);g.restore();
+  if(P.dl){const hx=gx-dir*Math.round(P.h*.9),hy=gy-4;
+    for(let k=0;k<3;k++){const an=tick*.18+k*2.1;g.fillStyle=k%2?'#ffe070':'#ffffff';g.fillRect(Math.round(hx+Math.cos(an)*9),Math.round(hy-8+Math.sin(an)*3),2,2)}}
+}
 function drawPlayer(cx){
+  if(state==='dead'&&P.dk&&!LV[lvl].bike){drawDeath(cx);return}
   if(state==='play'&&P.inv>0&&tick%6<3)return;
   const BK=[0,1,2,3].map(i=>ART['bike_'+i]),bikeArt=LV[lvl].bike&&BK.every(Boolean);
   if(bikeArt&&state!=='clear'){/* Kannan on Ravi's Bullet (reference art): two riding frames, wheelie while rising, level frame while falling */
