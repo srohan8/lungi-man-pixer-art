@@ -1,0 +1,9 @@
+{
+  "appId": "studio.moonga.lungiman",
+  "appName": "Lungi Man",
+  "webDir": "www",
+  "backgroundColor": "#0a0814",
+  "android": {
+    "allowMixedContent": false
+  }
+}
