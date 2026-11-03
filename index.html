@@ -1086,11 +1086,13 @@ function updCrocs(){
 }
 function drawCrocs(cx){
   const F=[0,1,2,3].map(i=>ART['croc_'+i]);if(!F.every(Boolean))return;
-  const wl=GY+12;g.save();g.beginPath();g.rect(0,0,W,wl+1);g.clip();
-  for(const c of crocs){const sx=Math.round(c.x-cx-22);if(sx>W||sx<-50)continue;
-    const lift=c.st?Math.sin(Math.PI*c.t/52)*22:0,bob=Math.sin(tick*.05+c.ph)*1,im=c.st?F[3]:F[(tick>>4)%3];
-    g.save();if(c.dir<0&&!c.st||c.st&&c.dir<0){g.translate(sx*2+44,0);g.scale(-1,1)}
-    g.drawImage(im,sx,Math.round(wl-10-lift+bob));g.restore()}
+  const wl=GY+12,w=F[0].width;g.save();g.beginPath();g.rect(0,0,W,wl+1);g.clip();
+  for(const c of crocs){const sx=Math.round(c.x-cx-w/2);if(sx>W||sx<-w-4)continue;
+    /* floating: two submerged poses; leap: rising, open-mouth peak, rising again on the way down */
+    const lift=c.st?Math.sin(Math.PI*c.t/52)*28:0,bob=Math.sin(tick*.05+c.ph)*1;
+    const im=c.st?(c.t<14||c.t>38?F[1]:F[2]):((tick>>5)%2?F[0]:F[3]);
+    g.save();if(c.dir<0){g.translate(sx*2+w,0);g.scale(-1,1)}
+    g.drawImage(im,sx,Math.round(wl-17-lift+bob));g.restore()}
   g.restore();
 }
 function pitFx(L,cx){
