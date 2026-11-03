@@ -34,7 +34,11 @@ jobs:
           distribution: temurin
           java-version: 21
 
-      - uses: android-actions/setup-android@v3
+      # The ubuntu runner already has the Android SDK. Accept its licences so Gradle can download platform 36 if needed.
+      - name: Accept Android SDK licences
+        run: |
+          SDKM=$(ls -d "$ANDROID_HOME"/cmdline-tools/*/bin/sdkmanager | head -1)
+          yes | "$SDKM" --licenses > /dev/null || true
 
       - name: Install dependencies
         run: npm ci
