@@ -335,7 +335,7 @@ const BOSSDEF={
   komban:{w:80,h:60,foot:59,hb:[14,8,52,46],hp:30,name:'PEY KOMBAN',sub:'DEMON OF THE TUSKS'}};
 /* Boss art from PNG files (assets/art/bosses/<boss>_<frame>.png, made by tools/make-sprite.js from the reference sheets).
    Used only when the file loads and has the same size as the generated frame; otherwise the generated sprite stays. */
-const ART={},ART_FILES=['chathan_0','chathan_1','yakshi_0','yakshi_1','odiyan_0','odiyan_1','odiyan_2','karin_0','karin_1','karin_2','komban_0','komban_1','komban_2'];
+const ART={},ART_FILES=['chathan_0','chathan_1','yakshi_0','yakshi_1','odiyan_0','odiyan_1','odiyan_2','karin_0','karin_1','karin_2','komban_0','komban_1','komban_2','hero_0','hero_1','hero_2','hero_3'];
 if(typeof Image!=='undefined')ART_FILES.forEach(n=>{const im=new Image();
   im.onload=()=>{const c=document.createElement('canvas');c.width=im.width;c.height=im.height;c.getContext('2d').drawImage(im,0,0);ART[n]=c;
     if(A&&A.boss&&LV[lvl]&&LV[lvl].boss)A.boss=bossFrames(LV[lvl].boss)};
@@ -1073,11 +1073,16 @@ function drawShot(s,cx){const x=Math.round(s.x-cx),y=Math.round(s.y);
   else if(s.k==='ven'){g.fillStyle='#2e7a20';g.fillRect(x-2,y-2,4,4);g.fillStyle='#9aff60';g.fillRect(x-1,y-2,2,2)}
   else{g.fillStyle='#6a3a1a';g.fillRect(s.vx>0?x-4:x+2,y-1,3,3);g.fillStyle='#e8e8f0';g.fillRect(s.vx>0?x-1:x-5,y,6,1);g.fillStyle='#ffffff';g.fillRect(s.vx>0?x-1:x-5,y-1,5,1)}
 }
+/* hero frames from PNG (hero_0..3: run cycle). Used only when all four loaded; otherwise (and on the bike) the generated hero stays. */
+let HERO_ART=null;
+function heroArt(){if(HERO_ART)return HERO_ART;const f=[0,1,2,3].map(i=>ART['hero_'+i]);if(f.every(Boolean))HERO_ART=f.map(c=>[c,flipC(c)]);return HERO_ART}
 function drawPlayer(cx){
   if(state==='play'&&P.inv>0&&tick%6<3)return;
   if(LV[lvl].bike)g.drawImage(BIKE_SPR[(P.step>>2)%2],Math.round(P.x-cx)-8,Math.round(P.y)+P.h-16);
   const lg=LV[lvl].bike?'i':!P.on?'j':P.vx?((P.step>>2)%2?'a':'b'):'i';
-  g.drawImage(PSPR[lg+(shootCd>6?1:0)][P.f>0?0:1],Math.round(P.x-cx-1),Math.round(P.y));
+  const HA=heroArt();
+  if(HA&&!LV[lvl].bike){const s=HA[!P.on?2:P.vx?(P.step>>2)%4:1][P.f>0?0:1];g.drawImage(s,Math.round(P.x+P.w/2-s.width/2-cx),Math.round(P.y+P.h-s.height))}
+  else g.drawImage(PSPR[lg+(shootCd>6?1:0)][P.f>0?0:1],Math.round(P.x-cx-1),Math.round(P.y));
   if(P.sp||P.chaiT>0){g.fillStyle='#9be06a';g.fillRect(Math.round(P.x-cx+5),Math.round(P.y)-3,4,1)}
   if(P.aru&&slashT<=0){const f=P.f,hx=Math.round(P.x-cx)+(f>0?14:-1),hy=Math.round(P.y)+11;
     const d=(dx,dy,c)=>{g.fillStyle=c;g.fillRect(hx+dx*f,hy+dy,1,1)};

@@ -6,6 +6,7 @@
 //   --merge N     how far apart pieces may be and still count as one pose (default 6, in 8 px cells; use 2 for tight grids)
 //   --order a,b,c write pose a as _0, pose b as _1 ... (to match the game's frame order)
 //   --clip i,f    keep only the top fraction f of pose i (when a stray piece sits underneath it), counted before --order
+//   --grid C,R    the sheet is an even grid of C columns and R rows: cut by cell instead of finding pieces (reliable for run cycles)
 //   --list        only print what was found
 // Steps: find each pose (2D, small gaps such as flames and sparks are merged), shrink to fit with the feet on the bottom edge,
 // hard-edge the alpha, limit the palette, add the 1 px dark outline.
@@ -17,7 +18,7 @@ const fs = require('fs');
 const args = process.argv.slice(2);
 const flag = n => args.includes('--' + n);
 const opt = n => { const i = args.indexOf('--' + n); return i >= 0 ? args[i + 1] : undefined };
-const pos = args.filter((a, i) => !a.startsWith('--') && !(i > 0 && ['--row', '--merge', '--order', '--clip'].includes(args[i - 1])));
+const pos = args.filter((a, i) => !a.startsWith('--') && !(i > 0 && ['--row', '--merge', '--order', '--clip', '--grid'].includes(args[i - 1])));
 const [sheet, name, W, H, COLORS = '24'] = pos;
 const w = +W, h = +H, colors = +COLORS;
 if (!sheet || !name || !w || !h) { console.log('usage: node tools/make-sprite.js <sheet.png> <out-name> <width> <height> [colors] [--same-scale] [--row N] [--list]'); process.exit(1) }
@@ -57,6 +58,8 @@ const OUTLINE = [0x12, 0x0a, 0x1c];
   rows.sort((a, b) => a.cy - b.cy);
   rows.forEach(r => r.items.sort((a, b) => a.x0 - b.x0));
   let ordered = rows.map(r => r.items);
+  if (opt('grid')) { const [gc, gr] = opt('grid').split(',').map(Number); ordered = [];
+    for (let r = 0; r < gr; r++) { const row = []; for (let c = 0; c < gc; c++) row.push({ x0: Math.floor(c * SW / gc), x1: Math.floor((c + 1) * SW / gc), y0: Math.floor(r * SH / gr), y1: Math.floor((r + 1) * SH / gr) }); ordered.push(row) } }
   console.log(`${path.basename(sheet)} ${SW}x${SH}: ${ordered.length} row(s) of ${ordered.map(r => r.length).join(' + ')} pose(s)`);
   if (opt('row') !== undefined) ordered = [ordered[+opt('row')] || []];
   poses = ordered.flat();
