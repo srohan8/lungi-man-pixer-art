@@ -37,7 +37,7 @@ No fourth button. No menus during play. No inventory.
 |---|---|---|---|---|
 | Prologue | Riverside village | crabs | none | tutorial banners, parotta, first vine |
 | I | Bamboo hollow, shrine ruins | cobras, crows, crabs | Yakshi | gaze ring flips controls 3s, ground dash |
-| II | Abandoned festival | imps (hop), wisps (float), masked goons | Kuttichathan | fire ring (ground or head height), decoy clones that explode if popped up close, fireball charge then 0.8s stun = only hit window |
+| II | Abandoned festival | imps (hop), wisps (float), masked goons | Kuttichathan | fire ring (ground or head height), decoy clones that explode if popped up close, fireball charge into a wall, then a 1.7s stun (1.3s when enraged) = only hit window |
 | III | Foggy pepper hills | dogs (rush), bats, cobras | Odiyan | only hittable in human form; dog and bull forms charge |
 | IV | Monsoon mangroves | crabs, bats, crows | Karinkanni | eye only hittable when open; ray paralyzes 1.3s; 3 hits |
 | V | Banyan temple grove | goons, cobras, monkeys | Pey Komban | armored; charge into the wall stuns it; stomp makes ground waves |
@@ -91,5 +91,5 @@ Prologue, Act I, **Act II ride** (auto-run bike, only jump and throw), Act II, A
 - Pathalam: enemy-free rope-swinging level, then Maveli's throne scene (3 dialogue boxes, player stands still), blessing = one free hit in Act V (golden lamps).
 - Ending: five trees bloom (teal, amber, indigo, green, gold) with 3 closing dialogue boxes. Tap to skip after a few seconds.
 - Bosses with a hit window show a blue shield while invulnerable and a one-time hint ("HIT HIM WHEN HE CRASHES"). Charges show a red "!" first.
-- Kuttichathan: fireball charge into a wall, stunned for 1.0 s = only hit window; clones explode when popped up close.
+- Kuttichathan: fireball charge into a wall, stunned for 1.7 s (1.3 s enraged) = only hit window; a coconut needs about a second to cross the arena, so the window must be longer than that; clones explode when popped up close.
 Dialogue rule still holds: at most 3 boxes per act; the throne scene and the ending are scripted exceptions with 3 each.

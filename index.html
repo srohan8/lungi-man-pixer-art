@@ -865,7 +865,7 @@ function chathanAI(b,pc,bc,face,rage){
     if(--b.cd<=0){b.dir=face;b.state=4;b.arm=0;burst(bc,b.y+20,['#ff7020','#ffe070'],10)}
   }else{
     b.x+=b.dir*(rage?6.2:5.2);b.f=b.dir;
-    if(b.x<=lo||b.x>=hi){b.x=cl(b.x);b.stun=rage?48:62;b.state=0;shake=10;beep(90,.3,'sawtooth',.07);burst(bc,b.y+20,['#ffe070','#ff7020','#ffffff'],14)}
+    if(b.x<=lo||b.x>=hi){b.x=cl(b.x);b.stun=rage?80:100;b.state=0;shake=10;beep(90,.3,'sawtooth',.07);burst(bc,b.y+20,['#ffe070','#ff7020','#ffffff'],14)}
   }
 }
 function mkDecoy(x){burst(x+9,GY-16,['#a070d0','#e0c0ff'],8);enemies.push({t:'decoy',x,y:GY-32,w:18,h:32,alive:true,hp:1,hurt:0,cd:0,dir:1,arm:0,seen:true,life:520,s1:bossX+10,s2:bossX+W-30})}

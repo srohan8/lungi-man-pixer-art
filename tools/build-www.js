@@ -4,7 +4,8 @@ const path = require('path');
 
 const root = path.join(__dirname, '..');
 const out = path.join(root, 'www');
-const skip = /_(a|b|v2)\.mp3$|_loop_only\.ogg$/;
+const skip = /_(a|b|v2).mp3$|_loop_only.ogg$|_sheet.png$/;
+const skipDirs = new Set(['reference']);
 
 fs.rmSync(out, { recursive: true, force: true });
 fs.mkdirSync(out, { recursive: true });
@@ -15,7 +16,7 @@ let count = 0, bytes = 0;
   fs.mkdirSync(dst, { recursive: true });
   for (const e of fs.readdirSync(src, { withFileTypes: true })) {
     const s = path.join(src, e.name), d = path.join(dst, e.name);
-    if (e.isDirectory()) copy(s, d);
+    if (e.isDirectory()) { if (!skipDirs.has(e.name)) copy(s, d); }
     else if (!skip.test(e.name)) { fs.copyFileSync(s, d); count++; bytes += fs.statSync(s).size; }
   }
 })(path.join(root, 'assets'), path.join(out, 'assets'));
