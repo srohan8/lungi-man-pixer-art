@@ -412,9 +412,9 @@ Object.assign({},LV_OLD[0],{act:'PROLOGUE',name:'THE SWINGING AWAKENING',
   sayStart:['BIJU','THE FOREST IS RESTLESS AGAIN. I KNOW EXACTLY WHEN IT CHANGED.'],sayAt:[{x:130,who:'THOMA',text:'STAY ON THE TREES. THE GROUND BELONGS TO THEM NOW.',d:0}],sayClear:['BHADRAKALI','THRALLS OF THE KAZHUKANS ROAM THE WILD. RED EYES MARK THEM.']}),
 {act:'ACT I',name:"YAKSHI'S HOLLOW",
  sky:['#050a1a','#0a1a30','#12304a','#1c4a5a','#2a6a6a','#4a8a7a'],stars:55,
- sun:{y:48,r:15,c:['#f4f4e0','#dcdcc4','#8aa8a0'],crater:'#c0c0aa'},cloud:['#4a7a80','#2c5460','#1a3a48'],
+ sun:{y:52,r:22,c:['#f4f4e0','#dcdcc4','#8aa8a0'],crater:'#c0c0aa'},cloud:['#4a7a80','#2c5460','#1a3a48'],
  far:{c:'#1a3a48',rim:'#5aa0a0',rim2:'#2a5a68',mist:'#2a6a6a',base:GY-82},
- mid:{c:'#102c34',rim:'#3a8a80',mist:'#1a4a50',deco:'bamboo',dark:'#0c2228'},
+ mid:{c:'#102c34',rim:'#3a8a80',mist:'#1a4a50',deco:'ruinwood',dark:'#0c2228',stone:'#2c6c76'},
  jung:{kind:'jungle',base:'#0a1a1a',mid:'#14302a',hl:'#24503c',rim:'#6ac0a0',trunk:'#081414',vine:'#1a4030',under:'#081414'},
  canopy:['#050e0e','#0a1a18','#16302a','#06100e','#12281e'],
  pit:{kind:'water',cols:['#2a6a7a','#1e5068','#163e58','#102c48','#0a1c36','#060e24'],foam:'#8ac8d0',shine:['#f4f4e0','#c8e0e0'],tint:'#0e2848'},
@@ -439,16 +439,16 @@ Object.assign({},LV_OLD[0],{act:'PROLOGUE',name:'THE SWINGING AWAKENING',
  clear:['SECOND TREE AWAKENED','CHATHAN HANDS OVER THE RELIC'],
  sayStart:['RAVI','MACHANE! THE KUTTICHATHAN LOVES A PARTY. HIT THE REAL ONE!'],sayBoss:['CHATHAN','CATCH ME IF YOU CAN, TODDY BOY! HEHE!'],sayClear:['CHATHAN','FINE, FINE... TAKE THE RELIC. SPOILSPORT.']},
 {act:'ACT III',name:"ODIYAN'S HUNT",
- sky:['#0e1424','#1a2438','#2a3a4e','#44586a','#6a7e8a','#98a8aa'],stars:10,
- sun:{y:50,r:15,c:['#e8ecf0','#b8c0c8','#6a7e8a'],crater:'#98a8aa'},cloud:['#8a9aa4','#5a6e7c','#3a4a5c'],
- far:{c:'#2a3a4e',rim:'#98a8aa',rim2:'#44586a',mist:'#6a7e8a',base:GY-90},
- mid:{c:'#1e2c3c',rim:'#6a8294',mist:'#44586a',deco:'oak',dark:'#16222e'},
- jung:{kind:'tea',base:'#16301e',mid:'#244a2c',hl:'#3a6a40',rim:'#98c0a0',trunk:'#2a2a2a',vine:'#244a2c',under:'#0e2016'},
+ sky:['#6f8f8a','#8eaaa2','#aac4b8','#c4d9cb','#d8e8d8','#e8f4e6'],stars:0,
+ sun:{y:56,r:14,c:['#f4faf0','#dbe8dc','#b8cfc0'],crater:'#c8d8cc'},cloud:['#f0f8ee','#d4e4d8','#b4cabc'],
+ far:{c:'#a9c2b8',rim:'#d0e2d6',rim2:'#bcd2c6',mist:'#d8e8dc',base:GY-92},
+ mid:{c:'#86a89c',rim:'#b4d0c4',mist:'#c8dcd0',deco:'conifer',dark:'#5f8478'},
+ jung:{kind:'tea',base:'#2f5a3c',mid:'#487a4a',hl:'#76a468',rim:'#c0dca0',trunk:'#4a3a2e',vine:'#487a4a',under:'#1c3a28'},
  canopy:null,
  pit:{kind:'mist',cols:['#c8d4d8','#a8b8c0','#8aa0aa','#6a8494','#4e6878','#384e60'],foam:'#e8f0f2',shine:['#ffffff','#e8f0f2'],tint:'#4a6070'},
  ground:{style:'earth',top:['#7ab060','#58903f','#3e7030'],blocks:['#5a3a2a','#684434','#4a2e22'],light:'#8a5a40',dark:'#321e14',mortar:'#321e14',speck:'#4a3020',edge:'#1a0e0a',topEdge:'#2c5a28',drip:['#58903f','#3e7030'],tuft:['#58903f','#c0f080'],flowers:['#e8e8f0','#c0e070'],stone:['#4a4a50','#6a6a72','#8a8a94']},
- palm:LV_OLD[0].palm,palms:false,aru:true,
- bush:['#16301e','#244a2c','#3a6a40','#d83030','#ffd0c0'],
+ palm:LV_OLD[0].palm,palms:false,aru:true,rocks:true,
+ bush:['#2f5a3c','#487a4a','#76a468','#d83030','#ffd0c0'],
  motes:'mist',foes:['dog','bat','cobra','dog'],boss:'odiyan',len:3200,prints:4,
  clear:['THIRD TREE AWAKENED','A BITE BURNS... THE WORLD SPINS'],
  sayStart:['VELU','HE WEARS THREE FORMS. READ THE HOOF-PRINTS. LEARN HIS PATTERN.'],sayBoss:['ODIYAN','YOU CANNOT CATCH WHAT YOU CANNOT SEE.'],sayClear:['ODIYAN','THE FOG LIFTS. I REMEMBER MYSELF NOW.']},
@@ -569,6 +569,22 @@ function genMid(L,seed){const M=L.mid,b=buf(480,GY+12,true),r=rng(11+seed),d=M.d
     for(let x=24;x<480;x+=60+r()*50){if(Math.abs(x-wx)<40)continue;x=Math.round(x);const t=top(x)+4,h=26+r()*24|0,lean=r()<.5?-1:1;let cx=x;
       for(let i=0;i<h;i++){cx=x+lean*Math.pow(i/h,1.6)*8;b.set(cx,t-i,d);b.set(cx+1,t-i,d)}
       const cy=t-h;for(const a of[3.3,3.9,4.5,5.0,5.6,6.2]){const Lf=10+r()*5;for(let s2=0;s2<Lf;s2++){const q=s2/Lf,X=cx+Math.cos(a)*s2,Y=cy+Math.sin(a)*s2+q*q*Lf*.8;b.set(X,Y,d);if(s2%2===0)b.set(X,Y+1,d)}}}
+  }
+  if(M.deco==='conifer')for(let x=3;x<480;x+=9+r()*16){x=Math.round(x);const t=top(x)+8,h=24+r()*38|0,wmax=Math.max(4,Math.round(h*.22));
+    for(let j=0;j<h;j++){const tier=(j%8)/8,w=Math.round((j/h)*wmax*(.55+.45*(1-tier)));for(let i=-w;i<=w;i++)b.set(x+i,t-h+j,d)}
+    b.set(x,t-h-1,d);b.set(x,t-h-2,d);for(let j=0;j<h;j+=8)b.set(x-Math.round((j/h)*wmax),t-h+j,M.rim)}
+  if(M.deco==='ruinwood'){
+    const st=M.stone||d;
+    /* flat-topped trees */
+    for(let x=14;x<480;x+=44+r()*44){x=Math.round(x);const t=top(x)+6,h=26+r()*22|0;let cx=x;for(let i=0;i<h;i++){cx=x+Math.round(Math.sin(i*.14+x)*2);b.set(cx,t-i,d);b.set(cx+1,t-i,d)}
+      const cy=t-h;for(let k=-3;k<=3;k++)disc(cx+k*4,cy+(k%2?1:0),4,(X,Y)=>b.set(X,Y,d));for(let i=-15;i<=15;i++)b.set(cx+i,cy+3,d)}
+    /* carved stone arches */
+    for(let x=60;x<480;x+=170+r()*70){x=Math.round(x);const bs=top(x)+8,hh=44;
+      for(const px of [x-16,x+10]){rect(b,px,bs-hh,6,hh,st);rect(b,px-1,bs-hh,8,2,M.rim);rect(b,px-1,bs-3,8,3,st);rect(b,px,bs-hh+4,1,hh-6,M.rim)}
+      for(let a=0;a<=Math.PI;a+=.07)for(let rr=10;rr<=16;rr++)b.set(Math.round(x-Math.cos(a)*rr+.5),Math.round(bs-hh-Math.sin(a)*rr),rr>14?M.rim:st);
+      rect(b,x-3,bs-hh-19,6,4,M.rim);b.set(x-1,bs-hh-17,st);b.set(x,bs-hh-17,st)}
+    /* a broken gate */
+    for(let x=170;x<480;x+=260+r()*80){x=Math.round(x);const bs=top(x)+8;rect(b,x-14,bs-20,7,20,st);rect(b,x+8,bs-16,7,16,st);rect(b,x-15,bs-24,20,4,st);rect(b,x-15,bs-24,20,1,M.rim);rect(b,x-14,bs-20,1,20,M.rim)}
   }
   if(M.deco==='carnival'){
     /* old Ferris wheel, one per tile, lit gondolas */
@@ -709,7 +725,7 @@ function loadLevel(i){
     const last=si===segs.length-1;
     if(!last){let px=s[0]+60;while(px<s[1]-120){if(r()<.6){const pw=60+(r()*40|0);plats.push([px,128+(r()*28|0),pw]);px+=pw+60}else px+=80}}
     if(si>0&&si%2===0&&!last)lamps.push(s[0]+30);
-    for(let px=s[0]+40;px<s[1]-40;px+=60+r()*120){const q=r();if(L.ruins&&q<.14)props.push({k:'pillar',x:px,v:r()*2|0});else if(L.palms&&q<(L.bamboo?.6:.35))props.push({k:'palm',x:px,v:r()*3|0});else props.push({k:'bush',x:px,v:r()*3|0})}
+    for(let px=s[0]+40;px<s[1]-40;px+=60+r()*120){const q=r();if(L.rocks&&q<.55)props.push({k:q<.3?'rock':'wall',x:px,v:r()*3|0});else if(L.ruins&&q<.14)props.push({k:'pillar',x:px,v:r()*2|0});else if(L.palms&&q<(L.bamboo?.6:.35))props.push({k:'palm',x:px,v:r()*3|0});else props.push({k:'bush',x:px,v:r()*3|0})}
   });
   lamps.push(bossX-150);
   plats.push([bossX+110,150,60],[bossX+290,150,60]);
@@ -1367,6 +1383,16 @@ function drawStory(){
   g.globalAlpha=1;
   if(t>30&&(tick>>5)%2===0)ptext(isTouch?'TAP TO SKIP':'ANY KEY TO SKIP',W-10,H-12,1,'#b8b0d0','right');
 }
+/* mossy boulders and stacked-stone walls (Act III hills) */
+function drawRockProp(p,sx){
+  const x=Math.round(sx),B=GY+3,R=(a,b,w,h,c)=>{g.fillStyle=c;g.fillRect(x+Math.round(a),B+b,w,h)},v=p.v;
+  if(p.k==='rock'){const w=22+v*7,h=12+v*4;
+    for(let j=0;j<h;j++){const ww=Math.round(w*(.5+.5*Math.min(1,(j+2)/(h*.7))));R(-ww/2,-h+j,ww,1,j<3?'#8fa097':j<h*.62?'#6f8078':'#52625c')}
+    R(-w/2+3,-h+1,Math.round(w*.5),2,'#9ab0a0');R(-w*.28,-h-1,Math.round(w*.5),2,'#78a050');R(-w*.1,-h-2,Math.round(w*.2),1,'#8cb860')}
+  else{const w=34+v*8,rows=3+v;
+    for(let r2=0;r2<rows;r2++){const y=-(r2+1)*6,off=r2%2?5:0;for(let bx=-w/2+off;bx<w/2-4;bx+=11){R(bx,y,10,5,(Math.round(bx)+r2)%3?'#7a8884':'#66747a');R(bx,y,10,1,'#9aaaa4')}}
+    R(-w/2,-rows*6-1,w,1,'#78a050');R(-w/2+6,-rows*6-2,8,1,'#8cb860')}
+}
 function drawDisco(){
   for(let k=0;k<6;k++){const x=Math.round(W/6*k+Math.sin(tick*.03+k*1.3)*34);g.fillStyle=k%2?'rgba(255,90,220,.09)':'rgba(70,220,255,.09)';g.fillRect(x,0,22,GY)}
   const bx=Math.round(W/2);g.fillStyle='#8a8aa8';g.fillRect(bx,0,1,9);
@@ -1451,7 +1477,7 @@ function draw(){
   tile(A.clouds,.06,cx);tile(A.far,.12,cx);tile(A.mid,.3,cx);tile(A.jung,.55,cx);drawBikeBack(cx);drawBikeForest(cx);
   g.drawImage(A.pit,0,GY+12);pitFx(L,cx);drawCrocs(cx)}
   for(const p of props){if(L.arena)break;const sx=p.x-cx;if(sx<-60||sx>W+60)continue;
-    if(p.k==='pillar'){const c=A.pillars[p.v];g.drawImage(c,Math.round(sx-7),GY-c.height+4)}else if(p.k==='palm'){const s=A.palms[p.v];g.drawImage(s.c,Math.round(sx-s.ax),GY-s.c.height+4)}else g.drawImage(A.bushes[p.v],Math.round(sx-20),GY-17)}
+    if(p.k==='pillar'){const c=A.pillars[p.v];g.drawImage(c,Math.round(sx-7),GY-c.height+4)}else if(p.k==='palm'){const s=A.palms[p.v];g.drawImage(s.c,Math.round(sx-s.ax),GY-s.c.height+4)}else if(p.k==='rock'||p.k==='wall')drawRockProp(p,sx);else g.drawImage(A.bushes[p.v],Math.round(sx-20),GY-17)}
   for(const l of lamps)LV[lvl].chai?drawStall(l,cx,bestX>l+10):drawLamp(l,cx,bestX>l+10);
   for(const q of pops){ptext(q.s,Math.round(q.x-cx),Math.round(q.y-(70-q.t)*.35),1,'#ffe8a0','center')}
   segs.forEach((s,k)=>{const sx=s[0]-cx;if(sx<W&&sx+(s[1]-s[0])>0)g.drawImage(A.segC[k],Math.round(sx),GY-6)});
