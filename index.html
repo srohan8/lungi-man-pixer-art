@@ -694,6 +694,7 @@ function newGame(){score=0;actScore=0;begin(seen?Math.max(1,Math.min(resume,LV.l
 function startIfNeeded(){
   goFull();
   if(!AUD.go){AUD.go=true;try{actx()&&ac.resume()}catch(e){}SFX_NAMES.forEach(n=>loadBuf(n,'sfx'))}
+  if(splashT>0){splashT=0;return}
   if(state==='ending'&&endT>240){state='win';lockT=60;return}
   if(state==='title')newGame();
   else if(state==='over'&&lockT<=0){score=actScore;begin(lvl,cp);P.inv=120;enemies.forEach(e=>{if(e.x>camx-20&&e.x<camx+W+20)e.alive=false})}
@@ -718,7 +719,7 @@ function kill(e){e.alive=false;if(e.t==='dancer'&&arena)arena.kills++;if(e.t==='
 
 /* =================== update =================== */
 function update(){
-  tick++;if(lockT>0)lockT--;if(shake>0)shake--;if(banner&&--banner.t<=0)banner=null;for(const q of pops)q.t--;pops=pops.filter(q=>q.t>0);if(dlg&&--dlg.t<=0)dlg=null;
+  tick++;if(splashT>0&&--splashT<=30&&preDone<preN&&tick<600)splashT=31;if(lockT>0)lockT--;if(shake>0)shake--;if(banner&&--banner.t<=0)banner=null;for(const q of pops)q.t--;pops=pops.filter(q=>q.t>0);if(dlg&&--dlg.t<=0)dlg=null;
   for(const p of parts){p.x+=p.vx;p.vy+=.15;p.y+=p.vy;p.l--}parts=parts.filter(p=>p.l>0);
   if(innerHeight>innerWidth&&isTouch)return;
   if(state==='title'){camx=(camx+.4)%(bossX-W);return}
@@ -1228,7 +1229,7 @@ function draw(){
   drawDlg();
   drawSndIcon();
   if(banner&&state!=='title'){g.fillStyle='rgba(12,8,28,.55)';g.fillRect(0,78,W,48);ptext(banner.a,W/2,86,4,'#f0c040','center');if(banner.b)ptext(banner.b,W/2,110,2,'#f4ecd0','center')}
-  if(state==='title'){overlay();
+  if(state==='title'){overlay();drawCover();
     ptext('LUNGI MAN',W/2,46,6,'#f0c040','center');
     ptext('THE CURSE OF KANJIRAVANAM',W/2,96,2,'#f4ecd0','center');
     ptext('KANNAN MUST SEAL THE PORTAL.',W/2,112,2,'#f4ecd0','center');
@@ -1238,6 +1239,34 @@ function draw(){
   }
   if(state==='over'){overlay();ptext('GAME OVER',W/2,80,5,'#e8402e','center');ptext('SCORE '+score,W/2,118,2,'#f4ecd0','center');if(lockT<=0)ptext(isTouch?'TAP TO CONTINUE':'PRESS ANY KEY',W/2,146,2,'#ffe58a','center')}
   if(state==='win'){overlay();ptext('PORTAL SEALED!',W/2,70,5,'#f0c040','center');ptext('KANNAN SAVED KANJIRAVANAM.',W/2,108,2,'#f4ecd0','center');ptext('SCORE '+score+(score>=hi?'  NEW BEST':''),W/2,126,2,'#cfe9c8','center');if(lockT<=0)ptext(isTouch?'TAP TO PLAY AGAIN':'PRESS ANY KEY',W/2,156,2,'#ffe58a','center')}
+  if(splashT>0)drawSplash();
+}
+
+/* =================== splash + loading =================== */
+/* Studio splash with a real loading bar (sounds and the menu music). Any tap or key skips it. Drawn over the title screen. */
+let logoC=null;
+if(typeof Image!=='undefined'){const im=new Image();
+  im.onload=()=>{try{const s=document.createElement('canvas');s.width=s.height=48;const c=s.getContext('2d');c.imageSmoothingEnabled=true;c.drawImage(im,0,0,48,48);logoC=s}catch(e){}};
+  im.src='assets/art/moonga-logo.png'}
+const SPLASH_T=170;let splashT=SPLASH_T,preN=0,preDone=0;
+try{const list=SFX_NAMES.map(n=>[n,'sfx']).concat([['bgm_menu','music']]);preN=list.length;
+  list.forEach(([k,d])=>loadBuf(k,d).then(()=>preDone++,()=>preDone++))}catch(e){preN=0}
+function drawSplash(){
+  const t=SPLASH_T-splashT,a=Math.max(0,Math.min(1,t/30,splashT/30));
+  g.globalAlpha=1;g.fillStyle='#0a0814';g.fillRect(0,0,W,H);
+  g.globalAlpha=a;
+  if(logoC){g.drawImage(logoC,0,0,48,48,Math.round(W/2-48),48,96,96)}
+  ptext('MOONGA STUDIO',W/2,164,3,'#f0c040','center');
+  ptext('PRESENTS',W/2,192,1,'#b8b0d0','center');
+  if(preN&&preDone<preN){const bw=120,bx=Math.round(W/2-bw/2);g.fillStyle='#120a1c';g.fillRect(bx-1,222,bw+2,7);g.fillStyle='#3a2c58';g.fillRect(bx,223,bw,5);g.fillStyle='#e8a830';g.fillRect(bx,223,Math.round(bw*preDone/preN),5);ptext('LOADING',W/2,234,1,'#b8b0d0','center')}
+  g.globalAlpha=1;
+}
+/* title cover: glowing red eyes in the dark trees and Kannan walking in place */
+const EYES=[[.08,.2],[.18,.42],[.86,.25],[.93,.5],[.78,.42],[.14,.6]];
+function drawCover(){
+  EYES.forEach(([fx,fy],i)=>{const ph=(tick+i*37)%260;if(ph>210)return;const x=Math.round(fx*W),y=Math.round(fy*H),p=.55+.35*Math.sin(tick*.08+i);
+    g.fillStyle='rgba(255,58,42,'+(p*.22).toFixed(2)+')';g.fillRect(x-3,y-3,13,7);g.fillStyle='rgba(255,58,42,'+p.toFixed(2)+')';g.fillRect(x,y-1,2,2);g.fillRect(x+6,y-1,2,2)});
+  const sp=PSPR[((tick>>3)%2)?'a0':'b0'];if(sp){const s=sp[0],sc=2;g.drawImage(s,0,0,s.width,s.height,28,GY-s.height*sc+4,s.width*sc,s.height*sc)}
 }
 
 /* =================== screen fit =================== */
