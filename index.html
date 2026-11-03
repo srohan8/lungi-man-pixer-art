@@ -717,7 +717,7 @@ function genBush(seed,C){const r=rng(seed),b=buf(40,20);
 /* =================== game state =================== */
 /* Tunable numbers for coconuts, lives and the Sun Staff */
 const TUNE={ammoStart:40,ammoMax:60,ammoPerKill:2,ammoRegenBelow:5,ammoRegenFrames:180,lifeEvery:1000,lifeMax:6,rayRange:150};
-let ammo=40,ammoT=0,lifeBank=0;
+let ammo=40,ammoT=0,lifeBank=0,rings=[];
 /* Palm sway: how far (px) the crown moves per level; the trunk base stays put */
 const WIND={pro:1.2,a1:1,a2:1.5,a3:2,a4:3.4,a5:1.2};
 let state='title',lockT=0,tick=0,deadT=0,clearT=0,shootCd=0,jumpPrev=false,shake=0,prevBottom=0,slashT=0,swingId=0;
@@ -825,7 +825,7 @@ function kill(e){e.alive=false;if(e.t==='dancer'&&arena)arena.kills++;if(e.t==='
 /* =================== update =================== */
 function update(){
   tick++;if(splashT>0&&--splashT<=30&&preDone<preN&&tick<600)splashT=31;if(lockT>0)lockT--;if(shake>0)shake--;if(banner&&--banner.t<=0)banner=null;for(const q of pops)q.t--;pops=pops.filter(q=>q.t>0);if(dlg&&--dlg.t<=0)dlg=null;
-  for(const p of parts){p.x+=p.vx;p.vy+=.15;p.y+=p.vy;p.l--}parts=parts.filter(p=>p.l>0);
+  for(const p of parts){p.x+=p.vx;p.vy+=.15;p.y+=p.vy;p.l--}parts=parts.filter(p=>p.l>0);for(const q of rings)q.t++;rings=rings.filter(q=>q.t<16);
   if(innerHeight>innerWidth&&isTouch)return;
   if(state==='title'){camx=(camx+.4)%(bossX-W);return}
   if(state==='dead'){P.dt++;
@@ -1031,14 +1031,21 @@ function kombanAI(b,pc,bc,face,rage){
   else{b.x=cl(b.x+b.vx);if(!b.on)b.air=1;
     if(b.on&&b.air){shot(bc-20,GY-5,-2.8,0,0,'wave');shot(bc+20,GY-5,2.8,0,0,'wave');b.state=0;b.cd=rage?30:55}}
 }
+/* Sun Staff hit: white flash, an expanding golden ring and a spray of sparks where the ray touches something. */
+function sunHit(x,y,big){rings.push({x,y,t:0,big});burst(x,y,['#fff6c0','#ffd860','#ffffff','#ffb830'],big?18:12);shake=Math.max(shake,big?4:2)}
+function drawRings(cx){for(const q of rings){const k=q.t/16,rad=Math.round((q.big?24:15)*Math.sqrt(k)+3),sx=Math.round(q.x-cx);
+  if(q.t<5)glowAt(sx,Math.round(q.y),q.big?14:10,'#ffffff',.85-q.t*.13);
+  g.globalAlpha=Math.max(0,1-k);g.fillStyle=k<.4?'#fff6c0':'#ffb830';
+  for(let a=0;a<6.2832;a+=.22)g.fillRect(Math.round(sx+Math.cos(a)*rad),Math.round(q.y+Math.sin(a)*rad*.8),2,2);
+  g.globalAlpha=1}}
 function slashHits(){
   if(slashT<=0)return;slashT--;
   const sb={x:P.f>0?P.x+P.w-2:P.x+2-TUNE.rayRange,y:P.y+10,w:TUNE.rayRange,h:12};
   for(const e of enemies){if(!e.alive||e.sw===swingId)continue;
-    if(!e.calm&&hit(sb,e)){e.sw=swingId;e.hp=0;kill(e)}}
-  for(const s of shots)if(s.life>0&&hit(sb,{x:s.x-2,y:s.y-2,w:4,h:4})){s.life=0;score+=10;burst(s.x,s.y,['#ffffff','#9aa8b8'],3);beep(900,.04,'square',.04)}
+    if(!e.calm&&hit(sb,e)){e.sw=swingId;e.hp=0;sunHit(e.x+e.w/2,e.y+e.h/2);kill(e)}}
+  for(const s of shots)if(s.life>0&&hit(sb,{x:s.x-2,y:s.y-2,w:4,h:4})){s.life=0;score+=10;sunHit(s.x,s.y);beep(900,.04,'square',.04)}
   if(locked&&boss.active&&!boss.dead&&boss.sw!==swingId){const b=boss,hb={x:b.x+b.hb[0],y:b.y+b.hb[1],w:b.hb[2],h:b.hb[3]};
-    if(hit(sb,hb)){b.sw=swingId;if(b.vuln===false){burst(P.x+(P.f>0?24:-2),P.y+12,['#c8c8d8','#ffffff'],4);beep(160,.06,'square',.05);return}b.hp-=2;b.hurt=8;score+=100;shake=4;burst(P.x+(P.f>0?24:-2),P.y+12,['#ffffff','#ffe070'],6);beep(300,.1,'sawtooth',.05)}}
+    if(hit(sb,hb)){b.sw=swingId;if(b.vuln===false){burst(P.x+(P.f>0?24:-2),P.y+12,['#c8c8d8','#ffffff'],4);beep(160,.06,'square',.05);return}b.hp-=2;b.hurt=8;score+=100;sunHit(b.x+b.hb[0]+b.hb[2]/2,b.y+b.hb[1]+b.hb[3]/2,true);beep(300,.1,'sawtooth',.05)}}
 }
 function spawnBoss(){boss.active=true;if(LV[lvl].sayBoss)say(LV[lvl].sayBoss[0],LV[lvl].sayBoss[1]);boss.x=bossX+W-boss.w-30;boss.y=-80;boss.vy=0;banner={a:boss.name,b:boss.sub,t:140};if(!sfx('boss_roar_'+(boss.t==='karin'?'karinkanni':boss.t))&&!sfx('boss_roar'))beep(110,.6,'sawtooth',.06);sting('sting_boss_intro')}
 function updBoss(){
@@ -1200,6 +1207,8 @@ function drawFoe(e,cx){
 /* Code-drawn extras on top of boss PNG art (positions are in the art's own right-facing pixels).
    Dark sprites get a pulsing red rim and glowing eyes (Kazhukan mark); the bull gets angry nose smoke. */
 const BOSS_EYES={odiyan_0:[[35,6],[37,6]],odiyan_1:[[41,35]],odiyan_2:[[47,30]],komban_0:[[47,4]],komban_1:[[47,19]],komban_2:[[49,19]]},BRIM=new WeakMap();
+/* dithered elliptical halo: solid pixels thinning out from the centre, so a glow reads round and flickery instead of boxy */
+function glowEll(x,y,rx,ry,c,a){g.globalAlpha=a;g.fillStyle=c;for(let j=-ry;j<=ry;j++)for(let i=-rx;i<=rx;i++){const d=Math.hypot(i/rx,j/ry);if(d<1&&bay((x+i)&255,(y+j)&255)>d*d)g.fillRect(x+i,y+j,1,1)}g.globalAlpha=1}
 function drawBossFx(b,im,i,flip,cx){
   const key=b.t+'_'+i;if(!ART[key]||!BOSS_EYES[key])return false;
   const bx=Math.round(b.x-cx),by=Math.round(b.y),w=im.width,p=Math.sin(tick*.12);
@@ -1216,9 +1225,9 @@ function drawBoss(cx){
   const b=boss;if(!b.active||b.dead)return;let i=0;
   if(b.t==='crab')i=(b.tk>>4)%2;else if(b.t==='yakshi')i=b.arm>0?1:0;else if(b.t==='chathan')i=b.arm>0?1:0;else if(b.t==='odiyan')i=b.form;else if(b.t==='karin')i=b.state===3?1:(b.state===1||b.state===2)?2:0;else if(b.t==='komban')i=b.stun>0?2:(b.state===1?1:0);else if(b.t==='monkey')i=b.arm>0?1:0;else i=(b.on&&b.state===0?(b.tk>>3)%2:0)+(b.arm>0?2:0);
   const F=A.boss[i],white=b.hurt>0&&tick%4<2,flip=b.t==='crab'?false:b.f>0;
-  if(b.t==='chathan'&&(b.state===3||b.state===4)){const fx=Math.round(b.x-cx),fy=Math.round(b.y);g.fillStyle='rgba(255,90,20,.45)';g.fillRect(fx-4,fy,b.w+8,b.h);g.fillStyle='rgba(255,200,60,.55)';g.fillRect(fx+2,fy+6,b.w-4,b.h-8)}
+  if(b.t==='chathan'&&(b.state===3||b.state===4)){const fx=Math.round(b.x-cx),fy=Math.round(b.y);const gcx=fx+Math.round(b.w/2),gcy=fy+Math.round(b.h/2),fl=1+Math.round(Math.sin(tick*.4)*2);glowEll(gcx,gcy,Math.round(b.w*.95)+fl,Math.round(b.h*.8)+fl,'#ff5a14',.5);glowEll(gcx,gcy,Math.round(b.w*.62)+fl,Math.round(b.h*.55)+fl,'#ffc83c',.6)}
   if(b.vuln===false&&(b.t==='chathan'||b.t==='odiyan'||b.t==='komban'||b.t==='karin')){const base=flip?F.f:F.n;let r=SHLD.get(base);if(!r){r=tint(base,'#9ad0ff');SHLD.set(base,r)}
-    const sx0=Math.round(b.x-cx),sy0=Math.round(b.y);g.globalAlpha=.3+.25*Math.sin(tick*.2);for(const [ox,oy] of [[-1,0],[1,0],[0,-1],[0,1]])g.drawImage(r,sx0+ox,sy0+oy);g.globalAlpha=1}
+    const sx0=Math.round(b.x-cx),sy0=Math.round(b.y);glowEll(sx0+Math.round(b.w/2),sy0+Math.round(b.h/2),Math.round(b.w*.85),Math.round(b.h*.7),'#9ad0ff',.22+.1*Math.sin(tick*.2));g.globalAlpha=.25+.2*Math.sin(tick*.2);for(const [ox,oy] of [[-1,0],[1,0],[0,-1],[0,1],[-1,-1],[1,-1],[-1,1],[1,1]])g.drawImage(r,sx0+ox,sy0+oy);g.globalAlpha=1}
   if(b.puff>0)g.globalAlpha=.35+.3*Math.sin(tick*.8);
   if(white||!drawBossFx(b,flip?F.f:F.n,i,flip,cx))g.drawImage(white?(flip?F.wf:F.w):(flip?F.f:F.n),Math.round(b.x-cx),Math.round(b.y));
   g.globalAlpha=1;
@@ -1693,6 +1702,7 @@ function draw(){
   for(const s of shots)drawShot(s,cx);
   for(const b of bullets)g.drawImage(COCO,Math.round(b.x-cx-3),Math.round(b.y-3));
   for(const p of parts){g.fillStyle=p.c;g.fillRect(Math.round(p.x-cx),Math.round(p.y),2,2)}
+  drawRings(cx);
   if(P&&state!=='title'){drawPlayer(cx);drawSlash(cx);if(state==='scene'&&scene&&scene.t>=730){g.fillStyle='rgba(255,224,112,.25)';g.fillRect(Math.round(P.x-cx)-4,Math.round(P.y)-4,22,36)}}
   if(!L.arena)drawMotes(L,cx);
   if(L.rain){g.fillStyle='rgba(180,210,220,.45)';for(let i=0;i<70;i++){const x=((i*53+tick*4)%(W+60))-30,y=((i*97+tick*9)%(H+30))-15;g.fillRect(Math.round(x),Math.round(y),1,5);g.fillRect(Math.round(x)-1,Math.round(y)+5,1,3)}
