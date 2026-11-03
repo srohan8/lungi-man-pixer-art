@@ -11,7 +11,7 @@ Story, art and level variety are allowed to expand. Mechanics and controls are n
 - Jump
 - Throw coconut (hold to auto-fire)
 
-No fourth button. No menus during play. No inventory.
+No fourth button. No menus during play, except the pause overlay (pause icon, P / Esc, or automatic when the app goes to the background) which has exactly two choices: RESUME and MENU (title screen). No settings, no inventory.
 
 ## Simplicity guardrails (do not break)
 1. **One-hit rule.** Player dies in one hit. No health bars for the player.
