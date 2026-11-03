@@ -118,7 +118,7 @@ function drawSndIcon(){
   else for(let i=0;i<6;i++){R(13+i,8+i,2,1);R(18-i,8+i,2,1)}
 }
 function toggleSnd(){AUD.on=!AUD.on;try{localStorage.setItem('lungiman-snd',AUD.on?'1':'0')}catch(e){}audMaster()}
-const SFX_NAMES=['throw','hit','jump','vine','slash','die','chai','powerup','boss_roar','boss_roar_yakshi','boss_roar_chathan','boss_roar_odiyan','boss_roar_karinkanni','boss_roar_komban'];
+const SFX_NAMES=['throw','hit','jump','vine','slash','die','chai','powerup','boss_roar','boss_roar_yakshi','boss_roar_chathan','boss_roar_odiyan','boss_roar_karinkanni','boss_roar_komban','yakshi_laugh'];
 function wantMusic(){
   if(state==='title')return 'bgm_menu';
   if(state==='win'||state==='ending')return 'bgm_ending';
@@ -925,7 +925,7 @@ function yakshiAI(b,pc,bc,face,rage){
     if(--b.cd<=0){const gz=Math.random()<.55;b.state=gz?1:2;b.cd=gz?36:42;b.arm=b.cd}
   }else if(b.state===1){
     b.y+=((GY-90)-b.y)*.08;
-    if(--b.cd<=0){shot(bc-b.side*20,P.y+12,-b.side*(rage?3:2.4),0,0,'gaze');b.state=0;b.cd=rage?65:105;b.arm=0}
+    if(--b.cd<=0){shot(bc-b.side*20,P.y+12,-b.side*(rage?3:2.4),0,0,'gaze');sfx('yakshi_laugh');b.state=0;b.cd=rage?65:105;b.arm=0}
   }else if(b.state===2){
     b.y+=((GY-40)-b.y)*.12;b.x=clampX(b.x+b.side*.9);
     if(--b.cd<=0){b.state=3;b.arm=0}
