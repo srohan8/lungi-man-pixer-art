@@ -1,4 +1,4 @@
-# Story scenes (proposal, not built yet)
+# Story scenes (built)
 
 Why: playing the game, the levels feel disconnected. `docs/STORYLINE.md` has the links between them (Ravi lends the bike,
 the poisoned dream, Maveli pulling him underground) but the game shows almost none of it.

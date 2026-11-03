@@ -335,11 +335,13 @@ const BOSSDEF={
   komban:{w:80,h:60,foot:59,hb:[14,8,52,46],hp:30,name:'PEY KOMBAN',sub:'DEMON OF THE TUSKS'}};
 /* Boss art from PNG files (assets/art/bosses/<boss>_<frame>.png, made by tools/make-sprite.js from the reference sheets).
    Used only when the file loads and has the same size as the generated frame; otherwise the generated sprite stays. */
-const ART={},ART_FILES=['chathan_0','chathan_1','yakshi_0','yakshi_1','odiyan_0','odiyan_1','odiyan_2','karin_0','karin_1','karin_2','komban_0','komban_1','komban_2','hero_0','hero_1','hero_2','hero_3','heroidle_0','heroidle_1','heroidle_2','heroidle_3','heroswing_0','heroswing_1','heroswing_2','croc_0','croc_1','croc_2','croc_3','bike_0','bike_1','bike_2','bike_3'];
+const ART={},ART_FILES=['chathan_0','chathan_1','yakshi_0','yakshi_1','odiyan_0','odiyan_1','odiyan_2','karin_0','karin_1','karin_2','komban_0','komban_1','komban_2','hero_0','hero_1','hero_2','hero_3','heroidle_0','heroidle_1','heroidle_2','heroidle_3','heroswing_0','heroswing_1','heroswing_2','croc_0','croc_1','croc_2','croc_3','bike_0','bike_1','bike_2','bike_3','ravi_0','ravi_1','biju_0','biju_1','soniya_0','thoma_0','maveli_0','mooppan_0','scenehero_0','soniya_1','thoma_1','maveli_1','mooppan_1','scenehero_1','soniya_2','thoma_2','maveli_2','mooppan_2','scenehero_2','soniya_3','thoma_3','maveli_3','mooppan_3','scenehero_3','kili_0','kili_1','kili_2'];
 if(typeof Image!=='undefined')ART_FILES.forEach(n=>{const im=new Image();
   im.onload=()=>{const c=document.createElement('canvas');c.width=im.width;c.height=im.height;c.getContext('2d').drawImage(im,0,0);ART[n]=c;
     if(A&&A.boss&&LV[lvl]&&LV[lvl].boss)A.boss=bossFrames(LV[lvl].boss)};
   im.src='assets/art/bosses/'+n+'.png'});
+const SBG={};
+if(typeof Image!=='undefined')['prologue','act1','act2','act3','act4','act5','pathalam','disco','bike_festival','bike_jungle'].forEach(n=>{const im=new Image();im.onload=()=>{SBG[n]=im};im.src='assets/art/bg/'+n+'.png'});
 function bossFrames(t){
   let fr;
   if(t==='crab')fr=[genCrabKing(1),genCrabKing(0)];
@@ -758,11 +760,12 @@ function placePlayer(x){
   camx=Math.max(0,x-60);cp=x;bestX=x;bullets=[];shots=[];locked=!!LV[lvl].arena;jumpPrev=true;shootCd=0;slashT=0;
 }
 function begin(i,x){lives=i>=1?4:3;actScore=actScore||0;loadLevel(i);placePlayer(x);state='play';banner={a:LV[i].act,b:LV[i].name,t:150}}
-function newGame(){score=0;actScore=0;begin(seen?Math.max(1,Math.min(resume,LV.length-1)):0,40)}
+function newGame(){score=0;actScore=0;if(!seen&&SCENES.start){state='story';startStory(SCENES.start,()=>begin(0,40));return}begin(seen?Math.max(1,Math.min(resume,LV.length-1)):0,40)}
 function startIfNeeded(){
   goFull();
   if(!AUD.go){AUD.go=true;try{actx()&&ac.resume()}catch(e){}SFX_NAMES.forEach(n=>loadBuf(n,'sfx'))}
   if(splashT>0){splashT=0;return}
+  if(state==='story'){if(story&&story.t>30)story.skip=true;return}
   if(state==='ending'&&endT>240){state='win';lockT=60;return}
   if(state==='title')newGame();
   else if(state==='over'&&lockT<=0){score=actScore;begin(lvl,cp);P.inv=120;enemies.forEach(e=>{if(e.x>camx-20&&e.x<camx+W+20)e.alive=false})}
@@ -792,7 +795,8 @@ function update(){
   if(innerHeight>innerWidth&&isTouch)return;
   if(state==='title'){camx=(camx+.4)%(bossX-W);return}
   if(state==='dead'){P.vy+=.4;P.y+=P.vy;if(--deadT<=0){if(lives<=0){state='over';lockT=60;saveHi()}else respawn()}return}
-  if(state==='clear'){if(--clearT<=0){if(lvl<LV.length-1){if(lvl===0){seen=true;try{localStorage.setItem('lungiman-prologue','1')}catch(e){}}actScore=score;resume=lvl+1;try{localStorage.setItem('lungiman-act',resume)}catch(e){}loadLevel(lvl+1);placePlayer(40);state='play';banner={a:LV[lvl].act,b:LV[lvl].name,t:150}}else{state='ending';endT=0;saveHi();resume=1;try{localStorage.setItem('lungiman-act','1')}catch(e){}}}return}
+  if(state==='clear'){if(--clearT<=0){if(lvl<LV.length-1){if(lvl===0){seen=true;try{localStorage.setItem('lungiman-prologue','1')}catch(e){}}actScore=score;resume=lvl+1;try{localStorage.setItem('lungiman-act',resume)}catch(e){}const sk=LV[lvl].key,go=()=>{loadLevel(lvl+1);placePlayer(40);state='play';banner={a:LV[lvl].act,b:LV[lvl].name,t:150}};if(SCENES[sk]){state='story';startStory(SCENES[sk],go)}else go()}else{state='ending';endT=0;saveHi();resume=1;try{localStorage.setItem('lungiman-act','1')}catch(e){}}}return}
+  if(state==='story'){storyTick();return}
   if(state==='ending'){endTick();return}
   if(state==='scene'){sceneTick();return}
   if(state!=='play')return;
@@ -1213,7 +1217,7 @@ function drawSlash(cx){
   g.fillStyle='#ffe070';g.fillRect(Math.round(ox+f*Math.cos(a1)*32),Math.round(oy+Math.sin(a1)*32),3,3);
 }
 function say(who,text,t){dlg={who,text,t:t||210}}
-const PORT={KANNAN:'#b06a40',BHADRAKALI:'#c0303a',YAKSHI:'#dcd8ec',SONIYA:'#e8a050',CHATHAN:'#e8602a',BASHEER:'#5a8ac0',ODIYAN:'#4a3a70',BIJU:'#4a9a8a',KARINKANNI:'#4ac060',DEVI:'#e8d8a8',KOMBAN:'#6a6a7a',RAVI:'#c8903a',THOMA:'#8a7a60',VELU:'#7a5a3a',KILI:'#3a3a4a'};
+const PORT={MAVELI:'#e0b030',KANNAN:'#b06a40',BHADRAKALI:'#c0303a',YAKSHI:'#dcd8ec',SONIYA:'#e8a050',CHATHAN:'#e8602a',BASHEER:'#5a8ac0',ODIYAN:'#4a3a70',BIJU:'#4a9a8a',KARINKANNI:'#4ac060',DEVI:'#e8d8a8',KOMBAN:'#6a6a7a',RAVI:'#c8903a',THOMA:'#8a7a60',VELU:'#7a5a3a',KILI:'#3a3a4a'};
 function drawDlg(){
   if(!dlg||state==='title'||state==='over'||state==='win')return;
   const bw=Math.min(320,W-230),bx=Math.round(W/2-bw/2),by=54,maxc=Math.floor((bw-30)/4);
@@ -1305,6 +1309,55 @@ function drawDiscoFloor(){
     g.fillStyle=lit?(a?(hot?'#9a1a2a':'#9a2aa8'):(hot?'#601020':'#2a9ab0')):(a?'#2a1252':'#1c0c3a');g.fillRect(x,y,17,8)}
   g.fillStyle=hot?'#ff4a4a':'#ff7ae0';g.fillRect(0,GY-1,W,2);
 }
+/* =================== story scenes ===================
+   Short coded scenes between levels (no animation sheets): a backdrop, the characters of that moment, one or two speech boxes.
+   Each ends by itself, any tap or key skips it, and it only plays when you advance to a new level (never on continue or retry). */
+let story=null;
+const SCENES={
+ start:{bg:'prologue',actors:[{id:'scenehero',who:'KANNAN',x:.26,talk:2},{id:'biju',who:'BIJU',x:.52,f:-1,from:1,talk:1},{id:'thoma',who:'THOMA',x:.78,f:-1,from:1,talk:2}],
+  lines:[{who:'BIJU',text:'THE FOREST IS RESTLESS AGAIN. TAKE THIS COCONUT.'},{who:'THOMA',text:'STAY ON THE TREES. THE GROUND BELONGS TO THEM NOW.'}]},
+ pro:{bg:'act1',actors:[{id:'scenehero',who:'KANNAN',x:.5}],caption:['THE GOLDEN HOUR ENDS.','HE GOES IN.']},
+ a1:{bg:'bike_festival',actors:[{id:'ravi',who:'RAVI',x:.24,talk:1,from:-1},{id:'scenehero',who:'KANNAN',x:.44},{id:'bike',pose:3,who:'',x:.7,from:1,sc:2}],
+  lines:[{who:'RAVI',text:'ONE GROVE DOWN. TAKE THE BIKE, MACHANE.'},{who:'RAVI',text:'THE CARNIVAL STARTED WITHOUT US. HOLD TIGHT!'}]},
+ bike:{bg:'bike_jungle',actors:[{id:'bike',pose:3,who:'',x:.32,sc:2},{id:'scenehero',who:'KANNAN',x:.62,f:-1,talk:2}],
+  lines:[{who:'KANNAN',text:'THE FOREST CLOSED IN. FROM HERE, ON FOOT.'}]},
+ a2:{bg:'act3',actors:[{id:'scenehero',who:'KANNAN',x:.5}],caption:['TWO GROVES FREED. THE EMBERS GO COOL.','THE HIGHLAND FOG IS WAITING.']},
+ a3:{bg:'act3',actors:[{id:'scenehero',who:'KANNAN',x:.3,talk:2},{id:'mooppan',who:'VELU',x:.66,f:-1,from:1,talk:1},{id:'kili',who:'',x:.88,pose:0,f:-1,sc:2}],
+  lines:[{who:'VELU',text:'THE DOG BITES DEEPER THAN YOU FEEL.'},{who:'KANNAN',text:'...MY ANKLE. IT BURNS.'}]},
+ disco:{bg:'act3',actors:[{id:'scenehero',who:'KANNAN',x:.36,lying:1},{id:'ravi',who:'RAVI',x:.66,f:-1,from:1,talk:1}],
+  lines:[{who:'RAVI',text:'YOU KEPT SHOUTING LEFT AND RIGHT.'},{who:'RAVI',text:"ODIYAN'S VENOM. YOU'LL BE ALL RIGHT. PROBABLY."}]},
+ a4:{bg:'pathalam',actors:[{id:'scenehero',who:'KANNAN',x:.34},{id:'maveli',who:'MAVELI',x:.7,f:-1,from:1,talk:2}],
+  lines:[{who:'MAVELI',text:'I BROUGHT YOU DOWN. I HOPE THAT WAS ACCEPTABLE.'}]},
+ path:{bg:'act5',actors:[{id:'scenehero',who:'KANNAN',x:.26},{id:'thoma',who:'THOMA',x:.52,f:-1,from:1,talk:3},{id:'soniya',who:'SONIYA',x:.78,f:-1,from:1,talk:2}],
+  lines:[{who:'THOMA',text:'STAY. ON. THE. TREES. PROMISE ME.'},{who:'SONIYA',text:"I BROUGHT EVERYTHING. DON'T YOU DARE DIE."}]}
+};
+const STORY_START=40,STORY_BOX=150;
+function startStory(sc,next){const n=Math.max(1,(sc.lines||[]).length);story={sc,next,t:0,skip:false,total:STORY_START+n*STORY_BOX+(sc.lines?0:20)};dlg=null}
+function storyTick(){const st=story;st.t++;if(st.t>=st.total||st.skip){const n=st.next;story=null;dlg=null;n()}}
+const FLIPS=new WeakMap();const flipOf=c=>{let f=FLIPS.get(c);if(!f){f=flipC(c);FLIPS.set(c,f)}return f};
+function drawStory(){
+  const st=story,sc=st.sc,t=st.t,al=Math.max(0,Math.min(1,t/20,(st.total-t)/20)),B=sc.lines||[];
+  const bi=t<STORY_START?-1:Math.min(B.length-1,Math.floor((t-STORY_START)/STORY_BOX)),cur=bi>=0?B[bi]:null,feet=H-26;
+  g.fillStyle='#0a0814';g.fillRect(0,0,W,H);g.globalAlpha=al;
+  const bg=SBG[sc.bg];if(bg)g.drawImage(bg,Math.round((W-640)/2),0);
+  g.fillStyle='rgba(8,6,20,.3)';g.fillRect(0,0,W,H);
+  sc.actors.forEach((ac,i)=>{
+    const talking=cur&&ac.who&&cur.who===ac.who,scl=ac.sc||3;
+    let pose=ac.pose||0;if(talking&&ac.talk!==undefined&&(t>>3)%2)pose=ac.talk;
+    const img=ART[ac.id+'_'+pose];if(!img)return;const im=(ac.f||1)>0?img:flipOf(img);
+    const p=Math.min(1,t/40),e=1-(1-p)*(1-p),off=Math.round((1-e)*(ac.from||0)*150),w=img.width*scl,h=img.height*scl;
+    const bob=ac.id==='bike'?0:Math.round(Math.sin(t*.09+i*2)),hop=talking&&(t>>3)%2?-2:0,cx=Math.round(ac.x*W+off);
+    if(ac.lying){g.save();g.translate(cx,feet-w/2+2);g.rotate(-Math.PI/2);g.drawImage(im,-w/2,-h,w,h);g.restore()}
+    else g.drawImage(im,cx-Math.round(w/2),feet-h+bob+hop,w,h)});
+  if(sc.caption&&t>20){sc.caption.forEach((ln,k)=>ptext(ln,W/2,34+k*18,2,'#f4ecd0','center'))}
+  if(cur){const bw=Math.min(W-30,460),bx=Math.round((W-bw)/2),by=14,maxc=Math.floor((bw-52)/8),lines=['',''];let li=0;
+    for(const w of cur.text.split(' ')){const c=lines[li]?lines[li]+' '+w:w;if(c.length>maxc&&li<1){li=1;lines[1]=w}else lines[li]=c}
+    g.fillStyle='rgba(12,8,28,.9)';g.fillRect(bx,by,bw,56);g.fillStyle='#f0c040';g.fillRect(bx,by,bw,1);g.fillRect(bx,by+55,bw,1);g.fillRect(bx,by,1,56);g.fillRect(bx+bw-1,by,1,56);
+    g.fillStyle=PORT[cur.who]||'#8888aa';g.fillRect(bx+6,by+8,28,28);g.fillStyle='#120a1c';g.fillRect(bx+13,by+17,3,3);g.fillRect(bx+24,by+17,3,3);g.fillRect(bx+16,by+26,8,2);
+    ptext(cur.who,bx+42,by+5,1,'#f0c040');ptext(lines[0],bx+42,by+17,2,'#f4ecd0');if(lines[1])ptext(lines[1],bx+42,by+35,2,'#f4ecd0')}
+  g.globalAlpha=1;
+  if(t>30&&(tick>>5)%2===0)ptext(isTouch?'TAP TO SKIP':'ANY KEY TO SKIP',W-10,H-12,1,'#b8b0d0','right');
+}
 function drawDisco(){
   for(let k=0;k<6;k++){const x=Math.round(W/6*k+Math.sin(tick*.03+k*1.3)*34);g.fillStyle=k%2?'rgba(255,90,220,.09)':'rgba(70,220,255,.09)';g.fillRect(x,0,22,GY)}
   const bx=Math.round(W/2);g.fillStyle='#8a8aa8';g.fillRect(bx,0,1,9);
@@ -1380,6 +1433,7 @@ function drawBikeFront(cx){
     g.globalAlpha=1}
 }
 function draw(){
+  if(state==='story'&&story){drawStory();return}
   if(state==='ending'){drawEnding();return}
   const L=LV[lvl],cx=Math.round(camx);
   g.save();if(shake>0)g.translate((Math.random()*4-2)|0,(Math.random()*4-2)|0);

@@ -18,7 +18,7 @@ No fourth button. No menus during play. No inventory.
 2. **Enemies are simple.** Each enemy has ONE behaviour (walk, fly, or throw). Max 2 HP.
 3. **Bosses have 2-3 moves max** and a visible health bar. Learnable in one try.
 4. **Levels are linear, left to right.** No backtracking, no maps, no keys, no puzzles, no branching paths.
-5. **Story is told in short beats.** Act banners (1-2 lines) plus small dialogue boxes: max 2 lines, one speaker, auto-dismiss after about 3 seconds, never pause the game, never require a tap, never more than 3 per act. No cutscenes, no choices, no text the player must read to progress.
+5. **Story is told in short beats.** Act banners (1-2 lines) plus small dialogue boxes: max 2 lines, one speaker, auto-dismiss after about 3 seconds, never pause the game, never require a tap, never more than 3 per act. No choices, no text the player must read to progress. The only exception to "no cutscenes" is the coded story scenes (see below).
 6. **Power-ups are instant and automatic** (pick up, effect starts). No inventory or selection.
 7. **One weapon at a time, replaced by pickup, lost on death.** Coconut (default, ranged), triple coconut, and aruval (short range, kills small foes in one swing, double boss damage, cuts enemy shots). All use the same THROW button. Never add a weapon-switch button. New weapons must follow the same rule.
 8. **Vines are automatic.** Jumping into a hanging vine grabs it, it swings you forward and releases on its own (or when you press JUMP). Used only to cross wide gaps. No climb button, no aiming.
@@ -93,3 +93,9 @@ Prologue, Act I, **Act II ride** (auto-run bike, only jump and throw), Act II, A
 - Bosses with a hit window show a blue shield while invulnerable and a one-time hint ("HIT HIM WHEN HE CRASHES"). Charges show a red "!" first.
 - Kuttichathan: fireball charge into a wall, stunned for 1.7 s (1.3 s enraged) = only hit window; a coconut needs about a second to cross the arena, so the window must be longer than that; clones explode when popped up close.
 Dialogue rule still holds: at most 3 boxes per act; the throne scene and the ending are scripted exceptions with 3 each.
+
+## Story scenes (owner-approved exception to the no-cutscene rule)
+- A short scene between two levels: a backdrop, the characters of that moment, one or two speech boxes. Drawn and moved by code (slide in, bob, hop when speaking), not animated sheets. Table in `SCENES` in index.html, wording in docs/STORY_CARDS.md.
+- Plays only when advancing to a new level (and once before the Prologue on the very first play). Never on "tap to continue" or after game over. Ends by itself (about 5 to 7 s), any tap or key skips it after half a second. Never during play, never required to progress.
+- Backdrops are in assets/art/bg (made by tools/make-backdrop.js from assets/reference/bg_*.png). Characters are in assets/art/bosses (made by tools/make-sprite.js).
+- Do not add more than one scene per transition, or any choice or input to a scene.

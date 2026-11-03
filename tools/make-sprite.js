@@ -9,6 +9,8 @@
 //   --grid C,R    the sheet is an even grid of C columns and R rows: cut by cell instead of finding pieces (reliable for run cycles)
 //   --inset N     with --grid: ignore N px at each cell edge (sheets that draw a frame line around every cell)
 //   --scale K     use this exact scale for every pose (to match another sheet's scale, e.g. the run cycle)
+//   --solo        keep only the biggest connected figure in each pose (drops small figures drawn beside it)
+//   --solo-alpha N  how opaque a pixel must be to count when splitting figures (default 24; use 220 when outlines touch)
 //   --list        only print what was found
 // Steps: find each pose (2D, small gaps such as flames and sparks are merged), shrink to fit with the feet on the bottom edge,
 // hard-edge the alpha, limit the palette, add the 1 px dark outline.
@@ -20,7 +22,7 @@ const fs = require('fs');
 const args = process.argv.slice(2);
 const flag = n => args.includes('--' + n);
 const opt = n => { const i = args.indexOf('--' + n); return i >= 0 ? args[i + 1] : undefined };
-const pos = args.filter((a, i) => !a.startsWith('--') && !(i > 0 && ['--row', '--merge', '--order', '--clip', '--grid', '--scale', '--inset'].includes(args[i - 1])));
+const pos = args.filter((a, i) => !a.startsWith('--') && !(i > 0 && ['--row', '--merge', '--order', '--clip', '--grid', '--scale', '--inset', '--solo-alpha'].includes(args[i - 1])));
 const [sheet, name, W, H, COLORS = '24'] = pos;
 const w = +W, h = +H, colors = +COLORS;
 if (!sheet || !name || !w || !h) { console.log('usage: node tools/make-sprite.js <sheet.png> <out-name> <width> <height> [colors] [--same-scale] [--row N] [--list]'); process.exit(1) }
@@ -81,7 +83,21 @@ const OUTLINE = [0x12, 0x0a, 0x1c];
 
   for (let i = 0; i < poses.length; i++) {
     const p = poses[i];
-    const crop = await sharp(sheet).ensureAlpha().extract({ left: p.x0, top: p.y0, width: p.pw, height: p.ph }).toBuffer();
+    let crop = await sharp(sheet).ensureAlpha().extract({ left: p.x0, top: p.y0, width: p.pw, height: p.ph }).toBuffer();
+    if (flag('solo')) {
+      const { data: cd } = await sharp(crop).raw().toBuffer({ resolveWithObject: true });
+      const cw2 = p.pw, ch2 = p.ph, Q = 6, qw = Math.ceil(cw2 / Q), qh = Math.ceil(ch2 / Q), qm = new Uint8Array(qw * qh);
+      const sa = +(opt('solo-alpha') || 24);
+      for (let y = 0; y < ch2; y += 1) for (let x = 0; x < cw2; x += 1) if (cd[(y * cw2 + x) * 4 + 3] > sa) qm[((y / Q) | 0) * qw + ((x / Q) | 0)] = 1;
+      const lab = new Int32Array(qw * qh); let best = 0, bestN = 0, nn = 0;
+      for (let q0 = 0; q0 < qw * qh; q0++) { if (!qm[q0] || lab[q0]) continue; nn++; let cnt = 0; const st = [q0]; lab[q0] = nn;
+        while (st.length) { const q = st.pop(); cnt++; const qx = q % qw, qy = (q / qw) | 0;
+          for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const X = qx + dx, Y = qy + dy, r = Y * qw + X; if (X >= 0 && Y >= 0 && X < qw && Y < qh && qm[r] && !lab[r]) { lab[r] = nn; st.push(r) } } }
+        if (cnt > bestN) { bestN = cnt; best = nn } }
+      const out2 = Buffer.from(cd);
+      for (let y = 0; y < ch2; y++) for (let x = 0; x < cw2; x++) { const L = lab[((y / Q) | 0) * qw + ((x / Q) | 0)]; if (L !== best) out2[(y * cw2 + x) * 4 + 3] = 0 }
+      crop = await sharp(out2, { raw: { width: cw2, height: ch2, channels: 4 } }).png().toBuffer();
+    }
     const scale = opt('scale') ? +opt('scale') : sameScale ? k : Math.min((w - 2) / p.pw, (h - 2) / p.ph);
     const tw = Math.max(1, Math.round(p.pw * scale)), th = Math.max(1, Math.round(p.ph * scale));
     const resized = await sharp(crop).resize({ width: tw, height: th, kernel: 'lanczos3' }).modulate({ saturation: 1.25, brightness: 1.1 }).sharpen({ sigma: 0.7 }).toBuffer();
