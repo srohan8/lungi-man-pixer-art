@@ -333,6 +333,13 @@ const BOSSDEF={
   odiyan:{w:64,h:46,foot:45,hb:[22,8,20,36],hp:12,name:'ODIYAN',sub:'SHAPESHIFTER OF SHADOWS'},
   karin:{w:64,h:64,foot:62,hb:[16,16,32,32],hp:3,name:'KARINKANNI',sub:'THE CURSED EYE'},
   komban:{w:80,h:60,foot:59,hb:[14,8,52,46],hp:30,name:'PEY KOMBAN',sub:'DEMON OF THE TUSKS'}};
+/* Boss art from PNG files (assets/art/bosses/<boss>_<frame>.png, made by tools/make-sprite.js from the reference sheets).
+   Used only when the file loads and has the same size as the generated frame; otherwise the generated sprite stays. */
+const ART={},ART_FILES=['chathan_0','chathan_1'];
+if(typeof Image!=='undefined')ART_FILES.forEach(n=>{const im=new Image();
+  im.onload=()=>{const c=document.createElement('canvas');c.width=im.width;c.height=im.height;c.getContext('2d').drawImage(im,0,0);ART[n]=c;
+    if(A&&A.boss&&LV[lvl]&&LV[lvl].boss)A.boss=bossFrames(LV[lvl].boss)};
+  im.src='assets/art/bosses/'+n+'.png'});
 function bossFrames(t){
   let fr;
   if(t==='crab')fr=[genCrabKing(1),genCrabKing(0)];
@@ -343,6 +350,7 @@ function bossFrames(t){
   else if(t==='karin')fr=[genKarin(0),genKarin(1),genKarin(2)];
   else if(t==='komban')fr=[genKomban(0),genKomban(1),genKomban(2)];
   else fr=[genKallan(0,0),genKallan(1,0),genKallan(0,1),genKallan(1,1)];
+  fr=fr.map((c,i)=>{const a=ART[t+'_'+i];return a&&a.width===c.width&&a.height===c.height?a:c});
   return fr.map(c=>({n:c,f:flipC(c),w:tint(c,'#ffffff'),wf:tint(flipC(c),'#ffffff')}));
 }
 
