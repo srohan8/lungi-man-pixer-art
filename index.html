@@ -1237,6 +1237,34 @@ function drawSlash(cx){
 }
 function say(who,text,t){dlg={who,text,t:t||210}}
 const PORT={MAVELI:'#e0b030',KANNAN:'#b06a40',BHADRAKALI:'#c0303a',YAKSHI:'#dcd8ec',SONIYA:'#e8a050',CHATHAN:'#e8602a',BASHEER:'#5a8ac0',ODIYAN:'#4a3a70',BIJU:'#4a9a8a',KARINKANNI:'#4ac060',DEVI:'#e8d8a8',KOMBAN:'#6a6a7a',RAVI:'#c8903a',THOMA:'#8a7a60',VELU:'#7a5a3a',KILI:'#3a3a4a'};
+/* Dialogue portraits: the speaker's own face, cropped from the character sprite (head only; the eye and the crow use the whole sprite).
+   Speakers without art yet (Bhadrakali, Devi, Basheer) keep the coloured badge. */
+const PORTC={};
+const PORT_SRC={KANNAN:'scenehero_0',RAVI:'ravi_0',BIJU:'biju_0',THOMA:'thoma_0',SONIYA:'soniya_0',MAVELI:'maveli_1',VELU:'mooppan_0',KILI:'kili_0',YAKSHI:'yakshi_0',CHATHAN:'chathan_0',ODIYAN:'odiyan_0',KOMBAN:'komban_0',KARINKANNI:'karin_1'};
+const PORT_WHOLE={KARINKANNI:1,KILI:1},PORT_LEFT={VELU:1};
+function portraitCrop(who){
+  if(PORTC[who])return PORTC[who];const src=ART[PORT_SRC[who]];if(!src)return null;
+  let r;
+  try{const w=src.width,h=src.height,d=src.getContext('2d').getImageData(0,0,w,h).data;let x0=w,x1=0,y0=h,y1=0;
+    for(let y=0;y<h;y++)for(let x=0;x<w;x++)if(d[(y*w+x)*4+3]>128){if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y}
+    const fh=y1-y0+1;
+    if(PORT_WHOLE[who])r={x:x0,y:y0,w:x1-x0+1,h:fh};
+    else{const hh0=Math.max(6,Math.round(fh*.2));let a=w,b2=0;
+      for(let y=y0;y<y0+hh0;y++)for(let x=0;x<w;x++)if(d[(y*w+x)*4+3]>128){if(x<a)a=x;if(x>b2)b2=x}
+      let side=Math.min(w,Math.max(Math.round((b2-a+1)*1.25),Math.round(fh*.3)));
+      if(PORT_LEFT[who]){side=Math.round(fh*.3);b2=a+side}   /* a staff or similar widens the top rows: take the head from the left edge */
+      const rx=Math.max(0,Math.min(w-side,Math.round((a+b2)/2-side/2)));side=Math.min(side,h-y0);r={x:rx,y:y0,w:side,h:side}}}
+  catch(e){r={x:Math.round(src.width*.15),y:0,w:Math.round(src.width*.7),h:Math.round(src.height*.36)}}
+  return PORTC[who]=Object.assign({src},r);
+}
+function drawPortrait(who,x,y,box){
+  const col=PORT[who]||'#8888aa',p=portraitCrop(who);
+  g.fillStyle=p?'#1c1230':col;g.fillRect(x,y,box,box);
+  if(!p){g.fillStyle='#120a1c';const u=box/16;g.fillRect(Math.round(x+4*u),Math.round(y+6*u),Math.max(2,Math.round(2*u)),Math.max(2,Math.round(2*u)));g.fillRect(Math.round(x+10*u),Math.round(y+6*u),Math.max(2,Math.round(2*u)),Math.max(2,Math.round(2*u)));g.fillRect(Math.round(x+6*u),Math.round(y+11*u),Math.max(2,Math.round(4*u)),Math.max(1,Math.round(u)));return}
+  g.fillStyle=col;g.fillRect(x,y,box,1);g.fillRect(x,y+box-1,box,1);g.fillRect(x,y,1,box);g.fillRect(x+box-1,y,1,box);
+  const inner=box-2,sc0=Math.min(inner/p.w,inner/p.h),sc=sc0>=1?Math.floor(sc0):sc0,dw=Math.max(1,Math.round(p.w*sc)),dh=Math.max(1,Math.round(p.h*sc));
+  g.drawImage(p.src,p.x,p.y,p.w,p.h,x+1+Math.floor((inner-dw)/2),y+1+Math.floor((inner-dh)/2),dw,dh);
+}
 function drawDlg(){
   if(!dlg||state==='title'||state==='over'||state==='win')return;
   const bw=Math.min(320,W-230),bx=Math.round(W/2-bw/2),by=54,maxc=Math.floor((bw-30)/4);
@@ -1244,8 +1272,7 @@ function drawDlg(){
   for(const w of dlg.text.split(' ')){const c=lines[li]?lines[li]+' '+w:w;if(c.length>maxc&&li<1){li=1;lines[1]=w}else lines[li]=c}
   g.fillStyle='rgba(12,8,28,.84)';g.fillRect(bx,by,bw,26);
   g.fillStyle='#f0c040';g.fillRect(bx,by,bw,1);g.fillRect(bx,by+25,bw,1);g.fillRect(bx,by,1,26);g.fillRect(bx+bw-1,by,1,26);
-  g.fillStyle=PORT[dlg.who]||'#8888aa';g.fillRect(bx+4,by+5,16,16);
-  g.fillStyle='#120a1c';g.fillRect(bx+8,by+11,2,2);g.fillRect(bx+14,by+11,2,2);g.fillRect(bx+10,by+16,4,1);
+  drawPortrait(dlg.who,bx+4,by+5,16);
   ptext(dlg.who,bx+26,by+3,1,'#f0c040');ptext(lines[0],bx+26,by+10,1,'#f4ecd0');if(lines[1])ptext(lines[1],bx+26,by+17,1,'#f4ecd0');
 }
 /* ---------- interlude arena, throne scene, ending ---------- */
@@ -1381,7 +1408,7 @@ function drawStory(){
   if(cur){const bw=Math.min(W-30,460),bx=Math.round((W-bw)/2),by=14,maxc=Math.floor((bw-52)/8),lines=['',''];let li=0;
     for(const w of cur.text.split(' ')){const c=lines[li]?lines[li]+' '+w:w;if(c.length>maxc&&li<1){li=1;lines[1]=w}else lines[li]=c}
     g.fillStyle='rgba(12,8,28,.9)';g.fillRect(bx,by,bw,56);g.fillStyle='#f0c040';g.fillRect(bx,by,bw,1);g.fillRect(bx,by+55,bw,1);g.fillRect(bx,by,1,56);g.fillRect(bx+bw-1,by,1,56);
-    g.fillStyle=PORT[cur.who]||'#8888aa';g.fillRect(bx+6,by+8,28,28);g.fillStyle='#120a1c';g.fillRect(bx+13,by+17,3,3);g.fillRect(bx+24,by+17,3,3);g.fillRect(bx+16,by+26,8,2);
+    drawPortrait(cur.who,bx+6,by+8,28);
     ptext(cur.who,bx+42,by+5,1,'#f0c040');ptext(lines[0],bx+42,by+17,2,'#f4ecd0');if(lines[1])ptext(lines[1],bx+42,by+35,2,'#f4ecd0')}
   g.globalAlpha=1;
   if(t>30&&(tick>>5)%2===0)ptext(isTouch?'TAP TO SKIP':'ANY KEY TO SKIP',W-10,H-12,1,'#b8b0d0','right');
