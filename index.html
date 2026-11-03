@@ -718,6 +718,8 @@ function genBush(seed,C){const r=rng(seed),b=buf(40,20);
 /* Tunable numbers for coconuts, lives and the Sun Staff */
 const TUNE={ammoStart:40,ammoMax:60,ammoPerKill:2,ammoRegenBelow:5,ammoRegenFrames:180,lifeEvery:1000,lifeMax:6,rayRange:150};
 let ammo=40,ammoT=0,lifeBank=0;
+/* Palm sway: how far (px) the crown moves per level; the trunk base stays put */
+const WIND={pro:1.2,a1:1,a2:1.5,a3:2,a4:3.4,a5:1.2};
 let state='title',lockT=0,tick=0,deadT=0,clearT=0,shootCd=0,jumpPrev=false,shake=0,prevBottom=0,slashT=0,swingId=0;
 let crocs=[],lvl=0,A=null,segs=[],plats=[],enemies=[],shots=[],bullets=[],parts=[],pickups=[],lamps=[],props=[],motes=[],vines=[];
 let P=null,camx=0,score=0,lives=3,cp=40,hi=0,bossX=0,boss=null,locked=false,banner=null,bestX=0;
@@ -1306,6 +1308,12 @@ function drawPlayer(cx){
   if(P.freeze>0){g.fillStyle='#9aff60';for(let k=0;k<4;k++)g.fillRect(Math.round(P.x-cx+3+((tick*3+k*11)%12)),Math.round(P.y+((tick*5+k*17)%28)),1,3)}
   if(P.rev>0){g.fillStyle='#ff7aa8';for(let k=0;k<3;k++){const a=tick*.2+k*2.1;g.fillRect(Math.round(P.x-cx+7+Math.cos(a)*7),Math.round(P.y-4+Math.sin(a)*2),2,2)}}
 }
+/* Swaying palm: the picture is drawn in 3 px rows, each shifted sideways by a sine wave that grows towards the crown. */
+function drawSwayPalm(s,sx,p){
+  const c=s.c,H=c.height,top=GY-H+4,amp=(WIND[LV[lvl].key]||1.2)*(1+.35*Math.sin(tick*.011)),ph=tick*(.035+(p.v%3)*.004)+p.x*.013,R=3;
+  for(let y=0;y<H;y+=R){const k=1-(y+R/2)/H,off=Math.round(Math.sin(ph-k*1.1)*amp*k*k*1.6);
+    g.drawImage(c,0,y,c.width,Math.min(R,H-y),Math.round(sx-s.ax)+off,top+y,c.width,Math.min(R,H-y))}
+}
 function drawVine(v,cx){
   const sx=Math.round(v.x-cx);if(sx<-90||sx>W+90)return;
   const att=P&&P.vine===v,th=att?P.th:Math.sin(tick*.025+v.x)*.06;
@@ -1651,7 +1659,7 @@ function draw(){
   tile(A.clouds,.06,cx);tile(A.far,.12,cx);drawFog(L,cx,0);tile(A.mid,.3,cx);drawFog(L,cx,1);tile(A.jung,.55,cx);drawBikeBack(cx);drawBikeForest(cx);
   g.drawImage(A.pit,0,GY+12);pitFx(L,cx);drawCrocs(cx)}
   for(const p of props){if(L.arena)break;const sx=p.x-cx;if(sx<-60||sx>W+60)continue;
-    if(p.k==='pillar'){const c=A.pillars[p.v];g.drawImage(c,Math.round(sx-7),GY-c.height+4)}else if(p.k==='palm'){const s=A.palms[p.v];g.drawImage(s.c,Math.round(sx-s.ax),GY-s.c.height+4)}else if(p.k==='rock'||p.k==='wall')drawRockProp(p,sx);else g.drawImage(A.bushes[p.v],Math.round(sx-20),GY-17)}
+    if(p.k==='pillar'){const c=A.pillars[p.v];g.drawImage(c,Math.round(sx-7),GY-c.height+4)}else if(p.k==='palm'){drawSwayPalm(A.palms[p.v],sx,p)}else if(p.k==='rock'||p.k==='wall')drawRockProp(p,sx);else g.drawImage(A.bushes[p.v],Math.round(sx-20),GY-17)}
   for(const l of lamps)LV[lvl].chai?drawStall(l,cx,bestX>l+10):drawLamp(l,cx,bestX>l+10);
   for(const q of pops){ptext(q.s,Math.round(q.x-cx),Math.round(q.y-(70-q.t)*.35),1,'#ffe8a0','center')}
   segs.forEach((s,k)=>{const sx=s[0]-cx;if(sx<W&&sx+(s[1]-s[0])>0)g.drawImage(A.segC[k],Math.round(sx),GY-6)});
