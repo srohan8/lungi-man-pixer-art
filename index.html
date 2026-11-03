@@ -394,7 +394,18 @@ const LV_OLD=[
  motes:'fly',foes:['goon','bat','cobra','bat','goon'],boss:'kallan',len:3300}
 ];
 const LV0=[
-Object.assign({},LV_OLD[0],{act:'PROLOGUE',name:'THE SWINGING AWAKENING',mid:Object.assign({},LV_OLD[0].mid,{deco:'village',win:'#ffd870',glow:'#d89060'}),foes:['crab'],boss:null,len:600,endVine:true,
+Object.assign({},LV_OLD[0],{act:'PROLOGUE',name:'THE SWINGING AWAKENING',
+  /* warm sunset palette: orange sky, cream clouds, peach haze, brown silhouettes with golden rim light */
+  sky:['#7a3238','#a84a3c','#d06a3c','#e88a46','#f4a85a','#f8c880','#fbdfa8'],stars:0,
+  sun:{y:GY-48,r:24,c:['#fffbe0','#ffeab0','#ffd088']},cloud:['#fde8c4','#f2b886','#c97a5c'],
+  far:{c:'#c47a56',rim:'#fbd09a',rim2:'#e2a070',mist:'#eaa878',base:GY-80},
+  mid:{c:'#8a4a48',rim:'#e09a5c',mist:'#c8785c',deco:'village',dark:'#5a2c32',win:'#ffd870',glow:'#d89060'},
+  jung:{kind:'jungle',base:'#2c3420',mid:'#4a5a2a',hl:'#8a8c38',rim:'#f4b862',trunk:'#2a1810',vine:'#4a4a24',under:'#26201a'},
+  canopy:['#2a2016','#3c2c1c','#5c4224','#1e160e','#4a3820'],
+  pit:{kind:'water',cols:['#f2a862','#d68058','#aa5e58','#7c4658','#503656','#30264a'],foam:'#ffdca8',shine:['#fff2c4','#ffd890'],tint:'#6a3a50'},
+  palm:['#7a5232','#b07a4e','#4a2e1c','#5e3c24','#4a5a22','#6a7a2c','#8a9a38','#c4cc5c'],
+  bush:['#4a5a24','#7a8a30','#b0b840','#e0303a','#ffd040'],
+  foes:['crab'],boss:null,len:600,endVine:true,
   fixed:[{x:480,k:'parotta'}],
   tut:[{x:40,a:'MOVE',b:'LEFT AND RIGHT BUTTONS',d:0},{x:230,a:'THROW',b:'HOLD THROW. COCONUTS NEVER RUN OUT',d:0},{x:400,a:'JUMP',b:'TAP JUMP. STOMP CRABS TOO',d:0},{x:540,a:'VINE',b:'JUMP INTO THE VINE TO SWING',d:0}],
   clear:['BHADRAKALI SMILES','THE FOREST GIVES YOU ITS POWER'],
