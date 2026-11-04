@@ -84,8 +84,8 @@ const TitleCard: React.FC = () => {
     <AbsoluteFill style={{ background: '#0a0814', alignItems: 'center', justifyContent: 'center' }}>
       <Img src={staticFile('shots/a1.png')} style={{ position: 'absolute', top: BAR_H, width: 1920, height: FRAME_H, imageRendering: 'pixelated', opacity: 0.28, transformOrigin: '50% 100%', transform: 'scale(1.2)' }} />
       <div style={{ textAlign: 'center', fontFamily }}>
-        <div style={{ opacity: a(0), color: '#f0c040', fontSize: 120, letterSpacing: 8, textShadow: '8px 8px 0 #120a1c' }}>LUNGI MAN</div>
-        <div style={{ opacity: a(24), color: '#f4ecd0', fontSize: 30, marginTop: 40, letterSpacing: 3, textShadow: '4px 4px 0 #120a1c' }}>THE CURSE OF KANJIRAVANAM</div>
+        <div style={{ opacity: a(0), color: '#f0c040', fontSize: 120, letterSpacing: 8, textShadow: '8px 8px 0 #120a1c' }}>KANNAN</div>
+        <div style={{ opacity: a(24), color: '#f4ecd0', fontSize: 30, marginTop: 40, letterSpacing: 3, textShadow: '4px 4px 0 #120a1c' }}>AND THE KANJIRAVANAM CHRONICLES</div>
         <div style={{ opacity: a(70) * pulse, color: '#ffe58a', fontSize: 28, marginTop: 70, letterSpacing: 4 }}>COMING TO ANDROID</div>
       </div>
       <div style={{ position: 'absolute', bottom: 36, display: 'flex', alignItems: 'center', gap: 20, opacity: a(90) }}>

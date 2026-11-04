@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
 <meta name="theme-color" content="#0b0818">
-<title>Lungi Man</title>
+<title>Kannan and the Kanjiravanam Chronicles</title>
 <style>
 :root{--bg:#0b0818;--ink:#f4ecd0;--gold:#f0c040;color-scheme:dark}
 html,body{margin:0;height:100%;background:var(--bg);overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
@@ -2137,9 +2137,10 @@ function draw(){TQ.length=0;
   drawTut();drawSndIcon();if(state==='play')drawPauseIcon();
   if(banner&&state!=='title'&&!(tut&&tut.phase==='msg')){g.fillStyle='rgba(12,8,28,.55)';g.fillRect(0,78,W,48);ptext(banner.a,W/2,86,4,'#f0c040','center');if(banner.b)ntext(nice(banner.b),W/2,108,12,'#f4ecd0','center')}
   if(state==='title'){overlay();drawCover();
-    ptext('LUNGI MAN',W/2,46,6,'#f0c040','center');
-    ptext('THE CURSE OF KANJIRAVANAM',W/2,96,2,'#f4ecd0','center');
-    ptext('KANNAN MUST SEAL THE PORTAL.',W/2,112,2,'#f4ecd0','center');
+    ptext('KANNAN',W/2,24,7,'#f0c040','center');
+    ptext('AND THE',W/2,66,2,'#f4ecd0','center');
+    ptext('KANJIRAVANAM CHRONICLES',W/2,82,3,'#ffe58a','center');
+    ptext('KANNAN MUST SEAL THE PORTAL.',W/2,114,2,'#f4ecd0','center');
     {const pk=pick<0?pickDefault():pick,L=LV[pk],sh=(tick>>4)%2;
       for(const d of [-1,1]){const on=d<0?pk>0:pk<pickMax(),ax=Math.round(W/2+d*Math.min(120,W*.3))+(on?d*sh*2:0),ay=156;g.fillStyle=on?'#ffe58a':'#4a4060';for(let i=0;i<7;i++)g.fillRect(ax-d*i,ay-i,1,i*2+1)}
       ptext(L.act||'PROLOGUE',W/2,148,3,'#ffe58a','center');ptext(L.name||'',W/2,172,1,'#f4ecd0','center');

@@ -1,4 +1,4 @@
-# Lungi Man: project rules
+# Kannan and the Kanjiravanam Chronicles: project rules
 
 A simple, old-school run-and-throw game (think Contra / Prince of Persia).
 Easy to pick up, playable almost mindlessly. Android phone, landscape.

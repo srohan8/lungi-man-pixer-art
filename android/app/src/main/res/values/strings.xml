@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Lungi Man</string>
-    <string name="title_activity_main">Lungi Man</string>
+    <string name="app_name">Kanjiravanam Chronicles</string>
+    <string name="title_activity_main">Kanjiravanam Chronicles</string>
     <string name="package_name">studio.moonga.lungiman</string>
     <string name="custom_url_scheme">studio.moonga.lungiman</string>
 </resources>

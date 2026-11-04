@@ -42,7 +42,7 @@ with the *version_name* box when you run the workflow by hand.
 2. Choose **Personal** or **Organisation**. **Personal accounts created after Nov 2023 must run a closed test with at least 12 testers
    for 14 days before they can publish to production.** Organisation accounts skip this but need a D-U-N-S number.
    Check the current rules in the Console, they change.
-3. Create app: name *Lungi Man*, default language, **Game**, **Free**, accept the declarations.
+3. Create app: name *Kanjiravanam Chronicles* (Play allows 30 characters; the full title "Kannan and the Kanjiravanam Chronicles" is 38, so use it in the description and the graphics), default language, **Game**, **Free**, accept the declarations.
 
 ## 6. Store listing (Grow, Store presence, Main store listing)
 You must supply:

@@ -1,4 +1,4 @@
-# Lungi Man (Kanjiravanam Chronicles)
+# Kannan and the Kanjiravanam Chronicles
 
 Kerala retro run-and-throw platformer. One HTML file, Canvas + vanilla JavaScript, no dependencies.
 Target: phone landscape (Android via Capacitor later). Playable in any desktop browser.

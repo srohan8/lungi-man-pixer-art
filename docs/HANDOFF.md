@@ -10,7 +10,7 @@ Everything below is the state at the moment of the move. Read `CLAUDE.md` first 
 - Complete game: prologue, Acts I to V, three extra scenes, ending. Every level and boss is clearable by the test bot.
 - Never played by hand on a real phone yet. Tuning numbers are educated guesses until someone plays it.
 - No audio files yet. The game runs silently with built-in beeps and picks up files when they exist (see `docs/AUDIO.md`).
-- The hero is called **Kannan** in dialogue (the storyline calls him LungiMan; we kept Kannan on purpose for now). Title shows "LUNGI MAN".
+- The hero is called **Kannan** in dialogue (the storyline calls him LungiMan; we kept Kannan on purpose for now). The game is titled **Kannan and the Kanjiravanam Chronicles** (the old working title was Lungi Man).
 
 ## Run and test
 - Run: `npm start` (needs Node) or `python3 -m http.server`, open the page. A page opened from `file://` also works, but audio files will not load there.
