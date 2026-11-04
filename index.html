@@ -758,7 +758,7 @@ function genBush(seed,C){const r=rng(seed),b=buf(40,20);
 /* =================== game state =================== */
 /* Tunable numbers for coconuts, lives and the Sun Staff */
 const TUNE={levelSelectAll:true,ammoStart:40,ammoMax:60,ammoPerKill:2,ammoRegenBelow:5,ammoRegenFrames:180,lifeEvery:1000,lifeMax:6,rayRange:150};
-let ammo=40,ammoT=0,lifeBank=0,rings=[],pick=-1,paused=false,cin=null,fogK=1,fadeT=0,fadeCol=null,bloomAt=-1,tut=null,tutPending=false,tutAny=false,stat={thrown:0,kills:0},flashT=0,flashC='#e8f0ff';
+let ammo=40,ammoT=0,lifeBank=0,rings=[],pick=-1,paused=false,cin=null,fogK=1,fadeT=0,fadeCol=null,autoKill=false,bloomAt=-1,tut=null,tutPending=false,tutAny=false,stat={thrown:0,kills:0},flashT=0,flashC='#e8f0ff';
 /* Palm sway: how far (px) the crown moves per level; the trunk base stays put */
 const WIND={pro:1.2,a1:1,a2:1.5,a3:2,a4:3.4,a5:1.2};
 let state='title',lockT=0,tick=0,deadT=0,clearT=0,shootCd=0,jumpPrev=false,shake=0,prevBottom=0,slashT=0,swingId=0;
@@ -979,8 +979,18 @@ function drawPt(cx){const c=cin,t=c.t,gx=Math.round(c.gx-cx);
 function pickMax(){return TUNE.levelSelectAll?LV.length-1:Math.max(0,Math.min(resume,LV.length-1))}
 function pickDefault(){return seen?Math.max(1,Math.min(resume,LV.length-1)):0}
 function pickLevel(d){if(pick<0)pick=pickDefault();pick=Math.max(0,Math.min(pickMax(),pick+d));beep(520+pick*30,.05,'square',.04)}
-function newGame(){score=0;actScore=0;const st=pick<0?pickDefault():Math.min(pick,pickMax());pick=-1;if(st===0)tutPending=true;
-  if(st===0&&!seen&&SCENES.start){loadLevel(0);const snap=snapshotBackdrop(0);startPages(OPENING,()=>{state='story';startStory(SCENES.start,()=>begin(0,40),snap)},snap);return}
+/* Entry of a level picked from the selector: the scene or cinematic that leads into it. Act III and Act IV are fast-forwarded through their boss finish, so the real
+   cinematics play. "Tap to continue" is silent except into the interlude and Pathalam. */
+function playEntry(st){
+  const prev=LV[st-1],sk=prev&&prev.key;
+  if(sk==='a3'||sk==='a4'){begin(st-1,40);P.x=bossX+60;P.y=GY-P.h;camx=bossX;autoKill=true;return}
+  const sc=sk&&SCENES[sk];if(!sc){begin(st,40);return}
+  const bgk=sc.bg;let cxs=0;
+  if(bgk==='next')loadLevel(st);else if(bgk==='cur'){loadLevel(st-1);cxs=Math.max(0,Math.round(bossX-W*.6))}else{const bi=LV.findIndex(l=>l.key===bgk);loadLevel(bi>=0?bi:st)}
+  const snap=snapshotBackdrop(cxs);state='story';startStory(sc,()=>begin(st,40),snap)}
+function newGame(){score=0;actScore=0;const picked=pick>=0,st=pick<0?pickDefault():Math.min(pick,pickMax());pick=-1;if(st===0)tutPending=true;
+  if(st===0&&(!seen||picked)&&SCENES.start){loadLevel(0);const snap=snapshotBackdrop(0);startPages(OPENING,()=>{state='story';startStory(SCENES.start,()=>begin(0,40),snap)},snap);return}
+  if(st>0&&(picked||LV[st].key==='disco'||LV[st].key==='path')){playEntry(st);return}
   begin(st,40)}
 function startIfNeeded(src){
   if(state==='cine'){if(cin&&cin.t>40)cineEnd();return}
@@ -1028,7 +1038,7 @@ function update(){
     else{if(P.bk){P.bx+=P.bvx;P.bvx*=.965}P.vy+=.4;P.y+=P.vy;P.x+=P.vx;P.vx*=.94;
       if(P.vy>=0){for(const [x1,x2,top] of segs.map(s=>[s[0],s[1],GY]).concat(plats.map(p=>[p[0],p[0]+p[2],p[1]])))if(P.x+P.w>x1&&P.x<x2&&P.y+P.h-P.vy<=top+2&&P.y+P.h>=top){P.y=top-P.h;if(P.vy>1.5){burst(P.x+7,top,['#d8c8a0','#a89878'],6);shake=Math.max(shake,3)}P.vy=0;P.vx*=.5;if(!P.dl)P.dl=P.dt;break}}}
   if(--deadT<=0){if(lives<=0){state='over';lockT=60;saveHi()}else respawn()}return}
-  if(state==='clear'){if(--clearT<=0){if(lvl<LV.length-1){if(lvl===0){seen=true;try{localStorage.setItem('lungiman-prologue','1')}catch(e){}}actScore=score;resume=lvl+1;try{localStorage.setItem('lungiman-act',resume)}catch(e){}const sk=LV[lvl].key,ni=lvl+1,go=()=>{loadLevel(ni);placePlayer(40);fadeCol=null;if(LV[ni].arena)fadeT=90;if(LV[ni].key==='path'){fadeT=80;fadeCol='#ffd890'}ammo=Math.max(ammo,TUNE.ammoStart);state='play';banner={a:LV[lvl].act,b:LV[lvl].name,t:150}};
+  if(state==='clear'){if(--clearT<=0){if(lvl<LV.length-1){if(lvl===0){seen=true;try{localStorage.setItem('lungiman-prologue','1')}catch(e){}}actScore=score;resume=Math.max(resume,lvl+1);try{localStorage.setItem('lungiman-act',resume)}catch(e){}const sk=LV[lvl].key,ni=lvl+1,go=()=>{loadLevel(ni);placePlayer(40);fadeCol=null;if(LV[ni].arena)fadeT=90;if(LV[ni].key==='path'){fadeT=80;fadeCol='#ffd890'}ammo=Math.max(ammo,TUNE.ammoStart);state='play';banner={a:LV[lvl].act,b:LV[lvl].name,t:150}};
     if(sk==='a4'){startCine('pt',go);return}
     if(SCENES[sk]){const bgk=SCENES[sk].bg;let cxs=Math.round(camx);if(bgk==='next'){loadLevel(ni);cxs=0}else if(bgk!=='cur'){loadLevel(LV.findIndex(l=>l.key===bgk));cxs=0}
       const snap=snapshotBackdrop(cxs);state='story';startStory(SCENES[sk],go,snap)}else go()}else{state='ending';endT=0;saveHi();resume=1;try{localStorage.setItem('lungiman-act','1')}catch(e){}}}return}
@@ -1062,6 +1072,7 @@ function update(){
   bestX=Math.max(bestX,P.x);
   if(!locked){camx=Math.min(Math.max(camx,P.x-W*.38),bossX);if(camx>=bossX&&!boss.dead){locked=true;if(!boss.active)spawnBoss()}}
   else camx=bossX;
+  if(autoKill&&locked&&boss.active&&!boss.dead){boss.hp=0;boss.form=0;boss.vuln=true;autoKill=false}
   for(const l of lamps)if(P.x>l+10&&cp<l){cp=l;if(LV[lvl].chai)drinkChai(l)}
   if(!tutAny)for(const t of (LV[lvl].tut||[]))if(!t.d&&P.x>t.x){t.d=1;banner={a:t.a,b:t.b,t:120}}
   tutStep();
@@ -1781,7 +1792,7 @@ function pageTree(x,gy,col,dim){const c=dim?'#2a2a3a':col;
 function drawPagePic(P0,L,t){
   const gy=H-52,al=Math.min(1,t/18),art=ART['pg_'+pg.i];g.globalAlpha=al;
   g.fillStyle='#0a0818';g.fillRect(0,0,L,H);
-  if(art){const sw=Math.min(art.width,L),sx=Math.round((art.width-sw)/2),dx=Math.round((L-sw)/2);g.drawImage(art,sx,0,sw,art.height,dx,0,sw,art.height);g.globalAlpha=1;return}
+  if(art&&P0.pic!=='maveli'){const sw=Math.min(art.width,L),sx=Math.round((art.width-sw)/2),dx=Math.round((L-sw)/2);g.drawImage(art,sx,0,sw,art.height,dx,0,sw,art.height);g.globalAlpha=1;return}
   if(P0.pic==='village'){if(pg.snap)g.drawImage(pg.snap,0,0)}
   if(P0.pic==='village'){g.fillStyle='rgba(8,6,20,.25)';g.fillRect(0,0,L,H)}
   if(P0.pic==='seal'||P0.pic==='crack'){for(let y=0;y<H;y+=2){g.fillStyle=y<gy?'rgb('+(24+(y/6|0))+','+(18+(y/9|0))+','+(52+(y/5|0))+')':'#10101a';g.fillRect(0,y,L,2)}
