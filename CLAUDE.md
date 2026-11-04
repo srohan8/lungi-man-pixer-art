@@ -108,6 +108,6 @@ Rules that change as each step lands:
 - **Prologue tutorial (exception)**: step-by-step messages freeze the game until confirmed, and each step finishes when the player does the action (move, jump, throw, parotta, vine). First play or when the prologue is picked from the level selector. A visible SKIP. After the prologue nothing ever stops for a message.
 - **Weapon**: the Sun Staff becomes Bhadrakali's **trishul** (same behaviour, same THROW button, same shrine pickups in Acts II, III and V).
 - **Finishing cinematics (exception)**: coded, no controls, skippable: Odiyan's last strike and Kannan's fall (Act III), the ground opening into Pathalam (after Act IV), the mundu finale (Act V).
-- **Entry scenes**: play when advancing and when a level is picked from the selector.  is silent except into the interlude and Pathalam.
+- **Entry scenes**: play when advancing and when a level is picked from the selector. "Tap to continue" is silent except into the interlude and Pathalam.
 - **Sacred trees**: one in each boss arena, withered before the boss, blooming in the act colour after (teal, amber, indigo, green, gold). Replaying a beaten act shows it healed.
 - **Quest beats** are walk-through only (no tracking, rewards are existing effects). No new abilities, no whip, no Naga fight.
