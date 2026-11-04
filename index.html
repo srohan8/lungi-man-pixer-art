@@ -1237,7 +1237,7 @@ function update(){
   slashHits();updFoes(cx);
   if(state!=='play')return;
   for(const s of shots){s.x+=s.vx;s.vy+=s.g;s.y+=s.vy;s.life--;
-    const sr=s.k==='gaze'?7:2;/* the gaze ring is drawn 12 px wide, so it hurts where it looks like it touches */
+    const sr=s.k==='gaze'?7:s.k==='thorn'?3:2;/* the gaze ring is drawn 12 px wide, so it hurts where it looks like it touches */
     if(s.life>0&&hit({x:s.x-sr,y:s.y-sr,w:sr*2,h:sr*2},{x:P.x+2,y:P.y+2,w:P.w-4,h:P.h-3})){s.life=0;if(s.k==='gaze'){P.rev=180;beep(180,.3,'sawtooth',.05);burst(P.x+7,P.y+10,['#ff4a80','#ffd0e0'],10)}else die()}}
   shots=shots.filter(s=>s.life>0&&s.y<H&&s.x>cx-30&&s.x<cx+W+30);
   for(const p of pickups)if(p.drop&&!p.got&&p.t<p.T){p.t++;const u=p.t/p.T;p.x=p.sx+(p.lx-p.sx)*u;p.y=p.sy+(p.landY-p.sy)*u*u;if(p.t%2===0)parts.push({x:p.x+6,y:p.y+6,vx:(Math.random()-.5)*.6,vy:.3,l:18,c:p.t%4?'#fff6c0':'#ffd860'});if(p.t>=p.T){p.x=p.lx;p.y=p.landY;burst(p.x+6,p.y+12,['#ffd860','#fff6c0'],8);beep(1320,.25,'sine',.05)}}
@@ -1374,10 +1374,10 @@ function karinAI(b,pc,bc,face,rage){
   if(b.state===0){if(--b.cd<=0){b.n++;if(b.n%2){b.state=1;b.cd=56;b.rayX=P.x+7;b.arm=56}else{b.state=2;b.cd=34;b.arm=34}}}
   else if(b.state===1){
     if(b.cd>22)b.rayX+=(P.x+7-b.rayX)*.05;
-    else if(b.cd>0&&Math.abs(P.x+7-b.rayX)<9&&P.freeze<=0&&P.inv<=0){P.freeze=80;b.para=true;beep(120,.4,'sawtooth',.06)}
-    if(--b.cd<=0){if(b.para){b.para=false;b.state=2;b.cd=22;b.aim=true;b.arm=22}else{b.state=3;b.cd=rage?75:95;b.arm=0}}
+    else if(b.cd>0&&Math.abs(P.x+7-b.rayX)<9&&P.freeze<=0&&P.inv<=0){P.freeze=80;b.para=true;b.cd=Math.min(b.cd,4);beep(120,.4,'sawtooth',.06)}
+    if(--b.cd<=0){if(b.para){b.para=false;b.state=2;b.cd=10;b.aim=true;b.arm=10}else{b.state=3;b.cd=rage?75:95;b.arm=0}}
   }else if(b.state===2){
-    if(--b.cd<=0){const aim=b.aim;b.aim=false;const vx0=aim?Math.max(-5,Math.min(5,(pc-bc)/38)):Math.max(-3,Math.min(3,(pc-bc)/60));for(const dv of aim?[-.5,0,.5]:[-.9,0,.9])shot(bc,b.y+40,vx0+dv,-1.2,.12,'thorn');b.state=3;b.cd=rage?75:95;b.arm=0}
+    if(--b.cd<=0){const aim=b.aim;b.aim=false;const y0=b.y+40,drop=Math.max(20,GY-14-y0),tf=(1.2+Math.sqrt(1.44+.24*drop))/.12;/* flight time to the player's chest, so the volley lands exactly on a frozen hero */const vx0=aim?(P.x+7-bc)/tf:Math.max(-3,Math.min(3,(pc-bc)/60));for(const dv of aim?[-.25,0,.25]:[-.9,0,.9])shot(bc,b.y+40,vx0+dv,-1.2,.12,'thorn');b.state=3;b.cd=rage?75:95;b.arm=0}
   }else{if(--b.cd<=0){b.state=0;b.cd=rage?45:70;b.vuln=false}}
 }
 function kombanAI(b,pc,bc,face,rage){
