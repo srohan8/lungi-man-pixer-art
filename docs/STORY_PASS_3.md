@@ -98,7 +98,7 @@ Three of them. They start from the last hit or the clear of the level and never 
 - "Tap to continue": silent, except continuing into the disco or Pathalam plays the entry (both are mid-story jumps that make no sense without it).
 
 ## 8. Side-quest beats (walk-through only, no tracking, rewards are existing effects)
-Ravi's swing-off (he races ahead on the vines, scenery), Devi's bell (walk past: it rings, +1 life), Kili's rice (she caws). No abilities, no whip, no Naga fight
+(Removed after playtest: unexplained. The code remains, no level uses it.) Ravi's swing-off (he races ahead on the vines, scenery), Devi's bell (walk past: it rings, +1 life), Kili's rice (she caws). No abilities, no whip, no Naga fight
 (a sleeping serpent as scenery is fine).
 
 ## Art and assets needed
