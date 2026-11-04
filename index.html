@@ -2190,7 +2190,7 @@ function draw(){TQ.length=0;syncPad();
 
   if(state!=='title'&&state!=='cine'){
     ptext('SCORE '+String(score).padStart(6,'0'),10,10,2,'#ffffff');
-    ptext('HI '+String(hi).padStart(6,'0'),W-44,10,2,'#ffe58a','right');
+    ptext('HI '+String(hi).padStart(6,'0'),W-10,36,2,'#ffe58a','right');
     for(let i=0;i<lives;i++)g.drawImage((goldLamp()?LAMPG:LAMP)[((tick>>4)+i)%2],10+i*10,24);
     ptext(LV[lvl].act,10,36,1,'#d8d0e8');
     ptext(P.aru?'TRISHUL':P.sp?'PAROTTA X3  '+ammo:'COCONUT  '+ammo,10,46,1,P.aru?'#ffe898':ammo<=5?'#ff9a80':'#c8b890');
