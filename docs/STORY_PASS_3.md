@@ -75,6 +75,28 @@ Short beats over the healed grove, each skippable:
 - **Thoma** kneels at the shrine and, for the first time, does not ask forgiveness.
 - **Kannan** picks up his rope. There are coconuts to harvest. Bhadrakali: "Kanjiravanam breathes again." Maveli, below: "Onam is coming. I will come home."
 
+## 7b. Finishing cinematics (coded, no controls, skippable, ~8-10 s each)
+Three of them. They start from the last hit or the clear of the level and never need input.
+1. **Act III: Odiyan's last strike.** The final coconut lands, Odiyan staggers, turns into the panther in a puff of smoke and lunges at Kannan's ankle
+   (the bite). Red flash. Odiyan dissolves into smoke and oil. Kannan stands swaying for a few seconds while the fog lifts, then his leg gives way and he
+   falls (knockdown art). The Velu scene plays with him lying there ("The dog bites deeper than you feel"), then a **white flash and a fade to neon**,
+   then a short calm phase with a **"Dance, machane!" banner** before the dancers turn.
+2. **Act IV to Pathalam: the ground opens.** First the win: the rain clears and the green sacred tree blooms. Then a glowing seam cracks under Kannan, the
+   screen shakes harder and harder with dust and pebbles falling, a dark chasm widens and he sinks. Slow gentle descent past roots, stones and floating
+   lamps ("the earth moves around him, not past him"). Maveli's voice: "I brought you down. I hope that was acceptable." Then Pathalam starts.
+   Needs the crack / chasm visual (code only) and a rumble sound (the crash beep stands in; an ElevenLabs rumble is optional).
+3. **Act V: the mundu finale** (section 6).
+
+## 7c. The interlude (disco) flow, fixed
+- Entry: cinematic 1 above. Exit: a **white flash** when you wake, **no duplicate in-level Ravi box**; the scene has Ravi in the highland fog:
+  "You kept shouting left and right." / "Odiyan's venom. Two groves left. The rain is coming." (the old line said four: wrong, two remain).
+- Velu also appears in Act III's opening (hoof-prints), so his line after the boss is a callback.
+
+## 7d. Entry scenes: when they play
+- Advancing normally: the scene or cinematic that leads into the next level plays (as now).
+- **Level selector: picking a level plays the scene or cinematic that leads into it** (so you can test and replay them). Any tap skips after half a second.
+- "Tap to continue": silent, except continuing into the disco or Pathalam plays the entry (both are mid-story jumps that make no sense without it).
+
 ## 8. Side-quest beats (walk-through only, no tracking, rewards are existing effects)
 Ravi's swing-off (he races ahead on the vines, scenery), Devi's bell (walk past: it rings, +1 life), Kili's rice (she caws). No abilities, no whip, no Naga fight
 (a sleeping serpent as scenery is fine).

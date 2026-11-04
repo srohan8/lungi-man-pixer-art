@@ -57,7 +57,7 @@ Level selector (owner request): the title screen has left/right arrows (keys, A/
 
 ## Visual rules
 - Pixel art only. Internal canvas height is 270; width adapts to the screen.
-- No image smoothing. No gradients except dithered ones. No fonts except the built-in pixel font.
+- No image smoothing. No gradients except dithered ones. Fonts: the built-in pixel font for the title, HUD, banners and pop-ups; story text (dialogue, scenes, story panel, captions, ending) uses a normal bold font in sentence case on a full-resolution text layer.
 - Lore: the red eyes and rim are the mark of the Kazhukan corruption (illusions, poison, rage). Bhadrakali explains it at the end of the prologue. Bosses are the corrupted guardians.
 - Haunted look: every small enemy has a pulsing red rim, glowing red eyes and a few red sparkles. Keep that for any new enemy.
 - Small enemies must stay readable on every background: warm mid-tone colours (like the monkey) plus the light rim. Never make an enemy near-black or dark blue.
@@ -100,3 +100,14 @@ Dialogue rule still holds: at most 3 boxes per act; the throne scene and the end
 - Plays only when advancing to a new level (and once before the Prologue on the very first play). Never on "tap to continue" or after game over. Ends by itself (about 5 to 7 s), any tap or key skips it after half a second. Never during play, never required to progress.
 - The backdrop is the real scenery of the level (sky, hills, trees, water, ground), captured once when the scene starts, so a scene looks like the level you are about to play. Characters are in assets/art/bosses (made by tools/make-sprite.js from assets/reference). The bg_*.png files in assets/reference are inspiration for level props and palettes only.
 - Do not add more than one scene per transition, or any choice or input to a scene.
+
+## Story pass 3 (owner-approved, being built step by step; full plan in docs/STORY_PASS_3.md)
+Rules that change as each step lands:
+- **Story panel**: between levels and in the opening, longer text over several pages with the speaker's portrait, tap for next, skip any time. Never during play. In play only short banners and one-line boxes.
+- **Opening**: five story pages on the very first play (then the village scene and the prologue). Skippable.
+- **Prologue tutorial (exception)**: step-by-step messages freeze the game until confirmed, and each step finishes when the player does the action (move, jump, throw, parotta, vine). First play or when the prologue is picked from the level selector. A visible SKIP. After the prologue nothing ever stops for a message.
+- **Weapon**: the Sun Staff becomes Bhadrakali's **trishul** (same behaviour, same THROW button, same shrine pickups in Acts II, III and V).
+- **Finishing cinematics (exception)**: coded, no controls, skippable: Odiyan's last strike and Kannan's fall (Act III), the ground opening into Pathalam (after Act IV), the mundu finale (Act V).
+- **Entry scenes**: play when advancing and when a level is picked from the selector.  is silent except into the interlude and Pathalam.
+- **Sacred trees**: one in each boss arena, withered before the boss, blooming in the act colour after (teal, amber, indigo, green, gold). Replaying a beaten act shows it healed.
+- **Quest beats** are walk-through only (no tracking, rewards are existing effects). No new abilities, no whip, no Naga fight.
