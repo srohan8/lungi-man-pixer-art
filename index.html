@@ -14,8 +14,10 @@ canvas{image-rendering:pixelated;image-rendering:crisp-edges;display:block}
 @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(240,192,64,.95)}50%{box-shadow:0 0 0 16px rgba(240,192,64,0)}}
 #t{position:fixed;pointer-events:none;image-rendering:auto;z-index:1}
 .pad{position:fixed;bottom:calc(14px + env(safe-area-inset-bottom,0px));display:flex;gap:14px;z-index:2;align-items:flex-end}
-#padL{left:calc(18px + env(safe-area-inset-left,0px))}
-#padR{right:calc(18px + env(safe-area-inset-right,0px))}
+#padL{left:calc(44px + env(safe-area-inset-left,0px))}
+#padR{right:calc(44px + env(safe-area-inset-right,0px))}
+.pad button{position:relative}
+.pad button::after{content:"";position:absolute;inset:-14px}
 .pad button{width:68px;height:68px;border-radius:50%;border:2px solid rgba(240,192,64,.75);background:rgba(16,10,34,.38);color:var(--ink);font:700 14px "Trebuchet MS",Verdana,sans-serif;touch-action:none;-webkit-tap-highlight-color:transparent;padding:0}
 .pad button.on{background:rgba(240,192,64,.85);color:#140c22}
 #bJ{width:78px;height:78px;margin-bottom:24px}
@@ -60,7 +62,7 @@ cv.addEventListener('pointerdown',e=>{
   if(state==='pages'&&x>W-80&&y<34){pagesSkip();return}
   if(state==='play'&&x>W-76&&x<W-46&&y<44){setPause(true);return}
   if(x>W-48&&y<44){toggleSnd();return}
-  if(state==='title'&&splashT<=0&&y>146&&y<186&&(x<W*.3||x>W*.7)){pickLevel(x<W*.5?-1:1);return}
+  if(state==='title'&&splashT<=0&&y>120&&y<228&&(x<W*.36||x>W*.64)){pickLevel(x<W*.5?-1:1);return}
   startIfNeeded()});
 addEventListener('contextmenu',e=>e.preventDefault());
 const inp={
@@ -1926,15 +1928,15 @@ function drawPagePic(P0,L,t){
     g.fillStyle='#4a8a3a';g.fillRect(0,40,L,4);g.fillStyle='#2a1c14';g.fillRect(0,44,L,10);
     for(let k=0;k<12;k++){const rx=Math.round(L*(k+.5)/12);g.fillStyle='#3a2616';let x=rx;for(let y=54;y<54+30+(k*17)%60;y+=4){x+=((y*7+k)%5)-2;g.fillRect(x,y,2,4)}}
     const mv=ART.maveli_1;glowEll(Math.round(L/2),H-90,70,60,'#ffb830',.28);
-    if(mv){const sc=4,w=mv.width*sc,h=mv.height*sc;g.drawImage(mv,Math.round(L/2-w/2),H-h-8+Math.round(Math.sin(t*.05)*2),w,h)}
+    if(mv){const sc=3,w=mv.width*sc,h=mv.height*sc;g.drawImage(mv,Math.round(L/2-w/2),H-h-8+Math.round(Math.sin(t*.05)*2),w,h)}
     for(let k=0;k<5;k++){const lx=Math.round(L*(k+.5)/5),ly=120+((k*41)%60)+Math.round(Math.sin(t*.04+k)*4);glowEll(lx,ly,9,9,'#ffb830',.5);g.fillStyle='#fff0b0';g.fillRect(lx-1,ly-1,3,3)}}
   if(P0.pic==='ep'){for(let y=0;y<H;y+=2){g.fillStyle='rgb('+(14+(y/9|0))+','+(12+(y/16|0))+','+(40+(y/10|0))+')';g.fillRect(0,y,L,2)}
     for(let i=0;i<14;i++){const x=(i*71+13)%L,y=6+((i*37)%(H*.4)),a=.4+.5*Math.sin(t*.06+i*2.3);if(a>.3){g.globalAlpha=al*a;g.fillStyle='#fff6d0';g.fillRect(x,y,1,1);g.globalAlpha=al}}
     g.fillStyle='#1c1830';g.fillRect(0,gy,L,H-gy);
     const tr=ART['strees_'+(5+P0.tree)],tx=Math.round(L*.6),sc=2;
     if(tr){glowEll(tx,gy-100,110,90,TREE_GLOW[P0.tree],.14+.04*Math.sin(t*.05));g.drawImage(tr,tx-tr.width,gy-tr.height*2+8,tr.width*sc,tr.height*sc)}
-    const np=ART[P0.npc+'_0'],nx=Math.round(L*.2),nh=np?np.height*4:0;
-    if(np){const pic=P0.npc==='scenehero'?np:np;g.drawImage(pic,nx-np.width*2,gy-nh+(P0.prop==='halo'?10:0)+Math.round(Math.sin(t*.05)),np.width*4,nh)}
+    const np=ART[P0.npc+'_0'],nx=Math.round(L*.2),nh=np?np.height*3:0;
+    if(np){const pic=P0.npc==='scenehero'?np:np;g.drawImage(pic,nx-Math.round(np.width*1.5),gy-nh+(P0.prop==='halo'?10:0)+Math.round(Math.sin(t*.05)),np.width*3,nh)}
     const fx=nx+34,fy=gy-26;
     if(P0.prop==='lamp'){glowEll(fx,fy,18,18,'#ffb830',.45+.1*Math.sin(t*.3));g.fillStyle='#fff0b0';g.fillRect(fx-1,fy-4+Math.round(Math.sin(t*.4)),3,5);g.fillStyle='#8a5a20';g.fillRect(fx-5,fy+1,11,3)}
     if(P0.prop==='planks'){for(let k=0;k<5;k++){g.fillStyle=k%2?'#7a5232':'#8a6040';g.fillRect(nx+40,gy-8-k*6,48-k*5,5)}for(let i=0;i<6;i++){const dy=(t*.5+i*13)%30;g.globalAlpha=al*(1-dy/30);g.fillStyle='#a89878';g.fillRect(nx+44+i*7,gy-18-dy,2,2);g.globalAlpha=al}}
@@ -1948,7 +1950,7 @@ function drawPagePic(P0,L,t){
     g.fillStyle='#1c1830';g.fillRect(0,gy,L,H-gy);
     /* Bhadrakali stands below and reaches out; a golden beam from her hand catches Kannan in the air */
     const bh=ART.bhadra_1||ART.bhadra_0,kn=ART.hdead_1||ART.scenehero_0;
-    const bx=Math.round(L*.22),sc=4;let hx=bx+60,hy=gy-90;
+    const bx=Math.round(L*.22),sc=3;let hx=bx+60,hy=gy-90;
     if(bh){const w=bh.width*sc,h=bh.height*sc;g.drawImage(bh,bx-Math.round(w/2),gy-h+6+Math.round(Math.sin(t*.05)*2),w,h);hx=bx-Math.round(w/2)+Math.round(w*.9);hy=gy-h+6+Math.round(h*.4)}
     const kx=Math.round(L*.7),ky=Math.round(gy-135+Math.sin(t*.04)*6);
     glowEll(hx,hy,16,16,'#ffd860',.55);
@@ -1979,7 +1981,7 @@ function drawStory(){
   if(st.snap)g.drawImage(st.snap,0,0);
   g.fillStyle='rgba(8,6,20,.18)';g.fillRect(0,0,W,H);
   sc.actors.forEach((ac,i)=>{
-    const talking=cur&&ac.who&&cur.who===ac.who,scl=ac.sc||3;
+    const talking=cur&&ac.who&&cur.who===ac.who,scl=ac.sc||2;
     let pose=ac.pose||0;if(talking&&ac.talk!==undefined&&(t>>3)%2)pose=ac.talk;
     const img=ART[ac.id+'_'+pose];if(!img)return;const im=(ac.f||1)>0?img:flipOf(img);
     const p=Math.min(1,t/40),e=1-(1-p)*(1-p),off=Math.round((1-e)*(ac.from||0)*150),w=img.width*scl,h=img.height*scl;
@@ -2155,7 +2157,7 @@ function draw(){TQ.length=0;
     else if(lg){g.drawImage(lg,Math.round((W-lg.width)/2),4+Math.round(Math.sin(tick*.04)*1.5))}
     else{ptext('KANNAN',W/2,24,7,'#f0c040','center');ptext('AND THE',W/2,66,2,'#f4ecd0','center');ptext('KANJIRAVANAM CHRONICLES',W/2,82,3,'#ffe58a','center');ptext('KANNAN MUST SEAL THE PORTAL.',W/2,114,2,'#f4ecd0','center')}
     {const pk=pick<0?pickDefault():pick,L=LV[pk],sh=(tick>>4)%2;
-      for(const d of [-1,1]){const on=d<0?pk>0:pk<pickMax(),ax=Math.round(W/2+d*Math.min(120,W*.3))+(on?d*sh*2:0),ay=156;g.fillStyle=on?'#ffe58a':'#4a4060';for(let i=0;i<7;i++)g.fillRect(ax-d*i,ay-i,1,i*2+1)}
+      for(const d of [-1,1]){const on=d<0?pk>0:pk<pickMax(),ax=Math.round(W/2+d*Math.min(140,W*.33))+(on?d*sh*3:0),ay=166;g.fillStyle='#120a1c';for(let i=-1;i<16;i++)g.fillRect(ax-d*i-d,ay-i-2,1,i*2+5);g.fillStyle=on?'#ffe58a':'#4a4060';for(let i=0;i<14;i++)g.fillRect(ax-d*i,ay-i,1,i*2+1)}
       ptext(L.act||'PROLOGUE',W/2,148,3,'#ffe58a','center');ptext(L.name||'',W/2,172,1,'#f4ecd0','center');
       if((tick>>5)%2===0)ptext(isTouch?'TAP TO START':'PRESS SPACE TO START',W/2,192,2,'#cfe9c8','center')}
     if(!isTouch)ptext('LEFT RIGHT CHOOSE   SPACE JUMP   X THROW',W/2,222,1,'#b8b0d0','center');
