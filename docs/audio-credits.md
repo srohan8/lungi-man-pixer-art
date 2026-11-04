@@ -46,3 +46,8 @@ In `assets/audio/music/`: `sting_boss_intro` (3 s, +10 dB), `sting_gameover` (5 
 | Used in | File | Source | Licence |
 |---|---|---|---|
 | `bgm_act5.ogg` (the final stage, before the boss) | `itswatr-watr-train-to-ernakulam-town-303208.mp3` (kept as `bgm_act5_pixabay_a.mp3`) | "Train to Ernakulam Town" by ItsWatR (Pixabay user Jonas), https://pixabay.com | Pixabay Content Licence. Attribution is not required but welcome: "Music by ItsWatR from Pixabay". Made loop-safe (3 s crossfade of the end into the start) and normalised to about -17 LUFS. The earlier ElevenLabs Act V track is in git history. |
+
+## Disco (interlude) music (replaced the generated track, 2026-11-04)
+| Used in | File | Source | Licence |
+|---|---|---|---|
+| `bgm_disco.ogg` | `kamaleshsiddu-tamil-comedy-music-13957.mp3` (kept as `bgm_disco_pixabay_a.mp3`) | "Tamil Comedy Music" by Kamalesh Siddu, Pixabay | Pixabay Content Licence. Attribution welcome: "Music by Kamalesh Siddu from Pixabay". This track is registered with YouTube Content ID: keep the Pixabay licence certificate when posting the trailer to YouTube, in case of a claim. Loop-safe (2 s crossfade), normalised to about -17 LUFS. The earlier ElevenLabs track is in git history. |
