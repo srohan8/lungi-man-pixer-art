@@ -139,6 +139,7 @@ function toggleSnd(){AUD.on=!AUD.on;try{localStorage.setItem('lungiman-snd',AUD.
 const SFX_NAMES=['throw','hit','jump','vine','slash','die','chai','powerup','boss_roar','boss_roar_yakshi','boss_roar_chathan','boss_roar_odiyan','boss_roar_karinkanni','boss_roar_komban','yakshi_laugh','thunder'];
 function wantMusic(){
   if(state==='cine')return null;
+  if(state==='pages'&&pg&&pg.list===EPILOGUE)return 'bgm_ending';
   if(state==='title'||state==='pages')return 'bgm_menu';
   if(state==='win'||state==='ending')return 'bgm_ending';
   if(state==='over'||state==='clear')return null;
@@ -453,7 +454,7 @@ Object.assign({},LV_OLD[0],{act:'PROLOGUE',name:'THE SWINGING AWAKENING',
   fixed:[{x:480,k:'parotta'}],
   tut:[{x:40,a:'MOVE',b:'LEFT AND RIGHT BUTTONS',d:0},{x:230,a:'THROW',b:'HOLD THROW. KILLS DROP COCONUTS',d:0},{x:400,a:'JUMP',b:'TAP JUMP. STOMP CRABS TOO',d:0},{x:540,a:'VINE',b:'JUMP INTO THE VINE TO SWING',d:0}],
   clear:['BHADRAKALI SMILES','THE FOREST GIVES YOU ITS POWER'],
-  sayStart:['BIJU','THE FOREST IS RESTLESS AGAIN. I KNOW EXACTLY WHEN IT CHANGED.'],sayAt:[{x:130,who:'THOMA',text:'STAY ON THE TREES. THE GROUND BELONGS TO THEM NOW.',d:0}],sayClear:['BHADRAKALI','THRALLS OF THE KAZHUKANS ROAM THE WILD. RED EYES MARK THEM.']}),
+  sayStart:['BIJU','THE FOREST IS RESTLESS AGAIN. I KNOW EXACTLY WHEN IT CHANGED. I HAVE NEVER SAID.'],sayAt:[{x:130,who:'THOMA',text:'STAY ON THE TREES. THE GROUND BELONGS TO THEM NOW.',d:0}],sayClear:['BHADRAKALI','THRALLS OF THE KAZHUKANS ROAM THE WILD. RED EYES MARK THEM.']}),
 {act:'ACT I',name:"YAKSHI'S HOLLOW",
  sky:['#050a1a','#0a1a30','#12304a','#1c4a5a','#2a6a6a','#4a8a7a'],stars:55,
  sun:{y:52,r:22,c:['#f4f4e0','#dcdcc4','#8aa8a0'],crater:'#c0c0aa'},cloud:['#4a7a80','#2c5460','#1a3a48'],
@@ -495,7 +496,7 @@ Object.assign({},LV_OLD[0],{act:'PROLOGUE',name:'THE SWINGING AWAKENING',
  bush:['#16301e','#244a2c','#3a6a40','#d83030','#ffd0c0'],
  motes:'mist',foes:['dog','bat','cobra','dog'],boss:'odiyan',len:3200,prints:4,
  clear:['THIRD TREE AWAKENED','A BITE BURNS... THE WORLD SPINS'],
- sayStart:['VELU','HE WEARS THREE FORMS. READ THE HOOF-PRINTS. LEARN HIS PATTERN.'],sayBoss:['ODIYAN','YOU CANNOT CATCH WHAT YOU CANNOT SEE.'],sayClear:['ODIYAN','THE FOG LIFTS. I REMEMBER MYSELF NOW.']},
+ sayStart:['VELU','HE WEARS THREE FORMS. I KNOW EVERY PATTERN BY HEART. DO NOT ASK HOW.'],sayBoss:['ODIYAN','YOU CANNOT CATCH WHAT YOU CANNOT SEE.'],sayClear:['ODIYAN','THE FOG LIFTS. I REMEMBER MYSELF NOW.']},
 {act:'ACT IV',name:"KARINKANNI'S CURSE",
  sky:['#0a1214','#14222a','#1e343c','#2c4a50','#44666a','#6a8a88'],stars:0,
  sun:{y:56,r:14,c:['#98aeb0','#70888c','#44666a']},cloud:['#5a7478','#3a5258','#24383c'],
@@ -509,7 +510,7 @@ Object.assign({},LV_OLD[0],{act:'PROLOGUE',name:'THE SWINGING AWAKENING',
  bush:['#0a1e1c','#143a32','#24604a','#a0e0d0','#ffffff'],
  motes:'mist',rain:true,foes:['crab','bat','crow','bat'],boss:'karin',len:3000,vines:true,vineEvery:2,
  clear:['FOURTH TREE AWAKENED','SOMETHING PULLS YOU DOWN...'],
- sayStart:['DEVI','BE STILL. THE EYE HUNTS WHAT MOVES.'],sayBoss:['KARINKANNI','LOOK AT ME... AND BE STILL.'],sayClear:['KARINKANNI','THE STORM... IT PASSES. THANK YOU.']},
+ sayStart:['DEVI','BE STILL. THE EYE HUNTS WHAT MOVES. YOUR VILLAGE CARRIES A STONE.'],sayBoss:['KARINKANNI','LOOK AT ME... AND BE STILL.'],sayClear:['KARINKANNI','THE STORM... IT PASSES. THANK YOU.']},
 {act:'ACT V',name:"PEY KOMBAN'S RAMPAGE",
  sky:['#06060e','#0e0e1c','#1a1a30','#2a2444','#3a2c52','#4a3460'],stars:60,
  sun:{y:50,r:14,c:['#f4f0e0','#d8d4c8','#4a3460'],crater:'#c8c0b0'},cloud:['#4a3a6a','#2e2448','#1c1630'],
@@ -523,7 +524,7 @@ Object.assign({},LV_OLD[0],{act:'PROLOGUE',name:'THE SWINGING AWAKENING',
  bush:['#0c1a12','#16301c','#26502c','#ffc040','#ffffff'],
  motes:'fly',foes:['goon','cobra','monkey','goon'],boss:'komban',len:3300,
  clear:['THE PORTAL IS SEALED','KERALA IS SAFE'],
- sayStart:['THOMA','STAY. ON. THE. TREES. PROMISE ME.'],sayChai:['SONIYA','I BROUGHT EVERYTHING I HAVE. YOU DARE NOT DIE.'],sayClear:['BHADRAKALI','KANJIRAVANAM BREATHES AGAIN. WELL DONE, KANNAN.']}
+ sayStart:['THOMA','I SHOULD HAVE SPOKEN FIFTY YEARS AGO. STAY. ON. THE. TREES. PROMISE ME.'],sayChai:['SONIYA','I BROUGHT EVERYTHING I HAVE. YOU DARE NOT DIE.'],sayClear:['BHADRAKALI','KANJIRAVANAM BREATHES AGAIN. WELL DONE, KANNAN.']}
 ];
 
 ['pro','a1','a2','a3','a4','a5'].forEach((k,i)=>{LV0[i].key=k;LV0[i].sid=i});
@@ -554,7 +555,7 @@ const PATH={key:'path',sid:8,act:'PATHALAM',name:"MAVELI'S REALM",scene:true,
  palm:LV_OLD[0].palm,palms:false,ruins:true,vines:true,vineEvery:1,segW:[130,110],
  bush:['#0a2c34','#146068','#3ac0b0','#ffe090','#ffffff'],
  motes:'fly',foes:[],boss:null,len:2300,
- mav:['I BROUGHT YOU DOWN HERE. I HOPE THAT WAS ACCEPTABLE.','I HAVE WATCHED SINCE THE FIRST GROVE FELL. I KNOW WHAT COMES.','TAKE MY LAMP. GO UP AND FINISH IT. MY PEOPLE NEED A HOME.'],
+ mav:['I PLANTED THOSE TREES WITH MY GROVE-PRIESTS. I KNEW EVERY KEEPER BY NAME.','SOMEONE SOLD THE EDGE OF THAT GROVE. I FELT THE SEAL CRACK. I HAVE WATCHED SINCE.','TAKE MY LAMP. GO UP AND FINISH IT. MY PEOPLE NEED A HOME TO COME BACK TO.'],
  clear:["MAVELI'S BLESSING",'GO. FINISH IT.']};
 const LV=[LV0[0],LV0[1],BIKE,LV0[2],LV0[3],DISCO,LV0[4],PATH,LV0[5]];
 LV.forEach(L=>{if(/^a\d/.test(L.key))L.chai=true});
@@ -1044,7 +1045,7 @@ function startIfNeeded(src){
   if(splashT>0){splashT=0;return}
   if(state==='story'){if(story&&story.t>30)story.skip=true;return}
   if(state==='pages'){pagesNext();return}
-  if(state==='ending'&&endT>240){state='win';lockT=60;return}
+  if(state==='ending'&&endT>240){endFinish();return}
   if(state==='title')newGame();
   else if(state==='over'&&lockT<=0){score=actScore;begin(lvl,cp);P.inv=120;enemies.forEach(e=>{if(e.x>camx-20&&e.x<camx+W+20)e.alive=false})}
   else if(state==='win'&&lockT<=0)newGame();
@@ -1687,7 +1688,7 @@ function endTick(){
   if(endT===620)say('THOMA','I TOLD YOU TO STAY ON THE TREES. YOU DID NOT LISTEN ONCE.',230);
   if(endT===860)say('SONIYA','ARE YOU ALL JUST STANDING THERE? WANT CHAI?',230);
   if(endT===1100)say('MAVELI','ONAM IS IN THREE WEEKS. I HOPE THE FEAST IS GOOD.',230);
-  if(endT>=1400){state='win';lockT=90}
+  if(endT>=1400)endFinish()
 }
 function genMaveli(){
   const b=buf(48,56);
@@ -1787,7 +1788,7 @@ const SCENES={
   lines:[{who:'BIJU',text:'THE FOREST IS RESTLESS AGAIN. TAKE THIS COCONUT.'},{who:'THOMA',text:'STAY ON THE TREES. THE GROUND BELONGS TO THEM NOW.'}]},
  pro:{bg:'next',actors:[{id:'scenehero',who:'KANNAN',x:.5}],caption:['THE GOLDEN HOUR ENDS.','HE GOES IN.']},
  a1:{bg:'next',actors:[{id:'ravi',who:'RAVI',x:.24,talk:1,from:-1},{id:'scenehero',who:'KANNAN',x:.44},{id:'bike',pose:3,who:'',x:.7,from:1,sc:2}],
-  lines:[{who:'RAVI',text:'ONE GROVE DOWN. TAKE THE BIKE, MACHANE.'},{who:'RAVI',text:'THE CARNIVAL STARTED WITHOUT US. HOLD TIGHT!'}]},
+  lines:[{who:'RAVI',text:'ONE GROVE DOWN. TAKE THE BIKE, MACHANE.'},{who:'RAVI',text:"THE PLANKS IN MY SHOP HUM AT NIGHT. NEVER MIND THAT. HOLD TIGHT!"}]},
  bike:{bg:'cur',actors:[{id:'bike',pose:3,who:'',x:.32,sc:2},{id:'scenehero',who:'KANNAN',x:.62,f:-1,talk:2}],
   lines:[{who:'KANNAN',text:'THE FOREST CLOSED IN. FROM HERE, ON FOOT.'}]},
  a2:{bg:'next',actors:[{id:'scenehero',who:'KANNAN',x:.5}],caption:['TWO GROVES FREED. THE EMBERS GO COOL.','THE HIGHLAND FOG IS WAITING.']},
@@ -1820,6 +1821,16 @@ const OPENING=[
  {pic:'maveli',who:'MAVELI',h:'The king below',text:"Beneath the roots, a king was sent below a thousand years ago. He gave his word, and he keeps it. Every Onam he comes home, and every year the grove smells worse."},
  {pic:'crack',h:'The crack',text:"Fifty years ago the seal cracked. Tree by tree, the groves fell to the Kazhukans. Nobody in the village will say how."},
  {pic:'kannan',who:'BHADRAKALI',h:'The blessing',text:"One morning a coconut tapper fell deeper into the grove than anyone had gone. He should have died. A goddess caught him. \"You are clean,\" she said. \"Take this. Go.\""}];
+/* Epilogue (after the ending): what each villager does once the forest heals. Kannan never learns why they helped him. */
+const EPILOGUE=[
+ {pic:'ep',npc:'mooppan',tree:2,prop:'lamp',who:'VELU',h:'Mooppan Velu',text:"In his cave, an old man finally stands. Velu walks to the third tree and lights a lamp. He does not say sorry. He stays until it burns down."},
+ {pic:'ep',npc:'biju',tree:3,prop:'planks',who:'BIJU',h:'Captain Biju',text:"Captain Biju beaches his houseboat on the river bank. Plank by plank, he starts taking it apart."},
+ {pic:'ep',npc:'ravi',tree:1,prop:'shop',who:'RAVI',h:'Mundakkal Ravi',text:"At the toddy shop, Ravi turns the sign to closed. For once the silence is only quiet."},
+ {pic:'ep',npc:'soniya',tree:0,prop:'spring',who:'SONIYA',h:'Soniya Chechi',text:"Soniya pours the last of her clean spring over the roots of the first tree. Tomorrow's chai will taste right again."},
+ {pic:'ep',npc:'thoma',tree:4,prop:'halo',who:'THOMA',h:'Brother Thoma',text:"Brother Thoma kneels at the shrine. He does not ask to be forgiven this time. He gives thanks."},
+ {pic:'ep',npc:'scenehero',tree:4,prop:'rope',who:'KANNAN',h:'Kannan',text:"Kannan picks up his rope. There are coconuts to harvest. He never learns why the whole village helped him."},
+ {pic:'maveli',who:'MAVELI',h:'The king below',text:"Far below, a king smiles. \"Onam is coming,\" says Maveli. \"This year, I will come home.\""}];
+function endFinish(){startPages(EPILOGUE,()=>{state='win';lockT=90},null)}
 const TREECOL=['#4ad8c8','#ffb830','#7a7aff','#4ac060','#ffd860'];
 let pg=null;
 function startPages(list,next,snap){pg={list,next,snap,i:0,t:0,rev:0,len:list[0].text.length};state='pages';dlg=null}
@@ -1858,7 +1869,7 @@ function pageLife(pic,L,t,z){
   if(pic==='kannan'){for(let i=0;i<10;i++){const x=(i*47+11)%L+Math.sin(t*.05+i)*8,y=H-((t*.5+i*23)%H),a=.7*(1-((t*.5+i*23)%H)/H);sp(x,y,3,2,'#ffe070',a)}}
   g.globalAlpha=1}
 function drawPagePic(P0,L,t){
-  const gy=H-52,al=Math.min(1,t/18),art=ART['pg_'+pg.i];g.globalAlpha=al;
+  const gy=H-52,al=Math.min(1,t/18),art=pg.list===OPENING?ART['pg_'+pg.i]:null;g.globalAlpha=al;
   g.fillStyle='#0a0818';g.fillRect(0,0,L,H);
   if(art&&P0.pic!=='maveli'&&P0.pic!=='kannan'){
     /* slow zoom and drift (Ken Burns), then code-drawn life on top: glints, birds, fireflies, blinking eyes */
@@ -1882,6 +1893,21 @@ function drawPagePic(P0,L,t){
     const mv=ART.maveli_1;glowEll(Math.round(L/2),H-90,70,60,'#ffb830',.28);
     if(mv){const sc=4,w=mv.width*sc,h=mv.height*sc;g.drawImage(mv,Math.round(L/2-w/2),H-h-8+Math.round(Math.sin(t*.05)*2),w,h)}
     for(let k=0;k<5;k++){const lx=Math.round(L*(k+.5)/5),ly=120+((k*41)%60)+Math.round(Math.sin(t*.04+k)*4);glowEll(lx,ly,9,9,'#ffb830',.5);g.fillStyle='#fff0b0';g.fillRect(lx-1,ly-1,3,3)}}
+  if(P0.pic==='ep'){for(let y=0;y<H;y+=2){g.fillStyle='rgb('+(14+(y/9|0))+','+(12+(y/16|0))+','+(40+(y/10|0))+')';g.fillRect(0,y,L,2)}
+    for(let i=0;i<14;i++){const x=(i*71+13)%L,y=6+((i*37)%(H*.4)),a=.4+.5*Math.sin(t*.06+i*2.3);if(a>.3){g.globalAlpha=al*a;g.fillStyle='#fff6d0';g.fillRect(x,y,1,1);g.globalAlpha=al}}
+    g.fillStyle='#1c1830';g.fillRect(0,gy,L,H-gy);
+    const tr=ART['strees_'+(5+P0.tree)],tx=Math.round(L*.6),sc=2;
+    if(tr){glowEll(tx,gy-100,110,90,TREE_GLOW[P0.tree],.14+.04*Math.sin(t*.05));g.drawImage(tr,tx-tr.width,gy-tr.height*2+8,tr.width*sc,tr.height*sc)}
+    const np=ART[P0.npc+'_0'],nx=Math.round(L*.2),nh=np?np.height*4:0;
+    if(np){const pic=P0.npc==='scenehero'?np:np;g.drawImage(pic,nx-np.width*2,gy-nh+(P0.prop==='halo'?10:0)+Math.round(Math.sin(t*.05)),np.width*4,nh)}
+    const fx=nx+34,fy=gy-26;
+    if(P0.prop==='lamp'){glowEll(fx,fy,18,18,'#ffb830',.45+.1*Math.sin(t*.3));g.fillStyle='#fff0b0';g.fillRect(fx-1,fy-4+Math.round(Math.sin(t*.4)),3,5);g.fillStyle='#8a5a20';g.fillRect(fx-5,fy+1,11,3)}
+    if(P0.prop==='planks'){for(let k=0;k<5;k++){g.fillStyle=k%2?'#7a5232':'#8a6040';g.fillRect(nx+40,gy-8-k*6,48-k*5,5)}for(let i=0;i<6;i++){const dy=(t*.5+i*13)%30;g.globalAlpha=al*(1-dy/30);g.fillStyle='#a89878';g.fillRect(nx+44+i*7,gy-18-dy,2,2);g.globalAlpha=al}}
+    if(P0.prop==='shop'){g.fillStyle='#4a3020';g.fillRect(nx+34,gy-70,3,70);g.fillStyle='#8a5a30';g.fillRect(nx+34,gy-72,50,22);g.fillStyle='#2a1a10';g.fillRect(nx+36,gy-70,46,18);ntext('Closed',nx+60,gy-67,9,'#ffd860','center')}
+    if(P0.prop==='spring'){for(let i=0;i<9;i++){const dy=(t*1.4+i*9)%48;g.globalAlpha=al*(1-dy/60);g.fillStyle=i%2?'#bfe8ff':'#7ac0ff';g.fillRect(nx+34+((i*5)%7),gy-70+dy,2,3);g.globalAlpha=al}glowEll(nx+34,gy-72,10,10,'#9ad0ff',.3)}
+    if(P0.prop==='halo'){glowEll(nx,gy-nh+8,30,22,'#ffd860',.28+.08*Math.sin(t*.07))}
+    if(P0.prop==='rope'){g.fillStyle='#8a6a40';for(let k=0;k<5;k++){g.fillRect(nx+28+k,gy-52+k*5,2,6)}glowEll(Math.round(L*.5),gy-10,70,12,'#ffd860',.25)}
+  }
   if(P0.pic==='kannan'){for(let y=0;y<H;y+=2){g.fillStyle='rgb('+(18+(y/8|0))+','+(14+(y/14|0))+','+(38+(y/12|0))+')';g.fillRect(0,y,L,2)}
     g.fillStyle='#1c1830';g.fillRect(0,gy,L,H-gy);
     /* Bhadrakali stands below and reaches out; a golden beam from her hand catches Kannan in the air */

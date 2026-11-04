@@ -27,6 +27,7 @@ let lastL = -1, deaths = 0, lastState = '', grabs = 0, wasV = false, ok = false;
 for (let f = 0; f < 400000; f++) {
   if (state === 'dead' && lastState !== 'dead') deaths++;
   if (state === 'dead') lives = 4;
+  if (state === 'pages') pagesSkip();                // opening / epilogue pages wait for a tap
   lastState = state;
   const L = LV[lvl];
   if (L.arena) {                                   // dance arena: walk toward the nearest hostile dancer, hop when close
