@@ -61,7 +61,7 @@ In `assets/audio/music/`: `sting_boss_intro` (3 s, +10 dB), `sting_gameover` (5 
 The earlier ElevenLabs tracks are kept in `assets/audio/music-old/` (bgm_bike_elevenlabs.ogg, bgm_act5_elevenlabs.ogg, bgm_disco_elevenlabs.ogg). They are not packed into the app. To go back, copy one over the matching name in `assets/audio/music/` (for example bgm_bike_elevenlabs.ogg becomes bgm_bike.ogg).
 
 ## Finale music (Pey Komban knockout scene)
-`bgm_finale.ogg` plays during the mundu finale. It is currently a copy of bgm_ending.ogg (a placeholder): drop a special track in as `assets/audio/music/bgm_finale.ogg` to replace it.
+`bgm_finale.ogg` plays during the mundu finale. Made with ElevenLabs music (eleven_music_v2_5), 15 s, generated 2026-11-04. The source is `bgm_finale_a.mp3` (not packaged in the app).
 
 ## Credits shown in the game
 The last two pages after the ending epilogue list the music (ItsWatR, Kamalesh Siddu, Linesh Jose via Pixabay; the rest ElevenLabs) and the studio. Edit the CREDITS pages in index.html (EPILOGUE, pic credits) when a track changes.
