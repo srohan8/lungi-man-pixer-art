@@ -379,7 +379,7 @@ const BOSSDEF={
   komban:{w:80,h:60,foot:59,hb:[14,8,52,46],hp:30,name:'PEY KOMBAN',sub:'DEMON OF THE TUSKS'}};
 /* Boss art from PNG files (assets/art/bosses/<boss>_<frame>.png, made by tools/make-sprite.js from the reference sheets).
    Used only when the file loads and has the same size as the generated frame; otherwise the generated sprite stays. */
-const ART={},ART_FILES=['chathan_0','chathan_1','yakshi_0','yakshi_1','odiyan_0','odiyan_1','odiyan_2','karin_0','karin_1','karin_2','komban_0','komban_1','komban_2','hero_0','hero_1','hero_2','hero_3','heroidle_0','heroidle_1','heroidle_2','heroidle_3','heroswing_0','heroswing_1','heroswing_2','croc_0','croc_1','croc_2','croc_3','bike_0','bike_1','bike_2','bike_3','ravi_0','ravi_1','biju_0','biju_1','soniya_0','thoma_0','maveli_0','mooppan_0','scenehero_0','soniya_1','thoma_1','maveli_1','mooppan_1','scenehero_1','soniya_2','thoma_2','maveli_2','mooppan_2','scenehero_2','soniya_3','thoma_3','maveli_3','mooppan_3','scenehero_3','kili_0','kili_1','kili_2','stall_0','devi_0','komrun_0','komrun_1','komrun_2','komrun_3','komrun_4','komrun_5','komrun_6','komrun_7','komrun_8','komrun_9','odirun_0','odirun_1','odirun_2','odirun_3','odirun_4','odirun_5','odirun_6','odirun_7','odirun_8','odirun_9','odirun_10','odirun_11','strees_0','strees_1','strees_2','strees_3','strees_4','strees_5','strees_6','strees_7','strees_8','strees_9','tstaff_0','tstaffs_1','tstaffs_2','tdrops_0','tbeam_0','tbeam_1','tbeam_2','hdrown_0','hdrown_1','hdrown_2','hdrown_3','hdrown_4','hdrown_5','hdead_0','hdead_1','hdead_2','hdead_3','ecobra_0','ecobra_1','ecobra_2','ecobra_3','ebat_0','ebat_1','ebat_2','ebat_3','ebat_4','ecrow_0','ecrow_1','ecrow_2','ecrow_3','egoon_0','egoon_1','egoon_2','eimp_0','eimp_1','eimp_2','bhadra_0','bhadra_1','palm_0','palm_1','palm_2','dc1_0','dc1_1','dc1_2','dc1_3','dc1_4','dc1_5','dc2_0','dc2_1','dc2_2','dc2_3','dc2_4','dc2_5','da1_0','da1_1','da1_2','da1_3','da1_4','da1_5','da2_0','da2_1','da2_2','da2_3','da2_4','da2_5','da3_0','da3_1','da3_2','da3_3','da3_4','da3_5'];
+const ART={},ART_FILES=['chathan_0','chathan_1','yakshi_0','yakshi_1','odiyan_0','odiyan_1','odiyan_2','karin_0','karin_1','karin_2','komban_0','komban_1','komban_2','hero_0','hero_1','hero_2','hero_3','heroidle_0','heroidle_1','heroidle_2','heroidle_3','heroswing_0','heroswing_1','heroswing_2','croc_0','croc_1','croc_2','croc_3','bike_0','bike_1','bike_2','bike_3','ravi_0','ravi_1','biju_0','biju_1','soniya_0','thoma_0','maveli_0','mooppan_0','scenehero_0','soniya_1','thoma_1','maveli_1','mooppan_1','scenehero_1','soniya_2','thoma_2','maveli_2','mooppan_2','scenehero_2','soniya_3','thoma_3','maveli_3','mooppan_3','scenehero_3','kili_0','kili_1','kili_2','stall_0','devi_0','komrun_0','komrun_1','komrun_2','komrun_3','komrun_4','komrun_5','komrun_6','komrun_7','komrun_8','komrun_9','odirun_0','odirun_1','odirun_2','odirun_3','odirun_4','odirun_5','odirun_6','odirun_7','odirun_8','odirun_9','odirun_10','odirun_11','strees_0','strees_1','strees_2','strees_3','strees_4','strees_5','strees_6','strees_7','strees_8','strees_9','hf_0','hf_1','hf_2','hf_3','hf_4','hf_5','hf_6','hf_7','hf_8','hf_9','hf_10','pg_0','pg_1','pg_2','pg_3','pg_4','tstaff_0','tstaffs_1','tstaffs_2','tdrops_0','tbeam_0','tbeam_1','tbeam_2','hdrown_0','hdrown_1','hdrown_2','hdrown_3','hdrown_4','hdrown_5','hdead_0','hdead_1','hdead_2','hdead_3','ecobra_0','ecobra_1','ecobra_2','ecobra_3','ebat_0','ebat_1','ebat_2','ebat_3','ebat_4','ecrow_0','ecrow_1','ecrow_2','ecrow_3','egoon_0','egoon_1','egoon_2','eimp_0','eimp_1','eimp_2','bhadra_0','bhadra_1','palm_0','palm_1','palm_2','dc1_0','dc1_1','dc1_2','dc1_3','dc1_4','dc1_5','dc2_0','dc2_1','dc2_2','dc2_3','dc2_4','dc2_5','da1_0','da1_1','da1_2','da1_3','da1_4','da1_5','da2_0','da2_1','da2_2','da2_3','da2_4','da2_5','da3_0','da3_1','da3_2','da3_3','da3_4','da3_5'];
 if(typeof Image!=='undefined')ART_FILES.forEach(n=>{const im=new Image();
   im.onload=()=>{const c=document.createElement('canvas');c.width=im.width;c.height=im.height;c.getContext('2d').drawImage(im,0,0);ART[n]=c;
     if(A&&A.boss&&LV[lvl]&&LV[lvl].boss)A.boss=bossFrames(LV[lvl].boss);if(n.startsWith('palm_')&&A&&A.palms&&LV[lvl]&&!LV[lvl].bamboo){const pa=palmArt(LV[lvl]);if(pa)A.palms=pa}};
@@ -910,18 +910,16 @@ function drawCine(cx){const c=cin;if(state!=='cine'||!c||boss.t!=='odiyan')retur
     if(fr){g.globalAlpha=al;const im=flipOf(fr),x=Math.round(c.ox-cx-32),y=GY-46+(t>=22?0:-2);g.drawImage(im,x,y);g.globalAlpha=1}}
 }
 function drawCinePlayer(cx){const c=cin,t=c.t,px=Math.round(P.x+P.w/2-cx),by=Math.round(P.y+P.h)+1;
-  const hd=i=>ART['hdead_'+i],idle=ART.heroidle_0||ART.hero_1;
-  let img,lean=0,dx=0;
-  if(t<42){img=idle;dx=0}
-  else if(t<64){img=hd(0);dx=-Math.round(Math.min(10,(t-42)*.7))}
-  else if(t<150){img=idle;lean=Math.sin(t*.13)*.07+((t-64)/86)*.05;dx=-8+Math.round(Math.sin(t*.1)*1.5)}
-  else if(t<158){img=hd(0);dx=-8}
-  else if(t<170){img=hd(1);dx=-8}
+  const hd=i=>ART['hdead_'+i],hf=i=>ART['hf_'+i],idle=ART.heroidle_0||ART.hero_1;
+  let img,dx=0,bob=0;
+  if(t<42)img=idle;
+  else if(t<64){img=hf(8)||hd(0);dx=-Math.round(Math.min(8,(t-42)*.6))}
+  else if(t<150){img=((t>>5)%2?hf(8):hf(9))||idle;dx=-8;bob=Math.round(Math.sin(t*.2)*1)}
+  else if(t<162){img=hf(10)||hd(0);dx=-8}
+  else if(t<172){img=hd(1);dx=-8}
   else{img=hd(2);dx=-8}
   if(!img)return;
-  const pic=(img===idle)?img:flipOf(img);
-  if(lean){g.save();g.translate(px+dx,by);g.rotate(lean);g.drawImage(img,-Math.round(img.width/2),-img.height);g.restore();return}
-  g.drawImage(img===idle?img:img,px+dx-Math.round(img.width/2),by-img.height)}
+  g.drawImage(img,px+dx-Math.round(img.width/2),by-img.height+bob)}
 function pickMax(){return TUNE.levelSelectAll?LV.length-1:Math.max(0,Math.min(resume,LV.length-1))}
 function pickDefault(){return seen?Math.max(1,Math.min(resume,LV.length-1)):0}
 function pickLevel(d){if(pick<0)pick=pickDefault();pick=Math.max(0,Math.min(pickMax(),pick+d));beep(520+pick*30,.05,'square',.04)}
@@ -1724,8 +1722,9 @@ function pageTree(x,gy,col,dim){const c=dim?'#2a2a3a':col;
   if(!dim)glowEll(x,gy-62,34,24,col,.4);
   fillEll(x,gy-62,20,15,dim?'#262434':'#1a1a2a');fillEll(x,gy-64,17,12,c);g.fillStyle='rgba(255,255,255,.18)';g.fillRect(x-9,gy-72,10,2)}
 function drawPagePic(P0,L,t){
-  const gy=H-52,al=Math.min(1,t/18);g.globalAlpha=al;
+  const gy=H-52,al=Math.min(1,t/18),art=ART['pg_'+pg.i];g.globalAlpha=al;
   g.fillStyle='#0a0818';g.fillRect(0,0,L,H);
+  if(art){const sw=Math.min(art.width,L),sx=Math.round((art.width-sw)/2),dx=Math.round((L-sw)/2);g.drawImage(art,sx,0,sw,art.height,dx,0,sw,art.height);g.globalAlpha=1;return}
   if(P0.pic==='village'){if(pg.snap)g.drawImage(pg.snap,0,0)}
   if(P0.pic==='village'){g.fillStyle='rgba(8,6,20,.25)';g.fillRect(0,0,L,H)}
   if(P0.pic==='seal'||P0.pic==='crack'){for(let y=0;y<H;y+=2){g.fillStyle=y<gy?'rgb('+(24+(y/6|0))+','+(18+(y/9|0))+','+(52+(y/5|0))+')':'#10101a';g.fillRect(0,y,L,2)}

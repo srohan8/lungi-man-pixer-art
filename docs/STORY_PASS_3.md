@@ -109,6 +109,13 @@ Ravi's swing-off (he races ahead on the vines, scenery), Devi's bell (walk past:
   the red crack across the third tree, Bhadrakali with Kannan). The trees look like glowing balls on sticks. Needed: one illustration per page, same style as the
   reference art; the five sacred trees are the same ones used in the boss arenas (withered and bloomed versions).
 
+## Art received and converted (2026-11-04)
+- Trishul sheet (staff, firing pose, beam, pickup): in the game, replaces the Sun Staff.
+- Sacred trees (withered and bloomed, five colours): in the five boss arenas.
+- Hero finale and ankle frames (11): the ankle ones are in the Act III cinematic; the mundu lasso, climb and boxers are converted (hf_0..7) and wait for the Act V finale.
+- Five opening page pictures: on the opening pages.
+- Still to make: nothing for the cinematics; Pathalam ground opening is code only.
+
 ## Parked for later discussion
 - **Boss difficulty** across the five acts.
 - **Level transition story problems**, for example going in and out of the disco / interlude.
