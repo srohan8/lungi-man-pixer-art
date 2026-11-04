@@ -46,7 +46,7 @@ All art is drawn in code at start-up. There are no image files yet.
 | 2 | bike | Act II ride | automatic speed, only jump and throw |
 | 3 | a2 | Act II, Kuttichathan's Carnival | imps, wisps, goons; boss Kuttichathan |
 | 4 | a3 | Act III, Odiyan's Hunt | dogs, bats, cobras; four hoof-prints; boss Odiyan |
-| 5 | disco | Interlude, the fever dream | one-screen arena, defeat 12 dancers |
+| 5 | disco | Interlude, Disco or Die (the fever dream) | one-screen arena, defeat 12 dancers |
 | 6 | a4 | Act IV, Karinkanni's Curse | rain, many vines; boss Karinkanni |
 | 7 | path | Pathalam | enemy-free rope swinging, Maveli's throne scene, blessing |
 | 8 | a5 | Act V, Pey Komban's Rampage | blessing = one free hit; boss Pey Komban; then the ending |

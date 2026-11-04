@@ -545,7 +545,7 @@ Object.assign({},LV_OLD[0],{act:'PROLOGUE',name:'THE SWINGING AWAKENING',
 ['pro','a1','a2','a3','a4','a5'].forEach((k,i)=>{LV0[i].key=k;LV0[i].sid=i});
 const BIKE=Object.assign({},LV0[2],{key:'bike',sid:6,act:'ACT II',name:'THE RIDE TO THE CARNIVAL',bike:true,foes:['wisp','imp'],boss:null,len:11500,gapW:[105,18],segW:[260,160],aru:false,
   clear:['THE FESTIVAL GATES','SOMETHING WRONG IS DANCING INSIDE'],sayStart:['RAVI','KEEP THE FRONT WHEEL UP, MACHANE! AND DO NOT SCRATCH MY BULLET!'],sayBoss:null,sayClear:null,sayChai:null});
-const DISCO={key:'disco',sid:7,act:'INTERLUDE',name:'THE FEVER DREAM',arena:true,kills:12,
+const DISCO={key:'disco',sid:7,act:'INTERLUDE',name:'DISCO OR DIE',arena:true,kills:12,
  sky:['#0a0418','#1a0a3a','#34124e','#5a1a6a','#8a2a82','#c03a98'],stars:40,
  sun:{y:50,r:12,c:['#ffb0f0','#ff7ae0','#c040c0']},cloud:['#ff7ae0','#a02a90','#5a1a6a'],
  far:{c:'#2a0e4a',rim:'#ff7ae0',rim2:'#8a2a82',mist:'#5a1a6a',base:GY-84},
@@ -1631,6 +1631,8 @@ function drawDeath(cx){
     for(let k=0;k<3;k++){const an=tick*.18+k*2.1;g.fillStyle=k%2?'#ffe070':'#ffffff';g.fillRect(Math.round(hx+Math.cos(an)*9),Math.round(hy-8+Math.sin(an)*3),2,2)}}
 }
 function drawPlayer(cx){
+  /* after Odiyan's bite Kannan stays collapsed while the sacred tree blooms (no jumping up and lying down again) */
+  if(state==='clear'&&LV[lvl].key==='a3'&&ART.hdead_2){const im=ART.hdead_2;g.drawImage(im,Math.round(P.x+P.w/2-cx)-8-Math.round(im.width/2),Math.round(P.y+P.h)+1-im.height);return}
   if(state==='cine'&&cin){drawCinePlayer(cx);return}
   if(state==='dead'&&P.dk){drawDeath(cx);return}
   if(state==='play'&&P.inv>0&&tick%6<3)return;
@@ -2192,7 +2194,6 @@ function draw(){TQ.length=0;syncPad();
 
   if(state!=='title'&&state!=='cine'){
     ptext('SCORE '+String(score).padStart(6,'0'),10,10,2,'#ffffff');
-    ptext('HI '+String(hi).padStart(6,'0'),W-10,36,2,'#ffe58a','right');
     for(let i=0;i<lives;i++)g.drawImage((goldLamp()?LAMPG:LAMP)[((tick>>4)+i)%2],10+i*10,24);
     ptext(LV[lvl].act,10,36,1,'#d8d0e8');
     ptext(P.aru?'TRISHUL':P.sp?'PAROTTA X3  '+ammo:'COCONUT  '+ammo,10,46,1,P.aru?'#ffe898':ammo<=5?'#ff9a80':'#c8b890');
@@ -2220,7 +2221,7 @@ function draw(){TQ.length=0;syncPad();
       if((tick>>5)%2===0)ptext(isTouch?'TAP TO START':'PRESS SPACE TO START',W/2,192,2,'#cfe9c8','center')}
     if(!isTouch)ptext('LEFT RIGHT CHOOSE   SPACE JUMP   X THROW',W/2,222,1,'#b8b0d0','center');
   }
-  if(state==='over'){overlay();ptext('GAME OVER',W/2,80,5,'#e8402e','center');ptext('SCORE '+score,W/2,118,2,'#f4ecd0','center');if(lockT<=0)ptext(isTouch?'TAP TO CONTINUE':'PRESS ANY KEY',W/2,146,2,'#ffe58a','center')}
+  if(state==='over'){overlay();ptext('GAME OVER',W/2,80,5,'#e8402e','center');ptext('SCORE '+score,W/2,112,2,'#f4ecd0','center');ptext('BEST '+Math.max(hi,score),W/2,130,2,'#ffe58a','center');if(lockT<=0)ptext(isTouch?'TAP TO CONTINUE':'PRESS ANY KEY',W/2,160,2,'#cfe9c8','center')}
   if(state==='win'){overlay();ptext('PORTAL SEALED!',W/2,70,5,'#f0c040','center');ptext('KANNAN SAVED KANJIRAVANAM.',W/2,108,2,'#f4ecd0','center');ptext('SCORE '+score+(score>=hi?'  NEW BEST':''),W/2,126,2,'#cfe9c8','center');if(lockT<=0)ptext(isTouch?'TAP TO PLAY AGAIN':'PRESS ANY KEY',W/2,156,2,'#ffe58a','center')}
   if(splashT>0)drawSplash();
 }

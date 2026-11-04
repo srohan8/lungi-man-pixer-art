@@ -237,7 +237,7 @@ He feels it now.
 ### Interlude: Odiyan's Venom — The Disco Dream
 *Inside his own poisoned mind.*
 
-He wakes up somewhere that has no business existing. An 80s Kerala disco-cabaret — neon lights, rotating disco ball, everyone in bell-bottoms and coloured lungis doing synchronized moves. A nadaswaram plays over a Roland TR-808 beat. He is standing in the centre, still in his mundu, his arivaal at his belt, his aviators the only thing that feels real.
+He wakes up somewhere that has no business existing. An 80s Kerala disco-cabaret (the level is called "Disco or Die") — neon lights, rotating disco ball, everyone in bell-bottoms and coloured lungis doing synchronized moves. A nadaswaram plays over a Roland TR-808 beat. He is standing in the centre, still in his mundu, his arivaal at his belt, his aviators the only thing that feels real.
 
 He has no idea where he is. The crowd does not notice he doesn't belong. Someone grabs his hand and pulls him into the dance circle. *"DANCE, machane! Follow the steps!"*
 
