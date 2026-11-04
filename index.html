@@ -1838,6 +1838,12 @@ function drawBlockade(cx){
   for(const [rx,rw] of [[x-6,16],[x+24,14],[x+56,18],[x+76,12]]){R(rx,GY-34,rw,34,'#3a2410');R(rx+1,GY-34,2,34,'#6a4222');R(rx+rw-3,GY-30,2,30,'#24160a');R(rx-3,GY-6,rw+6,6,'#3a2410')}
   /* two fallen trunks across the road */
   for(const [ty,tw,tx] of [[GY-22,86,x-8],[GY-42,78,x-2]]){R(tx,ty,tw,18,'#4a2e16');R(tx,ty,tw,3,'#7a5230');R(tx,ty+15,tw,3,'#2a180a');for(let k=0;k<tw;k+=9)R(tx+k,ty+4+((k*5)%7),5,1,'#2a180a');R(tx-3,ty+2,4,14,'#6a4a2a');R(tx+tw-1,ty+2,4,14,'#3a2410');R(tx+tw,ty+5,2,8,'#c8a878')}
+  /* two coconut palms that came down across the road, fronds and coconuts on the ground */
+  const palm=(bx,by,tx,ty,flip)=>{const n=Math.round(Math.hypot(tx-bx,ty-by));for(let i=0;i<=n;i++){const px=Math.round(bx+(tx-bx)*i/n),py=Math.round(by+(ty-by)*i/n),w=7-Math.round(i/n*2);R(px-w/2|0,py,w,2,(i>>2)%2?'#5a3a1e':'#7a5230');R(px-w/2|0,py,1,2,'#a07a48')}
+    for(const [fx,fy,fw,c] of [[-14,-4,14,'#2a6a34'],[-12,-9,16,'#3f8a3a'],[-4,-12,14,'#55a444'],[0,-6,16,'#2a6a34'],[-8,2,14,'#3f8a3a'],[2,-2,12,'#55a444']]){const sx=tx+fx,sy=ty+fy;for(let k=0;k<fw;k++)R(sx+k*(flip?-1:1),sy+((k*k)>>5)+(k%3===0?1:0),2,2,c);R(sx-1,sy,fw,1,'#8ccf55')}
+    R(tx-2,ty+2,5,5,'#5a3a1e')};
+  palm(x+78,GY-2,x+6,GY-92,false);palm(x-6,GY-2,x+66,GY-86,true);
+  for(const [cx2,cy2] of [[x+92,GY-3],[x+100,GY-2],[x-16,GY-3],[x+40,GY-2]]){R(cx2,cy2-2,5,5,'#5a3a1e');R(cx2+1,cy2-3,3,1,'#7a5230');R(cx2+1,cy2-1,1,1,'#a07a48')}
   /* leaves and a few fireflies so it reads as a living wall */
   for(let k=0;k<5;k++){const a=tick*.04+k*1.9;g.fillStyle=(k+(tick>>4))%3?'#fff6a0':'#9aff80';g.fillRect(Math.round(x+8+k*16+Math.sin(a)*6),Math.round(GY-50-k*8+Math.cos(a)*5),2,2)}
 }
@@ -1947,6 +1953,7 @@ function snapshotBackdrop(cx){
   const L=LV[lvl];g.drawImage(A.sky,0,0);tile(A.clouds,.06,cx);tile(A.far,.12,cx);tile(A.mid,.3,cx);tile(A.jung,.55,cx);drawBikeBack(cx);drawBikeForest(cx);
   g.drawImage(A.pit,0,GY+12);pitFx(L,cx);
   segs.forEach((sg,k)=>{const sx=sg[0]-cx;if(sx<W&&sx+(sg[1]-sg[0])>0)g.drawImage(A.segC[k],Math.round(sx),GY-6)});
+  if(L.bike)drawBlockade(bossX+82-Math.round(W*.76));/* the story card shows the blocked road behind the hero */
   tile(A.canopy,1.25,cx);drawBikeCanopy(cx);
   const c=document.createElement('canvas');c.width=W;c.height=H;c.getContext('2d').drawImage(cv,0,0);return c;
 }
