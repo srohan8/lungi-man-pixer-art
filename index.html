@@ -141,10 +141,14 @@ function thunder(big){if(sfx('thunder'))return;try{const c=actx(),m=audMaster();
 /* Healing magic when a sacred tree blooms: assets/audio/sfx/heal_magic.ogg if present, otherwise a rising chime arpeggio made in code. */
 function healSfx(){if(sfx('heal_magic'))return;[523,659,784,988,1319,1568].forEach((f,i)=>setTimeout(()=>{beep(f,.9,'sine',.045);beep(f*2,.7,'triangle',.02)},i*170))}
 function startBloom(){bloomAt=tick;healSfx()}
+/* Footsteps made in code (no files): a soft thud for the hero, a heavy one for charging bosses. */
+function stepSfx(heavy){if(!AUD.on||!AUD.go)return;try{const c=actx(),m=audMaster();if(!c||!m)return;const d=heavy?.14:.06,n=Math.floor(c.sampleRate*d),b=c.createBuffer(1,n,c.sampleRate),a=b.getChannelData(0);
+  for(let i=0;i<n;i++){const t=i/n;a[i]=(Math.random()*2-1)*Math.pow(1-t,3)}
+  const src=c.createBufferSource();src.buffer=b;const f=c.createBiquadFilter();f.type='lowpass';f.frequency.value=heavy?260:700;const gn=c.createGain();gn.gain.value=heavy?.5:.14;src.connect(f);f.connect(gn);gn.connect(m);src.start()}catch(e){}}
 function toggleSnd(){AUD.on=!AUD.on;try{localStorage.setItem('lungiman-snd',AUD.on?'1':'0')}catch(e){}audMaster()}
 const SFX_NAMES=['throw','hit','jump','vine','slash','die','chai','powerup','boss_roar','boss_roar_yakshi','boss_roar_chathan','boss_roar_odiyan','boss_roar_karinkanni','boss_roar_komban','yakshi_laugh','thunder','heal_magic'];
 function wantMusic(){
-  if(state==='cine')return null;
+  if(state==='cine')return cin&&cin.k==='mk'?'bgm_finale':null;
   if(state==='pages'&&pg&&pg.list===EPILOGUE)return 'bgm_ending';
   if(state==='title'||state==='pages')return 'bgm_menu';
   if(state==='win'||state==='ending')return 'bgm_ending';
@@ -940,7 +944,7 @@ function drawSacredTree(cx){const L=LV[lvl],k0=TREE_OF[L.boss];if(k0===undefined
     g.globalAlpha=1}
   else{const p=.5+.5*Math.sin(tick*.06);g.fillStyle='rgba(255,58,42,'+(.15+.1*p).toFixed(2)+')';g.fillRect(x+60,y+50,3,8)}
 }
-function startCine(k,next){const b=boss;cin={k,t:0,next,ox:b.x+b.w/2,hx:Math.round(P.x+P.w/2)};if(k==='pt'){P.f=1;P.vx=0;cin.gx=P.x+P.w/2}if(k==='mk'){cin.bcx=Math.round(b.x+b.w/2);cin.sx=Math.round(P.x+P.w/2);cin.dir=cin.bcx>cin.sx?1:-1;cin.sx=cin.bcx-cin.dir*Math.min(165,Math.abs(cin.bcx-cin.sx));P.f=cin.dir}state='cine';dlg=null;banner=null;bullets=[];touch.l=touch.r=touch.j=touch.s=0;tutPulse(null)}
+function startCine(k,next){const b=boss;cin={k,t:0,next,ox:b.x+b.w/2,hx:Math.round(P.x+P.w/2)};if(k==='pt'){P.f=1;P.vx=0;cin.gx=P.x+P.w/2}if(k==='mk'){cin.bx0=b.x;cin.bxT=Math.round(bossX+W*.56-b.w/2);cin.bcx=cin.bxT+Math.round(b.w/2);cin.sx=Math.round(P.x+P.w/2);cin.dir=cin.bcx>cin.sx?1:-1;cin.sx=cin.bcx-cin.dir*Math.min(165,Math.abs(cin.bcx-cin.sx));P.f=cin.dir}state='cine';dlg=null;banner=null;bullets=[];touch.l=touch.r=touch.j=touch.s=0;tutPulse(null)}
 function cineEnd(){if(cin&&cin.k==='pt'){const n=cin.next;cin=null;flashT=0;if(n)n();return}cin=null;fogK=0;state='clear';clearT=330;flashT=0}
 function cineTick(){const c=cin;if(c.k==='pt'){ptTick();return}if(c.k==='mk'){mkTick();return}c.t++;const t=c.t,b=boss;
   if(t===16){burst(c.ox,GY-22,['#2e2444','#6a4a90','#1a1426'],18);beep(140,.35,'sawtooth',.06)}
@@ -1024,48 +1028,55 @@ function drawPt(cx){const c=cin,t=c.t,gx=Math.round(c.gx-cx);
 }
 /* ===== Finishing cinematic, Act V: the mundu finale. After Pey Komban's last hit the controls go away: Kannan whips off his mundu, lassos the tusk, swings up and
    throws the knockout coconut from above, lands in his boxers, Thoma brings a fresh mundu. Coded from the hf_* frames. ~8 s, skippable. ===== */
-const MK_END=500;
-function mkPos(c,t){const gy=GY+1;let x=c.sx,y=gy,f='idle';
-  if(t<20)f='idle';else if(t<60)f='u';else if(t<120)f='w';else if(t<150)f='t';
-  else if(t<240){const u=Math.min(1,(t-150)/82);x=c.sx+(c.bcx-c.dir*8-c.sx)*u;y=gy-Math.sin(u*Math.PI*.5)*112;f='a'}
-  else if(t<284){const u=(t-240)/44;x=(c.bcx-c.dir*8)+((c.bcx-c.dir*74)-(c.bcx-c.dir*8))*u;y=gy-112+112*u*u;f='a'}
-  else if(t<302){x=c.bcx-c.dir*74;f='c'}
-  else if(t<440){x=c.bcx-c.dir*74;f='b'}else{x=c.bcx-c.dir*74;f='m'}
+const MK_HOLD=84,MK_END=500+MK_HOLD,MK_HIT=240+MK_HOLD-2;
+/* te: the timeline without the "standing on his head" hold, so every later beat keeps its old timing */
+const mkTe=t=>t<240?t:(t<240+MK_HOLD?240:t-MK_HOLD);
+function mkPos(c,t){const gy=GY+1,te=mkTe(t),hold=t>=240&&t<240+MK_HOLD,headY=boss.y+10;let x=c.sx,y=gy,f='idle';
+  if(te<20)f='idle';else if(te<60)f='u';else if(te<120)f='w';else if(te<150)f='t';
+  else if(hold){const u=Math.min(1,(t-240)/20);x=c.bcx-c.dir*8+c.dir*8*u*0;y=(gy-112)+(headY-(gy-112))*u*(2-u);f=(t-240)%30<15?'w':'a'}   /* he lands on Komban's head and whirls the mundu */
+  else if(te<240){const u=Math.min(1,(te-150)/82);x=c.sx+(c.bcx-c.dir*8-c.sx)*u;y=gy-Math.sin(u*Math.PI*.5)*112;f='a'}
+  else if(te<284){const u=(te-240)/44;x=(c.bcx-c.dir*8)+((c.bcx-c.dir*74)-(c.bcx-c.dir*8))*u;y=headY+(gy-headY)*u*u;f='a'}
+  else if(te<302){x=c.bcx-c.dir*74;f='c'}
+  else if(te<440){x=c.bcx-c.dir*74;f='b'}else{x=c.bcx-c.dir*74;f='m'}
   return {x,y,f}}
-function mkTick(){const c=cin;c.t++;const t=c.t;
+function mkTick(){const c=cin;c.t++;const t=c.t,te=mkTe(t);
+  /* Pey Komban staggers away from the wall towards the middle of the arena */
+  if(t<70){const u=Math.min(1,t/70),e=u*u*(3-2*u);boss.x=c.bx0+(c.bxT-c.bx0)*e}else boss.x=c.bxT;
   if(t===2){if(!sfx('boss_roar_komban'))beep(90,.5,'sawtooth',.07);shake=10}
   if(t===60||t===120||t===150)beep(300+t,.12,'triangle',.05);
-  if(t===236){flashC='#ffffff';flashT=18;shake=22;thunder(true);burst(c.bcx-c.dir*20,boss.y+16,['#ffffff','#ffe070','#ff8030'],18)}
-  if(t===250){startBloom();thunder(false);for(let k=0;k<4;k++)burst(c.bcx+(Math.random()-.5)*40,boss.y+20+Math.random()*30,['#ffe070','#ffd860','#ffffff'],10)}
-  if(t>=256&&t<=380&&t%4===0)burst(c.bcx+(Math.random()-.5)*50,GY-10,['#ffe070','#fff6c0'],2);
-  if(t===284){shake=Math.max(shake,6);burst(c.bcx-c.dir*74,GY,['#d8c8a0','#a89878'],8)}
+  if(t===240+8){if(!sfx('boss_roar_komban'))beep(110,.4,'sawtooth',.06);shake=Math.max(shake,8)}
+  if(t===MK_HIT){flashC='#ffffff';flashT=18;shake=22;thunder(true);burst(c.bcx-c.dir*20,boss.y+16,['#ffffff','#ffe070','#ff8030'],18)}
+  if(t===250+MK_HOLD){startBloom();thunder(false);for(let k=0;k<4;k++)burst(c.bcx+(Math.random()-.5)*40,boss.y+20+Math.random()*30,['#ffe070','#ffd860','#ffffff'],10)}
+  if(te>=256&&te<=380&&t>=240+MK_HOLD&&t%4===0)burst(c.bcx+(Math.random()-.5)*50,GY-10,['#ffe070','#fff6c0'],2);
+  if(t===284+MK_HOLD){shake=Math.max(shake,6);burst(c.bcx-c.dir*74,GY,['#d8c8a0','#a89878'],8)}
   if(t>=MK_END)cineEnd()}
-function drawMk(cx){const c=cin,t=c.t,F=A.boss[2]||A.boss[0],flip=c.dir>0?boss.f>0||true:false;
+function drawMk(cx){const c=cin,t=c.t,te=mkTe(t),F=A.boss[2]||A.boss[0];
   const kp=mkPos(c,t),sx=Math.round(kp.x-cx),bx=Math.round(boss.x-cx),by=Math.round(boss.y);
   /* Pey Komban: stunned, takes the coconut in the eye, then dissolves into golden light */
   const faceR=c.dir>0,im=faceR?F.f:F.n;
-  if(t<236){g.drawImage(t<20&&t%4<2?(faceR?F.wf:F.w):im,bx,by)}
-  else if(t<250){g.drawImage(t%4<2?(faceR?F.wf:F.w):im,bx,by)}
-  else if(t<310){g.globalAlpha=Math.max(0,1-(t-250)/55);g.drawImage(faceR?F.wf:F.w,bx,by-Math.round((t-250)*.15));g.globalAlpha=1}
-  if(t>=250&&t<400){const k=Math.min(1,(t-250)/30)*(t>340?Math.max(0,1-(t-340)/60):1);glowEll(Math.round(c.bcx-cx),GY-30,Math.round(50*k)+8,Math.round(70*k)+8,'#ffd860',.3*k)}
+  if(t<MK_HIT){g.drawImage(t<20&&t%4<2?(faceR?F.wf:F.w):im,bx,by)}
+  else if(t<MK_HIT+14){g.drawImage(t%4<2?(faceR?F.wf:F.w):im,bx,by)}
+  else if(t<MK_HIT+75){g.globalAlpha=Math.max(0,1-(t-MK_HIT-14)/55);g.drawImage(faceR?F.wf:F.w,bx,by-Math.round((t-MK_HIT-14)*.15));g.globalAlpha=1}
+  if(t>=MK_HIT+14&&t<MK_HIT+160){const k=Math.min(1,(t-MK_HIT-14)/30)*(t>MK_HIT+100?Math.max(0,1-(t-MK_HIT-100)/60):1);glowEll(Math.round(c.bcx-cx),GY-30,Math.round(50*k)+8,Math.round(70*k)+8,'#ffd860',.3*k)}
   /* the mundu lasso rope */
-  if(t>=120&&t<=236){const hx=sx+c.dir*12,hy=Math.round(kp.y)-26,tx=Math.round(c.bcx-cx-c.dir*34),ty=by+26,n=26;
-    g.fillStyle='#f4ecd0';for(let i=0;i<=n;i++){const u=i/n,px=Math.round(hx+(tx-hx)*u),py=Math.round(hy+(ty-hy)*u+Math.sin(u*Math.PI)*(t<150?12:3));g.fillRect(px,py,2,2);if(i%5===0){g.fillStyle='#e0b840';g.fillRect(px,py,2,1);g.fillStyle='#f4ecd0'}}}
-  /* the knockout coconut, thrown from above */
-  if(t>=226&&t<=236){const u=(t-226)/10,hx=sx+c.dir*10,hy=Math.round(kp.y)-34,ex=Math.round(c.bcx-cx-c.dir*20),ey=by+16;g.drawImage(COCO,Math.round(hx+(ex-hx)*u)-3,Math.round(hy+(ey-hy)*u)-3)}
+  if(t>=120&&t<=MK_HIT){const hx=sx+c.dir*12,hy=Math.round(kp.y)-26,tx=Math.round(c.bcx-cx-c.dir*34),ty=by+26,n=26,slack=te<150?12:3;
+    g.fillStyle='#f4ecd0';for(let i=0;i<=n;i++){const u=i/n,px=Math.round(hx+(tx-hx)*u),py=Math.round(hy+(ty-hy)*u+Math.sin(u*Math.PI)*slack);g.fillRect(px,py,2,2);if(i%5===0){g.fillStyle='#e0b840';g.fillRect(px,py,2,1);g.fillStyle='#f4ecd0'}}}
+  /* a triumphant glow around him while he stands on the demon's head */
+  if(t>=240&&t<MK_HIT){glowEll(sx,Math.round(kp.y)-16,26,26,'#ffd860',.25+.1*Math.sin(t*.3))}
+  /* the knockout coconut, thrown down into the eye from the top of his head */
+  if(t>=MK_HIT-12&&t<=MK_HIT){const u=(t-(MK_HIT-12))/12,hx=sx+c.dir*10,hy=Math.round(kp.y)-34,ex=Math.round(c.bcx-cx-c.dir*20),ey=by+16;g.drawImage(COCO,Math.round(hx+(ex-hx)*u)-3,Math.round(hy+(ey-hy)*u)-3)}
   /* Thoma arrives with a fresh mundu */
-  if(t>=360){const th=ART.thoma_0;if(th){const tgx=c.bcx-c.dir*74-c.dir*34,from=c.dir>0?-40:W+40,p=Math.min(1,(t-360)/60),e=1-(1-p)*(1-p),tx=Math.round(from+(tgx-cx-from)*e);
+  if(te>=360&&t>=240+MK_HOLD){const th=ART.thoma_0;if(th){const tgx=c.bcx-c.dir*74-c.dir*34,from=c.dir>0?-40:W+40,p=Math.min(1,(te-360)/60),e=1-(1-p)*(1-p),tx=Math.round(from+(tgx-cx-from)*e);
       const im2=c.dir>0?th:flipOf(th);g.drawImage(im2,tx-14,GY+2-th.height);
-      if(t<440){g.fillStyle='#f4ecd0';g.fillRect(tx+c.dir*8,GY-22,8,5);g.fillStyle='#e0b840';g.fillRect(tx+c.dir*8,GY-20,8,1)}}
-    if(t>=395&&t<500){const bw=Math.min(W-40,380),bxx=Math.round((W-bw)/2),byy=26;
+      if(te<440){g.fillStyle='#f4ecd0';g.fillRect(tx+c.dir*8,GY-22,8,5);g.fillStyle='#e0b840';g.fillRect(tx+c.dir*8,GY-20,8,1)}}
+    if(te>=395&&te<500){const bw=Math.min(W-40,380),bxx=Math.round((W-bw)/2),byy=26;
       g.fillStyle='rgba(12,8,28,.9)';g.fillRect(bxx,byy,bw,40);g.fillStyle='#f0c040';g.fillRect(bxx,byy,bw,1);g.fillRect(bxx,byy+39,bw,1);g.fillRect(bxx,byy,1,40);g.fillRect(bxx+bw-1,byy,1,40);
       drawPortrait('THOMA',bxx+6,byy+4,32);ntext('Thoma',bxx+46,byy+5,8.5,'#f0c040');ntext('Here. A fresh mundu. Try not to lose this one.',bxx+46,byy+18,12.5,'#f4ecd0')}}
 }
 function drawMkPlayer(cx){const c=cin,t=c.t,kp=mkPos(c,t),map={idle:ART.heroidle_0||ART.hero_1,u:ART.hf_0,w:ART.hf_1,t:ART.hf_2,a:ART.hf_4,c:ART.hf_5,b:ART.hf_6,m:ART.hf_7},img=map[kp.f];if(!img)return;
   const x=Math.round(kp.x-cx),y=Math.round(kp.y),flip=c.dir<0&&kp.f!=='idle',pic=flip?flipOf(img):img;
-  if(kp.f==='a'){g.save();g.translate(x,y);g.rotate(c.dir*Math.min(.3,(t-150)/200));g.drawImage(pic,-Math.round(img.width/2),-img.height);g.restore();return}
+  if(kp.f==='a'&&t<240){g.save();g.translate(x,y);g.rotate(c.dir*Math.min(.3,(t-150)/200));g.drawImage(pic,-Math.round(img.width/2),-img.height);g.restore();return}
   g.drawImage(pic,x-Math.round(img.width/2),y-img.height)}
-const FLIPPED=c=>flipOf(c);
 function pickMax(){return TUNE.levelSelectAll?LV.length-1:Math.max(0,Math.min(resume,LV.length-1))}
 function pickDefault(){return seen?Math.max(1,Math.min(resume,LV.length-1)):0}
 function pickLevel(d){if(pick<0)pick=pickDefault();pick=Math.max(0,Math.min(pickMax(),pick+d));beep(520+pick*30,.05,'square',.04)}
@@ -1155,6 +1166,7 @@ function update(){
     if(P.x+P.w>x1&&P.x<x2&&prevBottom<=top+1&&P.y+P.h>=top){P.y=top-P.h;P.vy=0;P.on=true;P.boost=0;if(fallV>6)burst(P.x+7,top,['#d8c8a0','#a89878'],3);break}}}
   vineGrab();}
   if(P.on&&(dir||LV[lvl].bike))P.step++;
+  if(P.on&&dir&&!LV[lvl].bike&&(P.step&7)===1)stepSfx(false);
   if(P.inv>0)P.inv--;if(P.chaiT>0)P.chaiT--;
   if(ammo<TUNE.ammoRegenBelow&&!P.aru){if(++ammoT>=TUNE.ammoRegenFrames){ammoT=0;ammo++}}else ammoT=0;
   {const lb=Math.floor(score/TUNE.lifeEvery);if(lb>lifeBank){lives=Math.min(TUNE.lifeMax,lives+lb-lifeBank);lifeBank=lb;pops.push({x:P.x+7,y:P.y-8,s:'EXTRA LIFE!',t:80});if(!sfx('powerup'))beep(1000,.2,'triangle',.06)}}
@@ -1352,6 +1364,7 @@ function slashHits(){
 }
 function spawnBoss(){boss.active=true;if(LV[lvl].sayBoss)say(LV[lvl].sayBoss[0],LV[lvl].sayBoss[1]);boss.x=bossX+W-boss.w-30;boss.y=-80;boss.vy=0;banner={a:boss.name,b:boss.sub,t:140};if(!sfx('boss_roar_'+(boss.t==='karin'?'karinkanni':boss.t))&&!sfx('boss_roar'))beep(110,.6,'sawtooth',.06);sting('sting_boss_intro')}
 function updBoss(){
+  {const b=boss;if(tick%11===0&&b.active&&!b.dead&&((b.t==='komban'&&b.state===2&&b.stun<=0)||(b.t==='odiyan'&&!b.puff&&(b.form===1||(b.form===2&&b.wind<=0)))))stepSfx(true)}
   const b=boss;if(!b.active||b.dead)return;b.tk++;if(b.hurt>0)b.hurt--;if(b.arm>0)b.arm--;
   const ax=bossX,ax2=bossX+W,pc=P.x+7,bc=b.x+b.w/2,face=pc<bc?-1:1,rage=b.hp<b.max/2;
   const fly=b.t==='yakshi'||b.t==='karin',floor=GY-1-b.foot;let landed=false;
@@ -1877,7 +1890,9 @@ const EPILOGUE=[
  {pic:'ep',npc:'basheer',tree:3,prop:'song',who:'BASHEER',h:'Ustad Basheer',text:"Ustad Basheer sits by the river and sings the true song for the first time. This time he does not hide the words."},
  {pic:'ep',npc:'thoma',tree:4,prop:'halo',who:'THOMA',h:'Brother Thoma',text:"Brother Thoma kneels at the shrine. He does not ask to be forgiven this time. He gives thanks."},
  {pic:'ep',npc:'scenehero',tree:4,prop:'rope',who:'KANNAN',h:'Kannan',text:"Kannan picks up his rope. There are coconuts to harvest. He never learns why the whole village helped him."},
- {pic:'maveli',who:'MAVELI',h:'The king below',text:"Far below, a king smiles. \"Onam is coming,\" says Maveli. \"This year, I will come home.\""}];
+ {pic:'maveli',who:'MAVELI',h:'The king below',text:"Far below, a king smiles. \"Onam is coming,\" says Maveli. \"This year, I will come home.\""},
+ {pic:'credits',h:'Music',text:"Final stage: Train to Ernakulam Town by ItsWatR. Disco: Tamil Comedy Music by Kamalesh Siddu. Motorbike ride: Kaleidoscope Indian Fusion by Linesh Jose. All three from Pixabay. The other music and the sound effects were made with ElevenLabs."},
+ {pic:'credits',h:'Made by',text:"Kannan and the Kanjiravanam Chronicles. A Moonga Studio game. The pictures and sprites were made with AI image tools and edited into the game by Moonga Studio. Thank you for playing."}];
 function endFinish(){const list=EPILOGUE.filter(p=>p.pic!=='ep'||ART[p.npc+'_0']);EPILOGUE.splice(0,EPILOGUE.length,...list);startPages(EPILOGUE,()=>{state='win';lockT=90},null)}
 const TREECOL=['#4ad8c8','#ffb830','#7a7aff','#4ac060','#ffd860'];
 let pg=null;
@@ -1958,6 +1973,9 @@ function drawPagePic(P0,L,t){
     if(P0.prop==='halo'){glowEll(nx,gy-nh+8,30,22,'#ffd860',.28+.08*Math.sin(t*.07))}
     if(P0.prop==='rope'){g.fillStyle='#8a6a40';for(let k=0;k<5;k++){g.fillRect(nx+28+k,gy-52+k*5,2,6)}glowEll(Math.round(L*.5),gy-10,70,12,'#ffd860',.25)}
   }
+  if(P0.pic==='credits'){for(let y=0;y<H;y+=2){g.fillStyle='rgb('+(12+(y/12|0))+','+(10+(y/20|0))+','+(30+(y/9|0))+')';g.fillRect(0,y,L,2)}
+    for(let i=0;i<30;i++){const x=(i*71+13)%L,y=6+((i*37)%(H-40)),a=.4+.5*Math.sin(t*.05+i*2.3);if(a>.3){g.globalAlpha=al*a;g.fillStyle='#fff6d0';g.fillRect(x,y,1,1);g.globalAlpha=al}}
+    const hi=ART.logo_hi;if(hi){const lw=Math.min(L-16,320),lh=lw*hi.height/hi.width;nimg(hi,Math.round((L-lw)/2),Math.round((H-lh)/2),lw,lh)}}
   if(P0.pic==='kannan'){for(let y=0;y<H;y+=2){g.fillStyle='rgb('+(18+(y/8|0))+','+(14+(y/14|0))+','+(38+(y/12|0))+')';g.fillRect(0,y,L,2)}
     g.fillStyle='#1c1830';g.fillRect(0,gy,L,H-gy);
     /* Bhadrakali stands below and reaches out; a golden beam from her hand catches Kannan in the air */

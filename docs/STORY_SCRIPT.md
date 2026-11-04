@@ -94,6 +94,8 @@ _Scene after this level:_
 - **Brother Thoma**: Brother Thoma kneels at the shrine. He does not ask to be forgiven this time. He gives thanks.
 - **Kannan**: Kannan picks up his rope. There are coconuts to harvest. He never learns why the whole village helped him.
 - **The king below**: Far below, a king smiles. "Onam is coming," says Maveli. "This year, I will come home."
+- **Music**: Final stage: Train to Ernakulam Town by ItsWatR. Disco: Tamil Comedy Music by Kamalesh Siddu. Motorbike ride: Kaleidoscope Indian Fusion by Linesh Jose. All three from Pixabay. The other music and the sound effects were made with ElevenLabs.
+- **Made by**: Kannan and the Kanjiravanam Chronicles. A Moonga Studio game. The pictures and sprites were made with AI image tools and edited into the game by Moonga Studio. Thank you for playing.
 
 ## Prologue tutorial
 - **Move**: Walk with the arrow keys (or A and D).

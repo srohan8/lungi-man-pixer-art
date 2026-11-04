@@ -5,7 +5,7 @@ const path = require('path');
 const root = path.join(__dirname, '..');
 const out = path.join(root, 'www');
 const skip = /_(a|b|v2).mp3$|_loop_only.ogg$|_sheet.png$/;
-const skipDirs = new Set(['reference']);
+const skipDirs = new Set(['reference', 'music-old']);
 
 fs.rmSync(out, { recursive: true, force: true });
 fs.mkdirSync(out, { recursive: true });
