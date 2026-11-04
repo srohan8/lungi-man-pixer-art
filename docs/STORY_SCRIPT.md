@@ -29,8 +29,8 @@ _Scene after this level:_
 - **Yakshi**: The curse lifts. Thank you, Kannan.
 
 _Scene after this level:_
-- **Ravi**: One grove down. Take the bike, machane.
-- **Ravi**: The carnival is down the road. My shop planks hum at night... Never mind. Hold tight!
+- **Ravi**: One grove down. The carnival is far and the next tree is withering. Take my bike!
+- **Ravi**: No time to walk it. Go, hold tight!
 
 ## ACT II: The ride to the carnival
 - **Ravi**: Keep the front wheel up, machane! And do not scratch my Bullet!

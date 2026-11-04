@@ -1828,6 +1828,19 @@ function genMaveli(){
   rect(b,17,10,14,5,'#e0b030');for(let x=17;x<31;x+=3)rect(b,x,7,2,3,'#e0b030');b.set(24,12,'#e03030');
   ell(b,24,3,18,3,['#1a5a24','#2a8a34','#4aaa4a']);rect(b,23,4,2,6,'#6a4a2a');
   outline(b,'#120a04');return b.done()}
+/* Act II ride, end of the road: the forest has swallowed the track. Fallen trunks, a wall of roots and hanging vines block the way, so the bike has to stop. */
+function drawBlockade(cx){
+  const x=Math.round(bossX+82-cx);if(x<-90||x>W+40)return;const R=(a,b,w,h,c)=>{g.fillStyle=c;g.fillRect(a,b,w,h)};
+  /* tangled undergrowth wall behind the logs */
+  for(const [bx,by,r,c] of [[x+10,GY-58,22,'#1a4028'],[x+34,GY-72,26,'#143420'],[x+58,GY-60,22,'#1a4028'],[x+22,GY-88,20,'#123020'],[x+48,GY-92,22,'#143420'],[x+72,GY-76,18,'#123020']])blob(bx,by,r,c);
+  for(let k=0;k<9;k++){const vx=x+4+k*9,vh=40+((k*37)%46);R(vx,GY-vh-30,2,vh,k%2?'#14361e':'#1c4a2a')}
+  /* roots rising from the ground */
+  for(const [rx,rw] of [[x-6,16],[x+24,14],[x+56,18],[x+76,12]]){R(rx,GY-34,rw,34,'#3a2410');R(rx+1,GY-34,2,34,'#6a4222');R(rx+rw-3,GY-30,2,30,'#24160a');R(rx-3,GY-6,rw+6,6,'#3a2410')}
+  /* two fallen trunks across the road */
+  for(const [ty,tw,tx] of [[GY-22,86,x-8],[GY-42,78,x-2]]){R(tx,ty,tw,18,'#4a2e16');R(tx,ty,tw,3,'#7a5230');R(tx,ty+15,tw,3,'#2a180a');for(let k=0;k<tw;k+=9)R(tx+k,ty+4+((k*5)%7),5,1,'#2a180a');R(tx-3,ty+2,4,14,'#6a4a2a');R(tx+tw-1,ty+2,4,14,'#3a2410');R(tx+tw,ty+5,2,8,'#c8a878')}
+  /* leaves and a few fireflies so it reads as a living wall */
+  for(let k=0;k<5;k++){const a=tick*.04+k*1.9;g.fillStyle=(k+(tick>>4))%3?'#fff6a0':'#9aff80';g.fillRect(Math.round(x+8+k*16+Math.sin(a)*6),Math.round(GY-50-k*8+Math.cos(a)*5),2,2)}
+}
 function drawMaveli(cx){
   const x=Math.round(bossX+W-110-cx),y=GY-56;if(x<-60||x>W+60||!A.mav)return;
   if(scene&&scene.t>=730){glowEll(x+24,GY-44,44,54,'#ffe070',.2+.1*Math.sin(tick*.15))}
@@ -1916,7 +1929,7 @@ const SCENES={
   lines:[{who:'BIJU',text:'THE FOREST IS RESTLESS AGAIN. TAKE THIS COCONUT.'},{who:'THOMA',text:'STAY ON THE TREES. THE GROUND BELONGS TO THEM NOW.'}]},
  pro:{bg:'next',actors:[{id:'scenehero',who:'KANNAN',x:.5}],caption:['THE FIRST TREE WAITS IN THE BAMBOO HOLLOW.','THE GOLDEN HOUR ENDS. HE GOES IN.']},
  a1:{bg:'next',actors:[{id:'ravi',who:'RAVI',x:.24,talk:1,from:-1},{id:'scenehero',who:'KANNAN',x:.44},{id:'bike',pose:3,who:'',x:.7,from:1,sc:2}],
-  lines:[{who:'RAVI',text:'ONE GROVE DOWN. TAKE THE BIKE, MACHANE.'},{who:'RAVI',text:"THE CARNIVAL IS DOWN THE ROAD. MY SHOP PLANKS HUM AT NIGHT... NEVER MIND. HOLD TIGHT!"}]},
+  lines:[{who:'RAVI',text:'ONE GROVE DOWN. THE CARNIVAL IS FAR AND THE NEXT TREE IS WITHERING. TAKE MY BIKE!'},{who:'RAVI',text:'NO TIME TO WALK IT. GO, HOLD TIGHT!'}]},
  bike:{bg:'cur',actors:[{id:'bike',pose:3,who:'',x:.32,sc:2},{id:'scenehero',who:'KANNAN',x:.62,f:-1,talk:2}],
   lines:[{who:'KANNAN',text:'THE FOREST CLOSED IN. FROM HERE, ON FOOT.'}]},
  a2:{bg:'next',actors:[{id:'scenehero',who:'KANNAN',x:.5}],caption:['TWO GROVES FREED. THE EMBERS GO COOL.','THE HIGHLAND FOG IS WAITING.']},
@@ -2225,6 +2238,7 @@ function draw(){TQ.length=0;syncPad();
   drawBikeFront(cx);drawFog(L,cx,2);
   for(const v of vines)drawVine(v,cx);
   if(L.scene)drawMaveli(cx);
+  if(L.bike)drawBlockade(cx);
   if(L.rootWalls)drawRoots(cx);
   for(const h of hoofs)if(!h.got){const hx=Math.round(h.x-cx);g.fillStyle='rgba(176,112,255,'+(.2+.15*Math.sin(tick*.1)).toFixed(2)+')';g.fillRect(hx-3,GY-9,16,9);g.drawImage(HOOF,hx,GY-6)}
   for(const p of pickups)if(!p.got){const px=Math.round(p.x-cx),py=Math.round(p.y+Math.sin(tick*.1)*2);

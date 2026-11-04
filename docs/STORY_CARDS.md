@@ -25,7 +25,7 @@ Rule 5 says no cutscenes and at most 3 dialogue boxes per act. Story scenes are 
 |---|---|---|---|
 | 0 | First ever play, before the Prologue | Kannan, Biju, Thoma, village at golden hour | BIJU: "THE FOREST IS RESTLESS AGAIN. TAKE THIS COCONUT." / THOMA: "STAY ON THE TREES. THE GROUND IS THEIRS NOW." |
 | 1 | Prologue to Act I | Kannan walking into the dusk forest | (no speech) caption: "THE GOLDEN HOUR ENDS. HE GOES IN." |
-| 2 | Act I to the bike ride | Ravi, Kannan, the Bullet | RAVI: "ONE GROVE DOWN. TAKE THE BIKE, MACHANE." / RAVI: "THE CARNIVAL STARTED WITHOUT US. HOLD TIGHT!" |
+| 2 | Act I to the bike ride | Ravi, Kannan, the Bullet | RAVI: "ONE GROVE DOWN. THE CARNIVAL IS FAR AND THE NEXT TREE IS WITHERING. TAKE MY BIKE, MACHANE." / RAVI: "NO TIME TO WALK IT. GO, HOLD TIGHT!" |
 | 3 | Bike ride to Act II | Kannan beside the stopped Bullet, fire and Ferris wheel ahead | KANNAN: "THE FOREST CLOSED IN. FROM HERE, ON FOOT." |
 | 4 | Act II to Act III | Kannan, a coconut glowing on the ground (Kuttichathan's relic) | (caption) "TWO GROVES FREED. THE EMBERS GO COOL." / "THE HIGHLAND FOG IS WAITING." |
 | 5 | Act III to the interlude | Kannan limping, Mooppan Velu, Kili on a shrine | MOOPPAN: "THE DOG BITES DEEPER THAN YOU FEEL." / KANNAN: "...MY ANKLE. IT BURNS." |
