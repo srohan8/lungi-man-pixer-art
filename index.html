@@ -10,6 +10,7 @@
 html,body{margin:0;height:100%;background:var(--bg);overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 #wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
 canvas{image-rendering:pixelated;image-rendering:crisp-edges;display:block}
+#t{position:fixed;pointer-events:none;image-rendering:auto;z-index:1}
 .pad{position:fixed;bottom:calc(14px + env(safe-area-inset-bottom,0px));display:flex;gap:14px;z-index:2;align-items:flex-end}
 #padL{left:calc(18px + env(safe-area-inset-left,0px))}
 #padR{right:calc(18px + env(safe-area-inset-right,0px))}
@@ -23,7 +24,7 @@ canvas{image-rendering:pixelated;image-rendering:crisp-edges;display:block}
 </style>
 </head>
 <body>
-<div id="wrap"><canvas id="c"></canvas></div>
+<div id="wrap"><canvas id="c"></canvas></div><canvas id="t"></canvas>
 <div class="pad" id="padL"><button data-k="l" aria-label="Move left">◀</button><button data-k="r" aria-label="Move right">▶</button></div>
 <div class="pad" id="padR"><button data-k="s">THROW</button><button data-k="j" id="bJ">JUMP</button></div>
 <div id="rot"><span>📱↻</span>Turn your phone sideways to play</div>
@@ -167,6 +168,28 @@ function tint(c,col){const n=document.createElement('canvas');n.width=c.width;n.
 /* =================== pixel font =================== */
 const FONT={A:'010101111101101',B:'110101110101110',C:'011100100100011',D:'110101101101110',E:'111100110100111',F:'111100110100100',G:'011100101101011',H:'101101111101101',I:'111010010010111',J:'001001001101010',K:'101101110101101',L:'100100100100111',M:'101111111101101',N:'110101101101101',O:'010101101101010',P:'110101110100100',Q:'010101101110011',R:'110101110101101',S:'011100010001110',T:'111010010010010',U:'101101101101111',V:'101101101101010',W:'101101111111101',X:'101101010101101',Y:'101101010010010',Z:'111001010100111',
 '0':'111101101101111','1':'010110010010111','2':'110001010100111','3':'110001010001110','4':'101101111001001','5':'111100110001110','6':'011100111101111','7':'111001010010010','8':'111101111101111','9':'111101111001110','!':'010010010000010','.':'000000000000010','-':'000000111000000',',':'000000000010100',"'":'010010000000000'};
+/* Story text (dialogue, scenes, captions, ending) is drawn with a normal font on a second, full-resolution canvas laid over the game, so it stays sharp and readable on a phone.
+   Everything else keeps the pixel font. ntext() only queues; flushText() paints after the frame. */
+const tcv=document.getElementById('t'),tg=tcv.getContext('2d'),TQ=[],TFONT='"Trebuchet MS","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
+const NAMES=['Kannan','Biju','Thoma','Ravi','Soniya','Yakshi','Kuttichathan','Odiyan','Karinkanni','Komban','Pey Komban','Bhadrakali','Devi','Velu','Maveli','Kili','Basheer','Kanjiravanam','Kerala','Nilavilakku'];
+/* ALL CAPS data text -> sentence case ("THE FOREST IS RESTLESS." -> "The forest is restless.") */
+function nice(s){if(!s)return s;let t=s.toLowerCase().replace(/(^|[.!?…]\s+)([a-z])/g,(m,a,b)=>a+b.toUpperCase()).replace(/\bi\b/g,'I').replace(/\bi'(m|ll|ve|d)\b/g,(m,a)=>"I'"+a);
+  for(const n of NAMES)t=t.replace(new RegExp('(^|[^a-z])'+n.toLowerCase()+'(?![a-z])','gi'),(m,a)=>a+n);return t}
+function tfont(px,k){return '700 '+(px*k).toFixed(1)+'px '+TFONT}
+function tmeasure(s,px){tg.font=tfont(px,1);return tg.measureText(s).width}
+/* wrap into at most maxLines lines of width maxW (internal px); the font shrinks a little if it does not fit */
+function twrap(s,px,maxW,maxLines){let p=px;for(;;){tg.font=tfont(p,4);const lines=[''];for(const w of s.split(' ')){const c=lines[lines.length-1]?lines[lines.length-1]+' '+w:w;if(tg.measureText(c).width/4>maxW&&lines[lines.length-1])lines.push(w);else lines[lines.length-1]=c}
+    if(lines.length<=maxLines||p<=6.5)return {lines,px:p};p-=.5}}
+function ntext(s,x,y,px,col,align='left'){TQ.push({s,x,y,px,col,align})}
+function flushText(){
+  if(!tg||!tg.fillText)return;
+  const r=cv.getBoundingClientRect(),d=Math.min(3,window.devicePixelRatio||1),w=Math.round(r.width*d),h=Math.round(r.height*d);
+  if(tcv.width!==w||tcv.height!==h){tcv.width=w;tcv.height=h}
+  tcv.style.left=r.left+'px';tcv.style.top=r.top+'px';tcv.style.width=r.width+'px';tcv.style.height=r.height+'px';
+  tg.setTransform(1,0,0,1,0,0);tg.clearRect(0,0,w,h);if(!TQ.length)return;
+  const k=w/W;tg.textBaseline='top';tg.lineJoin='round';
+  for(const q of TQ){tg.font=tfont(q.px,k);tg.textAlign=q.align;tg.lineWidth=Math.max(2,q.px*k*.22);tg.strokeStyle='rgba(12,8,28,.92)';tg.strokeText(q.s,q.x*k,q.y*k);tg.fillStyle=q.col;tg.fillText(q.s,q.x*k,q.y*k)}
+}
 function ptext(s,x,y,sc,col,align='left',sh='#120a1c'){
   s=s.toUpperCase();const w=s.length*4*sc-sc;let X=align==='center'?x-w/2:align==='right'?x-w:x;X=Math.round(X);y=Math.round(y);
   for(const [c,o] of [[sh,sc>1?sc>>1:1],[col,0]]){g.fillStyle=c;let px=X;
@@ -1428,13 +1451,11 @@ function drawPortrait(who,x,y,box){
 }
 function drawDlg(){
   if(!dlg||state==='title'||state==='over'||state==='win')return;
-  const bw=Math.min(320,W-230),bx=Math.round(W/2-bw/2),by=54,maxc=Math.floor((bw-30)/4);
-  const lines=['',''];let li=0;
-  for(const w of dlg.text.split(' ')){const c=lines[li]?lines[li]+' '+w:w;if(c.length>maxc&&li<1){li=1;lines[1]=w}else lines[li]=c}
-  g.fillStyle='rgba(12,8,28,.84)';g.fillRect(bx,by,bw,26);
-  g.fillStyle='#f0c040';g.fillRect(bx,by,bw,1);g.fillRect(bx,by+25,bw,1);g.fillRect(bx,by,1,26);g.fillRect(bx+bw-1,by,1,26);
-  drawPortrait(dlg.who,bx+4,by+5,16);
-  ptext(dlg.who,bx+26,by+3,1,'#f0c040');ptext(lines[0],bx+26,by+10,1,'#f4ecd0');if(lines[1])ptext(lines[1],bx+26,by+17,1,'#f4ecd0');
+  const bw=Math.min(360,W-120),bx=Math.round(W/2-bw/2),by=54,tw=bw-34,T=twrap(nice(dlg.text),9.5,tw,2),bh=T.lines.length>1?38:28;
+  g.fillStyle='rgba(12,8,28,.86)';g.fillRect(bx,by,bw,bh);
+  g.fillStyle='#f0c040';g.fillRect(bx,by,bw,1);g.fillRect(bx,by+bh-1,bw,1);g.fillRect(bx,by,1,bh);g.fillRect(bx+bw-1,by,1,bh);
+  drawPortrait(dlg.who,bx+4,by+4,22);
+  ntext(nice(dlg.who),bx+32,by+2,7.5,'#f0c040');T.lines.forEach((ln,k)=>ntext(ln,bx+32,by+11+k*(T.px+1.5),T.px,'#f4ecd0'));
 }
 /* ---------- interlude arena, throne scene, ending ---------- */
 function mkDancer(x,calm,k){return {t:'dancer',k:k===undefined?(Math.random()*6|0):k,x,y:GY-24,w:12,h:24,alive:true,hp:1,hurt:0,cd:Math.floor(Math.random()*60),dir:1,arm:0,seen:true,calm,s1:-20,s2:W+20,vy:0}}
@@ -1604,14 +1625,13 @@ function drawStory(){
     const bob=ac.id==='bike'?0:Math.round(Math.sin(t*.09+i*2)),hop=talking&&(t>>3)%2?-2:0,cx=Math.round(ac.x*W+off);
     if(ac.lying){g.save();g.translate(cx,feet-w/2+2);g.rotate(-Math.PI/2);g.drawImage(im,-w/2,-h,w,h);g.restore()}
     else g.drawImage(im,cx-Math.round(w/2),feet-h+bob+hop,w,h)});
-  if(sc.caption&&t>20){sc.caption.forEach((ln,k)=>ptext(ln,W/2,34+k*18,2,'#f4ecd0','center'))}
-  if(cur){const bw=Math.min(W-30,460),bx=Math.round((W-bw)/2),by=14,maxc=Math.floor((bw-52)/8),lines=['',''];let li=0;
-    for(const w of cur.text.split(' ')){const c=lines[li]?lines[li]+' '+w:w;if(c.length>maxc&&li<1){li=1;lines[1]=w}else lines[li]=c}
-    g.fillStyle='rgba(12,8,28,.9)';g.fillRect(bx,by,bw,56);g.fillStyle='#f0c040';g.fillRect(bx,by,bw,1);g.fillRect(bx,by+55,bw,1);g.fillRect(bx,by,1,56);g.fillRect(bx+bw-1,by,1,56);
-    drawPortrait(cur.who,bx+6,by+8,28);
-    ptext(cur.who,bx+42,by+5,1,'#f0c040');ptext(lines[0],bx+42,by+17,2,'#f4ecd0');if(lines[1])ptext(lines[1],bx+42,by+35,2,'#f4ecd0')}
+  if(sc.caption&&t>20){sc.caption.forEach((ln,k)=>ntext(nice(ln),W/2,30+k*20,14,'#f4ecd0','center'))}
+  if(cur){const bw=Math.min(W-30,480),bx=Math.round((W-bw)/2),by=14,T=twrap(nice(cur.text),12.5,bw-58,2),bh=T.lines.length>1?60:46;
+    g.fillStyle='rgba(12,8,28,.9)';g.fillRect(bx,by,bw,bh);g.fillStyle='#f0c040';g.fillRect(bx,by,bw,1);g.fillRect(bx,by+bh-1,bw,1);g.fillRect(bx,by,1,bh);g.fillRect(bx+bw-1,by,1,bh);
+    drawPortrait(cur.who,bx+6,by+8,32);
+    ntext(nice(cur.who),bx+46,by+4,9,'#f0c040');T.lines.forEach((ln,k)=>ntext(ln,bx+46,by+16+k*(T.px+3),T.px,'#f4ecd0'))}
   g.globalAlpha=1;
-  if(t>30&&(tick>>5)%2===0)ptext(isTouch?'TAP TO SKIP':'ANY KEY TO SKIP',W-10,H-12,1,'#b8b0d0','right');
+  if(t>30&&(tick>>5)%2===0)ntext(isTouch?'Tap to skip':'Any key to skip',W-10,H-18,8,'#d8d0f0','right');
 }
 /* Drifting fog (levels with fog:true): dithered blobs on a tiling strip, three layers (far hills, mid hills, ground mist). */
 let FOGC=null;
@@ -1654,9 +1674,9 @@ function drawEnding(){
       for(let j=0;j<10;j++){const a=tick*.03+j*.63,r=20+(j*7)%26;g.fillStyle=(j+(tick>>3))%3?'#ffffff':TREEC[k];g.fillRect(Math.round(x+Math.cos(a)*r),Math.round(GY-96+Math.sin(a)*r),2,2)}}
   }
   for(let k=0;k<30;k++){g.fillStyle='rgba(255,240,120,'+(.4+.4*Math.sin(tick*.05+k)).toFixed(2)+')';g.fillRect(Math.round((k*61+tick*.3)%W),Math.round(GY-((tick*.4+k*23)%170)),1,1)}
-  if(endT>520)ptext('KANJIRAVANAM BREATHES AGAIN',W/2,22,2,'#f0c040','center');
+  if(endT>520)ntext('Kanjiravanam breathes again',W/2,18,16,'#f0c040','center');
   drawDlg();
-  if(endT>240)ptext('TAP TO SKIP',W-10,H-12,1,'#8888aa','right');
+  if(endT>240)ntext('Tap to skip',W-10,H-18,8,'#b8b0d0','right');
 }
 function overlay(){g.fillStyle='rgba(12,8,28,.62)';g.fillRect(0,0,W,H)}
 /* Act II ride (story: the approach through the festival grounds, then the forest closes in, then the bike cannot go further).
@@ -1707,7 +1727,7 @@ function drawBikeFront(cx){
     for(let k=-2;k<=2;k++){const hh=4+((f+k*5)%5)+(k===0?3:0);g.fillStyle=k===0?'#ffd860':'#ff8030';g.fillRect(sx+((k*1.5)|0),GY-6-hh,2,hh)}
     g.globalAlpha=1}
 }
-function draw(){
+function draw(){TQ.length=0;
   if(state==='story'&&story){drawStory();return}
   if(state==='ending'){drawEnding();return}
   const L=LV[lvl],cx=Math.round(camx);
@@ -1762,7 +1782,7 @@ function draw(){
   }
   drawDlg();
   drawSndIcon();if(state==='play')drawPauseIcon();
-  if(banner&&state!=='title'){g.fillStyle='rgba(12,8,28,.55)';g.fillRect(0,78,W,48);ptext(banner.a,W/2,86,4,'#f0c040','center');if(banner.b)ptext(banner.b,W/2,110,2,'#f4ecd0','center')}
+  if(banner&&state!=='title'){g.fillStyle='rgba(12,8,28,.55)';g.fillRect(0,78,W,48);ptext(banner.a,W/2,86,4,'#f0c040','center');if(banner.b)ntext(nice(banner.b),W/2,108,12,'#f4ecd0','center')}
   if(state==='title'){overlay();drawCover();
     ptext('LUNGI MAN',W/2,46,6,'#f0c040','center');
     ptext('THE CURSE OF KANJIRAVANAM',W/2,96,2,'#f4ecd0','center');
@@ -1817,7 +1837,7 @@ addEventListener('resize',fit);addEventListener('orientationchange',()=>setTimeo
 fit();loadLevel(0);
 
 let last=0,acc=0;
-function loop(t){requestAnimationFrame(loop);acc+=Math.min(t-last,100);last=t;while(acc>=16.667){if(!paused)update();acc-=16.667}if(!paused)audioTick();draw();if(paused)drawPause()}
+function loop(t){requestAnimationFrame(loop);acc+=Math.min(t-last,100);last=t;while(acc>=16.667){if(!paused)update();acc-=16.667}if(!paused)audioTick();draw();if(paused){TQ.length=0;drawPause()}flushText()}
 requestAnimationFrame(loop);
 </script>
 </body>
