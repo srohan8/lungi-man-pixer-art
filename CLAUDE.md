@@ -74,7 +74,7 @@ Level selector (owner request): the title screen has left/right arrows (keys, A/
 Multiplayer, online features, accounts, ads, in-app purchases, procedural story, voice acting.
 
 ## Story cameos (from STORYLINE.md, hero stays "Kannan" for now)
-Prologue: Biju, Thoma, Bhadrakali. I: Soniya (first chai stall), Yakshi. II: Ravi, Kuttichathan. III: Velu, Odiyan. IV: Devi, Karinkanni. V: Thoma, Soniya (first stall), Bhadrakali.
+Prologue: Biju, Thoma, Bhadrakali. I: Soniya (first chai stall), Yakshi. II: Ravi, Kuttichathan. III: Velu, Ustad Basheer (bard cameo, sings verses), Odiyan. IV: Devi, Karinkanni. V: Thoma, Soniya (first stall), Bhadrakali.
 Thoma's token: every act after the prologue starts with 4 lives (shown as Nilavilakku lamps).
 Hero look: aviator sunglasses, satchel with a green coconut, no towel.
 Planned next (agreed order): Pathalam + Maveli + ending, Act III hoof-prints + Kili, disco dream interlude, Act II bike ride.
@@ -111,4 +111,5 @@ Rules that change as each step lands:
 - **Entry scenes**: play when advancing and when a level is picked from the selector. "Tap to continue" is silent except into the interlude and Pathalam.
 - **Sacred trees**: one in each boss arena, withered before the boss, blooming in the act colour after (teal, amber, indigo, green, gold). Replaying a beaten act shows it healed.
 - **Quest beats** are walk-through only (no tracking, rewards are existing effects). No new abilities, no whip, no Naga fight.
-- **Built so far**: story panel + opening pages (with motion), prologue tutorial, trishul, sacred trees and act healing, Act III / Pathalam / Act V finishing cinematics, selector entry scenes, backstory clue lines, ending epilogue, walk-through quest beats (Ravi runs past in Act I, Kili's rice in Act III, Devi's bell in Act IV).
+- **Pathalam Naga**: a huge sleeping serpent as pure scenery beside the swinging path (breathing, eye glow, soft rumble when passed). No collision, no danger. Maveli: "Let the old guardian sleep."
+- **Built so far**: story panel + opening pages (with motion), prologue tutorial, trishul, sacred trees and act healing, Act III / Pathalam / Act V finishing cinematics, selector entry scenes, backstory clue lines, ending epilogue, walk-through quest beats (Ravi runs past in Act I, Kili's rice in Act III, Devi's bell in Act IV), Ustad Basheer and the Pathalam Naga (code done; they appear once their art, basheer_0..2 and naga_0..2 in assets/art/bosses, exists).
