@@ -193,7 +193,7 @@ function tmeasure(s,px){tg.font=tfont(px,1);return tg.measureText(s).width}
 /* wrap into at most maxLines lines of width maxW (internal px); the font shrinks a little if it does not fit */
 function twrap(s,px,maxW,maxLines){let p=px;for(;;){tg.font=tfont(p,4);const lines=[''];for(const w of s.split(' ')){const c=lines[lines.length-1]?lines[lines.length-1]+' '+w:w;if(tg.measureText(c).width/4>maxW&&lines[lines.length-1])lines.push(w);else lines[lines.length-1]=c}
     if(lines.length<=maxLines||p<=6.5)return {lines,px:p};p-=.5}}
-function ntext(s,x,y,px,col,align='left'){TQ.push({s,x,y,px,col,align})}
+function ntext(s,x,y,px,col,align='left'){TQ.push({s,x,y,px,col,align,a:g.globalAlpha})}
 function flushText(){
   if(!tg||!tg.fillText)return;
   const r=cv.getBoundingClientRect(),d=Math.min(3,window.devicePixelRatio||1),w=Math.round(r.width*d),h=Math.round(r.height*d);
@@ -201,7 +201,7 @@ function flushText(){
   tcv.style.left=r.left+'px';tcv.style.top=r.top+'px';tcv.style.width=r.width+'px';tcv.style.height=r.height+'px';
   tg.setTransform(1,0,0,1,0,0);tg.clearRect(0,0,w,h);if(!TQ.length)return;
   const k=w/W;tg.textBaseline='top';tg.lineJoin='round';
-  for(const q of TQ){tg.font=tfont(q.px,k);tg.textAlign=q.align;tg.lineWidth=Math.max(2,q.px*k*.22);tg.strokeStyle='rgba(12,8,28,.92)';tg.strokeText(q.s,q.x*k,q.y*k);tg.fillStyle=q.col;tg.fillText(q.s,q.x*k,q.y*k)}
+  for(const q of TQ){if(q.a<=0.02)continue;tg.globalAlpha=q.a;tg.font=tfont(q.px,k);tg.textAlign=q.align;tg.lineWidth=Math.max(2,q.px*k*.22);tg.strokeStyle='rgba(12,8,28,.92)';tg.strokeText(q.s,q.x*k,q.y*k);tg.fillStyle=q.col;tg.fillText(q.s,q.x*k,q.y*k)}tg.globalAlpha=1;
 }
 function ptext(s,x,y,sc,col,align='left',sh='#120a1c'){
   /* readable at phone size: the tiny 3x5 size becomes the thick outlined normal font (see ntext); sizes 2 and up stay pixel */
@@ -2172,6 +2172,7 @@ const SPLASH_T=170;let splashT=SPLASH_T,preN=0,preDone=0;
 try{const list=SFX_NAMES.map(n=>[n,'sfx']).concat([['bgm_menu','music']]);preN=list.length;
   list.forEach(([k,d])=>loadBuf(k,d).then(()=>preDone++,()=>preDone++))}catch(e){preN=0}
 function drawSplash(){
+  TQ.length=0; /* the splash covers everything: drop the text queued by the title or game underneath */
   const t=SPLASH_T-splashT,a=Math.max(0,Math.min(1,t/30,splashT/30));
   g.globalAlpha=1;g.fillStyle='#0a0814';g.fillRect(0,0,W,H);
   g.globalAlpha=a;
