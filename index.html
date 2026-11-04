@@ -10,6 +10,8 @@
 html,body{margin:0;height:100%;background:var(--bg);overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 #wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
 canvas{image-rendering:pixelated;image-rendering:crisp-edges;display:block}
+.pad button.pulse{animation:pulse .9s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(240,192,64,.95)}50%{box-shadow:0 0 0 16px rgba(240,192,64,0)}}
 #t{position:fixed;pointer-events:none;image-rendering:auto;z-index:1}
 .pad{position:fixed;bottom:calc(14px + env(safe-area-inset-bottom,0px));display:flex;gap:14px;z-index:2;align-items:flex-end}
 #padL{left:calc(18px + env(safe-area-inset-left,0px))}
@@ -39,19 +41,21 @@ const isTouch=matchMedia('(hover:none)').matches;
 const keys={},touch={l:0,r:0,j:0,s:0};
 addEventListener('keydown',e=>{if(e.code==='KeyM'){toggleSnd();return}
   if(state==='pages'&&e.code==='Escape'){pagesSkip();return}
+  if(state==='play'&&tut&&tut.phase==='msg'&&e.code==='Escape'){tutSkip();return}
   if(e.code==='KeyP'||e.code==='Escape'){if(!e.repeat)togglePause();return}
   if(paused){if(e.code==='Space'||e.code==='Enter')setPause(false);else if(e.code==='KeyQ')pauseToMenu();e.preventDefault();return}
   keys[e.code]=true;if(['Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code))e.preventDefault();if(!e.repeat)startIfNeeded(e.code)});
 addEventListener('keyup',e=>{keys[e.code]=false});
 document.querySelectorAll('[data-k]').forEach(b=>{
   const k=b.dataset.k;
-  const on=e=>{e.preventDefault();if(paused)return;try{b.setPointerCapture(e.pointerId)}catch(_){}touch[k]=1;b.classList.add('on');startIfNeeded(k)};
+  const on=e=>{e.preventDefault();if(paused)return;if(tut&&tut.phase==='msg'&&state==='play'){tutConfirm();return}try{b.setPointerCapture(e.pointerId)}catch(_){}touch[k]=1;b.classList.add('on');startIfNeeded(k)};
   const off=e=>{e.preventDefault();touch[k]=0;b.classList.remove('on')};
   b.addEventListener('pointerdown',on);
   ['pointerup','pointercancel','lostpointercapture'].forEach(t=>b.addEventListener(t,off));
 });
 cv.addEventListener('pointerdown',e=>{
   const r=cv.getBoundingClientRect(),x=(e.clientX-r.left)/r.width*W,y=(e.clientY-r.top)/r.height*H;
+  if(tut&&tut.phase==='msg'&&state==='play'&&!paused){const r=tut.skipR;if(r&&x>r[0]&&x<r[0]+r[2]&&y>r[1]&&y<r[1]+r[3])tutSkip();else tutConfirm();return}
   if(paused){if(x>W*.25&&x<W*.75){if(y>112&&y<152)setPause(false);else if(y>164&&y<204)pauseToMenu()}return}
   if(state==='pages'&&x>W-80&&y<34){pagesSkip();return}
   if(state==='play'&&x>W-76&&x<W-46&&y<44){setPause(true);return}
@@ -753,7 +757,7 @@ function genBush(seed,C){const r=rng(seed),b=buf(40,20);
 /* =================== game state =================== */
 /* Tunable numbers for coconuts, lives and the Sun Staff */
 const TUNE={levelSelectAll:true,ammoStart:40,ammoMax:60,ammoPerKill:2,ammoRegenBelow:5,ammoRegenFrames:180,lifeEvery:1000,lifeMax:6,rayRange:150};
-let ammo=40,ammoT=0,lifeBank=0,rings=[],pick=-1,paused=false,flashT=0,flashC='#e8f0ff';
+let ammo=40,ammoT=0,lifeBank=0,rings=[],pick=-1,paused=false,tut=null,tutPending=false,tutAny=false,stat={thrown:0,kills:0},flashT=0,flashC='#e8f0ff';
 /* Palm sway: how far (px) the crown moves per level; the trunk base stays put */
 const WIND={pro:1.2,a1:1,a2:1.5,a3:2,a4:3.4,a5:1.2};
 let state='title',lockT=0,tick=0,deadT=0,clearT=0,shootCd=0,jumpPrev=false,shake=0,prevBottom=0,slashT=0,swingId=0;
@@ -826,7 +830,7 @@ function placePlayer(x){
   P={x,y:GY-28,w:14,h:28,vx:0,vy:0,f:1,on:false,inv:0,sp:false,aru:false,step:0,rev:0,vine:null,vineCd:0,boost:0,bvx:0,freeze:0,chaiT:0};
   camx=Math.max(0,x-60);cp=x;bestX=x;bullets=[];shots=[];locked=!!LV[lvl].arena;jumpPrev=true;shootCd=0;slashT=0;
 }
-function begin(i,x){lives=i>=1?4:3;actScore=actScore||0;ammo=TUNE.ammoStart;ammoT=0;lifeBank=Math.floor(score/TUNE.lifeEvery);loadLevel(i);placePlayer(x);state='play';banner={a:LV[i].act,b:LV[i].name,t:150}}
+function begin(i,x){if(i===0&&tutPending){tut={step:0,phase:'wait',t:0};tutPending=false;tutAny=true;tutPulse(null)}else if(i!==0&&tut){tut=null;tutPulse(null)}lives=i>=1?4:3;actScore=actScore||0;ammo=TUNE.ammoStart;ammoT=0;lifeBank=Math.floor(score/TUNE.lifeEvery);loadLevel(i);placePlayer(x);state='play';banner={a:LV[i].act,b:LV[i].name,t:150}}
 /* Title screen level selector: left / right (arrows, A / D, or tap the arrows). TUNE.levelSelectAll=false limits it to the levels reached so far. */
 /* Pause: icon (top, left of the sound icon), P / Esc, and automatically when the app goes to the background. Only two choices: RESUME and MENU (back to the title screen). */
 function setPause(on){if(on&&state!=='play')return;if(paused===on)return;paused=on;
@@ -845,13 +849,43 @@ function drawPause(){
     ptext(lab,W/2,y+13,3,c,'center')}
   if(!isTouch)ptext('SPACE RESUME   Q MENU',W/2,222,1,'#b8b0d0','center');
 }
+/* ===== Prologue guided tutorial (owner-approved exception): the game freezes on a message, you confirm, then the step finishes when you do the action. ===== */
+const TUT=[
+ {x:40,h:'Move',msg:()=>isTouch?'Hold the right button to walk. The left button walks back.':'Walk with the arrow keys (or A and D).',hint:()=>isTouch?'Hold the right button':'Press the right arrow',btn:'r',done:()=>P.x>tut.x0+70},
+ {x:230,h:'Throw',msg:()=>isTouch?'Hold THROW to throw coconuts. Hit the crab!':'Hold X to throw coconuts. Hit the crab!',hint:()=>isTouch?'Hold THROW':'Hold X',btn:'s',done:()=>stat.kills>tut.k0||stat.thrown>=tut.t0+4},
+ {x:400,h:'Jump',msg:()=>isTouch?'Press JUMP to hop over things. You can stomp crabs too.':'Press Space to jump. You can stomp crabs too.',hint:()=>isTouch?'Press JUMP':'Press Space',btn:'j',done:()=>P.vy<-3&&!P.on},
+ {x:445,h:'Parotta',msg:()=>'Parotta gives you a triple throw until you fall. Walk into it.',hint:()=>'Walk into the parotta',btn:null,done:()=>P.sp},
+ {x:520,h:'Vine',msg:()=>isTouch?'Jump into the hanging vine and it swings you across.':'Jump into the hanging vine (Space) and it swings you across.',hint:()=>isTouch?'Jump into the vine':'Jump into the vine',btn:'j',done:()=>!!P.vine}];
+function tutPulse(k){document.querySelectorAll('[data-k]').forEach(b=>b.classList.toggle('pulse',!!k&&b.dataset.k===k))}
+function tutConfirm(src){if(!tut||tut.phase!=='msg'||tut.t<14)return;const S=TUT[tut.step];tut.phase='do';tut.x0=P.x;tut.k0=stat.kills;tut.t0=stat.thrown;tut.t=0;if(typeof src==='string')keys[src]=false;tutPulse(S.btn);beep(660,.05,'triangle',.04)}
+function tutSkip(){tut=null;tutPulse(null);beep(300,.05,'square',.03)}
+function tutStep(){if(!tut||state!=='play'||lvl!==0)return;const S=TUT[tut.step];
+  if(!S){tut=null;tutPulse(null);return}
+  if(tut.phase==='wait'){if(P.x>S.x){tut.phase='msg';tut.t=0;tutPulse(null);P.vx=0}}
+  else if(tut.phase==='do'){tut.t++;if(S.done()){tut.step++;tut.phase='wait';tutPulse(null);pops.push({x:P.x+7,y:P.y-8,s:'NICE!',t:70});if(!sfx('powerup'))beep(880,.12,'triangle',.05)}}}
+function drawTut(){
+  if(!tut||state!=='play')return;const S=TUT[tut.step];if(!S)return;
+  if(tut.phase==='msg'){
+    g.fillStyle='rgba(10,6,24,.55)';g.fillRect(0,0,W,H);
+    const bw=Math.min(W-60,400),bx=Math.round((W-bw)/2),by=72,T=twrap(S.msg(),13,bw-32,3),bh=64+T.lines.length*17;
+    g.fillStyle='rgba(12,8,28,.95)';g.fillRect(bx,by,bw,bh);g.fillStyle='#f0c040';g.fillRect(bx,by,bw,1);g.fillRect(bx,by+bh-1,bw,1);g.fillRect(bx,by,1,bh);g.fillRect(bx+bw-1,by,1,bh);
+    ntext('Step '+(tut.step+1)+' of '+TUT.length,bx+16,by+10,8,'#b8b0d0');ntext(S.h,bx+16,by+22,15,'#f0c040');
+    T.lines.forEach((ln,k)=>ntext(ln,bx+16,by+44+k*17,T.px,'#f4ecd0'));
+    if((tick>>4)%2===0||tut.t>0)ntext(isTouch?'Tap to continue':'Press any key',bx+bw-16,by+bh-18,9,'#cfe9c8','right');
+    ntext('Skip tutorial',bx+16,by+bh-18,9,'#d8d0f0');tut.skipR=[bx+8,by+bh-26,110,24];
+  }else if(tut.phase==='do'){
+    const T=S.hint(),w=Math.round(tmeasure(T,11))+28,bx=Math.round(W/2-w/2);
+    g.fillStyle='rgba(12,8,28,.85)';g.fillRect(bx,46,w,22);g.fillStyle='#f0c040';g.fillRect(bx,46,w,1);g.fillRect(bx,67,w,1);
+    ntext(T,W/2,50,11,'#f4ecd0','center')}
+}
 function pickMax(){return TUNE.levelSelectAll?LV.length-1:Math.max(0,Math.min(resume,LV.length-1))}
 function pickDefault(){return seen?Math.max(1,Math.min(resume,LV.length-1)):0}
 function pickLevel(d){if(pick<0)pick=pickDefault();pick=Math.max(0,Math.min(pickMax(),pick+d));beep(520+pick*30,.05,'square',.04)}
-function newGame(){score=0;actScore=0;const st=pick<0?pickDefault():Math.min(pick,pickMax());pick=-1;
+function newGame(){score=0;actScore=0;const st=pick<0?pickDefault():Math.min(pick,pickMax());pick=-1;if(st===0)tutPending=true;
   if(st===0&&!seen&&SCENES.start){loadLevel(0);const snap=snapshotBackdrop(0);startPages(OPENING,()=>{state='story';startStory(SCENES.start,()=>begin(0,40),snap)},snap);return}
   begin(st,40)}
 function startIfNeeded(src){
+  if(state==='play'&&tut&&tut.phase==='msg'&&!paused){tutConfirm(src);return}
   if(state==='title'&&splashT<=0){if(src==='ArrowLeft'||src==='KeyA'||src==='l'){pickLevel(-1);return}if(src==='ArrowRight'||src==='KeyD'||src==='r'){pickLevel(1);return}}
   goFull();
   if(!AUD.go){AUD.go=true;try{actx()&&ac.resume()}catch(e){}SFX_NAMES.forEach(n=>loadBuf(n,'sfx'))}
@@ -880,11 +914,12 @@ function saveHi(){if(score>hi){hi=score;try{localStorage.setItem('lungiman-hi',h
 const hit=(a,b)=>a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y;
 function shot(x,y,vx,vy,gr,k){shots.push({x,y,vx,vy,g:gr,k,life:260})}
 function burst(x,y,cols,n){for(let i=0;i<n;i++)parts.push({x,y,vx:(Math.random()-.5)*4,vy:-Math.random()*3-1,l:30+Math.random()*20|0,c:cols[i%cols.length]})}
-function kill(e){e.alive=false;if(e.t==='dancer'&&arena)arena.kills++;if(e.t==='decoy'){burst(e.x+9,e.y+16,['#ff7020','#ffe070','#ffffff'],14);shake=6;if(Math.abs(P.x+7-(e.x+9))<46&&P.inv<=0&&state==='play')die()}score+=SC[e.t]||100;ammo=Math.min(TUNE.ammoMax,ammo+TUNE.ammoPerKill);if(!sfx('hit'))beep(700,.1,'square',.05);
+function kill(e){e.alive=false;stat.kills++;if(e.t==='dancer'&&arena)arena.kills++;if(e.t==='decoy'){burst(e.x+9,e.y+16,['#ff7020','#ffe070','#ffffff'],14);shake=6;if(Math.abs(P.x+7-(e.x+9))<46&&P.inv<=0&&state==='play')die()}score+=SC[e.t]||100;ammo=Math.min(TUNE.ammoMax,ammo+TUNE.ammoPerKill);if(!sfx('hit'))beep(700,.1,'square',.05);
   burst(e.x+e.w/2,e.y+e.h/2,{crab:['#d8432e','#f08a62'],crow:['#2a2433','#e8b020'],bat:['#3a2a4a','#6a4a80'],goon:['#2a2a3a','#c0303a'],cobra:['#5a4a2a','#d8b860'],monkey:['#7a5030','#d8a878'],imp:['#c02818','#e8603a'],wisp:['#ffa030','#ffe080'],dog:['#26202e','#ff4040'],decoy:['#a070d0','#e0c0ff'],dancer:['#f4f0ff','#ff7ae0']}[e.t]||['#ffffff','#b0a0d0'],8)}
 
 /* =================== update =================== */
 function update(){
+  if(tut&&tut.phase==='msg'&&state==='play'&&!paused){tut.t++;return}
   tick++;if(splashT>0&&--splashT<=30&&preDone<preN&&tick<600)splashT=31;if(lockT>0)lockT--;if(shake>0)shake--;if(banner&&--banner.t<=0)banner=null;for(const q of pops)q.t--;pops=pops.filter(q=>q.t>0);if(dlg&&--dlg.t<=0)dlg=null;
   for(const p of parts){p.x+=p.vx;p.vy+=.15;p.y+=p.vy;p.l--}parts=parts.filter(p=>p.l>0);if(flashT>0)flashT--;for(const q of rings)q.t++;rings=rings.filter(q=>q.t<16);
   if(innerHeight>innerWidth&&isTouch)return;
@@ -927,7 +962,8 @@ function update(){
   if(!locked){camx=Math.min(Math.max(camx,P.x-W*.38),bossX);if(camx>=bossX&&!boss.dead){locked=true;if(!boss.active)spawnBoss()}}
   else camx=bossX;
   for(const l of lamps)if(P.x>l+10&&cp<l){cp=l;if(LV[lvl].chai)drinkChai(l)}
-  for(const t of (LV[lvl].tut||[]))if(!t.d&&P.x>t.x){t.d=1;banner={a:t.a,b:t.b,t:120}}
+  if(!tutAny)for(const t of (LV[lvl].tut||[]))if(!t.d&&P.x>t.x){t.d=1;banner={a:t.a,b:t.b,t:120}}
+  tutStep();
   for(const t of (LV[lvl].sayAt||[]))if(!t.d&&P.x>t.x){t.d=1;say(t.who,t.text)}
   if(LV[lvl].scene&&!scene&&P.x>bossX+W-230){state='scene';scene={t:0};P.vx=0;return}
   if(!LV[lvl].boss&&!LV[lvl].arena&&!LV[lvl].scene&&P.x>bossX+40){state='clear';clearT=200;banner={a:LV[lvl].clear[0],b:LV[lvl].clear[1],t:190};if(LV[lvl].sayClear)say(LV[lvl].sayClear[0],LV[lvl].sayClear[1]);return}
@@ -935,7 +971,7 @@ function update(){
   shootCd--;
   if(S&&shootCd<=0&&P.aru){shootCd=16;slashT=8;swingId++;if(!sfx('slash'))beep(220,.08,'sawtooth',.05)}
   else if(S&&shootCd<=0&&ammo<=0&&!locked){shootCd=18;beep(150,.04,'square',.03)}
-  else if(S&&shootCd<=0){shootCd=14;if(!locked)ammo--;const bx=P.x+P.w/2+P.f*8,by=P.y+14;(P.sp?[-.9,0,.9]:[0]).forEach(vy=>bullets.push({x:bx,y:by,vx:P.f*5,vy,life:70}));if(!sfx('throw'))beep(300,.06,'triangle',.05)}
+  else if(S&&shootCd<=0){shootCd=14;stat.thrown++;if(!locked)ammo--;const bx=P.x+P.w/2+P.f*8,by=P.y+14;(P.sp?[-.9,0,.9]:[0]).forEach(vy=>bullets.push({x:bx,y:by,vx:P.f*5,vy,life:70}));if(!sfx('throw'))beep(300,.06,'triangle',.05)}
   const cx=Math.round(camx);
   for(const b of bullets){b.x+=b.vx;b.y+=b.vy;b.life--}
   bullets=bullets.filter(b=>b.life>0&&b.x>cx-10&&b.x<cx+W+10);
@@ -1459,7 +1495,7 @@ function drawPortrait(who,x,y,box){
   g.drawImage(p.src,p.x,p.y,p.w,p.h,x+1+Math.floor((inner-dw)/2),y+1+Math.floor((inner-dh)/2),dw,dh);
 }
 function drawDlg(){
-  if(!dlg||state==='title'||state==='over'||state==='win')return;
+  if(!dlg||state==='title'||state==='over'||state==='win'||(tut&&tut.phase==='msg'))return;
   const bw=Math.min(360,W-120),bx=Math.round(W/2-bw/2),by=54,tw=bw-34,T=twrap(nice(dlg.text),9.5,tw,2),bh=T.lines.length>1?38:28;
   g.fillStyle='rgba(12,8,28,.86)';g.fillRect(bx,by,bw,bh);
   g.fillStyle='#f0c040';g.fillRect(bx,by,bw,1);g.fillRect(bx,by+bh-1,bw,1);g.fillRect(bx,by,1,bh);g.fillRect(bx+bw-1,by,1,bh);
@@ -1850,8 +1886,8 @@ function draw(){TQ.length=0;
   }
   drawDlg();
   if(flashT>0){g.globalAlpha=Math.min(.75,flashT/14);g.fillStyle=flashC;g.fillRect(0,0,W,H);g.globalAlpha=1}
-  drawSndIcon();if(state==='play')drawPauseIcon();
-  if(banner&&state!=='title'){g.fillStyle='rgba(12,8,28,.55)';g.fillRect(0,78,W,48);ptext(banner.a,W/2,86,4,'#f0c040','center');if(banner.b)ntext(nice(banner.b),W/2,108,12,'#f4ecd0','center')}
+  drawTut();drawSndIcon();if(state==='play')drawPauseIcon();
+  if(banner&&state!=='title'&&!(tut&&tut.phase==='msg')){g.fillStyle='rgba(12,8,28,.55)';g.fillRect(0,78,W,48);ptext(banner.a,W/2,86,4,'#f0c040','center');if(banner.b)ntext(nice(banner.b),W/2,108,12,'#f4ecd0','center')}
   if(state==='title'){overlay();drawCover();
     ptext('LUNGI MAN',W/2,46,6,'#f0c040','center');
     ptext('THE CURSE OF KANJIRAVANAM',W/2,96,2,'#f4ecd0','center');
