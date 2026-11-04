@@ -557,6 +557,11 @@ const PATH={key:'path',sid:8,act:'PATHALAM',name:"MAVELI'S REALM",scene:true,
  motes:'fly',foes:[],boss:null,len:2300,
  mav:['I PLANTED THOSE TREES WITH MY GROVE-PRIESTS. I KNEW EVERY KEEPER BY NAME.','SOMEONE SOLD THE EDGE OF THAT GROVE. I FELT THE SEAL CRACK. I HAVE WATCHED SINCE.','TAKE MY LAMP. GO UP AND FINISH IT. MY PEOPLE NEED A HOME TO COME BACK TO.'],
  clear:["MAVELI'S BLESSING",'GO. FINISH IT.']};
+/* Walk-through quest beats (CLAUDE.md, story pass 3): no tracking, no choice, rewards are existing effects.
+   cameos = a villager runs past as scenery; extra = an item on the ground in a ground segment (seg index, offset). */
+LV0[1].cameos=[{id:'ravi',at:1500,text:'RACE YOU, MACHANE!'}];
+LV0[3].extra=[{k:'rice',seg:1,off:300}];
+LV0[4].extra=[{k:'bell',seg:2,off:260}];
 const LV=[LV0[0],LV0[1],BIKE,LV0[2],LV0[3],DISCO,LV0[4],PATH,LV0[5]];
 LV.forEach(L=>{if(/^a\d/.test(L.key))L.chai=true});
 const BGM={pro:'bgm_prologue',a1:'bgm_forest',bike:'bgm_bike',a2:'bgm_carnival',a3:'bgm_act3',disco:'bgm_disco',a4:'bgm_act4',path:'bgm_pathalam',a5:'bgm_act5'};
@@ -759,7 +764,7 @@ function genBush(seed,C){const r=rng(seed),b=buf(40,20);
 /* =================== game state =================== */
 /* Tunable numbers for coconuts, lives and the Sun Staff */
 const TUNE={levelSelectAll:true,ammoStart:40,ammoMax:60,ammoPerKill:2,ammoRegenBelow:5,ammoRegenFrames:180,lifeEvery:1000,lifeMax:6,rayRange:150};
-let ammo=40,ammoT=0,lifeBank=0,rings=[],pick=-1,paused=false,cin=null,fogK=1,fadeT=0,fadeCol=null,autoKill=false,bloomAt=-1,tut=null,tutPending=false,tutAny=false,stat={thrown:0,kills:0},flashT=0,flashC='#e8f0ff';
+let ammo=40,ammoT=0,lifeBank=0,rings=[],pick=-1,paused=false,cin=null,fogK=1,fadeT=0,fadeCol=null,autoKill=false,bloomAt=-1,tut=null,tutPending=false,tutAny=false,stat={thrown:0,kills:0},flashT=0,flashC='#e8f0ff',cameos=[];
 /* Palm sway: how far (px) the crown moves per level; the trunk base stays put */
 const WIND={pro:1.2,a1:1,a2:1.5,a3:2,a4:3.4,a5:1.2};
 let state='title',lockT=0,tick=0,deadT=0,clearT=0,shootCd=0,jumpPrev=false,shake=0,prevBottom=0,slashT=0,swingId=0;
@@ -800,12 +805,14 @@ function loadLevel(i){fogK=1;bloomAt=-1;
   });
   const cand=plats.filter(p=>p[0]>500&&p[0]<bossX-200).sort((a,b)=>a[0]-b[0]);
   (L.tut||[]).forEach(t=>t.d=0);(L.sayAt||[]).forEach(t=>t.d=0);
+  cameos=(L.cameos||[]).map(c=>Object.assign({},c,{t:-1,x:0}));
   prints=0;hoofs=[];scene=null;arena=null;blessing=(L.key==='a5');
   if(L.prints){const cs=segs.slice(0,-1).filter(s=>s[1]-s[0]>200&&s[0]>200);
     for(let k=0;k<L.prints&&cs.length;k++){const sg=cs[Math.min(cs.length-1,Math.floor((k+.5)*cs.length/L.prints))];hoofs.push({x:Math.round((sg[0]+sg[1])/2)+((k*53)%80)-40,y:GY-6,w:10,h:6,got:false})}}
   if(L.fixed)L.fixed.forEach(f=>pickups.push({x:f.x,y:GY-16,w:10,h:10,got:false,k:f.k}));
   else if(cand.length>1){const mk=(p,k)=>pickups.push({x:p[0]+p[2]/2-5,y:p[1]-16,w:10,h:10,got:false,k});
     mk(cand[Math.floor(cand.length*.3)],'coco');mk(cand[cand.length-1],L.aru?'aru':'coco')}
+  (L.extra||[]).forEach(f=>{const sg=segs[Math.min(f.seg,segs.length-1)];if(sg)pickups.push({x:sg[0]+Math.min(f.off,sg[1]-sg[0]-40),y:GY-16,w:10,h:10,got:false,k:f.k})});
   motes=[];for(let k=0;k<28;k++)motes.push({x:r()*700,y:40+r()*150,ph:r()*6});
   A={sky:genSky(L),pit:genPit(L),clouds:genClouds(L),far:genFar(L),mid:genMid(L,seed),jung:genJungle(L,seed),
      canopy:L.canopy?genCanopy(L.canopy,seed):null,
@@ -885,6 +892,11 @@ const CINE_END=235;
 /* Sacred tree of each boss arena (sprites strees_0..4 withered, strees_5..9 bloomed): dark and cracked until the boss falls, then it blooms in the act's colour.
    Order: Yakshi (teal), Kuttichathan (amber), Odiyan (indigo), Karinkanni (green), Pey Komban (gold). A beaten act (you are further along) shows it bloomed. */
 const TREE_OF={yakshi:0,chathan:1,odiyan:2,karin:3,komban:4},TREE_GLOW=['#4ad8c8','#ffb830','#8a7aff','#6adc5a','#ffd860'];
+function updCameos(){for(const c of cameos){
+  if(c.t<0){if(P.x>c.at-240&&P.x<c.at+400){c.t=0;c.x=P.x-160;pops.push({x:P.x+7,y:P.y-18,s:c.text,t:110})}continue}
+  if(c.t>=0&&c.t<900){c.t++;c.x+=3.4}}}
+function drawCameos(cx){for(const c of cameos){if(c.t<0||c.t>=900)continue;const im=ART[c.id+'_'+((tick>>3)%2)];if(!im)continue;const sx=Math.round(c.x-cx);if(sx<-40||sx>W+40)continue;
+  g.drawImage(im,sx,GY+2-im.height+(((tick>>3)%2)?-1:0))}}
 function drawSacredTree(cx){const L=LV[lvl],k0=TREE_OF[L.boss];if(k0===undefined||!L.boss)return;
   const w=ART['strees_'+k0],b=ART['strees_'+(k0+5)];if(!w||!b)return;
   if(boss.dead&&bloomAt<0&&state!=='cine')bloomAt=tick;
@@ -1139,9 +1151,12 @@ function update(){
   shots=shots.filter(s=>s.life>0&&s.y<H&&s.x>cx-30&&s.x<cx+W+30);
   for(const p of pickups)if(!p.got&&hit(P,p)){p.got=true;score+=200;if(!sfx('powerup'))beep(900,.2,'triangle',.06);
     if(p.k==='aru'){P.aru=true;P.sp=false;banner={a:'TRISHUL',b:"BHADRAKALI'S GIFT. RAYS PIERCE EVERYTHING",t:100};burst(p.x+5,p.y+5,['#ffd860','#ff6a3a','#ffffff'],12)}
+    else if(p.k==='bell'){lives=Math.min(TUNE.lifeMax,lives+1);pops.push({x:p.x+5,y:p.y-12,s:'THE BELL RINGS! +1 LIFE',t:110});burst(p.x+5,p.y+5,['#ffd860','#fff6c0'],10);beep(1180,.35,'sine',.07);beep(1580,.5,'sine',.04)}
+    else if(p.k==='rice'){ammo=Math.min(TUNE.ammoMax,ammo+12);pops.push({x:p.x+5,y:p.y-12,s:'KILI CAWS! +COCONUTS',t:110});burst(p.x+5,p.y+5,['#f4ecd0','#8ccf55'],8);beep(500,.12,'square',.05);beep(380,.18,'square',.05)}
     else{P.sp=true;P.aru=false;banner={a:'PAROTTA!',b:'TRIPLE THROW',t:80};burst(p.x+5,p.y+5,['#f08a62','#f2e2a0'],8)}}
   for(const h of hoofs)if(!h.got&&hit(P,h)){h.got=true;prints++;beep(500+prints*120,.12,'triangle',.05);pops.push({x:h.x+5,y:GY-16,s:'HOOF-PRINT '+prints+'/'+LV[lvl].prints,t:70});burst(h.x+5,GY-4,['#b070ff','#ffffff'],6)}
   if(LV[lvl].arena)arenaTick();
+  updCameos();
   updCrocs();
   if(locked)updBoss();
 }
@@ -2077,9 +2092,11 @@ function draw(){TQ.length=0;
   if(L.rootWalls)drawRoots(cx);
   for(const h of hoofs)if(!h.got){const hx=Math.round(h.x-cx);g.fillStyle='rgba(176,112,255,'+(.2+.15*Math.sin(tick*.1)).toFixed(2)+')';g.fillRect(hx-3,GY-9,16,9);g.drawImage(HOOF,hx,GY-6)}
   for(const p of pickups)if(!p.got){const px=Math.round(p.x-cx),py=Math.round(p.y+Math.sin(tick*.1)*2);
-    if(p.k==='aru'){g.fillStyle='rgba(255,255,255,'+(.12+.1*Math.sin(tick*.12))+')';g.fillRect(px-3,py-3,16,16);{const st=ART.tdrops_0;if(st)g.drawImage(st,px-6,py-2);else g.drawImage(ARU,px,py)}}else g.drawImage(PICK,px-2,py-1)}
+    if(p.k==='aru'){g.fillStyle='rgba(255,255,255,'+(.12+.1*Math.sin(tick*.12))+')';g.fillRect(px-3,py-3,16,16);{const st=ART.tdrops_0;if(st)g.drawImage(st,px-6,py-2);else g.drawImage(ARU,px,py)}}else if(p.k==='bell'){glowEll(px+5,py+5,13,13,'#ffd860',.32+.12*Math.sin(tick*.12));g.fillStyle='#8a5a20';g.fillRect(px+1,py+3,8,7);g.fillRect(px+2,py+1,6,3);g.fillStyle='#d8a838';g.fillRect(px+2,py+3,2,6);g.fillRect(px+3,py+1,4,1);g.fillStyle='#fff0b0';g.fillRect(px+2,py+3,1,3);g.fillStyle='#3a2410';g.fillRect(px+4,py+10,2,2)}
+  else if(p.k==='rice'){glowEll(px+5,py+6,12,10,'#f4ecd0',.22+.1*Math.sin(tick*.1));g.fillStyle='#2e7a2e';g.fillRect(px-1,py+6,12,4);g.fillStyle='#4aa040';g.fillRect(px,py+6,10,1);g.fillStyle='#f8f4e8';g.fillRect(px+2,py+3,6,4);g.fillRect(px+3,py+2,4,1)}
+  else g.drawImage(PICK,px-2,py-1)}
   for(const e of enemies)if(e.alive&&e.x-cx<W+20&&e.x-cx>-40)drawFoe(e,cx);
-  drawSacredTree(cx);drawBoss(cx);drawCine(cx);
+  drawCameos(cx);drawSacredTree(cx);drawBoss(cx);drawCine(cx);
   if(boss.dead&&boss.drop&&!(state==='cine'&&cin&&cin.t<66)){const q=Math.round(boss.drop.x-cx);if(boss.t==='chathan')g.drawImage(COCO,q-3,GY-7);else{g.fillStyle='#0a0810';g.fillRect(q-14,GY-2,28,2);g.fillRect(q-9,GY-3,18,1);g.fillStyle='#6a4a90';g.fillRect(q-5,GY-2,3,1)}}
   for(const s of shots)drawShot(s,cx);
   for(const b of bullets)g.drawImage(COCO,Math.round(b.x-cx-3),Math.round(b.y-3));
