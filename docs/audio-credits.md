@@ -34,6 +34,7 @@ Files in `assets/audio/sfx/` unless noted. Source MP3s are kept as `<name>_a.mp3
 `boss_roar`, `die`, `vine`, `slash`, `powerup`, `chai` (boosted +12 dB), `boss_roar_yakshi`, `boss_roar_chathan`,
 `boss_roar_odiyan`, `boss_roar_karinkanni` (trimmed to 3 s with a fade), `boss_roar_komban`.
 In `assets/audio/music/`: `sting_boss_intro` (3 s, +10 dB), `sting_gameover` (5 s), second attempt with explicit timelines; first 1 s versions kept as `_a.mp3`.
+`thunder` (1 s, normalised, 2026-11-04, one take): used in the disco when the dancers turn (shake, lightning flash, rumble).
 `throw` (0.4 s), `jump` (0.4 s) and `hit` (0.6 s) were also generated, then trimmed short so repeated fire stays snappy. The built-in beeps remain as the fallback if a file is missing.
 
 ## Sound effects and samples
