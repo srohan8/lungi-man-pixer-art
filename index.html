@@ -389,11 +389,11 @@ const BOSSDEF={
   crab:{w:68,h:46,foot:42,hb:[6,10,56,32],hp:20,name:'NJANDU RAJA',sub:'KING OF THE CRABS'},
   monkey:{w:52,h:54,foot:52,hb:[8,4,36,46],hp:24,name:'KURANGU MOOPPAN',sub:'CHIEF OF THE MONKEYS'},
   kallan:{w:36,h:50,foot:47,hb:[9,2,18,45],hp:28,name:'KALLAN',sub:'THE SADYA THIEF'},
-  yakshi:{w:48,h:60,foot:58,hb:[12,4,24,46],hp:16,name:'YAKSHI',sub:'SEDUCTRESS OF THE HOLLOW'},
-  chathan:{w:32,h:38,foot:37,hb:[6,2,20,34],hp:12,name:'KUTTICHATHAN',sub:'MISCHIEF SPIRIT'},
-  odiyan:{w:64,h:46,foot:45,hb:[22,8,20,36],hp:12,name:'ODIYAN',sub:'SHAPESHIFTER OF SHADOWS'},
+  yakshi:{w:48,h:60,foot:58,hb:[12,4,24,46],hp:14,name:'YAKSHI',sub:'SEDUCTRESS OF THE HOLLOW'},
+  chathan:{w:32,h:38,foot:37,hb:[6,2,20,34],hp:15,name:'KUTTICHATHAN',sub:'MISCHIEF SPIRIT'},
+  odiyan:{w:64,h:46,foot:45,hb:[22,8,20,36],hp:17,name:'ODIYAN',sub:'SHAPESHIFTER OF SHADOWS'},
   karin:{w:64,h:64,foot:62,hb:[16,16,32,32],hp:3,name:'KARINKANNI',sub:'THE CURSED EYE'},
-  komban:{w:80,h:60,foot:59,hb:[14,8,52,46],hp:30,name:'PEY KOMBAN',sub:'DEMON OF THE TUSKS'}};
+  komban:{w:80,h:60,foot:59,hb:[14,8,52,46],hp:34,name:'PEY KOMBAN',sub:'DEMON OF THE TUSKS'}};
 /* Boss art from PNG files (assets/art/bosses/<boss>_<frame>.png, made by tools/make-sprite.js from the reference sheets).
    Used only when the file loads and has the same size as the generated frame; otherwise the generated sprite stays. */
 /* scenery props: shrunk to a believable size and dimmed with the act's haze so they read as background, not as obstacles */
@@ -547,6 +547,8 @@ Object.assign({},LV_OLD[0],{act:'PROLOGUE',name:'THE SWINGING AWAKENING',
 ];
 
 ['pro','a1','a2','a3','a4','a5'].forEach((k,i)=>{LV0[i].key=k;LV0[i].sid=i});
+/* difficulty ramp: 0 (prologue) to 5 (Act V). More enemies per stretch, wider gaps, faster shooters, tougher bosses. Layout and count only, no new rules. */
+LV0.forEach((l,i)=>l.hard=i);
 const BIKE=Object.assign({},LV0[2],{key:'bike',sid:6,act:'ACT II',name:'THE RIDE TO THE CARNIVAL',bike:true,foes:['wisp','imp'],boss:null,len:11500,gapW:[105,18],segW:[260,160],aru:false,
   clear:['THE FESTIVAL GATES','SOMETHING WRONG IS DANCING INSIDE'],sayStart:['RAVI','KEEP THE FRONT WHEEL UP, MACHANE! AND DO NOT SCRATCH MY BULLET!'],sayBoss:null,sayClear:null,sayChai:null});
 const DISCO={key:'disco',sid:7,act:'INTERLUDE',name:'DISCO OR DIE',arena:true,kills:12,
@@ -574,7 +576,7 @@ const PATH={key:'path',sid:8,act:'PATHALAM',name:"MAVELI'S REALM",scene:true,
  palm:LV_OLD[0].palm,palms:false,ruins:true,vines:true,vineEvery:1,segW:[130,110],
  bush:['#0a2c34','#146068','#3ac0b0','#ffe090','#ffffff'],
  motes:'fly',foes:[],boss:null,len:2300,
- mav:['I PLANTED THOSE TREES WITH MY GROVE-PRIESTS. I KNEW EVERY KEEPER BY NAME.','SOMEONE SOLD THE EDGE OF THAT GROVE. I FELT THE SEAL CRACK. I HAVE WATCHED SINCE.','LET THE OLD GUARDIAN SLEEP. TAKE MY LAMP, GO UP AND FINISH IT. MY PEOPLE NEED A HOME.'],
+ mav:['I PLANTED THOSE TREES WITH MY GROVE-PRIESTS. I KNEW EVERY KEEPER BY NAME.','SOMEONE SOLD THE EDGE OF THAT GROVE. I FELT THE SEAL CRACK. I HAVE WATCHED SINCE.','TAKE MY LAMP, GO UP AND FINISH IT. MY PEOPLE NEED A HOME.'],
  clear:["MAVELI'S BLESSING",'GO. FINISH IT.']};
 /* Walk-through quest beats (CLAUDE.md, story pass 3): no tracking, no choice, rewards are existing effects.
    cameos = a villager runs past as scenery; extra = an item on the ground in a ground segment (seg index, offset). */
@@ -802,7 +804,7 @@ const SC={crab:100,crow:150,bat:150,goon:200,cobra:200,monkey:250,imp:120,wisp:1
 function loadLevel(i){fogK=1;bloomAt=-1;
   lvl=i;dlg=null;chaiSaid=false;const L=LV[i],si=L.sid,seed=si*31+7,r=rng(500+si*97);
   segs=[[0,620]];let x=620,gi=0;vines=[];
-  while(x<L.len){let gap=L.gapW?L.gapW[0]+(r()*L.gapW[1]|0):52+(r()*16|0);const w=L.segW?L.segW[0]+(r()*L.segW[1]|0):300+(r()*380|0);
+  while(x<L.len){let gap=L.gapW?L.gapW[0]+(r()*L.gapW[1]|0):52+(r()*16|0)+2*(L.hard||0);const w=L.segW?L.segW[0]+(r()*L.segW[1]|0):300+(r()*380|0);
     const ve=L.vineEvery||3;if(L.vines&&gi%ve===(ve===3?1:0)){gap=140+(r()*16|0);vines.push({x:x+60,top:GY-110,len:86})}
     segs.push([x+gap,x+gap+w]);x+=gap+w;gi++}
   bossX=x+320;const eg=L.endVine?150:60;if(L.endVine)vines.push({x:x+60,top:GY-110,len:86});
@@ -826,7 +828,7 @@ function loadLevel(i){fogK=1;bloomAt=-1;
   segs.slice(0,-1).forEach((s,si)=>{
     if(!L.foes||!L.foes.length)return;
     const st=s[0]+(si===0?260:50),en=s[1]-30,span=en-st;if(span<40)return;
-    const n=Math.max(1,Math.floor((s[1]-s[0])/170));
+    const n=Math.max(1,Math.floor((s[1]-s[0])/(170-13*(L.hard||0))));
     for(let k=0;k<n;k++){const t=L.foes[r()*L.foes.length|0];let ex=st+(k+.5)*span/n+(r()-.5)*30;
       if(t==='crow'||t==='bat'||t==='wisp'){enemies.push(mkFoe(t,ex,70+r()*60,s));continue}
       if(t==='monkey'){const p=plats.find(p=>p[0]<ex+80&&p[0]+p[2]>ex-80&&p[0]>=s[0]&&p[0]<s[1]);
@@ -1253,6 +1255,7 @@ function update(){
   updCrocs();
   if(locked)updBoss();
 }
+const HF=()=>1-.07*((LV[lvl]&&LV[lvl].hard)||0);
 function updFoes(cx){
   for(const e of enemies){
     if(!e.alive)continue;if(e.hurt>0)e.hurt--;
@@ -1262,9 +1265,9 @@ function updFoes(cx){
     switch(e.t){
       case 'crab':if(adx<140&&chase)e.dir=sg;e.x+=e.dir*.6;if(e.x<e.s1){e.x=e.s1;e.dir=1}if(e.x>e.s2){e.x=e.s2;e.dir=-1}break;
       case 'goon':if(adx<170&&chase)e.dir=sg;e.x+=e.dir*(adx<170&&chase?.9:.5);if(e.x<e.s1){e.x=e.s1;e.dir=1}if(e.x>e.s2){e.x=e.s2;e.dir=-1}
-        if(--e.cd<=0&&adx<220){e.cd=110;shot(e.x+6,e.y+9,sg*3,-2,.15,'peb')}break;
-      case 'cobra':if(--e.cd<=0&&adx<170){e.cd=100;shot(e.x+(sg>0?9:0),e.y+4,sg*2.4,-1.6,.08,'ven')}break;
-      case 'monkey':if(e.arm>0)e.arm--;if(--e.cd<=0&&adx<230){e.cd=120;e.arm=18;shot(e.x+6,e.y+2,Math.max(-3.5,Math.min(3.5,dx/42)),-4.2,.2,'coco')}break;
+        if(--e.cd<=0&&adx<220){e.cd=Math.round(110*HF());shot(e.x+6,e.y+9,sg*3,-2,.15,'peb')}break;
+      case 'cobra':if(--e.cd<=0&&adx<170){e.cd=Math.round(100*HF());shot(e.x+(sg>0?9:0),e.y+4,sg*2.4,-1.6,.08,'ven')}break;
+      case 'monkey':if(e.arm>0)e.arm--;if(--e.cd<=0&&adx<230){e.cd=Math.round(120*HF());e.arm=18;shot(e.x+6,e.y+2,Math.max(-3.5,Math.min(3.5,dx/42)),-4.2,.2,'coco')}break;
       case 'crow':e.x-=1.3;e.y=e.y0+Math.sin((tick+e.x)*.07)*18;break;
       case 'wisp':e.x-=1.0;e.y=e.y0+Math.sin((tick+e.x)*.05)*26;break;
       case 'imp':e.vy=(e.vy||0)+.35;e.y+=e.vy;
@@ -1323,7 +1326,7 @@ function yakshiAI(b,pc,bc,face,rage){
     if(b.x<=ax+10||b.x>=ax2-b.w-10){b.x=clampX(b.x);b.side=-b.side;b.state=0;b.cd=rage?55:85}
   }
 }
-const BHINT={chathan:'HIT HIM WHEN HE CRASHES',odiyan:'HIT HIM WHEN HE CHANGES FORM',komban:'HIT HIM AFTER HE CRASHES',karin:'HIT THE EYE WHEN IT OPENS'};
+const BHINT={chathan:'HIT HIM WHEN HE CRASHES',odiyan:'HIT HIM WHEN HE CHANGES FORM',komban:'HIT HIM AFTER HIS STOMP',karin:'HIT THE EYE WHEN IT OPENS'};
 function chathanAI(b,pc,bc,face,rage){
   const ax=bossX,ax2=bossX+W,lo=ax+10,hi=ax2-b.w-10,cl=x=>Math.max(lo,Math.min(hi,x));
   b.f=face;b.vuln=b.stun>0;
@@ -1388,10 +1391,10 @@ function kombanAI(b,pc,bc,face,rage){
     if(--b.cd<=0){b.n++;if(b.n%2){b.state=1;b.cd=46;b.arm=46}else{b.state=3;b.cd=30;b.arm=30}}}
   else if(b.state===1){b.f=face;if(--b.cd<=0){b.dir=face;b.state=2;b.arm=0}}
   else if(b.state===2){b.x+=b.dir*(rage?6.4:5.4);b.f=b.dir;
-    if(b.x<=lo||b.x>=hi){b.x=cl(b.x);b.stun=rage?110:140;b.state=0;shake=18;beep(70,.5,'sawtooth',.08);burst(bc,b.y+10,['#6a5a40','#a89878','#ffffff'],16)}}
+    if(b.x<=lo||b.x>=hi){b.x=cl(b.x);b.state=0;b.cd=rage?25:45;shake=18;beep(70,.5,'sawtooth',.08);burst(bc,b.y+10,['#6a5a40','#a89878','#ffffff'],16)}}
   else if(b.state===3){b.f=face;if(--b.cd<=0){b.vy=-9.5;b.vx=face*Math.max(-2.5,Math.min(2.8,(Math.abs(pc-bc)-120)/47));b.state=4;b.air=0;b.arm=0}}
   else{b.x=cl(b.x+b.vx);if(!b.on)b.air=1;
-    if(b.on&&b.air){shot(bc-20,GY-5,-2.8,0,0,'wave');shot(bc+20,GY-5,2.8,0,0,'wave');b.state=0;b.cd=rage?30:55}}
+    if(b.on&&b.air){shot(bc-20,GY-5,-2.8,0,0,'wave');shot(bc+20,GY-5,2.8,0,0,'wave');b.state=0;b.cd=rage?30:55;b.stun=rage?80:105;burst(bc,GY-4,['#6a5a40','#a89878','#ffffff'],10)}}
 }
 /* Sun Staff hit: white flash, an expanding golden ring and a spray of sparks where the ray touches something. */
 function sunHit(x,y,big){rings.push({x,y,t:0,big});burst(x,y,['#fff6c0','#ffd860','#ffffff','#ff6a3a'],big?18:12);shake=Math.max(shake,big?4:2)}
@@ -1827,7 +1830,8 @@ function genMaveli(){
 function drawMaveli(cx){
   const x=Math.round(bossX+W-110-cx),y=GY-56;if(x<-60||x>W+60||!A.mav)return;
   if(scene&&scene.t>=730){g.fillStyle='rgba(255,224,112,'+(.12+.08*Math.sin(tick*.15)).toFixed(2)+')';g.fillRect(x-14,y-8,76,66)}
-  const mh=ART.mvh_0;if(mh){const hh=92,ww=Math.round(hh*mh.width/mh.height);nimg(mh,x+24-Math.round(ww/2),GY+4-hh,ww,hh)}else g.drawImage(A.mav,x,y);
+  /* once the scene starts he rises and faces the hero (the art faces right, so it is mirrored) */
+  const st=scene&&ART.mvh_3,mh=st?FLIPPED(ART.mvh_3):ART.mvh_0;if(mh){const hh=st?100:92,src=st?ART.mvh_3:mh,ww=Math.round(hh*src.width/src.height),bob=st?Math.round(Math.sin(tick*.07)):0;nimg(mh,x+24-Math.round(ww/2),GY+4-hh+bob,ww,hh)}else g.drawImage(A.mav,x,y);
 }
 /* Interlude: an 80s Kerala disco-cabaret bar, indoors (no sky, trees or water). The lights turn red when the crowd turns hostile. */
 function drawDiscoBar(){

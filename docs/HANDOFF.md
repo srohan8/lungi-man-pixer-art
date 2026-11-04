@@ -57,7 +57,7 @@ Each level has a `sid` (layout seed) that was frozen when the level was added, s
 - Player: speed `2.2` (bike `3.6`), jump `-10`, gravity `.5`, throw cooldown `14`, aruval swing box `sb`.
 - Lives: `begin(` sets 4 lives after the prologue (3 in the prologue). Chai boost `chaiT=600` (10 s).
 - Boss health and hitbox: `BOSSDEF`. Boss behaviour: `yakshiAI`, `chathanAI`, `odiyanAI`, `karinAI`, `kombanAI`.
-- Hit windows: Kuttichathan `b.stun=rage?80:100`; Odiyan `PL=36+16*prints`; Pey Komban `b.stun=rage?110:140`; Karinkanni opens for 75 to 95 frames.
+- Hit windows: Kuttichathan `b.stun=rage?80:100`; Odiyan `PL=36+16*prints`; Pey Komban `b.stun=rage?80:105` (set when his stomp lands); Karinkanni opens for 75 to 95 frames.
 - Level length and gaps: `len`, `gapW`, `segW`, `vineEvery` inside each entry of `LV0`/`BIKE`/`DISCO`/`PATH`.
 - Enemy speed and behaviour: the `switch(e.t)` in `updFoes`.
 

@@ -23,7 +23,7 @@ No fourth button. No menus during play, except the pause overlay (pause icon, P 
 7. **One weapon at a time, replaced by pickup, lost on death.** Coconut (default, ranged, limited ammo shown in the HUD), parotta triple coconut (one coconut per volley), and Bhadrakali's trishul (red-gold ray, pierces, cuts enemy shots, double boss damage, no ammo). All use the same THROW button. Never add a weapon-switch button. New weapons must follow the same rule.
 8. **Vines are automatic.** Jumping into a hanging vine grabs it, it swings you forward and releases on its own (or when you press JUMP). Used only to cross wide gaps. No climb button, no aiming.
 9. **No new systems** without asking first (the coconut count and the 1,000-point extra life are the only counters; numbers live in TUNE): no crafting, shops, XP, skill trees, stats, combos, save slots, difficulty menus.
-10. **Difficulty comes from layout and enemy count, not complexity.**
+10. **Difficulty comes from layout and enemy count, not complexity.** It ramps by act through `LV0[n].hard` (0 prologue to 5 Act V): more enemies per stretch, slightly wider gaps, faster shooters, tougher bosses.
 11. **Every act has the same shape:** run, a few enemy types, checkpoint lamps, boss, clear.
 12. **Mobile first.** Everything must work with two thumbs on a phone in landscape. Touch targets stay large.
 
@@ -40,7 +40,7 @@ No fourth button. No menus during play, except the pause overlay (pause icon, P 
 | II | Abandoned festival | imps (hop), wisps (float), masked goons | Kuttichathan | fire ring (ground or head height), decoy clones that explode if popped up close, fireball charge into a wall, then a 1.7s stun (1.3s when enraged) = only hit window |
 | III | Foggy pepper hills | dogs (rush), bats, cobras | Odiyan | only hittable in human form; dog and bull forms charge |
 | IV | Monsoon mangroves | crabs, bats, crows | Karinkanni | eye only hittable when open; ray paralyzes 1.3s; 3 hits |
-| V | Banyan temple grove | goons, cobras, monkeys | Pey Komban | armored; charge into the wall stuns it; stomp makes ground waves |
+| V | Banyan temple grove | goons, cobras, monkeys | Pey Komban | armored; only hittable for about 1.7 s right after his ground stomp (his charge just turns him at the wall); stomp makes ground waves |
 
 Weapons: coconut (always), parotta triple-throw (Acts I-V), Trishul pickup (code name aru) in Acts II, III and V (not IV: the eye needs range). Coconuts: start 40, max 60, +2 per kill, +1 per boss hit, slow regrow below 5, never below 25 after a death. Extra life: every 1,000 points a golden lamp leaves the score counter and arcs down onto the ground just ahead of the player; walking into it gives the life (cap 6, it can be missed; at the cap it gives +300 score).
 Enemy rule of thumb: ground chasers only chase while the player is on their own platform, so nothing camps the landing spot after a vine or gap.
@@ -112,5 +112,5 @@ Rules that change as each step lands:
 - **Sacred trees**: one in each boss arena, withered before the boss, blooming in the act colour after (teal, amber, indigo, green, gold). Replaying a beaten act shows it healed.
 - **Scenery props**: 12 props from the reference prop sheets (shrine ruins, carnival arch, bullock cart, temple gate, banyan and others) are scattered as background scenery per act (LV0[n].decor). They have no collision and no gameplay effect.
 - **Quest beats** (Ravi's race, Kili's rice, Devi's bell) were removed again: they were unexplained. The pickup code stays but no level uses it.
-- **Pathalam Naga**: a huge sleeping serpent as pure scenery beside the swinging path (breathing, eye glow, soft rumble when passed). No collision, no danger. Maveli: "Let the old guardian sleep."
+- **Pathalam Naga**: a huge sleeping serpent as pure scenery beside the swinging path (breathing, eye glow, soft rumble when passed). No collision, no danger.
 - **Built so far**: story panel + opening pages (with motion), prologue tutorial, trishul, sacred trees and act healing, Act III / Pathalam / Act V finishing cinematics, selector entry scenes, backstory clue lines, ending epilogue, Ustad Basheer and the Pathalam Naga (code done; they appear once their art, basheer_0..2 and naga_0..2 in assets/art/bosses, exists).

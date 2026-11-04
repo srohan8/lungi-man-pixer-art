@@ -27,7 +27,6 @@ _Scene after this level:_
 - **Soniya**: Chai from my last clean spring. No questions.
 - **Yakshi**: Stay a while, toddy boy. Look at me...
 - **Yakshi**: The curse lifts. Thank you, Kannan.
-- (cameo, ravi) Race you, machane!
 
 _Scene after this level:_
 - **Ravi**: One grove down. Take the bike, machane.
@@ -60,7 +59,7 @@ _Scene after this level:_
 - **Velu**: The dog bites deeper than you feel.
 - **Kannan**: ...my ankle. It burns.
 
-## INTERLUDE: The fever dream
+## INTERLUDE: Disco or die
 - **Kannan**: Why is everyone dancing...?
 
 _Scene after this level:_
@@ -75,7 +74,7 @@ _Scene after this level:_
 ## PATHALAM: Maveli's realm
 - **Maveli**: I planted those trees with my grove-priests. I knew every keeper by name.
 - **Maveli**: Someone sold the edge of that grove. I felt the seal crack. I have watched since.
-- **Maveli**: Let the old guardian sleep. Take my lamp, go up and finish it. My people need a home.
+- **Maveli**: Take my lamp, go up and finish it. My people need a home.
 
 _Scene after this level:_
 - **Thoma**: The last grove is the worst. Whatever happens, you are not alone.
