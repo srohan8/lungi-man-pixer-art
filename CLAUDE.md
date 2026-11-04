@@ -20,7 +20,7 @@ No fourth button. No menus during play, except the pause overlay (pause icon, P 
 4. **Levels are linear, left to right.** No backtracking, no maps, no keys, no puzzles, no branching paths.
 5. **Story is told in short beats.** Act banners (1-2 lines) plus small dialogue boxes: max 2 lines, one speaker, auto-dismiss after about 3 seconds, never pause the game, never require a tap, never more than 3 per act. No choices, no text the player must read to progress. The only exception to "no cutscenes" is the coded story scenes (see below).
 6. **Power-ups are instant and automatic** (pick up, effect starts). No inventory or selection.
-7. **One weapon at a time, replaced by pickup, lost on death.** Coconut (default, ranged, limited ammo shown in the HUD), parotta triple coconut (one coconut per volley), and the Sun Staff (golden ray, pierces, cuts enemy shots, double boss damage, no ammo). All use the same THROW button. Never add a weapon-switch button. New weapons must follow the same rule.
+7. **One weapon at a time, replaced by pickup, lost on death.** Coconut (default, ranged, limited ammo shown in the HUD), parotta triple coconut (one coconut per volley), and Bhadrakali's trishul (red-gold ray, pierces, cuts enemy shots, double boss damage, no ammo). All use the same THROW button. Never add a weapon-switch button. New weapons must follow the same rule.
 8. **Vines are automatic.** Jumping into a hanging vine grabs it, it swings you forward and releases on its own (or when you press JUMP). Used only to cross wide gaps. No climb button, no aiming.
 9. **No new systems** without asking first (the coconut count and the 1,000-point extra life are the only counters; numbers live in TUNE): no crafting, shops, XP, skill trees, stats, combos, save slots, difficulty menus.
 10. **Difficulty comes from layout and enemy count, not complexity.**
@@ -42,7 +42,7 @@ No fourth button. No menus during play, except the pause overlay (pause icon, P 
 | IV | Monsoon mangroves | crabs, bats, crows | Karinkanni | eye only hittable when open; ray paralyzes 1.3s; 3 hits |
 | V | Banyan temple grove | goons, cobras, monkeys | Pey Komban | armored; charge into the wall stuns it; stomp makes ground waves |
 
-Weapons: coconut (always), parotta triple-throw (Acts I-V), Sun Staff pickup (code name aru) in Acts II, III and V (not IV: the eye needs range). Coconuts: start 40, max 60, +2 per kill, +1 per boss hit, slow regrow below 5, never below 25 after a death. Extra life every 1,000 points, cap 6.
+Weapons: coconut (always), parotta triple-throw (Acts I-V), Trishul pickup (code name aru) in Acts II, III and V (not IV: the eye needs range). Coconuts: start 40, max 60, +2 per kill, +1 per boss hit, slow regrow below 5, never below 25 after a death. Extra life every 1,000 points, cap 6.
 Enemy rule of thumb: ground chasers only chase while the player is on their own platform, so nothing camps the landing spot after a vine or gap.
 Chayakada: from Act II on, every checkpoint is a tea stall. Walking past it sets the checkpoint, clears dizzy or paralysis, and refills coconuts to the cap. It is automatic, no button.
 Progress: the game remembers the furthest act reached ("tap to continue"). The prologue is shown once.
@@ -106,8 +106,9 @@ Rules that change as each step lands:
 - **Story panel**: between levels and in the opening, longer text over several pages with the speaker's portrait, tap for next, skip any time. Never during play. In play only short banners and one-line boxes.
 - **Opening**: five story pages on the very first play (then the village scene and the prologue). Skippable.
 - **Prologue tutorial (exception)**: step-by-step messages freeze the game until confirmed, and each step finishes when the player does the action (move, jump, throw, parotta, vine). First play or when the prologue is picked from the level selector. A visible SKIP. After the prologue nothing ever stops for a message.
-- **Weapon**: the Sun Staff becomes Bhadrakali's **trishul** (same behaviour, same THROW button, same shrine pickups in Acts II, III and V).
+- **Weapon (done)**: the Sun Staff became Bhadrakali's **trishul** (same behaviour, same THROW button, same pickups in Acts II, III and V).
 - **Finishing cinematics (exception)**: coded, no controls, skippable: Odiyan's last strike and Kannan's fall (Act III), the ground opening into Pathalam (after Act IV), the mundu finale (Act V).
 - **Entry scenes**: play when advancing and when a level is picked from the selector. "Tap to continue" is silent except into the interlude and Pathalam.
 - **Sacred trees**: one in each boss arena, withered before the boss, blooming in the act colour after (teal, amber, indigo, green, gold). Replaying a beaten act shows it healed.
 - **Quest beats** are walk-through only (no tracking, rewards are existing effects). No new abilities, no whip, no Naga fight.
+- **Built so far**: story panel + opening pages (with motion), prologue tutorial, trishul, sacred trees and act healing, Act III / Pathalam / Act V finishing cinematics, selector entry scenes, backstory clue lines, ending epilogue, walk-through quest beats (Ravi runs past in Act I, Kili's rice in Act III, Devi's bell in Act IV).

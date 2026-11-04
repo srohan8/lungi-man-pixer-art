@@ -897,10 +897,18 @@ function updCameos(){for(const c of cameos){
   if(c.t>=0&&c.t<900){c.t++;c.x+=3.4}}}
 function drawCameos(cx){for(const c of cameos){if(c.t<0||c.t>=900)continue;const im=ART[c.id+'_'+((tick>>3)%2)];if(!im)continue;const sx=Math.round(c.x-cx);if(sx<-40||sx>W+40)continue;
   g.drawImage(im,sx,GY+2-im.height+(((tick>>3)%2)?-1:0))}}
+/* Act healing: when the boss falls (or on a replay of a beaten act) the grove comes back to life: a soft green wash, stars twinkling again, fireflies, fresh sparkle on the grass. k = 0..1. */
+function healFx(k,cx){
+  g.globalAlpha=.07*k;g.fillStyle='#6adc8a';g.fillRect(0,0,W,H);g.globalAlpha=.06*k;g.fillStyle='#fff0b0';g.fillRect(0,0,W,Math.round(H*.45));
+  for(let i=0;i<34;i++){const x=(i*97+13)%W,y=6+((i*53)%(GY-110)),a=k*(.35+.65*Math.sin(tick*.05+i*2.1));if(a>.3){g.globalAlpha=Math.min(1,a);g.fillStyle=i%3?'#fff6d0':'#ffe898';g.fillRect(x,y,1,1);if(i%5===0){g.fillRect(x-1,y,3,1);g.fillRect(x,y-1,1,3)}}}
+  for(let i=0;i<18;i++){const x=((i*83+tick*.2+Math.sin(tick*.02+i)*10-cx*.3)%W+W)%W,y=GY-14-((tick*.35+i*47)%150),a=k*.8*(1-((tick*.35+i*47)%150)/150);g.globalAlpha=Math.max(0,a);g.fillStyle=i%2?'#c8f090':'#fff6c0';g.fillRect(Math.round(x),Math.round(y),2,2)}
+  for(let x=((-Math.round(cx))%16+16)%16;x<W;x+=16){const a=k*(.3+.3*Math.sin(tick*.08+x));g.globalAlpha=Math.max(0,a);g.fillStyle='#9af070';g.fillRect(x,GY-2,1,3)}
+  g.globalAlpha=1}
 function drawSacredTree(cx){const L=LV[lvl],k0=TREE_OF[L.boss];if(k0===undefined||!L.boss)return;
   const w=ART['strees_'+k0],b=ART['strees_'+(k0+5)];if(!w||!b)return;
   if(boss.dead&&bloomAt<0&&state!=='cine')bloomAt=tick;
   const k=bloomAt>=0?Math.min(1,(tick-bloomAt)/150):(resume>lvl?1:0);
+  if(k>0)healFx(k,cx);
   const x=Math.round(bossX+W/2-cx-w.width/2),y=GY+2-w.height;
   if(x>W||x<-w.width)return;
   g.drawImage(w,x,y);
