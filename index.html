@@ -146,8 +146,9 @@ function stepSfx(heavy){if(!AUD.on||!AUD.go)return;try{const c=actx(),m=audMaste
   for(let i=0;i<n;i++){const t=i/n;a[i]=(Math.random()*2-1)*Math.pow(1-t,3)}
   const src=c.createBufferSource();src.buffer=b;const f=c.createBiquadFilter();f.type='lowpass';f.frequency.value=heavy?260:700;const gn=c.createGain();gn.gain.value=heavy?.5:.14;src.connect(f);f.connect(gn);gn.connect(m);src.start()}catch(e){}}
 function toggleSnd(){AUD.on=!AUD.on;try{localStorage.setItem('lungiman-snd',AUD.on?'1':'0')}catch(e){}audMaster()}
-const SFX_NAMES=['throw','hit','jump','vine','slash','die','chai','powerup','boss_roar','boss_roar_yakshi','boss_roar_chathan','boss_roar_odiyan','boss_roar_karinkanni','boss_roar_komban','yakshi_laugh','thunder','heal_magic'];
+const SFX_NAMES=['throw','hit','jump','vine','slash','die','chai','powerup','boss_roar','boss_roar_yakshi','boss_roar_chathan','boss_roar_odiyan','boss_roar_karinkanni','boss_roar_komban','yakshi_laugh','thunder','heal_magic','angel_descent'];
 function wantMusic(){
+  if(P&&P.fly)return null;
   if(state==='cine')return cin&&cin.k==='mk'?'bgm_finale':null;
   if(state==='pages'&&pg&&pg.list===EPILOGUE)return 'bgm_ending';
   if(state==='title'||state==='pages')return 'bgm_menu';
@@ -395,7 +396,7 @@ const BOSSDEF={
   komban:{w:80,h:60,foot:59,hb:[14,8,52,46],hp:30,name:'PEY KOMBAN',sub:'DEMON OF THE TUSKS'}};
 /* Boss art from PNG files (assets/art/bosses/<boss>_<frame>.png, made by tools/make-sprite.js from the reference sheets).
    Used only when the file loads and has the same size as the generated frame; otherwise the generated sprite stays. */
-const ART={},ART_FILES=['chathan_0','chathan_1','yakshi_0','yakshi_1','odiyan_0','odiyan_1','odiyan_2','karin_0','karin_1','karin_2','komban_0','komban_1','komban_2','hero_0','hero_1','hero_2','hero_3','heroidle_0','heroidle_1','heroidle_2','heroidle_3','heroswing_0','heroswing_1','heroswing_2','croc_0','croc_1','croc_2','croc_3','bike_0','bike_1','bike_2','bike_3','ravi_0','ravi_1','biju_0','biju_1','soniya_0','thoma_0','maveli_0','mooppan_0','scenehero_0','soniya_1','thoma_1','maveli_1','mooppan_1','scenehero_1','soniya_2','thoma_2','maveli_2','mooppan_2','scenehero_2','soniya_3','thoma_3','maveli_3','mooppan_3','scenehero_3','kili_0','kili_1','kili_2','stall_0','devi_0','komrun_0','komrun_1','komrun_2','komrun_3','komrun_4','komrun_5','komrun_6','komrun_7','komrun_8','komrun_9','odirun_0','odirun_1','odirun_2','odirun_3','odirun_4','odirun_5','odirun_6','odirun_7','odirun_8','odirun_9','odirun_10','odirun_11','strees_0','strees_1','strees_2','strees_3','strees_4','strees_5','strees_6','strees_7','strees_8','strees_9','hf_0','hf_1','hf_2','hf_3','hf_4','hf_5','hf_6','hf_7','hf_8','hf_9','hf_10','mvh_0','mvh_3','mvh_7','hk_0','hk_1','hk_2','hk_3','hk_4','hk_5','hk_6','hk_7','hk_8','hk_9','hk_10','hk_11','hs_soniya_0','hs_soniya_1','hs_soniya_2','hs_soniya_3','hs_kili_0','hs_kili_1','hs_kili_2','hs_mooppan_0','hs_mooppan_1','hs_scenehero_0','hs_scenehero_1','hs_scenehero_2','hs_scenehero_3','hs_thoma_0','hs_thoma_1','hs_thoma_2','hs_thoma_3','hs_biju_0','hs_biju_1','hs_ravi_0','hs_ravi_1','edog_0','edog_1','edog_2','edog_3','edog_4','edog_5','logo_0','logo_hi','porotta_0','basheer_0','basheer_1','basheer_2','bshp_0','naga_0','naga_1','naga_2','pg_0','pg_1','pg_2','pg_3','pg_4','tstaff_0','tstaffs_1','tstaffs_2','tdrops_0','tbeam_0','tbeam_1','tbeam_2','hdrown_0','hdrown_1','hdrown_2','hdrown_3','hdrown_4','hdrown_5','hdead_0','hdead_1','hdead_2','hdead_3','ecobra_0','ecobra_1','ecobra_2','ecobra_3','ebat_0','ebat_1','ebat_2','ebat_3','ebat_4','ecrow_0','ecrow_1','ecrow_2','ecrow_3','egoon_0','egoon_1','egoon_2','eimp_0','eimp_1','eimp_2','bhadra_0','bhadra_1','palm_0','palm_1','palm_2','dc1_0','dc1_1','dc1_2','dc1_3','dc1_4','dc1_5','dc2_0','dc2_1','dc2_2','dc2_3','dc2_4','dc2_5','da1_0','da1_1','da1_2','da1_3','da1_4','da1_5','da2_0','da2_1','da2_2','da2_3','da2_4','da2_5','da3_0','da3_1','da3_2','da3_3','da3_4','da3_5'];
+const ART={},ART_FILES=['chathan_0','chathan_1','yakshi_0','yakshi_1','odiyan_0','odiyan_1','odiyan_2','karin_0','karin_1','karin_2','komban_0','komban_1','komban_2','hero_0','hero_1','hero_2','hero_3','heroidle_0','heroidle_1','heroidle_2','heroidle_3','heroswing_0','heroswing_1','heroswing_2','croc_0','croc_1','croc_2','croc_3','bike_0','bike_1','bike_2','bike_3','ravi_0','ravi_1','biju_0','biju_1','soniya_0','thoma_0','maveli_0','mooppan_0','scenehero_0','soniya_1','thoma_1','maveli_1','mooppan_1','scenehero_1','soniya_2','thoma_2','maveli_2','mooppan_2','scenehero_2','soniya_3','thoma_3','maveli_3','mooppan_3','scenehero_3','kili_0','kili_1','kili_2','stall_0','devi_0','komrun_0','komrun_1','komrun_2','komrun_3','komrun_4','komrun_5','komrun_6','komrun_7','komrun_8','komrun_9','odirun_0','odirun_1','odirun_2','odirun_3','odirun_4','odirun_5','odirun_6','odirun_7','odirun_8','odirun_9','odirun_10','odirun_11','strees_0','strees_1','strees_2','strees_3','strees_4','strees_5','strees_6','strees_7','strees_8','strees_9','hf_0','hf_1','hf_2','hf_3','hf_4','hf_5','hf_6','hf_7','hf_8','hf_9','hf_10','mvh_0','mvh_3','mvh_7','pr_broken_idol_0','pr_stone_shrine_0','pr_carnival_banner_0','pr_bullock_cart_0','pr_highland_wall_0','pr_low_branch_0','pr_mangrove_roots_0','pr_stilt_hut_0','pr_temple_gate_0','pr_stone_face_0','pr_sacred_banyan_0','pr_paddy_bundle_0','ang_0','ang_1','ang_2','ang_3','ang_4','ang_5','hk_0','hk_1','hk_2','hk_3','hk_4','hk_5','hk_6','hk_7','hk_8','hk_9','hk_10','hk_11','hs_soniya_0','hs_soniya_1','hs_soniya_2','hs_soniya_3','hs_kili_0','hs_kili_1','hs_kili_2','hs_mooppan_0','hs_mooppan_1','hs_scenehero_0','hs_scenehero_1','hs_scenehero_2','hs_scenehero_3','hs_thoma_0','hs_thoma_1','hs_thoma_2','hs_thoma_3','hs_biju_0','hs_biju_1','hs_ravi_0','hs_ravi_1','edog_0','edog_1','edog_2','edog_3','edog_4','edog_5','logo_0','logo_hi','porotta_0','basheer_0','basheer_1','basheer_2','bshp_0','naga_0','naga_1','naga_2','pg_0','pg_1','pg_2','pg_3','pg_4','tstaff_0','tstaffs_1','tstaffs_2','tdrops_0','tbeam_0','tbeam_1','tbeam_2','hdrown_0','hdrown_1','hdrown_2','hdrown_3','hdrown_4','hdrown_5','hdead_0','hdead_1','hdead_2','hdead_3','ecobra_0','ecobra_1','ecobra_2','ecobra_3','ebat_0','ebat_1','ebat_2','ebat_3','ebat_4','ecrow_0','ecrow_1','ecrow_2','ecrow_3','egoon_0','egoon_1','egoon_2','eimp_0','eimp_1','eimp_2','bhadra_0','bhadra_1','palm_0','palm_1','palm_2','dc1_0','dc1_1','dc1_2','dc1_3','dc1_4','dc1_5','dc2_0','dc2_1','dc2_2','dc2_3','dc2_4','dc2_5','da1_0','da1_1','da1_2','da1_3','da1_4','da1_5','da2_0','da2_1','da2_2','da2_3','da2_4','da2_5','da3_0','da3_1','da3_2','da3_3','da3_4','da3_5'];
 if(typeof Image!=='undefined')ART_FILES.forEach(n=>{const im=new Image();
   im.onload=()=>{const c=document.createElement('canvas');c.width=im.width;c.height=im.height;c.getContext('2d').drawImage(im,0,0);ART[n]=c;
     if(A&&A.boss&&LV[lvl]&&LV[lvl].boss)A.boss=bossFrames(LV[lvl].boss);if(n.startsWith('palm_')&&A&&A.palms&&LV[lvl]&&!LV[lvl].bamboo){const pa=palmArt(LV[lvl]);if(pa)A.palms=pa}};
@@ -574,6 +575,13 @@ const PATH={key:'path',sid:8,act:'PATHALAM',name:"MAVELI'S REALM",scene:true,
  clear:["MAVELI'S BLESSING",'GO. FINISH IT.']};
 /* Walk-through quest beats (CLAUDE.md, story pass 3): no tracking, no choice, rewards are existing effects.
    cameos = a villager runs past as scenery; extra = an item on the ground in a ground segment (seg index, offset). */
+/* scenery props (from the reference prop sheets), a few per act */
+LV0[0].decor=[{n:'paddy_bundle',seg:0,off:230},{n:'stilt_hut',seg:1,off:170},{n:'paddy_bundle',seg:2,off:120}];
+LV0[1].decor=[{n:'low_branch',seg:0,off:230},{n:'broken_idol',seg:1,off:150},{n:'stone_shrine',seg:2,off:140},{n:'stone_face',seg:3,off:120}];
+LV0[2].decor=[{n:'carnival_banner',seg:1,off:140},{n:'bullock_cart',seg:2,off:160},{n:'carnival_banner',seg:3,off:120}];
+LV0[3].decor=[{n:'highland_wall',seg:1,off:150},{n:'low_branch',seg:2,off:160},{n:'highland_wall',seg:3,off:110}];
+LV0[4].decor=[{n:'mangrove_roots',seg:1,off:140},{n:'stilt_hut',seg:2,off:150},{n:'mangrove_roots',seg:3,off:120}];
+LV0[5].decor=[{n:'temple_gate',seg:1,off:150},{n:'stone_face',seg:2,off:130},{n:'sacred_banyan',seg:3,off:160},{n:'stone_shrine',seg:4,off:100}];
 LV0[3].cameos=[{id:'basheer',kind:'bard',seg:0,off:640,verses:['A boat went down the river, low with timber.','Nobody asked whose trees they were.','A bard found the buyer, and called it kindness.','Kindness has a long shadow, brother.']}];
 PATH.cameos=[{id:'naga',kind:'naga',endOff:350}];
 const LV=[LV0[0],LV0[1],BIKE,LV0[2],LV0[3],DISCO,LV0[4],PATH,LV0[5]];
@@ -805,6 +813,7 @@ function loadLevel(i){fogK=1;bloomAt=-1;
     if(si>0&&si%2===0&&!last)lamps.push(s[0]+30);
     for(let px=s[0]+40;px<s[1]-40;px+=60+r()*120){const q=r();if(L.rocks&&q<.55)props.push({k:q<.3?'rock':'wall',x:px,v:r()*3|0});else if(L.ruins&&q<.14)props.push({k:'pillar',x:px,v:r()*2|0});else if(L.palms&&q<(L.bamboo?.6:.35))props.push({k:'palm',x:px,v:r()*3|0});else props.push({k:'bush',x:px,v:r()*3|0})}
   });
+  (L.decor||[]).forEach(d=>{const sg=segs[Math.min(d.seg,Math.max(0,segs.length-2))];if(sg)props.push({k:'art',n:d.n,x:sg[0]+Math.min(d.off,Math.max(40,sg[1]-sg[0]-60))})});
   lamps.push(bossX-150);
   plats.push([bossX+110,150,60],[bossX+290,150,60]);
   segs.slice(0,-1).forEach((s,si)=>{
@@ -853,7 +862,7 @@ function placePlayer(x){
   P={x,y:GY-28,w:14,h:28,vx:0,vy:0,f:1,on:false,inv:0,sp:false,aru:false,step:0,rev:0,vine:null,vineCd:0,boost:0,bvx:0,freeze:0,chaiT:0};
   camx=Math.max(0,x-60);cp=x;bestX=x;bullets=[];shots=[];locked=!!LV[lvl].arena;jumpPrev=true;shootCd=0;slashT=0;
   /* Disco or Die: he drifts slowly down from above like an angel, then lands and the dream begins */
-  if(LV[lvl]&&LV[lvl].key==='disco'&&ART.hk_8){P.x=Math.max(P.x,bossX+Math.round(W*.3));P.fly={t:0,T:260,x:P.x,xE:bossX+Math.round(W/2)-7,y0:-80,yE:GY-P.h};P.y=-80;P.inv=999;healSfx()}
+  if(LV[lvl]&&LV[lvl].key==='disco'&&ART.hk_8){P.x=Math.max(P.x,bossX+Math.round(W*.3));P.fly={t:0,T:260,x:P.x,xE:bossX+Math.round(W/2)-7,y0:-80,yE:GY-P.h};P.y=-80;P.inv=999;if(!sfx('angel_descent'))healSfx()}
 }
 /* Every 1,000 points a golden lamp falls from the sky onto the ground just ahead of the player. Walking into it gives the extra life (it can be missed). */
 function dropLifeLamp(k){
@@ -1647,9 +1656,11 @@ function drawDeath(cx){
 const ROTC=new WeakMap();
 function rotImg(im,ang){const q=Math.round(ang*12);let m=ROTC.get(im);if(!m){m={};ROTC.set(im,m)}if(!m[q]){const d=Math.ceil(Math.hypot(im.width,im.height)),c=document.createElement('canvas');c.width=c.height=d;const x=c.getContext('2d');x.translate(d/2,d/2);x.rotate(q/12);x.drawImage(im,-im.width/2,-im.height/2);m[q]=c}return m[q]}
 function drawPlayer(cx){
-  if(P.fly&&ART.hk_1){const f=P.fly,src=ART.hk_1,sc=HK_H/ART.hk_0.height*1.05,cxp=Math.round(P.x+P.w/2-cx),cyp=Math.round(P.y+P.h/2),look=Math.sin(f.t*.045)<0,bob=Math.round(Math.sin(f.t*.07)*2);
-    glowEll(cxp,cyp,26,24,'#ffd860',.22+.1*Math.sin(tick*.1));glowEll(cxp,cyp,14,13,'#fff6d0',.2);
-    const im=look?FLIPPED(src):src,w=Math.round(im.width*sc),h=Math.round(im.height*sc);nimg(im,cxp-Math.round(w/2),cyp-Math.round(h/2)+bob,w,h);return}
+  if(P.fly&&(ART.ang_4||ART.hk_1)){const f=P.fly,A4=ART.ang_4,sc=HK_H/ART.hk_0.height*(A4?1.2:1.05),cxp=Math.round(P.x+P.w/2-cx),cyp=Math.round(P.y+P.h/2),bob=Math.round(Math.sin(f.t*.07)*2);
+    glowEll(cxp,cyp,28,26,'#ffd860',.22+.1*Math.sin(tick*.1));glowEll(cxp,cyp,15,14,'#fff6d0',.2);
+    let im,look=Math.sin(f.t*.045)<0;
+    if(A4){const seq=[3,4,2,4],ph=Math.floor(f.t/45)%4;im=ART['ang_'+seq[ph]]||A4}else im=look?FLIPPED(ART.hk_1):ART.hk_1;
+    const w=Math.round(im.width*sc),h=Math.round(im.height*sc);nimg(im,cxp-Math.round(w/2),cyp-Math.round(h/2)+bob,w,h);return}
   /* after Odiyan's bite Kannan stays collapsed while the sacred tree blooms (no jumping up and lying down again) */
   if(state==='clear'&&LV[lvl].key==='a3'&&ART.hk_8){hkDraw(HK_BREATH[(tick>>5)&3],Math.round(P.x+P.w/2-cx)-14,Math.round(P.y+P.h)+1,HK_H,P.f<0);return}
   if(state==='clear'&&LV[lvl].key==='a3'&&ART.hdead_2){const im=ART.hdead_2;g.drawImage(im,Math.round(P.x+P.w/2-cx)-8-Math.round(im.width/2),Math.round(P.y+P.h)+1-im.height);return}
@@ -2181,6 +2192,7 @@ function draw(){TQ.length=0;syncPad();
   tile(A.clouds,.06,cx);tile(A.far,.12,cx);drawFog(L,cx,0);tile(A.mid,.3,cx);drawFog(L,cx,1);tile(A.jung,.55,cx);drawBikeBack(cx);drawBikeForest(cx);
   g.drawImage(A.pit,0,GY+12);pitFx(L,cx);drawCrocs(cx)}
   for(const p of props){if(L.arena)break;const sx=p.x-cx;if(sx<-60||sx>W+60)continue;
+    if(p.k==='art'){const im=ART['pr_'+p.n+'_0'];if(im)g.drawImage(im,Math.round(sx-im.width/2),GY-im.height+3);continue}
     if(p.k==='pillar'){const c=A.pillars[p.v];g.drawImage(c,Math.round(sx-7),GY-c.height+4)}else if(p.k==='palm'){drawSwayPalm(A.palms[p.v],sx,p)}else if(p.k==='rock'||p.k==='wall')drawRockProp(p,sx);else g.drawImage(A.bushes[p.v],Math.round(sx-20),GY-17)}
   for(const l of lamps)LV[lvl].chai?drawStall(l,cx,bestX>l+10):drawLamp(l,cx,bestX>l+10);
   for(const q of pops){ptext(q.s,Math.round(q.x-cx),Math.round(q.y-(70-q.t)*.35),1,'#ffe8a0','center')}

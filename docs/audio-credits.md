@@ -65,3 +65,6 @@ The earlier ElevenLabs tracks are kept in `assets/audio/music-old/` (bgm_bike_el
 
 ## Credits shown in the game
 The last two pages after the ending epilogue list the music (ItsWatR, Kamalesh Siddu, Linesh Jose via Pixabay; the rest ElevenLabs) and the studio. Edit the CREDITS pages in index.html (EPILOGUE, pic credits) when a track changes.
+
+## Angel descent sound (Disco or Die entry)
+`assets/audio/sfx/angel_descent.ogg` plays while Kannan floats down into the disco; the disco music starts when he lands. Made with ElevenLabs sound effects (two short takes, `angel_descent_a.mp3` and `angel_descent_b.mp3`, slowed, joined and given reverb), generated 2026-11-04. The sources are not packaged in the app.

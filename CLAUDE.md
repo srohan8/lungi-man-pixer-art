@@ -110,6 +110,7 @@ Rules that change as each step lands:
 - **Finishing cinematics (exception)**: coded, no controls, skippable: Odiyan's last strike and Kannan's fall (Act III), the ground opening into Pathalam (after Act IV), the mundu finale (Act V).
 - **Entry scenes**: play when advancing and when a level is picked from the selector. "Tap to continue" is silent except into the interlude and Pathalam.
 - **Sacred trees**: one in each boss arena, withered before the boss, blooming in the act colour after (teal, amber, indigo, green, gold). Replaying a beaten act shows it healed.
+- **Scenery props**: 12 props from the reference prop sheets (shrine ruins, carnival arch, bullock cart, temple gate, banyan and others) are scattered as background scenery per act (LV0[n].decor). They have no collision and no gameplay effect.
 - **Quest beats** (Ravi's race, Kili's rice, Devi's bell) were removed again: they were unexplained. The pickup code stays but no level uses it.
 - **Pathalam Naga**: a huge sleeping serpent as pure scenery beside the swinging path (breathing, eye glow, soft rumble when passed). No collision, no danger. Maveli: "Let the old guardian sleep."
 - **Built so far**: story panel + opening pages (with motion), prologue tutorial, trishul, sacred trees and act healing, Act III / Pathalam / Act V finishing cinematics, selector entry scenes, backstory clue lines, ending epilogue, Ustad Basheer and the Pathalam Naga (code done; they appear once their art, basheer_0..2 and naga_0..2 in assets/art/bosses, exists).
