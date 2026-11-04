@@ -1592,13 +1592,16 @@ function drawRun(b,F,flip,white,cx){const im=flip?F.f:F.n,bx=Math.round(b.x-cx),
 function drawBoss(cx){
   const b=boss;if(!b.active||b.dead)return;let i=0;
   if(b.t==='crab')i=(b.tk>>4)%2;else if(b.t==='yakshi')i=b.arm>0?1:0;else if(b.t==='chathan')i=b.arm>0?1:0;else if(b.t==='odiyan')i=b.form;else if(b.t==='karin')i=b.state===3?1:(b.state===1||b.state===2)?2:0;else if(b.t==='komban')i=b.stun>0?2:(b.state===1?1:0);else if(b.t==='monkey')i=b.arm>0?1:0;else i=(b.on&&b.state===0?(b.tk>>3)%2:0)+(b.arm>0?2:0);
-  let run=null;if(b.t==='komban'&&b.state===2&&b.stun<=0)run=runFrame('komrun',(tick/3|0)%10);else if(b.t==='odiyan'&&!b.puff&&b.form===1)run=runFrame('odirun',(tick>>1)%6);else if(b.t==='odiyan'&&!b.puff&&b.form===2)run=runFrame('odirun',b.wind>0?6:6+((tick>>1)%6));
+  let run=null;if(b.t==='komban'&&b.state===2&&b.stun<=0)run=runFrame('komrun',(tick/3|0)%10);else if(b.t==='komban'&&b.state===0&&b.stun<=0&&b.arm<=0)run=runFrame('komrun',(tick/7|0)%10);else if(b.t==='odiyan'&&!b.puff&&b.form===1)run=runFrame('odirun',(tick>>1)%6);else if(b.t==='odiyan'&&!b.puff&&b.form===2)run=runFrame('odirun',b.wind>0?6:6+((tick>>1)%6));
   const F=run||A.boss[i],white=b.hurt>0&&tick%4<2,flip=b.t==='crab'?false:b.f>0;
   if(b.t==='chathan'&&(b.state===3||b.state===4)){const fx=Math.round(b.x-cx),fy=Math.round(b.y);const gcx=fx+Math.round(b.w/2),gcy=fy+Math.round(b.h/2),fl=1+Math.round(Math.sin(tick*.4)*2);glowEll(gcx,gcy,Math.round(b.w*.95)+fl,Math.round(b.h*.8)+fl,'#ff5a14',.5);glowEll(gcx,gcy,Math.round(b.w*.62)+fl,Math.round(b.h*.55)+fl,'#ffc83c',.6)}
   if(b.vuln===false&&(b.t==='chathan'||b.t==='odiyan'||b.t==='komban'||b.t==='karin')){const base=flip?F.f:F.n;let r=SHLD.get(base);if(!r){r=tint(base,'#9ad0ff');SHLD.set(base,r)}
     const sx0=Math.round(b.x-cx),sy0=Math.round(b.y);glowEll(sx0+Math.round(b.w/2),sy0+Math.round(b.h/2),Math.round(b.w*.85),Math.round(b.h*.7),'#9ad0ff',.22+.1*Math.sin(tick*.2));g.globalAlpha=.25+.2*Math.sin(tick*.2);for(const [ox,oy] of [[-1,0],[1,0],[0,-1],[0,1],[-1,-1],[1,-1],[-1,1],[1,1]])g.drawImage(r,sx0+ox,sy0+oy);g.globalAlpha=1}
   if(b.puff>0)g.globalAlpha=.35+.3*Math.sin(tick*.8);
+  const wb=b.t==='chathan'&&b.state===0&&b.on&&b.stun<=0&&b.arm<=0?-Math.abs(Math.round(Math.sin(tick*.28)*3)):0;/* Kuttichathan only has two poses: he bounces along instead of sliding */
+  if(wb){g.save();g.translate(0,wb)}
   if(run)drawRun(b,F,flip,white,cx);else if(white||!drawBossFx(b,flip?F.f:F.n,i,flip,cx))g.drawImage(white?(flip?F.wf:F.w):(flip?F.f:F.n),Math.round(b.x-cx),Math.round(b.y));
+  if(wb)g.restore();
   g.globalAlpha=1;
   if(((b.t==='chathan'&&b.state===3)||(b.t==='komban'&&b.state===1)||(b.t==='odiyan'&&b.form===2&&b.wind>0))&&tick%10<6)ptext('!',Math.round(b.x-cx+b.w/2),Math.round(b.y)-16,2,'#ff4040','center');
   if(b.stun>0)for(let k=0;k<3;k++){const a=tick*.2+k*2.1;g.fillStyle='#ffe070';g.fillRect(Math.round(b.x-cx+b.w/2+Math.cos(a)*10),Math.round(b.y+(b.t==='komban'?-4:-6)+Math.sin(a)*3),2,2)}
