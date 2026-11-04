@@ -14,8 +14,9 @@ canvas{image-rendering:pixelated;image-rendering:crisp-edges;display:block}
 @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(240,192,64,.95)}50%{box-shadow:0 0 0 16px rgba(240,192,64,0)}}
 #t{position:fixed;pointer-events:none;image-rendering:auto;z-index:1}
 .pad{position:fixed;bottom:calc(14px + env(safe-area-inset-bottom,0px));display:flex;gap:14px;z-index:2;align-items:flex-end}
-#padL{left:calc(44px + env(safe-area-inset-left,0px))}
-#padR{right:calc(44px + env(safe-area-inset-right,0px))}
+#padL{left:calc(max(44px,7vw) + env(safe-area-inset-left,0px))}
+#padR{right:calc(max(44px,7vw) + env(safe-area-inset-right,0px))}
+body.nopad .pad{display:none}
 .pad button{position:relative}
 .pad button::after{content:"";position:absolute;inset:-14px}
 .pad button{width:68px;height:68px;border-radius:50%;border:2px solid rgba(240,192,64,.75);background:rgba(16,10,34,.38);color:var(--ink);font:700 14px "Trebuchet MS",Verdana,sans-serif;touch-action:none;-webkit-tap-highlight-color:transparent;padding:0}
@@ -137,8 +138,11 @@ function thunder(big){if(sfx('thunder'))return;try{const c=actx(),m=audMaster();
   for(let i=0;i<n;i++){const t=i/n;a[i]=(Math.random()*2-1)*Math.pow(1-t,2.2)*(1+.6*Math.sin(i*.0009))}
   const src=c.createBufferSource();src.buffer=b;const f=c.createBiquadFilter();f.type='lowpass';f.frequency.setValueAtTime(big?900:600,c.currentTime);f.frequency.exponentialRampToValueAtTime(90,c.currentTime+d);
   const gn=c.createGain();gn.gain.value=big?.55:.3;src.connect(f);f.connect(gn);gn.connect(m);src.start()}catch(e){}}
+/* Healing magic when a sacred tree blooms: assets/audio/sfx/heal_magic.ogg if present, otherwise a rising chime arpeggio made in code. */
+function healSfx(){if(sfx('heal_magic'))return;[523,659,784,988,1319,1568].forEach((f,i)=>setTimeout(()=>{beep(f,.9,'sine',.045);beep(f*2,.7,'triangle',.02)},i*170))}
+function startBloom(){bloomAt=tick;healSfx()}
 function toggleSnd(){AUD.on=!AUD.on;try{localStorage.setItem('lungiman-snd',AUD.on?'1':'0')}catch(e){}audMaster()}
-const SFX_NAMES=['throw','hit','jump','vine','slash','die','chai','powerup','boss_roar','boss_roar_yakshi','boss_roar_chathan','boss_roar_odiyan','boss_roar_karinkanni','boss_roar_komban','yakshi_laugh','thunder'];
+const SFX_NAMES=['throw','hit','jump','vine','slash','die','chai','powerup','boss_roar','boss_roar_yakshi','boss_roar_chathan','boss_roar_odiyan','boss_roar_karinkanni','boss_roar_komban','yakshi_laugh','thunder','heal_magic'];
 function wantMusic(){
   if(state==='cine')return null;
   if(state==='pages'&&pg&&pg.list===EPILOGUE)return 'bgm_ending';
@@ -186,9 +190,10 @@ const FONT={A:'010101111101101',B:'110101110101110',C:'011100100100011',D:'11010
 /* Story text (dialogue, scenes, captions, ending) is drawn with a normal font on a second, full-resolution canvas laid over the game, so it stays sharp and readable on a phone.
    Everything else keeps the pixel font. ntext() only queues; flushText() paints after the frame. */
 const tcv=document.getElementById('t'),tg=tcv.getContext('2d'),TQ=[],TFONT='"Trebuchet MS","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
-const NAMES=['Kannan','Biju','Thoma','Ravi','Soniya','Yakshi','Kuttichathan','Odiyan','Karinkanni','Komban','Pey Komban','Bhadrakali','Devi','Velu','Maveli','Kili','Basheer','Kanjiravanam','Kerala','Nilavilakku'];
+const NAMES=['Kannan','Biju','Thoma','Ravi','Soniya','Yakshi','Kuttichathan','Odiyan','Karinkanni','Komban','Pey Komban','Bhadrakali','Devi','Velu','Maveli','Kili','Basheer','Kanjiravanam','Kerala','Kazhukans','Kazhukan','Muruthikudi','Onam','Bullet','Pathalam','Nilavilakku'];
 /* ALL CAPS data text -> sentence case ("THE FOREST IS RESTLESS." -> "The forest is restless.") */
 function nice(s){if(!s)return s;let t=s.toLowerCase().replace(/(^|[.!?…]\s+)([a-z])/g,(m,a,b)=>a+b.toUpperCase()).replace(/\bi\b/g,'I').replace(/\bi'(m|ll|ve|d)\b/g,(m,a)=>"I'"+a);
+  t=t.replace(/(^|[^a-z])chathan(?![a-z])/gi,(m,a)=>a+'Kuttichathan');
   for(const n of NAMES)t=t.replace(new RegExp('(^|[^a-z])'+n.toLowerCase()+'(?![a-z])','gi'),(m,a)=>a+n);return t}
 function tfont(px,k){return '700 '+(px*k).toFixed(1)+'px '+TFONT}
 function tmeasure(s,px){tg.font=tfont(px,1);return tg.measureText(s).width}
@@ -386,7 +391,7 @@ const BOSSDEF={
   komban:{w:80,h:60,foot:59,hb:[14,8,52,46],hp:30,name:'PEY KOMBAN',sub:'DEMON OF THE TUSKS'}};
 /* Boss art from PNG files (assets/art/bosses/<boss>_<frame>.png, made by tools/make-sprite.js from the reference sheets).
    Used only when the file loads and has the same size as the generated frame; otherwise the generated sprite stays. */
-const ART={},ART_FILES=['chathan_0','chathan_1','yakshi_0','yakshi_1','odiyan_0','odiyan_1','odiyan_2','karin_0','karin_1','karin_2','komban_0','komban_1','komban_2','hero_0','hero_1','hero_2','hero_3','heroidle_0','heroidle_1','heroidle_2','heroidle_3','heroswing_0','heroswing_1','heroswing_2','croc_0','croc_1','croc_2','croc_3','bike_0','bike_1','bike_2','bike_3','ravi_0','ravi_1','biju_0','biju_1','soniya_0','thoma_0','maveli_0','mooppan_0','scenehero_0','soniya_1','thoma_1','maveli_1','mooppan_1','scenehero_1','soniya_2','thoma_2','maveli_2','mooppan_2','scenehero_2','soniya_3','thoma_3','maveli_3','mooppan_3','scenehero_3','kili_0','kili_1','kili_2','stall_0','devi_0','komrun_0','komrun_1','komrun_2','komrun_3','komrun_4','komrun_5','komrun_6','komrun_7','komrun_8','komrun_9','odirun_0','odirun_1','odirun_2','odirun_3','odirun_4','odirun_5','odirun_6','odirun_7','odirun_8','odirun_9','odirun_10','odirun_11','strees_0','strees_1','strees_2','strees_3','strees_4','strees_5','strees_6','strees_7','strees_8','strees_9','hf_0','hf_1','hf_2','hf_3','hf_4','hf_5','hf_6','hf_7','hf_8','hf_9','hf_10','logo_0','logo_hi','porotta_0','basheer_0','basheer_1','basheer_2','bshp_0','naga_0','naga_1','naga_2','pg_0','pg_1','pg_2','pg_3','pg_4','tstaff_0','tstaffs_1','tstaffs_2','tdrops_0','tbeam_0','tbeam_1','tbeam_2','hdrown_0','hdrown_1','hdrown_2','hdrown_3','hdrown_4','hdrown_5','hdead_0','hdead_1','hdead_2','hdead_3','ecobra_0','ecobra_1','ecobra_2','ecobra_3','ebat_0','ebat_1','ebat_2','ebat_3','ebat_4','ecrow_0','ecrow_1','ecrow_2','ecrow_3','egoon_0','egoon_1','egoon_2','eimp_0','eimp_1','eimp_2','bhadra_0','bhadra_1','palm_0','palm_1','palm_2','dc1_0','dc1_1','dc1_2','dc1_3','dc1_4','dc1_5','dc2_0','dc2_1','dc2_2','dc2_3','dc2_4','dc2_5','da1_0','da1_1','da1_2','da1_3','da1_4','da1_5','da2_0','da2_1','da2_2','da2_3','da2_4','da2_5','da3_0','da3_1','da3_2','da3_3','da3_4','da3_5'];
+const ART={},ART_FILES=['chathan_0','chathan_1','yakshi_0','yakshi_1','odiyan_0','odiyan_1','odiyan_2','karin_0','karin_1','karin_2','komban_0','komban_1','komban_2','hero_0','hero_1','hero_2','hero_3','heroidle_0','heroidle_1','heroidle_2','heroidle_3','heroswing_0','heroswing_1','heroswing_2','croc_0','croc_1','croc_2','croc_3','bike_0','bike_1','bike_2','bike_3','ravi_0','ravi_1','biju_0','biju_1','soniya_0','thoma_0','maveli_0','mooppan_0','scenehero_0','soniya_1','thoma_1','maveli_1','mooppan_1','scenehero_1','soniya_2','thoma_2','maveli_2','mooppan_2','scenehero_2','soniya_3','thoma_3','maveli_3','mooppan_3','scenehero_3','kili_0','kili_1','kili_2','stall_0','devi_0','komrun_0','komrun_1','komrun_2','komrun_3','komrun_4','komrun_5','komrun_6','komrun_7','komrun_8','komrun_9','odirun_0','odirun_1','odirun_2','odirun_3','odirun_4','odirun_5','odirun_6','odirun_7','odirun_8','odirun_9','odirun_10','odirun_11','strees_0','strees_1','strees_2','strees_3','strees_4','strees_5','strees_6','strees_7','strees_8','strees_9','hf_0','hf_1','hf_2','hf_3','hf_4','hf_5','hf_6','hf_7','hf_8','hf_9','hf_10','mvh_0','mvh_3','mvh_7','edog_0','edog_1','edog_2','edog_3','edog_4','edog_5','logo_0','logo_hi','porotta_0','basheer_0','basheer_1','basheer_2','bshp_0','naga_0','naga_1','naga_2','pg_0','pg_1','pg_2','pg_3','pg_4','tstaff_0','tstaffs_1','tstaffs_2','tdrops_0','tbeam_0','tbeam_1','tbeam_2','hdrown_0','hdrown_1','hdrown_2','hdrown_3','hdrown_4','hdrown_5','hdead_0','hdead_1','hdead_2','hdead_3','ecobra_0','ecobra_1','ecobra_2','ecobra_3','ebat_0','ebat_1','ebat_2','ebat_3','ebat_4','ecrow_0','ecrow_1','ecrow_2','ecrow_3','egoon_0','egoon_1','egoon_2','eimp_0','eimp_1','eimp_2','bhadra_0','bhadra_1','palm_0','palm_1','palm_2','dc1_0','dc1_1','dc1_2','dc1_3','dc1_4','dc1_5','dc2_0','dc2_1','dc2_2','dc2_3','dc2_4','dc2_5','da1_0','da1_1','da1_2','da1_3','da1_4','da1_5','da2_0','da2_1','da2_2','da2_3','da2_4','da2_5','da3_0','da3_1','da3_2','da3_3','da3_4','da3_5'];
 if(typeof Image!=='undefined')ART_FILES.forEach(n=>{const im=new Image();
   im.onload=()=>{const c=document.createElement('canvas');c.width=im.width;c.height=im.height;c.getContext('2d').drawImage(im,0,0);ART[n]=c;
     if(A&&A.boss&&LV[lvl]&&LV[lvl].boss)A.boss=bossFrames(LV[lvl].boss);if(n.startsWith('palm_')&&A&&A.palms&&LV[lvl]&&!LV[lvl].bamboo){const pa=palmArt(LV[lvl]);if(pa)A.palms=pa}};
@@ -460,7 +465,7 @@ Object.assign({},LV_OLD[0],{act:'PROLOGUE',name:'THE SWINGING AWAKENING',
   fixed:[{x:480,k:'parotta'}],
   tut:[{x:40,a:'MOVE',b:'LEFT AND RIGHT BUTTONS',d:0},{x:230,a:'THROW',b:'HOLD THROW. KILLS DROP COCONUTS',d:0},{x:400,a:'JUMP',b:'TAP JUMP. STOMP CRABS TOO',d:0},{x:540,a:'VINE',b:'JUMP INTO THE VINE TO SWING',d:0}],
   clear:['BHADRAKALI SMILES','THE FOREST GIVES YOU ITS POWER'],
-  sayStart:['BIJU','THE FOREST IS RESTLESS AGAIN. I KNOW EXACTLY WHEN IT CHANGED. I HAVE NEVER SAID.'],sayAt:[{x:130,who:'THOMA',text:'STAY ON THE TREES. THE GROUND BELONGS TO THEM NOW.',d:0}],sayClear:['BHADRAKALI','THRALLS OF THE KAZHUKANS ROAM THE WILD. RED EYES MARK THEM.']}),
+  sayStart:['KANNAN','A GODDESS CAUGHT ME YESTERDAY. TODAY I JUST WANT TO PICK COCONUTS.'],sayAt:[{x:300,who:'BIJU',text:'THE CRABS ARE THEIR SCOUTS. RED EYES MEAN THE FOREST IS WATCHING.',d:0}],sayClear:['BHADRAKALI','THRALLS OF THE KAZHUKANS ROAM THE WILD. RED EYES MARK THEM. GO IN, KANNAN.']}),
 {act:'ACT I',name:"YAKSHI'S HOLLOW",
  sky:['#050a1a','#0a1a30','#12304a','#1c4a5a','#2a6a6a','#4a8a7a'],stars:55,
  sun:{y:52,r:22,c:['#f4f4e0','#dcdcc4','#8aa8a0'],crater:'#c0c0aa'},cloud:['#4a7a80','#2c5460','#1a3a48'],
@@ -488,7 +493,7 @@ Object.assign({},LV_OLD[0],{act:'PROLOGUE',name:'THE SWINGING AWAKENING',
  bush:['#2a2a1c','#3a4a24','#5a7a30','#ff8a20','#ffd040'],
  motes:'fly',foes:['imp','wisp','goon','imp'],boss:'chathan',len:3100,
  clear:['SECOND TREE AWAKENED','CHATHAN HANDS OVER THE RELIC'],
- sayStart:['RAVI','MACHANE! THE KUTTICHATHAN LOVES A PARTY. HIT THE REAL ONE!'],sayBoss:['CHATHAN','CATCH ME IF YOU CAN, TODDY BOY! HEHE!'],sayClear:['CHATHAN','FINE, FINE... TAKE THE RELIC. SPOILSPORT.']},
+ sayStart:['BHADRAKALI','KUTTICHATHAN LOVES A PARTY. HIS CLONES ALL LOOK ALIKE. HIT THE REAL ONE.'],sayBoss:['CHATHAN','CATCH ME IF YOU CAN, TODDY BOY! HEHE!'],sayClear:['CHATHAN','FINE, FINE... TAKE THE RELIC. SPOILSPORT.']},
 {act:'ACT III',name:"ODIYAN'S HUNT",
  sky:['#0c121e','#16202e','#22304a','#344a62','#506a7c','#7a92a0'],stars:14,
  sun:{y:54,r:15,c:['#e8ecf0','#b8c0c8','#6a7e8a'],crater:'#98a8aa'},cloud:['#7a8e9a','#506470','#344454'],
@@ -502,7 +507,7 @@ Object.assign({},LV_OLD[0],{act:'PROLOGUE',name:'THE SWINGING AWAKENING',
  bush:['#16301e','#244a2c','#3a6a40','#d83030','#ffd0c0'],
  motes:'mist',foes:['dog','bat','cobra','dog'],boss:'odiyan',len:3200,prints:4,
  clear:['THIRD TREE AWAKENED','A BITE BURNS... THE WORLD SPINS'],
- sayStart:['VELU','HE WEARS THREE FORMS. I KNOW EVERY PATTERN BY HEART. DO NOT ASK HOW.'],sayBoss:['ODIYAN','YOU CANNOT CATCH WHAT YOU CANNOT SEE.'],sayClear:['ODIYAN','THE FOG LIFTS. I REMEMBER MYSELF NOW.']},
+ sayStart:['VELU','HE WEARS THREE FORMS. I KNOW EVERY PATTERN BY HEART. DO NOT ASK HOW.'],sayBoss:['ODIYAN','YOU CANNOT CATCH WHAT YOU CANNOT SEE.']},
 {act:'ACT IV',name:"KARINKANNI'S CURSE",
  sky:['#0a1214','#14222a','#1e343c','#2c4a50','#44666a','#6a8a88'],stars:0,
  sun:{y:56,r:14,c:['#98aeb0','#70888c','#44666a']},cloud:['#5a7478','#3a5258','#24383c'],
@@ -530,12 +535,12 @@ Object.assign({},LV_OLD[0],{act:'PROLOGUE',name:'THE SWINGING AWAKENING',
  bush:['#0c1a12','#16301c','#26502c','#ffc040','#ffffff'],
  motes:'fly',foes:['goon','cobra','monkey','goon'],boss:'komban',len:3300,
  clear:['THE PORTAL IS SEALED','KERALA IS SAFE'],
- sayStart:['THOMA','I SHOULD HAVE SPOKEN FIFTY YEARS AGO. STAY. ON. THE. TREES. PROMISE ME.'],sayChai:['SONIYA','I BROUGHT EVERYTHING I HAVE. YOU DARE NOT DIE.'],sayClear:['BHADRAKALI','KANJIRAVANAM BREATHES AGAIN. WELL DONE, KANNAN.']}
+ sayStart:['THOMA','I SHOULD HAVE SPOKEN FIFTY YEARS AGO. STAY. ON. THE. TREES. PROMISE ME.'],sayChai:['SONIYA','HAVE SOME CHAI. THEN HIT THAT TUSKED THING WHERE IT HURTS.']}
 ];
 
 ['pro','a1','a2','a3','a4','a5'].forEach((k,i)=>{LV0[i].key=k;LV0[i].sid=i});
 const BIKE=Object.assign({},LV0[2],{key:'bike',sid:6,act:'ACT II',name:'THE RIDE TO THE CARNIVAL',bike:true,foes:['wisp','imp'],boss:null,len:11500,gapW:[105,18],segW:[260,160],aru:false,
-  clear:['THE FESTIVAL GATES','SOMETHING WRONG IS DANCING INSIDE'],sayStart:['RAVI','HOP ON! THE FESTIVAL STARTED WITHOUT US. HOLD TIGHT!'],sayBoss:null,sayClear:null,sayChai:null});
+  clear:['THE FESTIVAL GATES','SOMETHING WRONG IS DANCING INSIDE'],sayStart:['RAVI','KEEP THE FRONT WHEEL UP, MACHANE! AND DO NOT SCRATCH MY BULLET!'],sayBoss:null,sayClear:null,sayChai:null});
 const DISCO={key:'disco',sid:7,act:'INTERLUDE',name:'THE FEVER DREAM',arena:true,kills:12,
  sky:['#0a0418','#1a0a3a','#34124e','#5a1a6a','#8a2a82','#c03a98'],stars:40,
  sun:{y:50,r:12,c:['#ffb0f0','#ff7ae0','#c040c0']},cloud:['#ff7ae0','#a02a90','#5a1a6a'],
@@ -567,7 +572,7 @@ const PATH={key:'path',sid:8,act:'PATHALAM',name:"MAVELI'S REALM",scene:true,
    cameos = a villager runs past as scenery; extra = an item on the ground in a ground segment (seg index, offset). */
 LV0[1].cameos=[{id:'ravi',at:1500,text:'RACE YOU, MACHANE!'}];
 LV0[3].cameos=[{id:'basheer',kind:'bard',seg:0,off:640,verses:['A boat went down the river, low with timber.','Nobody asked whose trees they were.','A bard found the buyer, and called it kindness.','Kindness has a long shadow, brother.']}];
-PATH.cameos=[{id:'naga',kind:'naga',seg:1,off:150}];
+PATH.cameos=[{id:'naga',kind:'naga',endOff:350}];
 LV0[3].extra=[{k:'rice',seg:1,off:300}];
 LV0[4].extra=[{k:'bell',seg:2,off:260}];
 const LV=[LV0[0],LV0[1],BIKE,LV0[2],LV0[3],DISCO,LV0[4],PATH,LV0[5]];
@@ -902,13 +907,13 @@ const CINE_END=235;
 const TREE_OF={yakshi:0,chathan:1,odiyan:2,karin:3,komban:4},TREE_GLOW=['#4ad8c8','#ffb830','#8a7aff','#6adc5a','#ffd860'];
 function updCameos(){for(const c of cameos){
   if(c.kind==='bard'){if(!ART.basheer_0)continue;const near=Math.abs(P.x-c.at)<170;if(near){c.vt++;if(c.vt%190===1&&c.verse<c.verses.length-1){c.verse++;c.sing=170}}if(c.sing>0)c.sing--;continue}
-  if(c.kind==='naga'){if(!c.rumbled&&Math.abs(P.x-c.at)<130){c.rumbled=true;beep(52,.7,'sawtooth',.045);shake=Math.max(shake,3)}continue}
+  if(c.kind==='naga'){if(c.endOff)c.at=bossX+W-c.endOff;if(!c.rumbled&&Math.abs(P.x-c.at)<130){c.rumbled=true;beep(52,.7,'sawtooth',.045);shake=Math.max(shake,3)}continue}
   if(c.t<0){if(P.x>c.at-240&&P.x<c.at+400){c.t=0;c.x=P.x-160;pops.push({x:P.x+7,y:P.y-18,s:c.text,t:110})}continue}
   if(c.t>=0&&c.t<900){c.t++;c.x+=3.4}}}
 function drawCameos(cx){for(const c of cameos){
   if(c.kind==='bard'){const im=ART['basheer_'+(c.sing>0?1+((tick>>3)%2):0)];if(!im)continue;const sx=Math.round(c.at-cx);if(sx<-60||sx>W+60)continue;g.drawImage(im,sx-Math.round(im.width/2),GY+2-im.height);
     if(c.sing>0){for(let k=0;k<3;k++){const ph=(tick*.7+k*14)%42;g.globalAlpha=1-ph/42;ntext('\u266a',sx+8+Math.sin(ph*.2+k)*8,GY-im.height-6-ph,12,'#ffd860','center')}g.globalAlpha=1;ntext(c.verses[c.verse],sx,GY-im.height-34,10.5,'#ffe8a0','center')}continue}
-  if(c.kind==='naga'){const f=ART['naga_'+((tick>>6)%3)]||ART.naga_0;if(!f)continue;const sx=Math.round(c.at-cx);if(sx<-f.width||sx>W+f.width)continue;const br=1+.018*Math.sin(tick*.04);const h=Math.round(f.height*br);g.drawImage(f,sx-Math.round(f.width/2),GY+2-h,f.width,h);glowEll(sx-Math.round(f.width*.25),GY+2-Math.round(f.height*.55),7,5,'#ffb030',.2+.15*Math.sin(tick*.05));continue}if(c.t<0||c.t>=900)continue;const im=ART[c.id+'_'+((tick>>3)%2)];if(!im)continue;const sx=Math.round(c.x-cx);if(sx<-40||sx>W+40)continue;
+  if(c.kind==='naga'){if(c.endOff)c.at=bossX+W-c.endOff;const f=ART['naga_'+((tick>>6)%3)]||ART.naga_0;if(!f)continue;const sx=Math.round(c.at-cx);if(sx<-f.width||sx>W+f.width)continue;const br=1+.018*Math.sin(tick*.04);const h=Math.round(f.height*br);g.drawImage(f,sx-Math.round(f.width/2),GY+2-h,f.width,h);glowEll(sx-Math.round(f.width*.25),GY+2-Math.round(f.height*.55),7,5,'#ffb030',.2+.15*Math.sin(tick*.05));continue}if(c.t<0||c.t>=900)continue;const im=ART[c.id+'_'+((tick>>3)%2)];if(!im)continue;const sx=Math.round(c.x-cx);if(sx<-40||sx>W+40)continue;
   g.drawImage(im,sx,GY+2-im.height+(((tick>>3)%2)?-1:0))}}
 /* Act healing: when the boss falls (or on a replay of a beaten act) the grove comes back to life: a soft green wash, stars twinkling again, fireflies, fresh sparkle on the grass. k = 0..1. */
 function healFx(k,cx){
@@ -919,17 +924,24 @@ function healFx(k,cx){
   g.globalAlpha=1}
 function drawSacredTree(cx){const L=LV[lvl],k0=TREE_OF[L.boss];if(k0===undefined||!L.boss)return;
   const w=ART['strees_'+k0],b=ART['strees_'+(k0+5)];if(!w||!b)return;
-  if(boss.dead&&bloomAt<0&&state!=='cine')bloomAt=tick;
-  const k=bloomAt>=0?Math.min(1,(tick-bloomAt)/150):(resume>lvl?1:0);
+  if(boss.dead&&bloomAt<0&&state!=='cine')startBloom();
+  const bt=bloomAt>=0?tick-bloomAt:9999,k=bloomAt>=0?Math.min(1,bt/240):(resume>lvl?1:0);
   if(k>0)healFx(k,cx);
   const x=Math.round(bossX+W/2-cx-w.width/2),y=GY+2-w.height;
   if(x>W||x<-w.width)return;
   g.drawImage(w,x,y);
   if(k>0){const gc=TREE_GLOW[k0];glowEll(x+66,y+40,60,44,gc,.18*k);g.globalAlpha=k;g.drawImage(b,x,y);g.globalAlpha=1}
+  /* the healing moment: a flash, rings of light spreading from the tree, and sparkles rising from the branches */
+  if(bloomAt>=0&&bt<260){const cxT=x+66,cyT=y+50,gc=TREE_GLOW[k0];
+    if(bt<24){g.globalAlpha=.4*(1-bt/24);g.fillStyle='#fff6d0';g.fillRect(0,0,W,H);g.globalAlpha=1}
+    for(let ring=0;ring<3;ring++){const rb=bt-ring*28;if(rb<0||rb>150)continue;const rr=8+rb*1.7,al=Math.max(0,1-rb/150);g.globalAlpha=al*.9;g.fillStyle=ring%2?'#fff6d0':gc;for(let a=0;a<6.2832;a+=.07)g.fillRect(Math.round(cxT+Math.cos(a)*rr),Math.round(cyT+Math.sin(a)*rr*.62),2,2)}
+    g.globalAlpha=1;
+    for(let i=0;i<26;i++){const ph=(bt*1.1+i*31)%120,px=cxT+Math.sin(i*2.7+bt*.03)*(24+(i%5)*9),py=cyT+30-ph*.9,al=Math.max(0,1-ph/120)*Math.min(1,bt/30);g.globalAlpha=al;g.fillStyle=i%3?'#fff6d0':gc;g.fillRect(Math.round(px),Math.round(py),i%4?2:3,i%4?2:3)}
+    g.globalAlpha=1}
   else{const p=.5+.5*Math.sin(tick*.06);g.fillStyle='rgba(255,58,42,'+(.15+.1*p).toFixed(2)+')';g.fillRect(x+60,y+50,3,8)}
 }
 function startCine(k,next){const b=boss;cin={k,t:0,next,ox:b.x+b.w/2,hx:Math.round(P.x+P.w/2)};if(k==='pt'){P.f=1;P.vx=0;cin.gx=P.x+P.w/2}if(k==='mk'){cin.bcx=Math.round(b.x+b.w/2);cin.sx=Math.round(P.x+P.w/2);cin.dir=cin.bcx>cin.sx?1:-1;cin.sx=cin.bcx-cin.dir*Math.min(165,Math.abs(cin.bcx-cin.sx));P.f=cin.dir}state='cine';dlg=null;banner=null;bullets=[];touch.l=touch.r=touch.j=touch.s=0;tutPulse(null)}
-function cineEnd(){if(cin&&cin.k==='pt'){const n=cin.next;cin=null;flashT=0;if(n)n();return}cin=null;fogK=0;state='clear';clearT=45;flashT=0}
+function cineEnd(){if(cin&&cin.k==='pt'){const n=cin.next;cin=null;flashT=0;if(n)n();return}cin=null;fogK=0;state='clear';clearT=330;flashT=0}
 function cineTick(){const c=cin;if(c.k==='pt'){ptTick();return}if(c.k==='mk'){mkTick();return}c.t++;const t=c.t,b=boss;
   if(t===16){burst(c.ox,GY-22,['#2e2444','#6a4a90','#1a1426'],18);beep(140,.35,'sawtooth',.06)}
   if(t>=22&&t<=42)c.ox+=(c.hx-c.ox)*.2;
@@ -1024,7 +1036,7 @@ function mkTick(){const c=cin;c.t++;const t=c.t;
   if(t===2){if(!sfx('boss_roar_komban'))beep(90,.5,'sawtooth',.07);shake=10}
   if(t===60||t===120||t===150)beep(300+t,.12,'triangle',.05);
   if(t===236){flashC='#ffffff';flashT=18;shake=22;thunder(true);burst(c.bcx-c.dir*20,boss.y+16,['#ffffff','#ffe070','#ff8030'],18)}
-  if(t===250){bloomAt=tick;thunder(false);for(let k=0;k<4;k++)burst(c.bcx+(Math.random()-.5)*40,boss.y+20+Math.random()*30,['#ffe070','#ffd860','#ffffff'],10)}
+  if(t===250){startBloom();thunder(false);for(let k=0;k<4;k++)burst(c.bcx+(Math.random()-.5)*40,boss.y+20+Math.random()*30,['#ffe070','#ffd860','#ffffff'],10)}
   if(t>=256&&t<=380&&t%4===0)burst(c.bcx+(Math.random()-.5)*50,GY-10,['#ffe070','#fff6c0'],2);
   if(t===284){shake=Math.max(shake,6);burst(c.bcx-c.dir*74,GY,['#d8c8a0','#a89878'],8)}
   if(t>=MK_END)cineEnd()}
@@ -1053,6 +1065,7 @@ function drawMkPlayer(cx){const c=cin,t=c.t,kp=mkPos(c,t),map={idle:ART.heroidle
   const x=Math.round(kp.x-cx),y=Math.round(kp.y),flip=c.dir<0&&kp.f!=='idle',pic=flip?flipOf(img):img;
   if(kp.f==='a'){g.save();g.translate(x,y);g.rotate(c.dir*Math.min(.3,(t-150)/200));g.drawImage(pic,-Math.round(img.width/2),-img.height);g.restore();return}
   g.drawImage(pic,x-Math.round(img.width/2),y-img.height)}
+const FLIPPED=c=>flipOf(c);
 function pickMax(){return TUNE.levelSelectAll?LV.length-1:Math.max(0,Math.min(resume,LV.length-1))}
 function pickDefault(){return seen?Math.max(1,Math.min(resume,LV.length-1)):0}
 function pickLevel(d){if(pick<0)pick=pickDefault();pick=Math.max(0,Math.min(pickMax(),pick+d));beep(520+pick*30,.05,'square',.04)}
@@ -1372,7 +1385,7 @@ function updBoss(){
       if(b.t==='karin'){b.state=0;b.cd=100;b.vuln=false;b.arm=0}}}
   if(b.hp<=0){b.dead=true;if(b.t==='chathan'||b.t==='odiyan')b.drop={x:b.x+b.w/2};score+=3000;shake=20;beep(200,.8,'sawtooth',.07);
     for(let k=0;k<5;k++)burst(b.x+Math.random()*b.w,b.y+Math.random()*b.h,['#ffe070','#ff8030','#ffffff','#d8432e'],10);
-    shots=[];if(b.t==='odiyan'){startCine('od');return}if(b.t==='komban'){startCine('mk');return}state='clear';clearT=220;banner={a:LV[lvl].clear[0],b:LV[lvl].clear[1],t:210};if(LV[lvl].sayClear)say(LV[lvl].sayClear[0],LV[lvl].sayClear[1]);return}
+    shots=[];if(b.t==='odiyan'){startCine('od');return}if(b.t==='komban'){startCine('mk');return}state='clear';clearT=360;banner={a:LV[lvl].clear[0],b:LV[lvl].clear[1],t:210};if(LV[lvl].sayClear)say(LV[lvl].sayClear[0],LV[lvl].sayClear[1]);return}
   if(!(b.puff>0)&&!(b.stun>0)&&!(b.t==='odiyan'&&b.form===0)&&hit({x:P.x+3,y:P.y+3,w:P.w-6,h:P.h-4},hb))die();
 }
 
@@ -1486,7 +1499,7 @@ function drawFoe(e,cx){
     case 'goon':if(foeArt(e,sx,sy,ART['egoon_'+fr],e.dir>0,true))break;dE(GOON[fr][e.dir>0?1:0],sx-1,sy,14,[[5,3],[8,3]],e.dir>0,e);break;
     case 'imp':if(foeArt(e,sx,sy,ART['eimp_'+(e.y<GY-16?1:(tick>>4)%2?0:2)],right,true))break;dE(IMP[(tick>>4)%2][right?1:0],sx-1,sy,12,[[3,4],[6,4]],right,e);break;
     case 'wisp':g.drawImage(WISP[(tick>>3)%2],sx,sy);break;
-    case 'dog':dE(DOG[(tick>>3)%2][e.dir>0?1:0],sx,sy,16,[[1,3]],e.dir>0,e);break;
+    case 'dog':{const ad=Math.abs(P.x-e.x),k=e.rush?(ad<70?5:(tick>>1)%4):(ad<120?4:(tick>>3)%4);if(foeArt(e,sx,sy,ART['edog_'+k],e.dir>0,true))break;dE(DOG[(tick>>3)%2][e.dir>0?1:0],sx,sy,16,[[1,3]],e.dir>0,e);break}
     case 'dancer':{const k=(e.k||0)%6,fr=e.calm?[ART['dc1_'+k],ART['dc2_'+k]]:[ART['da1_'+k],ART['da2_'+k],ART['da3_'+k]];
       if(fr.every(Boolean)){const im=fr[e.calm?(tick>>4)%2:(tick>>3)%3],pic=e.dir>=0?im:flipOf(im),bx=sx-4,by=sy+e.h-30;
         if(e.calm)g.drawImage(pic,bx,by+((tick>>3)%2));else dE(pic,bx,by,20,[],e.dir<0,e)}
@@ -1662,7 +1675,7 @@ const PORT={MAVELI:'#e0b030',KANNAN:'#b06a40',BHADRAKALI:'#c0303a',YAKSHI:'#dcd8
 /* Dialogue portraits: the speaker's own face, cropped from the character sprite (head only; the eye and the crow use the whole sprite).
    Speakers without art yet (Bhadrakali, Devi, Basheer) keep the coloured badge. */
 const PORTC={};
-const PORT_SRC={KANNAN:'scenehero_0',RAVI:'ravi_0',BIJU:'biju_0',THOMA:'thoma_0',SONIYA:'soniya_0',MAVELI:'maveli_1',VELU:'mooppan_0',KILI:'kili_0',YAKSHI:'yakshi_0',CHATHAN:'chathan_0',ODIYAN:'odiyan_0',KOMBAN:'komban_0',KARINKANNI:'karin_1',DEVI:'devi_0',BHADRAKALI:'bhadra_0',BASHEER:'bshp_0'};
+const PORT_SRC={KANNAN:'scenehero_0',RAVI:'ravi_0',BIJU:'biju_0',THOMA:'thoma_0',SONIYA:'soniya_0',MAVELI:'mvh_3',VELU:'mooppan_0',KILI:'kili_0',YAKSHI:'yakshi_0',CHATHAN:'chathan_0',ODIYAN:'odiyan_0',KOMBAN:'komban_0',KARINKANNI:'karin_1',DEVI:'devi_0',BHADRAKALI:'bhadra_0',BASHEER:'bshp_0'};
 const PORT_WHOLE={KARINKANNI:1,KILI:1},PORT_LEFT={VELU:1};
 function portraitCrop(who){
   if(PORTC[who])return PORTC[who];const src=ART[PORT_SRC[who]];if(!src)return null;
@@ -1720,7 +1733,7 @@ function sceneTick(){
   if(t>=880){state='clear';clearT=60;banner={a:L.clear[0],b:L.clear[1],t:120}}
 }
 function endTick(){
-  endT++;
+  endT++;for(const k of [0,2,4])if(endT===60+k*110)healSfx();
   if(endT===620)say('THOMA','I TOLD YOU TO STAY ON THE TREES. YOU DID NOT LISTEN ONCE.',230);
   if(endT===860)say('SONIYA','ARE YOU ALL JUST STANDING THERE? WANT CHAI?',230);
   if(endT===1100)say('MAVELI','ONAM IS IN THREE WEEKS. I HOPE THE FEAST IS GOOD.',230);
@@ -1741,7 +1754,7 @@ function genMaveli(){
 function drawMaveli(cx){
   const x=Math.round(bossX+W-110-cx),y=GY-56;if(x<-60||x>W+60||!A.mav)return;
   if(scene&&scene.t>=730){g.fillStyle='rgba(255,224,112,'+(.12+.08*Math.sin(tick*.15)).toFixed(2)+')';g.fillRect(x-14,y-8,76,66)}
-  g.drawImage(A.mav,x,y);
+  const mh=ART.mvh_0;if(mh){const hh=92,ww=Math.round(hh*mh.width/mh.height);nimg(mh,x+24-Math.round(ww/2),GY+4-hh,ww,hh)}else g.drawImage(A.mav,x,y);
 }
 /* Interlude: an 80s Kerala disco-cabaret bar, indoors (no sky, trees or water). The lights turn red when the crowd turns hostile. */
 function drawDiscoBar(){
@@ -1822,9 +1835,9 @@ let story=null;
 const SCENES={
  start:{bg:'pro',actors:[{id:'scenehero',who:'KANNAN',x:.26,talk:2},{id:'biju',who:'BIJU',x:.52,f:-1,from:1,talk:1},{id:'thoma',who:'THOMA',x:.78,f:-1,from:1,talk:2}],
   lines:[{who:'BIJU',text:'THE FOREST IS RESTLESS AGAIN. TAKE THIS COCONUT.'},{who:'THOMA',text:'STAY ON THE TREES. THE GROUND BELONGS TO THEM NOW.'}]},
- pro:{bg:'next',actors:[{id:'scenehero',who:'KANNAN',x:.5}],caption:['THE GOLDEN HOUR ENDS.','HE GOES IN.']},
+ pro:{bg:'next',actors:[{id:'scenehero',who:'KANNAN',x:.5}],caption:['THE FIRST TREE WAITS IN THE BAMBOO HOLLOW.','THE GOLDEN HOUR ENDS. HE GOES IN.']},
  a1:{bg:'next',actors:[{id:'ravi',who:'RAVI',x:.24,talk:1,from:-1},{id:'scenehero',who:'KANNAN',x:.44},{id:'bike',pose:3,who:'',x:.7,from:1,sc:2}],
-  lines:[{who:'RAVI',text:'ONE GROVE DOWN. TAKE THE BIKE, MACHANE.'},{who:'RAVI',text:"THE PLANKS IN MY SHOP HUM AT NIGHT. NEVER MIND THAT. HOLD TIGHT!"}]},
+  lines:[{who:'RAVI',text:'ONE GROVE DOWN. TAKE THE BIKE, MACHANE.'},{who:'RAVI',text:"THE CARNIVAL IS DOWN THE ROAD. MY SHOP PLANKS HUM AT NIGHT... NEVER MIND. HOLD TIGHT!"}]},
  bike:{bg:'cur',actors:[{id:'bike',pose:3,who:'',x:.32,sc:2},{id:'scenehero',who:'KANNAN',x:.62,f:-1,talk:2}],
   lines:[{who:'KANNAN',text:'THE FOREST CLOSED IN. FROM HERE, ON FOOT.'}]},
  a2:{bg:'next',actors:[{id:'scenehero',who:'KANNAN',x:.5}],caption:['TWO GROVES FREED. THE EMBERS GO COOL.','THE HIGHLAND FOG IS WAITING.']},
@@ -1832,10 +1845,8 @@ const SCENES={
   lines:[{who:'VELU',text:'THE DOG BITES DEEPER THAN YOU FEEL.'},{who:'KANNAN',text:'...MY ANKLE. IT BURNS.'}]},
  disco:{bg:'a3',actors:[{id:'scenehero',who:'KANNAN',x:.36,lying:1},{id:'ravi',who:'RAVI',x:.66,f:-1,from:1,talk:1}],
   lines:[{who:'RAVI',text:'YOU KEPT SHOUTING LEFT AND RIGHT.'},{who:'RAVI',text:"ODIYAN'S VENOM. TWO GROVES LEFT. THE RAIN IS COMING."}]},
- a4:{bg:'next',actors:[{id:'scenehero',who:'KANNAN',x:.34},{id:'maveli',who:'MAVELI',x:.7,f:-1,from:1,talk:2}],
-  lines:[{who:'MAVELI',text:'I BROUGHT YOU DOWN. I HOPE THAT WAS ACCEPTABLE.'}]},
  path:{bg:'next',actors:[{id:'scenehero',who:'KANNAN',x:.26},{id:'thoma',who:'THOMA',x:.52,f:-1,from:1,talk:3},{id:'soniya',who:'SONIYA',x:.78,f:-1,from:1,talk:2}],
-  lines:[{who:'THOMA',text:'STAY. ON. THE. TREES. PROMISE ME.'},{who:'SONIYA',text:"I BROUGHT EVERYTHING. DON'T YOU DARE DIE."}]}
+  lines:[{who:'THOMA',text:'THE LAST GROVE IS THE WORST. WHATEVER HAPPENS, YOU ARE NOT ALONE.'},{who:'SONIYA',text:"I BROUGHT EVERYTHING. DON'T YOU DARE DIE."}]}
 };
 const STORY_START=100,STORY_BOX=270; /* slow scenes: about 1.7 s before the first line, 4.5 s per line */
 /* Draws the real scenery (sky, hills, trees, water, ground, canopy) of the loaded level once and keeps it as the scene backdrop,
@@ -1927,8 +1938,9 @@ function drawPagePic(P0,L,t){
   if(P0.pic==='maveli'){for(let y=0;y<H;y+=2){g.fillStyle='rgb('+(14+(y/20|0))+','+(10+(y/30|0))+','+(34+(y/14|0))+')';g.fillRect(0,y,L,2)}
     g.fillStyle='#4a8a3a';g.fillRect(0,40,L,4);g.fillStyle='#2a1c14';g.fillRect(0,44,L,10);
     for(let k=0;k<12;k++){const rx=Math.round(L*(k+.5)/12);g.fillStyle='#3a2616';let x=rx;for(let y=54;y<54+30+(k*17)%60;y+=4){x+=((y*7+k)%5)-2;g.fillRect(x,y,2,4)}}
-    const mv=ART.maveli_1;glowEll(Math.round(L/2),H-90,70,60,'#ffb830',.28);
-    if(mv){const sc=3,w=mv.width*sc,h=mv.height*sc;g.drawImage(mv,Math.round(L/2-w/2),H-h-8+Math.round(Math.sin(t*.05)*2),w,h)}
+    const mv=ART.maveli_1,mh=ART.mvh_3;glowEll(Math.round(L/2),H-90,70,60,'#ffb830',.28);
+    if(mh){const hh=214,ww=Math.round(hh*mh.width/mh.height);g.globalAlpha=al;nimg(mh,Math.round(L/2-ww/2),H-hh-8+Math.round(Math.sin(t*.05)*2),ww,hh)}
+    else if(mv){const sc=3,w=mv.width*sc,h=mv.height*sc;g.drawImage(mv,Math.round(L/2-w/2),H-h-8+Math.round(Math.sin(t*.05)*2),w,h)}
     for(let k=0;k<5;k++){const lx=Math.round(L*(k+.5)/5),ly=120+((k*41)%60)+Math.round(Math.sin(t*.04+k)*4);glowEll(lx,ly,9,9,'#ffb830',.5);g.fillStyle='#fff0b0';g.fillRect(lx-1,ly-1,3,3)}}
   if(P0.pic==='ep'){for(let y=0;y<H;y+=2){g.fillStyle='rgb('+(14+(y/9|0))+','+(12+(y/16|0))+','+(40+(y/10|0))+')';g.fillRect(0,y,L,2)}
     for(let i=0;i<14;i++){const x=(i*71+13)%L,y=6+((i*37)%(H*.4)),a=.4+.5*Math.sin(t*.06+i*2.3);if(a>.3){g.globalAlpha=al*a;g.fillStyle='#fff6d0';g.fillRect(x,y,1,1);g.globalAlpha=al}}
@@ -1983,6 +1995,8 @@ function drawStory(){
   sc.actors.forEach((ac,i)=>{
     const talking=cur&&ac.who&&cur.who===ac.who,scl=ac.sc||2;
     let pose=ac.pose||0;if(talking&&ac.talk!==undefined&&(t>>3)%2)pose=ac.talk;
+    if(ac.id==='maveli'&&ART.mvh_3&&ART.mvh_7){const mi=pose>=2?ART.mvh_3:ART.mvh_7,hh=128,ww=Math.round(hh*mi.width/mi.height),p0=Math.min(1,t/100),e0=1-(1-p0)*(1-p0),off0=Math.round((1-e0)*(ac.from||0)*150),cx0=Math.round(ac.x*W+off0),bob0=Math.round(Math.sin(t*.09+i*2)),hop0=talking&&(t>>3)%2?-2:0;
+      if((ac.f||1)>0)nimg(mi,cx0-Math.round(ww/2),feet-hh+bob0+hop0,ww,hh);else{g.save();/* facing left: mirrored copy on the full-resolution layer */nimg(FLIPPED(mi),cx0-Math.round(ww/2),feet-hh+bob0+hop0,ww,hh);g.restore()}return}
     const img=ART[ac.id+'_'+pose];if(!img)return;const im=(ac.f||1)>0?img:flipOf(img);
     const p=Math.min(1,t/100),e=1-(1-p)*(1-p),off=Math.round((1-e)*(ac.from||0)*150),w=img.width*scl,h=img.height*scl;
     const bob=ac.id==='bike'?0:Math.round(Math.sin(t*.09+i*2)),hop=talking&&(t>>3)%2?-2:0,cx=Math.round(ac.x*W+off);
@@ -2024,12 +2038,17 @@ function drawDisco(){
 }
 const TREEC=['#2ac0b0','#f0a030','#6a5ae0','#2a8a40','#f0c040'];
 function blob(cx,cy,r,col){g.fillStyle=col;for(let y=-r;y<=r;y++){const w=Math.floor(Math.sqrt(r*r-y*y));g.fillRect(cx-w,cy+y,w*2,1)}}
+/* The five sacred trees of the ending: the withered sprite fades into the bloomed one, one after another, each in its own colour. */
+function drawEndTrees(){for(let k=0;k<5;k++){const w=ART['strees_'+k],b=ART['strees_'+(k+5)],x=Math.round(W*(.1+.2*k)),t0=60+k*110,p=Math.max(0,Math.min(1,(endT-t0)/90)),y=GY+4-w.height,gc=TREE_GLOW[k];
+  g.drawImage(w,x-Math.round(w.width/2),y);
+  if(p>0){glowEll(x,y+50,66,52,gc,.22*p);g.globalAlpha=p;g.drawImage(b,x-Math.round(b.width/2),y);g.globalAlpha=1;
+    for(let j=0;j<10;j++){const a=tick*.03+j*.63,r=34+(j*7)%32;g.fillStyle=(j+(tick>>3))%3?'#ffffff':gc;g.fillRect(Math.round(x+Math.cos(a)*r),Math.round(y+34+Math.sin(a)*r*.6),2,2)}}}}
 function drawEnding(){
   const bands=['#04040c','#08081a','#101028','#1a1a38'],bh=Math.ceil(GY/bands.length);
   for(let i=0;i<bands.length;i++){g.fillStyle=bands[i];g.fillRect(0,i*bh,W,bh+1)}
   g.fillStyle='#0c1a10';g.fillRect(0,GY,W,H-GY);g.fillStyle='#2a5a30';g.fillRect(0,GY,W,3);
   for(let k=0;k<40;k++){g.fillStyle=(k+(tick>>4))%5?'#b8b8e8':'#ffffff';g.fillRect((k*97)%W,(k*53)%120,1,1)}
-  for(let k=0;k<5;k++){
+  if(ART.strees_0&&ART.strees_5)drawEndTrees();else for(let k=0;k<5;k++){
     const x=Math.round(W*(.12+.19*k)),t0=60+k*110,p=Math.max(0,Math.min(1,(endT-t0)/70));
     g.fillStyle='#3a2a1a';g.fillRect(x-4,GY-82,8,82);g.fillStyle='#2a1c10';g.fillRect(x+1,GY-82,3,82);
     blob(x,GY-96,26,'#14201a');
@@ -2090,7 +2109,10 @@ function drawBikeFront(cx){
     for(let k=-2;k<=2;k++){const hh=4+((f+k*5)%5)+(k===0?3:0);g.fillStyle=k===0?'#ffd860':'#ff8030';g.fillRect(sx+((k*1.5)|0),GY-6-hh,2,hh)}
     g.globalAlpha=1}
 }
-function draw(){TQ.length=0;
+/* on a phone the touch controls only appear while you can play (the opening pages, scenes, title and cinematics are hands-off) */
+let padShown=null;
+function syncPad(){const want=state==='play'||state==='dead'||state==='clear';if(want===padShown)return;padShown=want;try{document.body.classList.toggle('nopad',!want)}catch(e){}}
+function draw(){TQ.length=0;syncPad();
   if(state==='pages'&&pg){drawPages();return}
   if(state==='story'&&story){drawStory();return}
   if(state==='ending'){drawEnding();return}
@@ -2150,7 +2172,7 @@ function draw(){TQ.length=0;
   if(fadeT>0){const a=Math.min(1,fadeT/90);g.globalAlpha=a;g.fillStyle=fadeCol||(a>.55?'#ffffff':'#ff9af0');g.fillRect(0,0,W,H);g.globalAlpha=1}
   if(flashT>0){g.globalAlpha=Math.min(.75,flashT/14);g.fillStyle=flashC;g.fillRect(0,0,W,H);g.globalAlpha=1}
   drawTut();drawSndIcon();if(state==='play')drawPauseIcon();
-  if(banner&&state!=='title'&&!(tut&&tut.phase==='msg')){g.fillStyle='rgba(12,8,28,.55)';g.fillRect(0,78,W,48);ptext(banner.a,W/2,86,4,'#f0c040','center');if(banner.b)ntext(nice(banner.b),W/2,108,12,'#f4ecd0','center')}
+  if(banner&&state!=='title'&&!(tut&&tut.phase==='msg')){const bY=(state==='clear'&&TREE_OF[LV[lvl].boss]!==undefined)?14:78;g.fillStyle='rgba(12,8,28,.55)';g.fillRect(0,bY,W,48);ptext(banner.a,W/2,bY+8,4,'#f0c040','center');if(banner.b)ntext(nice(banner.b),W/2,bY+30,12,'#f4ecd0','center')}
   if(state==='title'){overlay();drawCover();
     const lg=ART.logo_0,hi=ART.logo_hi;
     if(hi){const lw=Math.min(W-30,312),lh=lw*hi.height/hi.width;nimg(hi,(W-lw)/2,3+Math.sin(tick*.04)*1.5,lw,lh)}
