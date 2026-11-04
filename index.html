@@ -1789,10 +1789,39 @@ function pageTree(x,gy,col,dim){const c=dim?'#2a2a3a':col;
   g.fillStyle=dim?'#1a1824':'#3a2a1c';g.fillRect(x-3,gy-54,6,54);
   if(!dim)glowEll(x,gy-62,34,24,col,.4);
   fillEll(x,gy-62,20,15,dim?'#262434':'#1a1a2a');fillEll(x,gy-64,17,12,c);g.fillStyle='rgba(255,255,255,.18)';g.fillRect(x-9,gy-72,10,2)}
+/* Motion laid over the still pictures. Coordinates are in the page picture area (L wide, H high). */
+function pageLife(pic,L,t,z){
+  const sp=(x,y,w,h,c,a)=>{g.globalAlpha=Math.max(0,Math.min(1,a));g.fillStyle=c;g.fillRect(Math.round(x),Math.round(y),w,h)};
+  if(pic==='village'){
+    glowEll(Math.round(L*.29),Math.round(H*.36),30,22,'#ffd860',.1+.06*Math.sin(t*.05));
+    for(let i=0;i<22;i++){const x=(i*53+t*(.12+(i%3)*.08))%L,y=H*.68+((i*29)%(H*.26)),a=.25+.45*Math.sin(t*.07+i*1.9);if(a>.2)sp(x,y,2+(i%2),1,'#ffe9a0',a)}
+    for(let k=0;k<3;k++){const x=((t*.4+k*150)%(L+70))-35,y=36+k*16+Math.sin(t*.09+k*2)*4,f=(t>>3)%2;sp(x-3,y+(f?-2:0),3,1,'#1a1420',1);sp(x,y,2,1,'#1a1420',1);sp(x+2,y+(f?-2:0),3,1,'#1a1420',1)}
+    for(let i=0;i<3;i++){const x=L*.19+i*5,y=H*.5-((t*.35+i*30)%60),a=.4*(1-((t*.35+i*30)%60)/60);sp(x+Math.sin(t*.05+i)*3,y,3,3,'#c8c0b0',a)}
+  }
+  if(pic==='seal'){
+    for(let i=0;i<16;i++){const x=(i*71+13)%L,y=8+((i*37)%(H*.38)),a=.5+.5*Math.sin(t*.06+i*2.3);if(a>.35)sp(x,y,1,1,'#fff6d0',a)}
+    const cols=['#4ad8c8','#ffb830','#8a7aff','#6adc5a','#ffd860'];
+    for(let i=0;i<18;i++){const k=i%5,x=L*(k+.5)/5+Math.sin(t*.025+i)*14+(i%3)*5-5,y=H*.78-((t*.35+i*41)%(H*.55)),a=.7*(1-(((t*.35+i*41)%(H*.55))/(H*.55)));sp(x,y,2,2,cols[k],a)}
+    glowEll(Math.round(L/2),Math.round(H*.12),50,10,'#ffd860',.1+.07*Math.sin(t*.07));
+  }
+  if(pic==='crack'){
+    const eyes=[[.067,.092],[.925,.043],[.114,.35],[.825,.337],[.953,.32],[.029,.645],[.19,.656],[.36,.65],[.99,.67],[.097,.925],[.787,.928]];
+    eyes.forEach(([ex,ey],k)=>{const X=ex*L,Y=ey*H;glowEll(Math.round(X+4),Math.round(Y),9,6,'#ff3a2a',.12+.1*Math.sin(t*.1+k*2.1));if((t+k*41)%190<9)sp(X-3,Y-1,11,4,'#12060c',.95)});
+    for(let y=H*.4;y<H*.8;y+=10)glowEll(Math.round(L*.5+Math.sin(y*.3)*5),Math.round(y),6,9,'#ff3a2a',.12+.1*Math.sin(t*.12+y*.05));
+    if(t%260<5)sp(0,0,L,H,'#ffd0c0',.18-(t%260)*.03);
+    for(let i=0;i<10;i++){const x=(i*61+t*(.3+(i%3)*.1))%L,y=H*.55+((i*33)%(H*.4));sp(x,y,6,1,'#7a1020',.25)}
+  }
+  if(pic==='maveli'){for(let i=0;i<10;i++){const x=(i*37+9)%L+Math.sin(t*.04+i)*6,y=H-((t*.4+i*29)%H),a=.6*(1-((t*.4+i*29)%H)/H);sp(x,y,2,2,'#ffb830',a)}}
+  if(pic==='kannan'){for(let i=0;i<10;i++){const x=(i*47+11)%L+Math.sin(t*.05+i)*8,y=H-((t*.5+i*23)%H),a=.7*(1-((t*.5+i*23)%H)/H);sp(x,y,3,2,'#ffe070',a)}}
+  g.globalAlpha=1}
 function drawPagePic(P0,L,t){
   const gy=H-52,al=Math.min(1,t/18),art=ART['pg_'+pg.i];g.globalAlpha=al;
   g.fillStyle='#0a0818';g.fillRect(0,0,L,H);
-  if(art&&P0.pic!=='maveli'&&P0.pic!=='kannan'){const sw=Math.min(art.width,L),sx=Math.round((art.width-sw)/2),dx=Math.round((L-sw)/2);g.drawImage(art,sx,0,sw,art.height,dx,0,sw,art.height);g.globalAlpha=1;return}
+  if(art&&P0.pic!=='maveli'&&P0.pic!=='kannan'){
+    /* slow zoom and drift (Ken Burns), then code-drawn life on top: glints, birds, fireflies, blinking eyes */
+    const z=1+Math.min(.09,t*.00016),vw=Math.min(art.width,L)/z,vh=art.height/z,sx=(art.width-vw)/2+Math.sin(t*.004)*(art.width-vw)*.45,sy=(art.height-vh)*(.35+.25*Math.sin(t*.003));
+    const sc=L/vw;g.drawImage(art,sx,sy,vw,vh,0,0,L,Math.min(H,vh*sc));
+    pageLife(P0.pic,L,t,z);g.globalAlpha=1;return}
   if(P0.pic==='village'){if(pg.snap)g.drawImage(pg.snap,0,0)}
   if(P0.pic==='village'){g.fillStyle='rgba(8,6,20,.25)';g.fillRect(0,0,L,H)}
   if(P0.pic==='seal'||P0.pic==='crack'){for(let y=0;y<H;y+=2){g.fillStyle=y<gy?'rgb('+(24+(y/6|0))+','+(18+(y/9|0))+','+(52+(y/5|0))+')':'#10101a';g.fillRect(0,y,L,2)}
@@ -1823,6 +1852,7 @@ function drawPagePic(P0,L,t){
     glowEll(kx,ky,48,44,'#ffd860',.3);
     if(kn){const w=kn.width*3,h=kn.height*3;g.save();g.translate(kx,ky);g.rotate(-.55+Math.sin(t*.03)*.1);g.drawImage(kn,-Math.round(w/2),-Math.round(h/2),w,h);g.restore()}
     for(let k=0;k<14;k++){const an=t*.03+k*.45,rr=34+((k*13)%30),lx=Math.round(kx+Math.cos(an)*rr),ly=Math.round(ky+Math.sin(an)*rr*.7);g.fillStyle=k%2?'#ffe070':'#fff6c0';g.fillRect(lx,ly,3,2);g.fillRect(lx+1,ly-1,1,1)}}
+  if(P0.pic==='maveli'||P0.pic==='kannan'){g.globalAlpha=al;pageLife(P0.pic,L,t,1)}
   g.globalAlpha=1}
 function drawPages(){
   const P0=pg.list[pg.i],pw=Math.min(250,Math.round(W*.46)),px=W-pw-10,L=px-6;
