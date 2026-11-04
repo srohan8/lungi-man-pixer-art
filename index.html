@@ -549,6 +549,7 @@ Object.assign({},LV_OLD[0],{act:'PROLOGUE',name:'THE SWINGING AWAKENING',
 ['pro','a1','a2','a3','a4','a5'].forEach((k,i)=>{LV0[i].key=k;LV0[i].sid=i});
 /* difficulty ramp: 0 (prologue) to 5 (Act V). More enemies per stretch, wider gaps, faster shooters, tougher bosses. Layout and count only, no new rules. */
 LV0.forEach((l,i)=>l.hard=i);
+[6,0,0,10,3,5].forEach((n,i)=>{if(n)LV0[i].xpalms=n});/* more coconut palms: prologue (village), Act III (had none), Act IV, Act V */
 const BIKE=Object.assign({},LV0[2],{key:'bike',sid:6,act:'ACT II',name:'THE RIDE TO THE CARNIVAL',bike:true,foes:['wisp','imp'],boss:null,len:11500,gapW:[105,18],segW:[260,160],aru:false,
   clear:['THE FESTIVAL GATES','SOMETHING WRONG IS DANCING INSIDE'],sayStart:['RAVI','KEEP THE FRONT WHEEL UP, MACHANE! AND DO NOT SCRATCH MY BULLET!'],sayBoss:null,sayClear:null,sayChai:null});
 const DISCO={key:'disco',sid:7,act:'INTERLUDE',name:'DISCO OR DIE',arena:true,kills:12,
@@ -818,6 +819,8 @@ function loadLevel(i){fogK=1;bloomAt=-1;
     if(si>0&&si%2===0&&!last)lamps.push(s[0]+30);
     for(let px=s[0]+40;px<s[1]-40;px+=60+r()*120){const q=r();if(L.rocks&&q<.55)props.push({k:q<.3?'rock':'wall',x:px,v:r()*3|0});else if(L.ruins&&q<.14)props.push({k:'pillar',x:px,v:r()*2|0});else if(L.palms&&q<(L.bamboo?.6:.35))props.push({k:'palm',x:px,v:r()*3|0});else props.push({k:'bush',x:px,v:r()*3|0})}
   });
+  /* extra coconut palms (own random stream, so enemy and gap layout stay as they were) */
+  if(L.xpalms){const rr=rng(900+L.sid);for(let k=0;k<L.xpalms;k++){const sg=segs[Math.floor(rr()*Math.max(1,segs.length-1))];if(!sg)continue;props.push({k:'palm',x:Math.round(sg[0]+50+rr()*Math.max(10,sg[1]-sg[0]-100)),v:rr()*3|0})}}
   (L.decor||[]).forEach(d=>{
     if(d.n==='houseboat'){/* floats on the river: centre of the widest gap */let bg=-1,bw=0;for(let i=1;i<segs.length-1;i++){const w=segs[i+1][0]-segs[i][1];if(w>bw){bw=w;bg=i}}if(bg>0&&bw>=110)props.push({k:'art',n:d.n,x:Math.round((segs[bg][1]+segs[bg+1][0])/2),float:true});return}
     const sg=segs[Math.min(d.seg,Math.max(0,segs.length-2))];if(!sg)return;let x=sg[0]+Math.min(d.off,Math.max(40,sg[1]-sg[0]-60));
@@ -1138,13 +1141,12 @@ function startIfNeeded(src){
   if(state==='pages'){pagesNext();return}
   if(state==='ending'&&endT>240){endFinish();return}
   if(state==='title')newGame();
-  else if(state==='over'&&lockT<=0){score=actScore;begin(lvl,cp);P.inv=120;enemies.forEach(e=>{if(e.x>camx-20&&e.x<camx+W+20)e.alive=false})}
+  else if(state==='over'&&lockT<=0){score=actScore;begin(lvl,cp);P.inv=120}
   else if(state==='win'&&lockT<=0)newGame();
 }
 function respawn(){
-  P.x=cp;P.y=GY-40;P.vx=0;P.vy=0;P.on=false;P.inv=120;P.sp=false;P.aru=false;slashT=0;P.rev=0;P.vine=null;P.boost=0;P.freeze=0;P.chaiT=0;ammo=Math.max(ammo,25);
+  P.x=cp;P.y=GY-40;P.vx=0;P.vy=0;P.on=false;P.inv=120;P.sp=false;P.aru=false;slashT=0;P.rev=0;P.vine=null;P.boost=0;P.freeze=0;P.chaiT=0;ammo=Math.max(ammo,25);P.inv=150;
   camx=Math.min(bossX,Math.max(0,cp-100));bullets=[];shots=[];locked=!!LV[lvl].arena;
-  enemies.forEach(e=>{if(e.x>camx-20&&e.x<camx+W+20)e.alive=false});
   if(boss.active&&!boss.dead){boss.x=bossX+W-boss.w-20;boss.y=GY-1-boss.foot;boss.vx=0;boss.vy=0;boss.state=0}
   state='play';jumpPrev=true;
 }

@@ -46,6 +46,7 @@ Weapons: coconut (always), parotta triple-throw (Acts I-V), Trishul pickup (code
 Enemy rule of thumb: ground chasers only chase while the player is on their own platform, so nothing camps the landing spot after a vine or gap.
 Chayakada: from Act II on, every checkpoint is a tea stall. Walking past it sets the checkpoint, clears dizzy or paralysis, and refills coconuts to the cap. It is automatic, no button.
 Progress: the game remembers the furthest act reached ("tap to continue"). The prologue is shown once.
+Coconut palms: every act has them (extra palms: prologue, Acts III, IV, V; `LV0[n].xpalms`). When the hero dies and respawns, nearby enemies stay (2.5 s of grace, no clearing).
 Level selector (owner request): the title screen has left/right arrows (keys, A/D, or tap the arrows) to choose any level, default is the furthest act reached. It is on the title only, never during play. `TUNE.levelSelectAll=false` limits it to levels reached.
 
 ## Adding story or new acts (checklist)
