@@ -1115,7 +1115,7 @@ function update(){
     else{if(P.bk){P.bx+=P.bvx;P.bvx*=.965}P.vy+=.4;P.y+=P.vy;P.x+=P.vx;P.vx*=.94;
       if(P.vy>=0){for(const [x1,x2,top] of segs.map(s=>[s[0],s[1],GY]).concat(plats.map(p=>[p[0],p[0]+p[2],p[1]])))if(P.x+P.w>x1&&P.x<x2&&P.y+P.h-P.vy<=top+2&&P.y+P.h>=top){P.y=top-P.h;if(P.vy>1.5){burst(P.x+7,top,['#d8c8a0','#a89878'],6);shake=Math.max(shake,3)}P.vy=0;P.vx*=.5;if(!P.dl)P.dl=P.dt;break}}}
   if(--deadT<=0){if(lives<=0){state='over';lockT=60;saveHi()}else respawn()}return}
-  if(state==='clear'){if(--clearT<=0){if(lvl<LV.length-1){if(lvl===0){seen=true;try{localStorage.setItem('lungiman-prologue','1')}catch(e){}}actScore=score;resume=Math.max(resume,lvl+1);try{localStorage.setItem('lungiman-act',resume)}catch(e){}const sk=LV[lvl].key,ni=lvl+1,go=()=>{loadLevel(ni);placePlayer(40);fadeCol=null;if(LV[ni].arena)fadeT=90;if(LV[ni].key==='path'){fadeT=80;fadeCol='#ffd890'}ammo=Math.max(ammo,TUNE.ammoStart);state='play';banner={a:LV[lvl].act,b:LV[lvl].name,t:150}};
+  if(state==='clear'){if(--clearT<=0){if(lvl<LV.length-1){if(lvl===0){seen=true;try{localStorage.setItem('lungiman-prologue','1')}catch(e){}}actScore=score;resume=Math.max(resume,lvl+1);try{localStorage.setItem('lungiman-act',resume)}catch(e){}const sk=LV[lvl].key,ni=lvl+1,go=()=>{loadLevel(ni);placePlayer(40);fadeCol=null;if(LV[ni].arena)fadeT=90;if(LV[ni].key==='path'){fadeT=80;fadeCol='#ffd890'}if(!LV[ni].arena&&LV[ni].key!=='path'){fadeT=90;fadeCol='#05030c'}ammo=Math.max(ammo,TUNE.ammoStart);state='play';banner={a:LV[lvl].act,b:LV[lvl].name,t:150}};
     if(sk==='a4'){startCine('pt',go);return}
     if(SCENES[sk]){const bgk=SCENES[sk].bg;let cxs=Math.round(camx);if(bgk==='next'){loadLevel(ni);cxs=0}else if(bgk!=='cur'){loadLevel(LV.findIndex(l=>l.key===bgk));cxs=0}
       const snap=snapshotBackdrop(cxs);state='story';startStory(SCENES[sk],go,snap)}else go()}else{state='ending';endT=0;saveHi();resume=1;try{localStorage.setItem('lungiman-act','1')}catch(e){}}}return}
@@ -1837,7 +1837,7 @@ const SCENES={
  path:{bg:'next',actors:[{id:'scenehero',who:'KANNAN',x:.26},{id:'thoma',who:'THOMA',x:.52,f:-1,from:1,talk:3},{id:'soniya',who:'SONIYA',x:.78,f:-1,from:1,talk:2}],
   lines:[{who:'THOMA',text:'STAY. ON. THE. TREES. PROMISE ME.'},{who:'SONIYA',text:"I BROUGHT EVERYTHING. DON'T YOU DARE DIE."}]}
 };
-const STORY_START=40,STORY_BOX=150;
+const STORY_START=100,STORY_BOX=270; /* slow scenes: about 1.7 s before the first line, 4.5 s per line */
 /* Draws the real scenery (sky, hills, trees, water, ground, canopy) of the loaded level once and keeps it as the scene backdrop,
    so the scene looks like the level you are about to play. */
 function snapshotBackdrop(cx){
@@ -1906,7 +1906,7 @@ function pageLife(pic,L,t,z){
   if(pic==='kannan'){for(let i=0;i<10;i++){const x=(i*47+11)%L+Math.sin(t*.05+i)*8,y=H-((t*.5+i*23)%H),a=.7*(1-((t*.5+i*23)%H)/H);sp(x,y,3,2,'#ffe070',a)}}
   g.globalAlpha=1}
 function drawPagePic(P0,L,t){
-  const gy=H-52,al=Math.min(1,t/18),art=pg.list===OPENING?ART['pg_'+pg.i]:null;g.globalAlpha=al;
+  const gy=H-52,al=Math.min(1,t/50),art=pg.list===OPENING?ART['pg_'+pg.i]:null;g.globalAlpha=al;
   g.fillStyle='#0a0818';g.fillRect(0,0,L,H);
   if(art&&P0.pic!=='maveli'&&P0.pic!=='kannan'){
     /* slow zoom and drift (Ken Burns), then code-drawn life on top: glints, birds, fireflies, blinking eyes */
@@ -1975,7 +1975,7 @@ function drawPages(){
   ntext('Skip',W-12,6,9,'#d8d0f0','right');
 }
 function drawStory(){
-  const st=story,sc=st.sc,t=st.t,al=Math.max(0,Math.min(1,t/20,(st.total-t)/20)),B=sc.lines||[];
+  const st=story,sc=st.sc,t=st.t,al=Math.max(0,Math.min(1,t/70,(st.total-t)/70)),B=sc.lines||[];
   const bi=t<STORY_START?-1:Math.min(B.length-1,Math.floor((t-STORY_START)/STORY_BOX)),cur=bi>=0?B[bi]:null,feet=GY+2;
   g.fillStyle='#0a0814';g.fillRect(0,0,W,H);g.globalAlpha=al;
   if(st.snap)g.drawImage(st.snap,0,0);
@@ -1984,7 +1984,7 @@ function drawStory(){
     const talking=cur&&ac.who&&cur.who===ac.who,scl=ac.sc||2;
     let pose=ac.pose||0;if(talking&&ac.talk!==undefined&&(t>>3)%2)pose=ac.talk;
     const img=ART[ac.id+'_'+pose];if(!img)return;const im=(ac.f||1)>0?img:flipOf(img);
-    const p=Math.min(1,t/40),e=1-(1-p)*(1-p),off=Math.round((1-e)*(ac.from||0)*150),w=img.width*scl,h=img.height*scl;
+    const p=Math.min(1,t/100),e=1-(1-p)*(1-p),off=Math.round((1-e)*(ac.from||0)*150),w=img.width*scl,h=img.height*scl;
     const bob=ac.id==='bike'?0:Math.round(Math.sin(t*.09+i*2)),hop=talking&&(t>>3)%2?-2:0,cx=Math.round(ac.x*W+off);
     if(ac.lying){g.save();g.translate(cx,feet-w/2+2);g.rotate(-Math.PI/2);g.drawImage(im,-w/2,-h,w,h);g.restore()}
     else g.drawImage(im,cx-Math.round(w/2),feet-h+bob+hop,w,h)});
