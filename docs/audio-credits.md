@@ -41,3 +41,8 @@ In `assets/audio/music/`: `sting_boss_intro` (3 s, +10 dB), `sting_gameover` (5 
 | Used in | File | Source | Licence |
 |---|---|---|---|
 | `bgm_bike.ogg` (first 20 s) | `freesound_community-350cc-bike-firing-32391.mp3` | Pixabay, Royal Enfield sound effects collection | Pixabay Content Licence (owner to confirm the current terms on the file's page before release) |
+
+## Act V music (replaced the generated track, 2026-11-04)
+| Used in | File | Source | Licence |
+|---|---|---|---|
+| `bgm_act5.ogg` (the final stage, before the boss) | `itswatr-watr-train-to-ernakulam-town-303208.mp3` (kept as `bgm_act5_pixabay_a.mp3`) | "Train to Ernakulam Town" by ItsWatR (Pixabay user Jonas), https://pixabay.com | Pixabay Content Licence. Attribution is not required but welcome: "Music by ItsWatR from Pixabay". Made loop-safe (3 s crossfade of the end into the start) and normalised to about -17 LUFS. The earlier ElevenLabs Act V track is in git history. |
