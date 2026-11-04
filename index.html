@@ -395,7 +395,7 @@ const BOSSDEF={
   komban:{w:80,h:60,foot:59,hb:[14,8,52,46],hp:30,name:'PEY KOMBAN',sub:'DEMON OF THE TUSKS'}};
 /* Boss art from PNG files (assets/art/bosses/<boss>_<frame>.png, made by tools/make-sprite.js from the reference sheets).
    Used only when the file loads and has the same size as the generated frame; otherwise the generated sprite stays. */
-const ART={},ART_FILES=['chathan_0','chathan_1','yakshi_0','yakshi_1','odiyan_0','odiyan_1','odiyan_2','karin_0','karin_1','karin_2','komban_0','komban_1','komban_2','hero_0','hero_1','hero_2','hero_3','heroidle_0','heroidle_1','heroidle_2','heroidle_3','heroswing_0','heroswing_1','heroswing_2','croc_0','croc_1','croc_2','croc_3','bike_0','bike_1','bike_2','bike_3','ravi_0','ravi_1','biju_0','biju_1','soniya_0','thoma_0','maveli_0','mooppan_0','scenehero_0','soniya_1','thoma_1','maveli_1','mooppan_1','scenehero_1','soniya_2','thoma_2','maveli_2','mooppan_2','scenehero_2','soniya_3','thoma_3','maveli_3','mooppan_3','scenehero_3','kili_0','kili_1','kili_2','stall_0','devi_0','komrun_0','komrun_1','komrun_2','komrun_3','komrun_4','komrun_5','komrun_6','komrun_7','komrun_8','komrun_9','odirun_0','odirun_1','odirun_2','odirun_3','odirun_4','odirun_5','odirun_6','odirun_7','odirun_8','odirun_9','odirun_10','odirun_11','strees_0','strees_1','strees_2','strees_3','strees_4','strees_5','strees_6','strees_7','strees_8','strees_9','hf_0','hf_1','hf_2','hf_3','hf_4','hf_5','hf_6','hf_7','hf_8','hf_9','hf_10','mvh_0','mvh_3','mvh_7','hs_soniya_0','hs_soniya_1','hs_soniya_2','hs_soniya_3','hs_kili_0','hs_kili_1','hs_kili_2','hs_mooppan_0','hs_mooppan_1','hs_scenehero_0','hs_scenehero_1','hs_scenehero_2','hs_scenehero_3','hs_thoma_0','hs_thoma_1','hs_thoma_2','hs_thoma_3','hs_biju_0','hs_biju_1','hs_ravi_0','hs_ravi_1','edog_0','edog_1','edog_2','edog_3','edog_4','edog_5','logo_0','logo_hi','porotta_0','basheer_0','basheer_1','basheer_2','bshp_0','naga_0','naga_1','naga_2','pg_0','pg_1','pg_2','pg_3','pg_4','tstaff_0','tstaffs_1','tstaffs_2','tdrops_0','tbeam_0','tbeam_1','tbeam_2','hdrown_0','hdrown_1','hdrown_2','hdrown_3','hdrown_4','hdrown_5','hdead_0','hdead_1','hdead_2','hdead_3','ecobra_0','ecobra_1','ecobra_2','ecobra_3','ebat_0','ebat_1','ebat_2','ebat_3','ebat_4','ecrow_0','ecrow_1','ecrow_2','ecrow_3','egoon_0','egoon_1','egoon_2','eimp_0','eimp_1','eimp_2','bhadra_0','bhadra_1','palm_0','palm_1','palm_2','dc1_0','dc1_1','dc1_2','dc1_3','dc1_4','dc1_5','dc2_0','dc2_1','dc2_2','dc2_3','dc2_4','dc2_5','da1_0','da1_1','da1_2','da1_3','da1_4','da1_5','da2_0','da2_1','da2_2','da2_3','da2_4','da2_5','da3_0','da3_1','da3_2','da3_3','da3_4','da3_5'];
+const ART={},ART_FILES=['chathan_0','chathan_1','yakshi_0','yakshi_1','odiyan_0','odiyan_1','odiyan_2','karin_0','karin_1','karin_2','komban_0','komban_1','komban_2','hero_0','hero_1','hero_2','hero_3','heroidle_0','heroidle_1','heroidle_2','heroidle_3','heroswing_0','heroswing_1','heroswing_2','croc_0','croc_1','croc_2','croc_3','bike_0','bike_1','bike_2','bike_3','ravi_0','ravi_1','biju_0','biju_1','soniya_0','thoma_0','maveli_0','mooppan_0','scenehero_0','soniya_1','thoma_1','maveli_1','mooppan_1','scenehero_1','soniya_2','thoma_2','maveli_2','mooppan_2','scenehero_2','soniya_3','thoma_3','maveli_3','mooppan_3','scenehero_3','kili_0','kili_1','kili_2','stall_0','devi_0','komrun_0','komrun_1','komrun_2','komrun_3','komrun_4','komrun_5','komrun_6','komrun_7','komrun_8','komrun_9','odirun_0','odirun_1','odirun_2','odirun_3','odirun_4','odirun_5','odirun_6','odirun_7','odirun_8','odirun_9','odirun_10','odirun_11','strees_0','strees_1','strees_2','strees_3','strees_4','strees_5','strees_6','strees_7','strees_8','strees_9','hf_0','hf_1','hf_2','hf_3','hf_4','hf_5','hf_6','hf_7','hf_8','hf_9','hf_10','mvh_0','mvh_3','mvh_7','hk_0','hk_1','hk_2','hk_3','hk_4','hk_5','hk_6','hk_7','hk_8','hk_9','hk_10','hk_11','hs_soniya_0','hs_soniya_1','hs_soniya_2','hs_soniya_3','hs_kili_0','hs_kili_1','hs_kili_2','hs_mooppan_0','hs_mooppan_1','hs_scenehero_0','hs_scenehero_1','hs_scenehero_2','hs_scenehero_3','hs_thoma_0','hs_thoma_1','hs_thoma_2','hs_thoma_3','hs_biju_0','hs_biju_1','hs_ravi_0','hs_ravi_1','edog_0','edog_1','edog_2','edog_3','edog_4','edog_5','logo_0','logo_hi','porotta_0','basheer_0','basheer_1','basheer_2','bshp_0','naga_0','naga_1','naga_2','pg_0','pg_1','pg_2','pg_3','pg_4','tstaff_0','tstaffs_1','tstaffs_2','tdrops_0','tbeam_0','tbeam_1','tbeam_2','hdrown_0','hdrown_1','hdrown_2','hdrown_3','hdrown_4','hdrown_5','hdead_0','hdead_1','hdead_2','hdead_3','ecobra_0','ecobra_1','ecobra_2','ecobra_3','ebat_0','ebat_1','ebat_2','ebat_3','ebat_4','ecrow_0','ecrow_1','ecrow_2','ecrow_3','egoon_0','egoon_1','egoon_2','eimp_0','eimp_1','eimp_2','bhadra_0','bhadra_1','palm_0','palm_1','palm_2','dc1_0','dc1_1','dc1_2','dc1_3','dc1_4','dc1_5','dc2_0','dc2_1','dc2_2','dc2_3','dc2_4','dc2_5','da1_0','da1_1','da1_2','da1_3','da1_4','da1_5','da2_0','da2_1','da2_2','da2_3','da2_4','da2_5','da3_0','da3_1','da3_2','da3_3','da3_4','da3_5'];
 if(typeof Image!=='undefined')ART_FILES.forEach(n=>{const im=new Image();
   im.onload=()=>{const c=document.createElement('canvas');c.width=im.width;c.height=im.height;c.getContext('2d').drawImage(im,0,0);ART[n]=c;
     if(A&&A.boss&&LV[lvl]&&LV[lvl].boss)A.boss=bossFrames(LV[lvl].boss);if(n.startsWith('palm_')&&A&&A.palms&&LV[lvl]&&!LV[lvl].bamboo){const pa=palmArt(LV[lvl]);if(pa)A.palms=pa}};
@@ -852,6 +852,8 @@ function mkFoe(t,x,y,s){const e={t,x,y,alive:true,hp:1,hurt:0,cd:60+(Math.random
 function placePlayer(x){
   P={x,y:GY-28,w:14,h:28,vx:0,vy:0,f:1,on:false,inv:0,sp:false,aru:false,step:0,rev:0,vine:null,vineCd:0,boost:0,bvx:0,freeze:0,chaiT:0};
   camx=Math.max(0,x-60);cp=x;bestX=x;bullets=[];shots=[];locked=!!LV[lvl].arena;jumpPrev=true;shootCd=0;slashT=0;
+  /* Disco or Die: he drifts slowly down from above like an angel, then lands and the dream begins */
+  if(LV[lvl]&&LV[lvl].key==='disco'&&ART.hk_8){P.x=Math.max(P.x,bossX+Math.round(W*.3));P.fly={t:0,T:230,x:P.x,y0:-80,yE:GY-P.h};P.y=-80;P.inv=999;healSfx()}
 }
 /* Every 1,000 points a golden lamp falls from the sky onto the ground just ahead of the player. Walking into it gives the extra life (it can be missed). */
 function dropLifeLamp(k){
@@ -968,7 +970,15 @@ function drawCine(cx){const c=cin;if(state==='cine'&&c&&c.k==='pt'){drawPt(cx);r
   else if(t<68){const fr=ART['odirun_'+(t>=36&&t<=44?3:((t>>1)%6))],al=t<46?1:Math.max(0,1-(t-46)/22);
     if(fr){g.globalAlpha=al;const im=flipOf(fr),x=Math.round(c.ox-cx-32),y=GY-46+(t>=22?0:-2);g.drawImage(im,x,y);g.globalAlpha=1}}
 }
+/* Kannan's venomous collapse (hand-drawn frames hk_0..11): ready, bitten, hopping, staggering, knees buckle, kneeling, tipping, down, then lying and breathing (8-10) and on his side (11). Drawn sharp on the full-resolution layer. */
+const HK_H=34,HK_BREATH=[8,9,10,9];
+function hkImg(i,flip){const im=ART['hk_'+i];return im?(flip?FLIPPED(im):im):null}
+function hkDraw(i,px,by,hs,flip){const im=hkImg(i,flip);if(!im)return false;const sc=hs/ART.hk_0.height,w=Math.round(im.width*sc),h=Math.round(im.height*sc);nimg(im,px-Math.round(w/2),by-h,w,h);return true}
+function hkCine(t,px,by){if(!ART.hk_0||!ART.hk_8)return false;
+  const fi=t<42?0:t<64?1:t<150?((t>>5)%2?2:3):t<158?4:t<170?5:t<180?6:t<192?7:HK_BREATH[(((t-192)/28)|0)%4];
+  const dx=t<42?0:-Math.round(Math.min(14,(t-42)*.6));return hkDraw(fi,px+dx,by,HK_H,P.f<0)}
 function drawCinePlayer(cx){const c=cin;if(c.k==='pt'){drawPtPlayer(cx);return}if(c.k==='mk'){drawMkPlayer(cx);return}const t=c.t,px=Math.round(P.x+P.w/2-cx),by=Math.round(P.y+P.h)+1;
+  if(hkCine(t,px,by))return;
   const hd=i=>ART['hdead_'+i],hf=i=>ART['hf_'+i],idle=ART.heroidle_0||ART.hero_1;
   let img,dx=0,bob=0;
   if(t<42)img=idle;
@@ -1159,6 +1169,10 @@ function update(){
   if(state==='ending'){endTick();return}
   if(state==='scene'){sceneTick();return}
   if(state!=='play')return;
+  if(P.fly){const f=P.fly;f.t++;const u=Math.min(1,f.t/f.T),e=1-Math.pow(1-u,2);P.y=f.y0+(f.yE-f.y0)*e;P.x=f.x+Math.sin(f.t*.04)*10*(1-u);P.vy=0;P.on=false;P.vx=0;
+    if(f.t%4===0)parts.push({x:P.x+7+(Math.random()-.5)*26,y:P.y+8+Math.random()*16,vx:(Math.random()-.5)*.3,vy:.35,l:40,c:f.t%8?'#fff6c0':'#ffd860'});
+    if(f.t>=f.T){P.fly=null;P.y=f.yE;P.on=true;P.inv=70;flashC='#fff6d0';flashT=14;burst(P.x+7,GY,['#ffd860','#fff6c0','#ffffff'],16);beep(1320,.3,'sine',.06);beep(1760,.4,'sine',.04)}
+    if(LV[lvl].arena)arenaTick();return}
 
   let L=inp.l(),R=inp.r();let J=inp.j();const S=inp.s();if(P.freeze>0){P.freeze--;L=false;R=false;J=false}if(P.rev>0){P.rev--;const tt=L;L=R;R=tt}const dir=(R?1:0)-(L?1:0);
   P.vx=LV[lvl].bike?Math.max(.9,Math.min(3.6,3.6*(bossX+40-P.x)/320)):dir*2.2;if(LV[lvl].bike)P.f=1;else if(dir)P.f=dir;if(P.boost>0){P.boost--;P.vx=P.bvx}
@@ -1630,8 +1644,14 @@ function drawDeath(cx){
   if(P.dl){const hx=gx-dir*Math.round(P.h*.9),hy=gy-4;
     for(let k=0;k<3;k++){const an=tick*.18+k*2.1;g.fillStyle=k%2?'#ffe070':'#ffffff';g.fillRect(Math.round(hx+Math.cos(an)*9),Math.round(hy-8+Math.sin(an)*3),2,2)}}
 }
+const ROTC=new WeakMap();
+function rotImg(im,ang){const q=Math.round(ang*12);let m=ROTC.get(im);if(!m){m={};ROTC.set(im,m)}if(!m[q]){const d=Math.ceil(Math.hypot(im.width,im.height)),c=document.createElement('canvas');c.width=c.height=d;const x=c.getContext('2d');x.translate(d/2,d/2);x.rotate(q/12);x.drawImage(im,-im.width/2,-im.height/2);m[q]=c}return m[q]}
 function drawPlayer(cx){
+  if(P.fly&&ART.hk_8){const f=P.fly,u=Math.min(1,f.t/f.T),ang=(Math.max(0,u-.45)/.55)*1.45,im=HK_BREATH[(tick>>5)&3],src=ART['hk_'+im],sc=HK_H/ART.hk_0.height,cxp=Math.round(P.x+P.w/2-cx),cyp=Math.round(P.y+P.h/2);
+    glowEll(cxp,cyp,26,22,'#ffd860',.22+.1*Math.sin(tick*.1));glowEll(cxp,cyp,14,12,'#fff6d0',.2);
+    const c=rotImg(src,ang),w=Math.round(c.width*sc),h=Math.round(c.height*sc);nimg(c,cxp-Math.round(w/2),cyp-Math.round(h/2),w,h);return}
   /* after Odiyan's bite Kannan stays collapsed while the sacred tree blooms (no jumping up and lying down again) */
+  if(state==='clear'&&LV[lvl].key==='a3'&&ART.hk_8){hkDraw(HK_BREATH[(tick>>5)&3],Math.round(P.x+P.w/2-cx)-14,Math.round(P.y+P.h)+1,HK_H,P.f<0);return}
   if(state==='clear'&&LV[lvl].key==='a3'&&ART.hdead_2){const im=ART.hdead_2;g.drawImage(im,Math.round(P.x+P.w/2-cx)-8-Math.round(im.width/2),Math.round(P.y+P.h)+1-im.height);return}
   if(state==='cine'&&cin){drawCinePlayer(cx);return}
   if(state==='dead'&&P.dk){drawDeath(cx);return}
@@ -1872,7 +1892,7 @@ const SCENES={
  a2:{bg:'next',actors:[{id:'scenehero',who:'KANNAN',x:.5}],caption:['TWO GROVES FREED. THE EMBERS GO COOL.','THE HIGHLAND FOG IS WAITING.']},
  a3:{bg:'cur',actors:[{id:'scenehero',who:'KANNAN',x:.3,lying:1},{id:'mooppan',who:'VELU',x:.66,f:-1,from:1,talk:1},{id:'kili',who:'',x:.88,pose:0,f:-1,sc:2}],
   lines:[{who:'VELU',text:'THE DOG BITES DEEPER THAN YOU FEEL.'},{who:'KANNAN',text:'...MY ANKLE. IT BURNS.'}]},
- disco:{bg:'a3',actors:[{id:'scenehero',who:'KANNAN',x:.36,lying:1},{id:'ravi',who:'RAVI',x:.66,f:-1,from:1,talk:1}],
+ disco:{bg:'a3',actors:[{id:'scenehero',who:'KANNAN',x:.36,lying:2},{id:'ravi',who:'RAVI',x:.66,f:-1,from:1,talk:1}],
   lines:[{who:'RAVI',text:'YOU KEPT SHOUTING LEFT AND RIGHT.'},{who:'RAVI',text:"ODIYAN'S VENOM. TWO GROVES LEFT. THE RAIN IS COMING."}]},
  path:{bg:'next',actors:[{id:'scenehero',who:'KANNAN',x:.26},{id:'thoma',who:'THOMA',x:.52,f:-1,from:1,talk:3},{id:'soniya',who:'SONIYA',x:.78,f:-1,from:1,talk:2}],
   lines:[{who:'THOMA',text:'THE LAST GROVE IS THE WORST. WHATEVER HAPPENS, YOU ARE NOT ALONE.'},{who:'SONIYA',text:"I BROUGHT EVERYTHING. DON'T YOU DARE DIE."}]}
@@ -2032,7 +2052,8 @@ function drawStory(){
     if(ac.id==='maveli'&&ART.mvh_3&&ART.mvh_7){const mi=pose>=2?ART.mvh_3:ART.mvh_7,hh=128,ww=Math.round(hh*mi.width/mi.height),p0=Math.min(1,t/100),e0=1-(1-p0)*(1-p0),off0=Math.round((1-e0)*(ac.from||0)*150),cx0=Math.round(ac.x*W+off0),bob0=Math.round(Math.sin(t*.09+i*2)),hop0=talking&&(t>>3)%2?-2:0;
       if((ac.f||1)>0)nimg(mi,cx0-Math.round(ww/2),feet-hh+bob0+hop0,ww,hh);else{g.save();/* facing left: mirrored copy on the full-resolution layer */nimg(FLIPPED(mi),cx0-Math.round(ww/2),feet-hh+bob0+hop0,ww,hh);g.restore()}return}
     const hsI=ART['hs_'+ac.id+'_'+pose];
-    if(hsI){const hh=HS_H[ac.id]||72,ww=Math.round(hh*hsI.width/hsI.height),p1=Math.min(1,t/100),e1=1-(1-p1)*(1-p1),off1=Math.round((1-e1)*(ac.from||0)*150),cx1=Math.round(ac.x*W+off1),bob1=Math.round(Math.sin(t*.09+i*2)),hop1=talking&&(t>>3)%2?-2:0;if(ac.lying){const L=LYING(hsI);nimg(L,cx1-Math.round(hh/2),feet-ww+4,hh,ww);return}
+    if(hsI){const hh=HS_H[ac.id]||72,ww=Math.round(hh*hsI.width/hsI.height),p1=Math.min(1,t/100),e1=1-(1-p1)*(1-p1),off1=Math.round((1-e1)*(ac.from||0)*150),cx1=Math.round(ac.x*W+off1),bob1=Math.round(Math.sin(t*.09+i*2)),hop1=talking&&(t>>3)%2?-2:0;if(ac.lying&&ART.hk_8){const ix=ac.lying===2?HK_BREATH[(t>>5)&3]:11,im=ART['hk_'+ix],sc=(HS_H[ac.id]||72)/ART.hk_0.height,w2=Math.round(im.width*sc),h2=Math.round(im.height*sc);nimg(im,cx1-Math.round(w2/2),feet+3-h2,w2,h2);return}
+    if(ac.lying){const L=LYING(hsI);nimg(L,cx1-Math.round(hh/2),feet-ww+4,hh,ww);return}
     nimg((ac.f||1)>0?hsI:FLIPPED(hsI),cx1-Math.round(ww/2),feet-hh+bob1+hop1,ww,hh);return}
     const img=ART[ac.id+'_'+pose];if(!img)return;const im=(ac.f||1)>0?img:flipOf(img);
     const p=Math.min(1,t/100),e=1-(1-p)*(1-p),off=Math.round((1-e)*(ac.from||0)*150),w=img.width*scl,h=img.height*scl;
