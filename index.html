@@ -576,7 +576,7 @@ const PATH={key:'path',sid:8,act:'PATHALAM',name:"MAVELI'S REALM",scene:true,
  palm:LV_OLD[0].palm,palms:false,ruins:true,vines:true,vineEvery:1,segW:[130,110],
  bush:['#0a2c34','#146068','#3ac0b0','#ffe090','#ffffff'],
  motes:'fly',foes:[],boss:null,len:2300,
- mav:['I PLANTED THOSE TREES WITH MY GROVE-PRIESTS. I KNEW EVERY KEEPER BY NAME.','SOMEONE SOLD THE EDGE OF THAT GROVE. I FELT THE SEAL CRACK. I HAVE WATCHED SINCE.','TAKE MY LAMP, GO UP AND FINISH IT. MY PEOPLE NEED A HOME.'],
+ mav:['I BROUGHT YOU DOWN. I HOPE THAT WAS ACCEPTABLE.','SOMEONE SOLD THE EDGE OF MY GROVE. I FELT THE SEAL CRACK. I HAVE WATCHED SINCE.','TAKE MY LAMP, GO UP AND FINISH IT. MY PEOPLE NEED A HOME.'],
  clear:["MAVELI'S BLESSING",'GO. FINISH IT.']};
 /* Walk-through quest beats (CLAUDE.md, story pass 3): no tracking, no choice, rewards are existing effects.
    cameos = a villager runs past as scenery; extra = an item on the ground in a ground segment (seg index, offset). */
@@ -1056,10 +1056,6 @@ function drawPt(cx){const c=cin,t=c.t,gx=Math.round(c.gx-cx);
     /* Kannan, hanging gently in the air */
     const idle=ART.hdead_1||ART.heroidle_0;if(idle){const bob=Math.round(Math.sin(t*.05)*3);g.save();g.translate(Math.round(W/2),Math.round(H*.45)+bob);g.rotate(-.35+Math.sin(t*.03)*.12);g.drawImage(idle,-Math.round(idle.width/2),-Math.round(idle.height/2));g.restore()}
     if(t<330){g.globalAlpha=1-(t-300)/30;g.fillStyle='#05030c';g.fillRect(0,0,W,H);g.globalAlpha=1}
-    /* Maveli's voice */
-    if(t>=470){const bw=Math.min(W-40,420),bx=Math.round((W-bw)/2),by=H-70;
-      g.fillStyle='rgba(12,8,28,.92)';g.fillRect(bx,by,bw,44);g.fillStyle='#ffb830';g.fillRect(bx,by,bw,1);g.fillRect(bx,by+43,bw,1);g.fillRect(bx,by,1,44);g.fillRect(bx+bw-1,by,1,44);
-      drawPortrait('MAVELI',bx+6,by+6,32);ntext('Maveli',bx+46,by+6,8.5,'#ffb830');ntext('I brought you down. I hope that was acceptable.',bx+46,by+19,12.5,'#f4ecd0')}
     if(t>=PT_END-40){g.globalAlpha=(t-(PT_END-40))/40;g.fillStyle='#ffd890';g.fillRect(0,0,W,H);g.globalAlpha=1}
   }
 }

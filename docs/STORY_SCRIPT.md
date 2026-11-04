@@ -72,8 +72,8 @@ _Scene after this level:_
 - **Karinkanni**: The storm... It passes. Thank you.
 
 ## PATHALAM: Maveli's realm
-- **Maveli**: I planted those trees with my grove-priests. I knew every keeper by name.
-- **Maveli**: Someone sold the edge of that grove. I felt the seal crack. I have watched since.
+- **Maveli**: I brought you down. I hope that was acceptable.
+- **Maveli**: Someone sold the edge of my grove. I felt the seal crack. I have watched since.
 - **Maveli**: Take my lamp, go up and finish it. My people need a home.
 
 _Scene after this level:_
