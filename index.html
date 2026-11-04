@@ -1141,12 +1141,15 @@ function startIfNeeded(src){
   if(state==='pages'){pagesNext();return}
   if(state==='ending'&&endT>240){endFinish();return}
   if(state==='title')newGame();
-  else if(state==='over'&&lockT<=0){score=actScore;begin(lvl,cp);P.inv=120}
+  else if(state==='over'&&lockT<=0){score=actScore;begin(lvl,cp);P.inv=150;spawnRoom()}
   else if(state==='win'&&lockT<=0)newGame();
 }
+/* After coming back, nothing is removed, but anything standing within 90 px of the hero is shoved clear so he is never revived inside a dog's jaws (and he is untouchable for a moment). */
+function spawnRoom(){for(const e of enemies){if(!e.alive||Math.abs(e.x-P.x)>=90)continue;const sg=e.x>=P.x?1:-1;let nx=P.x+sg*100;if(e.s1!==undefined)nx=Math.max(e.s1,Math.min(e.s2,nx));e.x=nx}}
 function respawn(){
   P.x=cp;P.y=GY-40;P.vx=0;P.vy=0;P.on=false;P.inv=120;P.sp=false;P.aru=false;slashT=0;P.rev=0;P.vine=null;P.boost=0;P.freeze=0;P.chaiT=0;ammo=Math.max(ammo,25);P.inv=150;
   camx=Math.min(bossX,Math.max(0,cp-100));bullets=[];shots=[];locked=!!LV[lvl].arena;
+  spawnRoom();
   if(boss.active&&!boss.dead){boss.x=bossX+W-boss.w-20;boss.y=GY-1-boss.foot;boss.vx=0;boss.vy=0;boss.state=0}
   state='play';jumpPrev=true;
 }
