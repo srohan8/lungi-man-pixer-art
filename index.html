@@ -379,7 +379,7 @@ const BOSSDEF={
   komban:{w:80,h:60,foot:59,hb:[14,8,52,46],hp:30,name:'PEY KOMBAN',sub:'DEMON OF THE TUSKS'}};
 /* Boss art from PNG files (assets/art/bosses/<boss>_<frame>.png, made by tools/make-sprite.js from the reference sheets).
    Used only when the file loads and has the same size as the generated frame; otherwise the generated sprite stays. */
-const ART={},ART_FILES=['chathan_0','chathan_1','yakshi_0','yakshi_1','odiyan_0','odiyan_1','odiyan_2','karin_0','karin_1','karin_2','komban_0','komban_1','komban_2','hero_0','hero_1','hero_2','hero_3','heroidle_0','heroidle_1','heroidle_2','heroidle_3','heroswing_0','heroswing_1','heroswing_2','croc_0','croc_1','croc_2','croc_3','bike_0','bike_1','bike_2','bike_3','ravi_0','ravi_1','biju_0','biju_1','soniya_0','thoma_0','maveli_0','mooppan_0','scenehero_0','soniya_1','thoma_1','maveli_1','mooppan_1','scenehero_1','soniya_2','thoma_2','maveli_2','mooppan_2','scenehero_2','soniya_3','thoma_3','maveli_3','mooppan_3','scenehero_3','kili_0','kili_1','kili_2','stall_0','devi_0','komrun_0','komrun_1','komrun_2','komrun_3','komrun_4','komrun_5','komrun_6','komrun_7','komrun_8','komrun_9','odirun_0','odirun_1','odirun_2','odirun_3','odirun_4','odirun_5','odirun_6','odirun_7','odirun_8','odirun_9','odirun_10','odirun_11','sstaff_0','sbeam_0','sbeam_1','sbeam_2','hdrown_0','hdrown_1','hdrown_2','hdrown_3','hdrown_4','hdrown_5','hdead_0','hdead_1','hdead_2','hdead_3','ecobra_0','ecobra_1','ecobra_2','ecobra_3','ebat_0','ebat_1','ebat_2','ebat_3','ebat_4','ecrow_0','ecrow_1','ecrow_2','ecrow_3','egoon_0','egoon_1','egoon_2','eimp_0','eimp_1','eimp_2','bhadra_0','bhadra_1','palm_0','palm_1','palm_2','dc1_0','dc1_1','dc1_2','dc1_3','dc1_4','dc1_5','dc2_0','dc2_1','dc2_2','dc2_3','dc2_4','dc2_5','da1_0','da1_1','da1_2','da1_3','da1_4','da1_5','da2_0','da2_1','da2_2','da2_3','da2_4','da2_5','da3_0','da3_1','da3_2','da3_3','da3_4','da3_5'];
+const ART={},ART_FILES=['chathan_0','chathan_1','yakshi_0','yakshi_1','odiyan_0','odiyan_1','odiyan_2','karin_0','karin_1','karin_2','komban_0','komban_1','komban_2','hero_0','hero_1','hero_2','hero_3','heroidle_0','heroidle_1','heroidle_2','heroidle_3','heroswing_0','heroswing_1','heroswing_2','croc_0','croc_1','croc_2','croc_3','bike_0','bike_1','bike_2','bike_3','ravi_0','ravi_1','biju_0','biju_1','soniya_0','thoma_0','maveli_0','mooppan_0','scenehero_0','soniya_1','thoma_1','maveli_1','mooppan_1','scenehero_1','soniya_2','thoma_2','maveli_2','mooppan_2','scenehero_2','soniya_3','thoma_3','maveli_3','mooppan_3','scenehero_3','kili_0','kili_1','kili_2','stall_0','devi_0','komrun_0','komrun_1','komrun_2','komrun_3','komrun_4','komrun_5','komrun_6','komrun_7','komrun_8','komrun_9','odirun_0','odirun_1','odirun_2','odirun_3','odirun_4','odirun_5','odirun_6','odirun_7','odirun_8','odirun_9','odirun_10','odirun_11','tstaff_0','tstaffs_1','tstaffs_2','tdrops_0','tbeam_0','tbeam_1','tbeam_2','hdrown_0','hdrown_1','hdrown_2','hdrown_3','hdrown_4','hdrown_5','hdead_0','hdead_1','hdead_2','hdead_3','ecobra_0','ecobra_1','ecobra_2','ecobra_3','ebat_0','ebat_1','ebat_2','ebat_3','ebat_4','ecrow_0','ecrow_1','ecrow_2','ecrow_3','egoon_0','egoon_1','egoon_2','eimp_0','eimp_1','eimp_2','bhadra_0','bhadra_1','palm_0','palm_1','palm_2','dc1_0','dc1_1','dc1_2','dc1_3','dc1_4','dc1_5','dc2_0','dc2_1','dc2_2','dc2_3','dc2_4','dc2_5','da1_0','da1_1','da1_2','da1_3','da1_4','da1_5','da2_0','da2_1','da2_2','da2_3','da2_4','da2_5','da3_0','da3_1','da3_2','da3_3','da3_4','da3_5'];
 if(typeof Image!=='undefined')ART_FILES.forEach(n=>{const im=new Image();
   im.onload=()=>{const c=document.createElement('canvas');c.width=im.width;c.height=im.height;c.getContext('2d').drawImage(im,0,0);ART[n]=c;
     if(A&&A.boss&&LV[lvl]&&LV[lvl].boss)A.boss=bossFrames(LV[lvl].boss);if(n.startsWith('palm_')&&A&&A.palms&&LV[lvl]&&!LV[lvl].bamboo){const pa=palmArt(LV[lvl]);if(pa)A.palms=pa}};
@@ -1015,7 +1015,7 @@ function update(){
     if(s.life>0&&hit({x:s.x-2,y:s.y-2,w:4,h:4},{x:P.x+3,y:P.y+3,w:P.w-6,h:P.h-4})){s.life=0;if(s.k==='gaze'){P.rev=180;beep(180,.3,'sawtooth',.05)}else die()}}
   shots=shots.filter(s=>s.life>0&&s.y<H&&s.x>cx-30&&s.x<cx+W+30);
   for(const p of pickups)if(!p.got&&hit(P,p)){p.got=true;score+=200;if(!sfx('powerup'))beep(900,.2,'triangle',.06);
-    if(p.k==='aru'){P.aru=true;P.sp=false;banner={a:'SUN STAFF',b:'RAYS PIERCE EVERYTHING',t:90};burst(p.x+5,p.y+5,['#ffe898','#ffffff'],12)}
+    if(p.k==='aru'){P.aru=true;P.sp=false;banner={a:'TRISHUL',b:"BHADRAKALI'S GIFT. RAYS PIERCE EVERYTHING",t:100};burst(p.x+5,p.y+5,['#ffd860','#ff6a3a','#ffffff'],12)}
     else{P.sp=true;P.aru=false;banner={a:'PAROTTA!',b:'TRIPLE THROW',t:80};burst(p.x+5,p.y+5,['#f08a62','#f2e2a0'],8)}}
   for(const h of hoofs)if(!h.got&&hit(P,h)){h.got=true;prints++;beep(500+prints*120,.12,'triangle',.05);pops.push({x:h.x+5,y:GY-16,s:'HOOF-PRINT '+prints+'/'+LV[lvl].prints,t:70});burst(h.x+5,GY-4,['#b070ff','#ffffff'],6)}
   if(LV[lvl].arena)arenaTick();
@@ -1163,7 +1163,7 @@ function kombanAI(b,pc,bc,face,rage){
     if(b.on&&b.air){shot(bc-20,GY-5,-2.8,0,0,'wave');shot(bc+20,GY-5,2.8,0,0,'wave');b.state=0;b.cd=rage?30:55}}
 }
 /* Sun Staff hit: white flash, an expanding golden ring and a spray of sparks where the ray touches something. */
-function sunHit(x,y,big){rings.push({x,y,t:0,big});burst(x,y,['#fff6c0','#ffd860','#ffffff','#ffb830'],big?18:12);shake=Math.max(shake,big?4:2)}
+function sunHit(x,y,big){rings.push({x,y,t:0,big});burst(x,y,['#fff6c0','#ffd860','#ffffff','#ff6a3a'],big?18:12);shake=Math.max(shake,big?4:2)}
 function drawRings(cx){for(const q of rings){const k=q.t/16,rad=Math.round((q.big?24:15)*Math.sqrt(k)+3),sx=Math.round(q.x-cx);
   if(q.t<5)glowAt(sx,Math.round(q.y),q.big?14:10,'#ffffff',.85-q.t*.13);
   g.globalAlpha=Math.max(0,1-k);g.fillStyle=k<.4?'#fff6c0':'#ffb830';
@@ -1471,26 +1471,26 @@ function drawVine(v,cx){
   if(!att){g.fillStyle='rgba(255,240,160,'+(.4+.3*Math.sin(tick*.1))+')';g.fillRect(Math.round(sx+Math.sin(th)*v.len)-2,Math.round(v.top+Math.cos(th)*v.len)-2,5,5)}
 }
 /* Sun Staff: held upright in the front hand with a glowing sun on top; the ray is a golden beam that grows out of the sun. */
-/* Sun Staff (assets/art/bosses/sstaff_0, sbeam_*): held upright with a glowing sun on top; while firing it points forward and the ray grows out of the sun.
+/* Trishul (assets/art/bosses/tstaff_0, tstaffs_*, tbeam_*, tdrops_0): held upright with a hibiscus and red thread; while firing it points forward and the ray grows out of the sun.
    Falls back to the coded staff when the PNGs are missing. */
 function drawStaffInHand(cx){
-  const f=P.f,sp=ART.sstaff_0,hx=Math.round(P.x-cx)+(f>0?12:2),hy=Math.round(P.y);
+  const f=P.f,sp=ART.tstaff_0,hx=Math.round(P.x-cx)+(f>0?12:2),hy=Math.round(P.y);
   if(!sp){g.fillStyle='#8a6020';g.fillRect(hx,hy+4,2,20);g.fillStyle='#d8b050';g.fillRect(hx,hy+4,1,20);g.fillStyle='#ffd860';g.fillRect(hx-2,hy-2,6,5);glowAt(hx+1,hy,7,'#ffd860',.35);return}
   if(slashT>0){/* pointing forward: the sun is the muzzle */
-    g.save();g.translate(hx,hy+16);g.rotate(f>0?Math.PI/2:-Math.PI/2);g.drawImage(sp,-11,-24);g.restore();
-    glowAt(hx+f*22,hy+16,9,'#fff0a0',.55);return}
-  g.drawImage(f>0?sp:flipOf(sp),hx-11,hy-8);
-  glowAt(hx,hy-1,9,'#ffd860',.18+.12*Math.sin(tick*.12));
+    g.save();g.translate(hx,hy+16);g.rotate(f>0?Math.PI/2:-Math.PI/2);g.drawImage(ART.tstaffs_2||sp,-12,-24);g.restore();
+    glowAt(hx+f*22,hy+16,9,'#ffb060',.5);return}
+  g.drawImage(f>0?sp:flipOf(sp),hx-12,hy-8);
+  glowAt(hx,hy-1,9,'#ff8a3a',.16+.12*Math.sin(tick*.12));
 }
 function drawSlash(cx){
   if(slashT<=0||!P||state!=='play')return;
   const f=P.f,a=slashT/8,R=TUNE.rayRange,len=Math.round(R*Math.min(1,(9-slashT)/3)),y=Math.round(P.y+16),
-        ox=Math.round(P.x-cx)+(f>0?12:2)+f*22,B=[0,1,2].map(i=>ART['sbeam_'+i]);
+        ox=Math.round(P.x-cx)+(f>0?12:2)+f*22,B=[0,1,2].map(i=>ART['tbeam_'+i]);
   if(B.every(Boolean)){/* flare at the sun, beam tiles along the ray, fading tip; added to the scene like light. Pieces are 56x18 boxes, so only their painted part (c0..c1) is used. */
     const pc=(im,c0,c1,ay,d)=>{const w=c1-c0+1;if(f>0)g.drawImage(im,c0,0,w,18,ox+d,y-ay,w,18);else g.drawImage(flipOf(im),55-c1,0,w,18,ox-d-w,y-ay,w,18)};
     g.save();g.globalCompositeOperation='lighter';g.globalAlpha=Math.min(1,.4+a);
-    let d=14;while(d<len-26){pc(B[1],12,43,13,d);d+=32}
-    pc(B[2],15,41,13,Math.max(14,len-26));pc(B[0],16,40,9,-12);
+    let d=14;while(d<len-24){pc(B[1],14,42,13,d);d+=29}
+    pc(B[2],16,39,13,Math.max(14,len-24));pc(B[0],17,39,9,-12);
     g.restore();
     g.globalAlpha=a;g.fillStyle='#ffffff';g.fillRect(f>0?ox:ox-len,y-1,len,2);g.globalAlpha=1;return}
   const x1=f>0?ox:ox-len;
@@ -1890,7 +1890,7 @@ function draw(){TQ.length=0;
   if(L.rootWalls)drawRoots(cx);
   for(const h of hoofs)if(!h.got){const hx=Math.round(h.x-cx);g.fillStyle='rgba(176,112,255,'+(.2+.15*Math.sin(tick*.1)).toFixed(2)+')';g.fillRect(hx-3,GY-9,16,9);g.drawImage(HOOF,hx,GY-6)}
   for(const p of pickups)if(!p.got){const px=Math.round(p.x-cx),py=Math.round(p.y+Math.sin(tick*.1)*2);
-    if(p.k==='aru'){g.fillStyle='rgba(255,255,255,'+(.12+.1*Math.sin(tick*.12))+')';g.fillRect(px-3,py-3,16,16);{const st=ART.sstaff_0;if(st)g.drawImage(st,px-3,py-10,16,23);else g.drawImage(ARU,px,py)}}else g.drawImage(PICK,px-2,py-1)}
+    if(p.k==='aru'){g.fillStyle='rgba(255,255,255,'+(.12+.1*Math.sin(tick*.12))+')';g.fillRect(px-3,py-3,16,16);{const st=ART.tdrops_0;if(st)g.drawImage(st,px-6,py-2);else g.drawImage(ARU,px,py)}}else g.drawImage(PICK,px-2,py-1)}
   for(const e of enemies)if(e.alive&&e.x-cx<W+20&&e.x-cx>-40)drawFoe(e,cx);
   drawBoss(cx);drawCine(cx);
   if(boss.dead&&boss.drop&&!(state==='cine'&&cin&&cin.t<66)){const q=Math.round(boss.drop.x-cx);if(boss.t==='chathan')g.drawImage(COCO,q-3,GY-7);else{g.fillStyle='#0a0810';g.fillRect(q-14,GY-2,28,2);g.fillRect(q-9,GY-3,18,1);g.fillStyle='#6a4a90';g.fillRect(q-5,GY-2,3,1)}}
@@ -1910,7 +1910,7 @@ function draw(){TQ.length=0;
     ptext('HI '+String(hi).padStart(6,'0'),W-44,10,2,'#ffe58a','right');
     for(let i=0;i<lives;i++)g.drawImage((goldLamp()?LAMPG:LAMP)[((tick>>4)+i)%2],10+i*10,24);
     ptext(LV[lvl].act,10,36,1,'#d8d0e8');
-    ptext(P.aru?'SUN STAFF':P.sp?'PAROTTA X3  '+ammo:'COCONUT  '+ammo,10,46,1,P.aru?'#ffe898':ammo<=5?'#ff9a80':'#c8b890');
+    ptext(P.aru?'TRISHUL':P.sp?'PAROTTA X3  '+ammo:'COCONUT  '+ammo,10,46,1,P.aru?'#ffe898':ammo<=5?'#ff9a80':'#c8b890');
     if(P.rev>0)ptext('DIZZY! CONTROLS FLIPPED',W/2,36,1,'#ff9ac0','center');
     if(P.freeze>0)ptext('PARALYZED!',W/2,36,1,'#9aff60','center');
     if(LV[lvl].prints)ptext('PRINTS '+prints+'/'+LV[lvl].prints,10,56,1,'#d8b0ff');
