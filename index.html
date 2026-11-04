@@ -204,6 +204,8 @@ function flushText(){
   for(const q of TQ){tg.font=tfont(q.px,k);tg.textAlign=q.align;tg.lineWidth=Math.max(2,q.px*k*.22);tg.strokeStyle='rgba(12,8,28,.92)';tg.strokeText(q.s,q.x*k,q.y*k);tg.fillStyle=q.col;tg.fillText(q.s,q.x*k,q.y*k)}
 }
 function ptext(s,x,y,sc,col,align='left',sh='#120a1c'){
+  /* readable at phone size: the tiny 3x5 size becomes the thick outlined normal font (see ntext); sizes 2 and up stay pixel */
+  if(sc<1.5&&typeof ntext==='function'){ntext(s,x,y-1,9,col,align);return}
   s=s.toUpperCase();const w=s.length*4*sc-sc;let X=align==='center'?x-w/2:align==='right'?x-w:x;X=Math.round(X);y=Math.round(y);
   for(const [c,o] of [[sh,sc>1?sc>>1:1],[col,0]]){g.fillStyle=c;let px=X;
     for(const ch of s){const gl=FONT[ch];if(gl)for(let i=0;i<15;i++)if(gl[i]==='1')g.fillRect(px+(i%3)*sc+o,y+Math.floor(i/3)*sc+o,sc,sc);px+=4*sc}}
@@ -380,7 +382,7 @@ const BOSSDEF={
   komban:{w:80,h:60,foot:59,hb:[14,8,52,46],hp:30,name:'PEY KOMBAN',sub:'DEMON OF THE TUSKS'}};
 /* Boss art from PNG files (assets/art/bosses/<boss>_<frame>.png, made by tools/make-sprite.js from the reference sheets).
    Used only when the file loads and has the same size as the generated frame; otherwise the generated sprite stays. */
-const ART={},ART_FILES=['chathan_0','chathan_1','yakshi_0','yakshi_1','odiyan_0','odiyan_1','odiyan_2','karin_0','karin_1','karin_2','komban_0','komban_1','komban_2','hero_0','hero_1','hero_2','hero_3','heroidle_0','heroidle_1','heroidle_2','heroidle_3','heroswing_0','heroswing_1','heroswing_2','croc_0','croc_1','croc_2','croc_3','bike_0','bike_1','bike_2','bike_3','ravi_0','ravi_1','biju_0','biju_1','soniya_0','thoma_0','maveli_0','mooppan_0','scenehero_0','soniya_1','thoma_1','maveli_1','mooppan_1','scenehero_1','soniya_2','thoma_2','maveli_2','mooppan_2','scenehero_2','soniya_3','thoma_3','maveli_3','mooppan_3','scenehero_3','kili_0','kili_1','kili_2','stall_0','devi_0','komrun_0','komrun_1','komrun_2','komrun_3','komrun_4','komrun_5','komrun_6','komrun_7','komrun_8','komrun_9','odirun_0','odirun_1','odirun_2','odirun_3','odirun_4','odirun_5','odirun_6','odirun_7','odirun_8','odirun_9','odirun_10','odirun_11','strees_0','strees_1','strees_2','strees_3','strees_4','strees_5','strees_6','strees_7','strees_8','strees_9','hf_0','hf_1','hf_2','hf_3','hf_4','hf_5','hf_6','hf_7','hf_8','hf_9','hf_10','pg_0','pg_1','pg_2','pg_3','pg_4','tstaff_0','tstaffs_1','tstaffs_2','tdrops_0','tbeam_0','tbeam_1','tbeam_2','hdrown_0','hdrown_1','hdrown_2','hdrown_3','hdrown_4','hdrown_5','hdead_0','hdead_1','hdead_2','hdead_3','ecobra_0','ecobra_1','ecobra_2','ecobra_3','ebat_0','ebat_1','ebat_2','ebat_3','ebat_4','ecrow_0','ecrow_1','ecrow_2','ecrow_3','egoon_0','egoon_1','egoon_2','eimp_0','eimp_1','eimp_2','bhadra_0','bhadra_1','palm_0','palm_1','palm_2','dc1_0','dc1_1','dc1_2','dc1_3','dc1_4','dc1_5','dc2_0','dc2_1','dc2_2','dc2_3','dc2_4','dc2_5','da1_0','da1_1','da1_2','da1_3','da1_4','da1_5','da2_0','da2_1','da2_2','da2_3','da2_4','da2_5','da3_0','da3_1','da3_2','da3_3','da3_4','da3_5'];
+const ART={},ART_FILES=['chathan_0','chathan_1','yakshi_0','yakshi_1','odiyan_0','odiyan_1','odiyan_2','karin_0','karin_1','karin_2','komban_0','komban_1','komban_2','hero_0','hero_1','hero_2','hero_3','heroidle_0','heroidle_1','heroidle_2','heroidle_3','heroswing_0','heroswing_1','heroswing_2','croc_0','croc_1','croc_2','croc_3','bike_0','bike_1','bike_2','bike_3','ravi_0','ravi_1','biju_0','biju_1','soniya_0','thoma_0','maveli_0','mooppan_0','scenehero_0','soniya_1','thoma_1','maveli_1','mooppan_1','scenehero_1','soniya_2','thoma_2','maveli_2','mooppan_2','scenehero_2','soniya_3','thoma_3','maveli_3','mooppan_3','scenehero_3','kili_0','kili_1','kili_2','stall_0','devi_0','komrun_0','komrun_1','komrun_2','komrun_3','komrun_4','komrun_5','komrun_6','komrun_7','komrun_8','komrun_9','odirun_0','odirun_1','odirun_2','odirun_3','odirun_4','odirun_5','odirun_6','odirun_7','odirun_8','odirun_9','odirun_10','odirun_11','strees_0','strees_1','strees_2','strees_3','strees_4','strees_5','strees_6','strees_7','strees_8','strees_9','hf_0','hf_1','hf_2','hf_3','hf_4','hf_5','hf_6','hf_7','hf_8','hf_9','hf_10','logo_0','porotta_0','pg_0','pg_1','pg_2','pg_3','pg_4','tstaff_0','tstaffs_1','tstaffs_2','tdrops_0','tbeam_0','tbeam_1','tbeam_2','hdrown_0','hdrown_1','hdrown_2','hdrown_3','hdrown_4','hdrown_5','hdead_0','hdead_1','hdead_2','hdead_3','ecobra_0','ecobra_1','ecobra_2','ecobra_3','ebat_0','ebat_1','ebat_2','ebat_3','ebat_4','ecrow_0','ecrow_1','ecrow_2','ecrow_3','egoon_0','egoon_1','egoon_2','eimp_0','eimp_1','eimp_2','bhadra_0','bhadra_1','palm_0','palm_1','palm_2','dc1_0','dc1_1','dc1_2','dc1_3','dc1_4','dc1_5','dc2_0','dc2_1','dc2_2','dc2_3','dc2_4','dc2_5','da1_0','da1_1','da1_2','da1_3','da1_4','da1_5','da2_0','da2_1','da2_2','da2_3','da2_4','da2_5','da3_0','da3_1','da3_2','da3_3','da3_4','da3_5'];
 if(typeof Image!=='undefined')ART_FILES.forEach(n=>{const im=new Image();
   im.onload=()=>{const c=document.createElement('canvas');c.width=im.width;c.height=im.height;c.getContext('2d').drawImage(im,0,0);ART[n]=c;
     if(A&&A.boss&&LV[lvl]&&LV[lvl].boss)A.boss=bossFrames(LV[lvl].boss);if(n.startsWith('palm_')&&A&&A.palms&&LV[lvl]&&!LV[lvl].bamboo){const pa=palmArt(LV[lvl]);if(pa)A.palms=pa}};
@@ -2102,7 +2104,7 @@ function draw(){TQ.length=0;
   for(const p of pickups)if(!p.got){const px=Math.round(p.x-cx),py=Math.round(p.y+Math.sin(tick*.1)*2);
     if(p.k==='aru'){g.fillStyle='rgba(255,255,255,'+(.12+.1*Math.sin(tick*.12))+')';g.fillRect(px-3,py-3,16,16);{const st=ART.tdrops_0;if(st)g.drawImage(st,px-6,py-2);else g.drawImage(ARU,px,py)}}else if(p.k==='bell'){glowEll(px+5,py+5,13,13,'#ffd860',.32+.12*Math.sin(tick*.12));g.fillStyle='#8a5a20';g.fillRect(px+1,py+3,8,7);g.fillRect(px+2,py+1,6,3);g.fillStyle='#d8a838';g.fillRect(px+2,py+3,2,6);g.fillRect(px+3,py+1,4,1);g.fillStyle='#fff0b0';g.fillRect(px+2,py+3,1,3);g.fillStyle='#3a2410';g.fillRect(px+4,py+10,2,2)}
   else if(p.k==='rice'){glowEll(px+5,py+6,12,10,'#f4ecd0',.22+.1*Math.sin(tick*.1));g.fillStyle='#2e7a2e';g.fillRect(px-1,py+6,12,4);g.fillStyle='#4aa040';g.fillRect(px,py+6,10,1);g.fillStyle='#f8f4e8';g.fillRect(px+2,py+3,6,4);g.fillRect(px+3,py+2,4,1)}
-  else g.drawImage(PICK,px-2,py-1)}
+  else{const po=ART.porotta_0;if(po){glowEll(px+5,py+5,12,9,'#ffd890',.2+.08*Math.sin(tick*.1));g.drawImage(po,px-4,py-1+Math.round(Math.sin(tick*.08)))}else g.drawImage(PICK,px-2,py-1)}}
   for(const e of enemies)if(e.alive&&e.x-cx<W+20&&e.x-cx>-40)drawFoe(e,cx);
   drawCameos(cx);drawSacredTree(cx);drawBoss(cx);drawCine(cx);
   if(boss.dead&&boss.drop&&!(state==='cine'&&cin&&cin.t<66)){const q=Math.round(boss.drop.x-cx);if(boss.t==='chathan')g.drawImage(COCO,q-3,GY-7);else{g.fillStyle='#0a0810';g.fillRect(q-14,GY-2,28,2);g.fillRect(q-9,GY-3,18,1);g.fillStyle='#6a4a90';g.fillRect(q-5,GY-2,3,1)}}
@@ -2137,10 +2139,9 @@ function draw(){TQ.length=0;
   drawTut();drawSndIcon();if(state==='play')drawPauseIcon();
   if(banner&&state!=='title'&&!(tut&&tut.phase==='msg')){g.fillStyle='rgba(12,8,28,.55)';g.fillRect(0,78,W,48);ptext(banner.a,W/2,86,4,'#f0c040','center');if(banner.b)ntext(nice(banner.b),W/2,108,12,'#f4ecd0','center')}
   if(state==='title'){overlay();drawCover();
-    ptext('KANNAN',W/2,24,7,'#f0c040','center');
-    ptext('AND THE',W/2,66,2,'#f4ecd0','center');
-    ptext('KANJIRAVANAM CHRONICLES',W/2,82,3,'#ffe58a','center');
-    ptext('KANNAN MUST SEAL THE PORTAL.',W/2,114,2,'#f4ecd0','center');
+    const lg=ART.logo_0;
+    if(lg){g.drawImage(lg,Math.round((W-lg.width)/2),4+Math.round(Math.sin(tick*.04)*1.5))}
+    else{ptext('KANNAN',W/2,24,7,'#f0c040','center');ptext('AND THE',W/2,66,2,'#f4ecd0','center');ptext('KANJIRAVANAM CHRONICLES',W/2,82,3,'#ffe58a','center');ptext('KANNAN MUST SEAL THE PORTAL.',W/2,114,2,'#f4ecd0','center')}
     {const pk=pick<0?pickDefault():pick,L=LV[pk],sh=(tick>>4)%2;
       for(const d of [-1,1]){const on=d<0?pk>0:pk<pickMax(),ax=Math.round(W/2+d*Math.min(120,W*.3))+(on?d*sh*2:0),ay=156;g.fillStyle=on?'#ffe58a':'#4a4060';for(let i=0;i<7;i++)g.fillRect(ax-d*i,ay-i,1,i*2+1)}
       ptext(L.act||'PROLOGUE',W/2,148,3,'#ffe58a','center');ptext(L.name||'',W/2,172,1,'#f4ecd0','center');
@@ -2176,7 +2177,7 @@ const EYES=[[.08,.2],[.18,.42],[.86,.25],[.93,.5],[.78,.42],[.14,.6]];
 function drawCover(){
   EYES.forEach(([fx,fy],i)=>{const ph=(tick+i*37)%260;if(ph>210)return;const x=Math.round(fx*W),y=Math.round(fy*H),p=.55+.35*Math.sin(tick*.08+i);
     g.fillStyle='rgba(255,58,42,'+(p*.22).toFixed(2)+')';g.fillRect(x-3,y-3,13,7);g.fillStyle='rgba(255,58,42,'+p.toFixed(2)+')';g.fillRect(x,y-1,2,2);g.fillRect(x+6,y-1,2,2)});
-  const sp=PSPR[((tick>>3)%2)?'a0':'b0'];if(sp){const s=sp[0],sc=2;g.drawImage(s,0,0,s.width,s.height,28,GY-s.height*sc+4,s.width*sc,s.height*sc)}
+  const sp=ART.logo_0?null:PSPR[((tick>>3)%2)?'a0':'b0'];if(sp){const s=sp[0],sc=2;g.drawImage(s,0,0,s.width,s.height,28,GY-s.height*sc+4,s.width*sc,s.height*sc)}
 }
 
 /* =================== screen fit =================== */
