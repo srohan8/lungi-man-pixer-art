@@ -853,6 +853,17 @@ function placePlayer(x){
   P={x,y:GY-28,w:14,h:28,vx:0,vy:0,f:1,on:false,inv:0,sp:false,aru:false,step:0,rev:0,vine:null,vineCd:0,boost:0,bvx:0,freeze:0,chaiT:0};
   camx=Math.max(0,x-60);cp=x;bestX=x;bullets=[];shots=[];locked=!!LV[lvl].arena;jumpPrev=true;shootCd=0;slashT=0;
 }
+/* Every 1,000 points a golden lamp falls from the sky onto the ground just ahead of the player. Walking into it gives the extra life (it can be missed). */
+function dropLifeLamp(k){
+  const feet=P.y+P.h,onGround=feet>=GY-3;
+  const ground=x=>segs.some(sg=>x>sg[0]+10&&x<sg[1]-10),plat=x=>plats.find(p=>x>p[0]+4&&x<p[0]+p[2]-4&&p[1]<GY-6&&Math.abs(p[1]-feet)<46);
+  let lx=P.x+4,ly=feet;
+  for(const off of [120,90,150,70,180,50]){const x=P.x+off+k*26,pl=plat(x);
+    if(!onGround&&pl){lx=x;ly=pl[1];break}
+    if(onGround&&ground(x)&&!plats.some(p=>x>p[0]-6&&x<p[0]+p[2]+6&&p[1]<GY-6&&false)){lx=x;ly=GY;break}
+    if(pl){lx=x;ly=pl[1];break}if(ground(x)){lx=x;ly=GY;break}}
+  pickups.push({x:lx-6,y:Math.max(-20,ly-190),w:12,h:14,got:false,k:'life',drop:true,vy:0,landY:ly-14});
+  pops.push({x:P.x+7,y:P.y-8,s:'A LAMP FALLS AHEAD!',t:90});if(!sfx('powerup'))beep(1000,.2,'triangle',.06)}
 function begin(i,x){if(i===0&&tutPending){tut={step:0,phase:'wait',t:0};tutPending=false;tutAny=true;tutPulse(null)}else if(i!==0&&tut){tut=null;tutPulse(null)}lives=i>=1?4:3;actScore=actScore||0;ammo=TUNE.ammoStart;ammoT=0;lifeBank=Math.floor(score/TUNE.lifeEvery);loadLevel(i);placePlayer(x);state='play';banner={a:LV[i].act,b:LV[i].name,t:150}}
 /* Title screen level selector: left / right (arrows, A / D, or tap the arrows). TUNE.levelSelectAll=false limits it to the levels reached so far. */
 /* Pause: icon (top, left of the sound icon), P / Esc, and automatically when the app goes to the background. Only two choices: RESUME and MENU (back to the title screen). */
@@ -1167,7 +1178,7 @@ function update(){
   if(P.on&&dir&&!LV[lvl].bike&&(P.step&7)===1)stepSfx(false);
   if(P.inv>0)P.inv--;if(P.chaiT>0)P.chaiT--;
   if(ammo<TUNE.ammoRegenBelow&&!P.aru){if(++ammoT>=TUNE.ammoRegenFrames){ammoT=0;ammo++}}else ammoT=0;
-  {const lb=Math.floor(score/TUNE.lifeEvery);if(lb>lifeBank){lives=Math.min(TUNE.lifeMax,lives+lb-lifeBank);lifeBank=lb;pops.push({x:P.x+7,y:P.y-8,s:'EXTRA LIFE!',t:80});if(!sfx('powerup'))beep(1000,.2,'triangle',.06)}}
+  {const lb=Math.floor(score/TUNE.lifeEvery);if(lb>lifeBank){const n=lb-lifeBank;lifeBank=lb;for(let k=0;k<n;k++)dropLifeLamp(k)}}
   if(P.y>GY+14){P.inv=0;die(true,true);return}
   bestX=Math.max(bestX,P.x);
   if(!locked){camx=Math.min(Math.max(camx,P.x-W*.38),bossX);if(camx>=bossX&&!boss.dead){locked=true;if(!boss.active)spawnBoss()}}
@@ -1193,8 +1204,10 @@ function update(){
   for(const s of shots){s.x+=s.vx;s.vy+=s.g;s.y+=s.vy;s.life--;
     if(s.life>0&&hit({x:s.x-2,y:s.y-2,w:4,h:4},{x:P.x+3,y:P.y+3,w:P.w-6,h:P.h-4})){s.life=0;if(s.k==='gaze'){P.rev=180;beep(180,.3,'sawtooth',.05)}else die()}}
   shots=shots.filter(s=>s.life>0&&s.y<H&&s.x>cx-30&&s.x<cx+W+30);
-  for(const p of pickups)if(!p.got&&hit(P,p)){p.got=true;score+=200;if(!sfx('powerup'))beep(900,.2,'triangle',.06);
+  for(const p of pickups)if(p.drop&&!p.got&&p.y<p.landY){p.vy=Math.min(5,p.vy+.25);p.y=Math.min(p.landY,p.y+p.vy);if(p.y>=p.landY){burst(p.x+6,p.y+12,['#ffd860','#fff6c0'],8);beep(1320,.25,'sine',.05)}}
+  for(const p of pickups)if(!p.got&&hit(P,p)){p.got=true;if(p.k!=='life')score+=200;if(!sfx('powerup'))beep(900,.2,'triangle',.06);
     if(p.k==='aru'){P.aru=true;P.sp=false;banner={a:'TRISHUL',b:"BHADRAKALI'S GIFT. RAYS PIERCE EVERYTHING",t:100};burst(p.x+5,p.y+5,['#ffd860','#ff6a3a','#ffffff'],12)}
+    else if(p.k==='life'){if(lives<TUNE.lifeMax){lives++;pops.push({x:p.x+5,y:p.y-12,s:'EXTRA LIFE!',t:90})}else{score+=300;pops.push({x:p.x+5,y:p.y-12,s:'LIVES FULL +300',t:90})}burst(p.x+6,p.y+6,['#ffd860','#fff6c0','#ffffff'],14);beep(1180,.3,'sine',.07);beep(1580,.45,'sine',.05)}
     else if(p.k==='bell'){lives=Math.min(TUNE.lifeMax,lives+1);pops.push({x:p.x+5,y:p.y-12,s:'THE BELL RINGS! +1 LIFE',t:110});burst(p.x+5,p.y+5,['#ffd860','#fff6c0'],10);beep(1180,.35,'sine',.07);beep(1580,.5,'sine',.04)}
     else if(p.k==='rice'){ammo=Math.min(TUNE.ammoMax,ammo+12);pops.push({x:p.x+5,y:p.y-12,s:'KILI CAWS! +COCONUTS',t:110});burst(p.x+5,p.y+5,['#f4ecd0','#8ccf55'],8);beep(500,.12,'square',.05);beep(380,.18,'square',.05)}
     else{P.sp=true;P.aru=false;banner={a:'PAROTTA!',b:'TRIPLE THROW',t:80};burst(p.x+5,p.y+5,['#f08a62','#f2e2a0'],8)}}
@@ -2014,7 +2027,7 @@ function drawStory(){
     if(ac.id==='maveli'&&ART.mvh_3&&ART.mvh_7){const mi=pose>=2?ART.mvh_3:ART.mvh_7,hh=128,ww=Math.round(hh*mi.width/mi.height),p0=Math.min(1,t/100),e0=1-(1-p0)*(1-p0),off0=Math.round((1-e0)*(ac.from||0)*150),cx0=Math.round(ac.x*W+off0),bob0=Math.round(Math.sin(t*.09+i*2)),hop0=talking&&(t>>3)%2?-2:0;
       if((ac.f||1)>0)nimg(mi,cx0-Math.round(ww/2),feet-hh+bob0+hop0,ww,hh);else{g.save();/* facing left: mirrored copy on the full-resolution layer */nimg(FLIPPED(mi),cx0-Math.round(ww/2),feet-hh+bob0+hop0,ww,hh);g.restore()}return}
     const hsI=ART['hs_'+ac.id+'_'+pose];
-    if(hsI){const hh=HS_H[ac.id]||72,ww=Math.round(hh*hsI.width/hsI.height),p1=Math.min(1,t/100),e1=1-(1-p1)*(1-p1),off1=Math.round((1-e1)*(ac.from||0)*150),cx1=Math.round(ac.x*W+off1),bob1=Math.round(Math.sin(t*.09+i*2)),hop1=talking&&(t>>3)%2?-2:0;if(ac.lying){const L=LYING(hsI);nimg(L,cx1-Math.round(hh/2),feet-ww+2,hh,ww);return}
+    if(hsI){const hh=HS_H[ac.id]||72,ww=Math.round(hh*hsI.width/hsI.height),p1=Math.min(1,t/100),e1=1-(1-p1)*(1-p1),off1=Math.round((1-e1)*(ac.from||0)*150),cx1=Math.round(ac.x*W+off1),bob1=Math.round(Math.sin(t*.09+i*2)),hop1=talking&&(t>>3)%2?-2:0;if(ac.lying){const L=LYING(hsI);nimg(L,cx1-Math.round(hh/2),feet-ww+4,hh,ww);return}
     nimg((ac.f||1)>0?hsI:FLIPPED(hsI),cx1-Math.round(ww/2),feet-hh+bob1+hop1,ww,hh);return}
     const img=ART[ac.id+'_'+pose];if(!img)return;const im=(ac.f||1)>0?img:flipOf(img);
     const p=Math.min(1,t/100),e=1-(1-p)*(1-p),off=Math.round((1-e)*(ac.from||0)*150),w=img.width*scl,h=img.height*scl;
@@ -2156,7 +2169,8 @@ function draw(){TQ.length=0;syncPad();
   if(L.rootWalls)drawRoots(cx);
   for(const h of hoofs)if(!h.got){const hx=Math.round(h.x-cx);g.fillStyle='rgba(176,112,255,'+(.2+.15*Math.sin(tick*.1)).toFixed(2)+')';g.fillRect(hx-3,GY-9,16,9);g.drawImage(HOOF,hx,GY-6)}
   for(const p of pickups)if(!p.got){const px=Math.round(p.x-cx),py=Math.round(p.y+Math.sin(tick*.1)*2);
-    if(p.k==='aru'){g.fillStyle='rgba(255,255,255,'+(.12+.1*Math.sin(tick*.12))+')';g.fillRect(px-3,py-3,16,16);{const st=ART.tdrops_0;if(st)g.drawImage(st,px-6,py-2);else g.drawImage(ARU,px,py)}}else if(p.k==='bell'){glowEll(px+5,py+5,13,13,'#ffd860',.32+.12*Math.sin(tick*.12));g.fillStyle='#8a5a20';g.fillRect(px+1,py+3,8,7);g.fillRect(px+2,py+1,6,3);g.fillStyle='#d8a838';g.fillRect(px+2,py+3,2,6);g.fillRect(px+3,py+1,4,1);g.fillStyle='#fff0b0';g.fillRect(px+2,py+3,1,3);g.fillStyle='#3a2410';g.fillRect(px+4,py+10,2,2)}
+    if(p.k==='life'){const lf=LAMPG[(tick>>4)%2],yy=Math.round(p.y+(p.y>=p.landY?Math.sin(tick*.1)*2:0));glowEll(px+6,yy+8,16,16,'#ffd860',.3+.12*Math.sin(tick*.15));g.drawImage(lf,px,yy,lf.width*2,lf.height*2);if(tick%6===0)parts.push({x:p.x+6+(Math.random()-.5)*8,y:yy+4,vx:0,vy:-.4,l:20,c:'#fff6c0'})}
+    else if(p.k==='aru'){g.fillStyle='rgba(255,255,255,'+(.12+.1*Math.sin(tick*.12))+')';g.fillRect(px-3,py-3,16,16);{const st=ART.tdrops_0;if(st)g.drawImage(st,px-6,py-2);else g.drawImage(ARU,px,py)}}else if(p.k==='bell'){glowEll(px+5,py+5,13,13,'#ffd860',.32+.12*Math.sin(tick*.12));g.fillStyle='#8a5a20';g.fillRect(px+1,py+3,8,7);g.fillRect(px+2,py+1,6,3);g.fillStyle='#d8a838';g.fillRect(px+2,py+3,2,6);g.fillRect(px+3,py+1,4,1);g.fillStyle='#fff0b0';g.fillRect(px+2,py+3,1,3);g.fillStyle='#3a2410';g.fillRect(px+4,py+10,2,2)}
   else if(p.k==='rice'){glowEll(px+5,py+6,12,10,'#f4ecd0',.22+.1*Math.sin(tick*.1));g.fillStyle='#2e7a2e';g.fillRect(px-1,py+6,12,4);g.fillStyle='#4aa040';g.fillRect(px,py+6,10,1);g.fillStyle='#f8f4e8';g.fillRect(px+2,py+3,6,4);g.fillRect(px+3,py+2,4,1)}
   else{const po=ART.porotta_0;if(po){glowEll(px+5,py+5,12,9,'#ffd890',.2+.08*Math.sin(tick*.1));g.drawImage(po,px-4,py-1+Math.round(Math.sin(tick*.08)))}else g.drawImage(PICK,px-2,py-1)}}
   for(const e of enemies)if(e.alive&&e.x-cx<W+20&&e.x-cx>-40)drawFoe(e,cx);
