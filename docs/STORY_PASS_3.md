@@ -105,6 +105,9 @@ Ravi's swing-off (he races ahead on the vines, scenery), Devi's bell (walk past:
 - Trishul sheet (prompt to write), Bhadrakali sprite is done.
 - Hero frames: mundu lasso, tusk climb, boxers. Sacred tree sprites (withered + bloomed in 5 colours). Bell prop.
 - Story panel UI (code), tutorial pulse ring on the buttons (code).
+- **Opening page illustrations (proper art, after all the changes):** the five pages are drawn in code for now (village, five glowing trees, Maveli below the roots,
+  the red crack across the third tree, Bhadrakali with Kannan). The trees look like glowing balls on sticks. Needed: one illustration per page, same style as the
+  reference art; the five sacred trees are the same ones used in the boss arenas (withered and bloomed versions).
 
 ## Parked for later discussion
 - **Boss difficulty** across the five acts.
