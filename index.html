@@ -1173,7 +1173,9 @@ function update(){
   P.x=Math.max(minX,Math.min(maxX,P.x+P.vx));
   prevBottom=P.y+P.h;const fallV=P.vy;P.y+=P.vy;P.on=false;
   if(P.vy>=0){for(const [x1,x2,top] of segs.map(s=>[s[0],s[1],GY]).concat(plats.map(p=>[p[0],p[0]+p[2],p[1]]))){
-    if(P.x+P.w>x1&&P.x<x2&&prevBottom<=top+1&&P.y+P.h>=top){P.y=top-P.h;P.vy=0;P.on=true;P.boost=0;if(fallV>6)burst(P.x+7,top,['#d8c8a0','#a89878'],3);break}}}
+    if(P.x+P.w>x1&&P.x<x2&&prevBottom<=top+1&&P.y+P.h>=top){P.y=top-P.h;P.vy=0;P.on=true;P.boost=0;if(fallV>6)burst(P.x+7,top,['#d8c8a0','#a89878'],3);break}}
+    /* ledge forgiveness: a jump that ends just below the bank, with the body clearly over the ground, is pulled up onto the edge instead of dropping into the river */
+    if(!P.on&&P.y+P.h>GY&&P.y+P.h<=GY+12){for(const sg of segs){if(Math.min(P.x+P.w,sg[1])-Math.max(P.x,sg[0])>=5){P.y=GY-P.h;P.vy=0;P.on=true;P.boost=0;burst(P.x+7,GY,['#d8c8a0','#a89878'],3);break}}}}
   vineGrab();}
   if(P.on&&(dir||LV[lvl].bike))P.step++;
   if(P.on&&dir&&!LV[lvl].bike&&(P.step&7)===1)stepSfx(false);
