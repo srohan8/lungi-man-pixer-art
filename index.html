@@ -389,17 +389,17 @@ const BOSSDEF={
   crab:{w:68,h:46,foot:42,hb:[6,10,56,32],hp:20,name:'NJANDU RAJA',sub:'KING OF THE CRABS'},
   monkey:{w:52,h:54,foot:52,hb:[8,4,36,46],hp:24,name:'KURANGU MOOPPAN',sub:'CHIEF OF THE MONKEYS'},
   kallan:{w:36,h:50,foot:47,hb:[9,2,18,45],hp:28,name:'KALLAN',sub:'THE SADYA THIEF'},
-  yakshi:{w:48,h:60,foot:58,hb:[12,4,24,46],hp:14,name:'YAKSHI',sub:'SEDUCTRESS OF THE HOLLOW'},
-  chathan:{w:32,h:38,foot:37,hb:[6,2,20,34],hp:15,name:'KUTTICHATHAN',sub:'MISCHIEF SPIRIT'},
-  odiyan:{w:64,h:46,foot:45,hb:[22,8,20,36],hp:17,name:'ODIYAN',sub:'SHAPESHIFTER OF SHADOWS'},
+  yakshi:{w:48,h:60,foot:58,hb:[12,4,24,46],hp:20,name:'YAKSHI',sub:'SEDUCTRESS OF THE HOLLOW'},
+  chathan:{w:32,h:38,foot:37,hb:[6,2,20,34],hp:21,name:'KUTTICHATHAN',sub:'MISCHIEF SPIRIT'},
+  odiyan:{w:64,h:46,foot:45,hb:[22,8,20,36],hp:23,name:'ODIYAN',sub:'SHAPESHIFTER OF SHADOWS'},
   karin:{w:64,h:64,foot:62,hb:[16,16,32,32],hp:3,name:'KARINKANNI',sub:'THE CURSED EYE'},
-  komban:{w:80,h:60,foot:59,hb:[14,8,52,46],hp:34,name:'PEY KOMBAN',sub:'DEMON OF THE TUSKS'}};
+  komban:{w:80,h:60,foot:59,hb:[14,8,52,46],hp:40,name:'PEY KOMBAN',sub:'DEMON OF THE TUSKS'}};
 /* Boss art from PNG files (assets/art/bosses/<boss>_<frame>.png, made by tools/make-sprite.js from the reference sheets).
    Used only when the file loads and has the same size as the generated frame; otherwise the generated sprite stays. */
 /* scenery props: shrunk to a believable size and dimmed with the act's haze so they read as background, not as obstacles */
 const PRS={goat:.7,bell:.55,paddy_bundle:.6,broken_idol:.8,stone_face:.85,stone_shrine:.85,highland_wall:.8,low_branch:.8,mangrove_roots:.9,bullock_cart:.9,houseboat:.85,stilt_hut:.9},PRC={};
 function propImg(n){const key=n+'|'+lvl;if(PRC[key]!==undefined)return PRC[key];const im=ART['pr_'+n+'_0'];if(!im)return null;const k=PRS[n]||1,w=Math.max(1,Math.round(im.width*k)),h=Math.max(1,Math.round(im.height*k)),c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');x.imageSmoothingEnabled=false;x.drawImage(im,0,0,w,h);x.globalCompositeOperation='source-atop';x.globalAlpha=.3;x.fillStyle='#161236';x.fillRect(0,0,w,h);return PRC[key]=c}
-const ART={},ART_FILES=['chathan_0','chathan_1','yakshi_0','yakshi_1','odiyan_0','odiyan_1','odiyan_2','karin_0','karin_1','karin_2','komban_0','komban_1','komban_2','hero_0','hero_1','hero_2','hero_3','heroidle_0','heroidle_1','heroidle_2','heroidle_3','heroswing_0','heroswing_1','heroswing_2','croc_0','croc_1','croc_2','croc_3','bike_0','bike_1','bike_2','bike_3','ravi_0','ravi_1','biju_0','biju_1','soniya_0','thoma_0','maveli_0','mooppan_0','scenehero_0','soniya_1','thoma_1','maveli_1','mooppan_1','scenehero_1','soniya_2','thoma_2','maveli_2','mooppan_2','scenehero_2','soniya_3','thoma_3','maveli_3','mooppan_3','scenehero_3','kili_0','kili_1','kili_2','stall_0','devi_0','komrun_0','komrun_1','komrun_2','komrun_3','komrun_4','komrun_5','komrun_6','komrun_7','komrun_8','komrun_9','odirun_0','odirun_1','odirun_2','odirun_3','odirun_4','odirun_5','odirun_6','odirun_7','odirun_8','odirun_9','odirun_10','odirun_11','strees_0','strees_1','strees_2','strees_3','strees_4','strees_5','strees_6','strees_7','strees_8','strees_9','hf_0','hf_1','hf_2','hf_3','hf_4','hf_5','hf_6','hf_7','hf_8','hf_9','hf_10','mvh_0','mvh_3','mvh_7','pr_broken_idol_0','pr_stone_shrine_0','pr_carnival_banner_0','pr_bullock_cart_0','pr_highland_wall_0','pr_low_branch_0','pr_mangrove_roots_0','pr_stilt_hut_0','pr_temple_gate_0','pr_stone_face_0','pr_sacred_banyan_0','pr_paddy_bundle_0','pr_goat_0','pr_blockade_0','hs_blockade_0','pr_disco_ball_0','pr_speaker_stack_0','pr_bell_0','pr_houseboat_0','ang_0','ang_1','ang_2','ang_3','ang_4','ang_5','hk_0','hk_1','hk_2','hk_3','hk_4','hk_5','hk_6','hk_7','hk_8','hk_9','hk_10','hk_11','hs_soniya_0','hs_soniya_1','hs_soniya_2','hs_soniya_3','hs_kili_0','hs_kili_1','hs_kili_2','hs_mooppan_0','hs_mooppan_1','hs_scenehero_0','hs_scenehero_1','hs_scenehero_2','hs_scenehero_3','hs_thoma_0','hs_thoma_1','hs_thoma_2','hs_thoma_3','hs_biju_0','hs_biju_1','hs_ravi_0','hs_ravi_1','hs_basheer_0','hs_basheer_1','edog_0','edog_1','edog_2','edog_3','edog_4','edog_5','logo_0','logo_hi','porotta_0','basheer_0','basheer_1','basheer_2','bshp_0','naga_0','naga_1','naga_2','pg_0','pg_1','pg_2','pg_3','pg_4','tstaff_0','tstaffs_1','tstaffs_2','tdrops_0','tbeam_0','tbeam_1','tbeam_2','hdrown_0','hdrown_1','hdrown_2','hdrown_3','hdrown_4','hdrown_5','hdead_0','hdead_1','hdead_2','hdead_3','ecobra_0','ecobra_1','ecobra_2','ecobra_3','ebat_0','ebat_1','ebat_2','ebat_3','ebat_4','ecrow_0','ecrow_1','ecrow_2','ecrow_3','egoon_0','egoon_1','egoon_2','eimp_0','eimp_1','eimp_2','bhadra_0','bhadra_1','palm_0','palm_1','palm_2','dc1_0','dc1_1','dc1_2','dc1_3','dc1_4','dc1_5','dc2_0','dc2_1','dc2_2','dc2_3','dc2_4','dc2_5','da1_0','da1_1','da1_2','da1_3','da1_4','da1_5','da2_0','da2_1','da2_2','da2_3','da2_4','da2_5','da3_0','da3_1','da3_2','da3_3','da3_4','da3_5'];
+const ART={},ART_FILES=['chathan_0','chathan_1','yakshi_0','yakshi_1','odiyan_0','odiyan_1','odiyan_2','karin_0','karin_1','karin_2','komban_0','komban_1','komban_2','hero_0','hero_1','hero_2','hero_3','heroidle_0','heroidle_1','heroidle_2','heroidle_3','heroswing_0','heroswing_1','heroswing_2','croc_0','croc_1','croc_2','croc_3','bike_0','bike_1','bike_2','bike_3','ravi_0','ravi_1','biju_0','biju_1','soniya_0','thoma_0','maveli_0','mooppan_0','scenehero_0','soniya_1','thoma_1','maveli_1','mooppan_1','scenehero_1','soniya_2','thoma_2','maveli_2','mooppan_2','scenehero_2','soniya_3','thoma_3','maveli_3','mooppan_3','scenehero_3','kili_0','kili_1','kili_2','stall_0','devi_0','komrun_0','komrun_1','komrun_2','komrun_3','komrun_4','komrun_5','komrun_6','komrun_7','komrun_8','komrun_9','odirun_0','odirun_1','odirun_2','odirun_3','odirun_4','odirun_5','odirun_6','odirun_7','odirun_8','odirun_9','odirun_10','odirun_11','strees_0','strees_1','strees_2','strees_3','strees_4','strees_5','strees_6','strees_7','strees_8','strees_9','hf_0','hf_1','hf_2','hf_3','hf_4','hf_5','hf_6','hf_7','hf_8','hf_9','hf_10','mvh_0','mvh_3','mvh_7','pr_broken_idol_0','pr_stone_shrine_0','pr_carnival_banner_0','pr_bullock_cart_0','pr_highland_wall_0','pr_low_branch_0','pr_mangrove_roots_0','pr_stilt_hut_0','pr_temple_gate_0','pr_stone_face_0','pr_sacred_banyan_0','pr_paddy_bundle_0','pr_goat_0','hs_bhadra_0','hs_bhadra_1','pr_blockade_0','hs_blockade_0','pr_disco_ball_0','pr_speaker_stack_0','pr_bell_0','pr_houseboat_0','ang_0','ang_1','ang_2','ang_3','ang_4','ang_5','hk_0','hk_1','hk_2','hk_3','hk_4','hk_5','hk_6','hk_7','hk_8','hk_9','hk_10','hk_11','hs_soniya_0','hs_soniya_1','hs_soniya_2','hs_soniya_3','hs_kili_0','hs_kili_1','hs_kili_2','hs_mooppan_0','hs_mooppan_1','hs_scenehero_0','hs_scenehero_1','hs_scenehero_2','hs_scenehero_3','hs_thoma_0','hs_thoma_1','hs_thoma_2','hs_thoma_3','hs_biju_0','hs_biju_1','hs_ravi_0','hs_ravi_1','hs_basheer_0','hs_basheer_1','edog_0','edog_1','edog_2','edog_3','edog_4','edog_5','logo_0','logo_hi','porotta_0','basheer_0','basheer_1','basheer_2','bshp_0','naga_0','naga_1','naga_2','pg_0','pg_1','pg_2','pg_3','pg_4','tstaff_0','tstaffs_1','tstaffs_2','tdrops_0','tbeam_0','tbeam_1','tbeam_2','hdrown_0','hdrown_1','hdrown_2','hdrown_3','hdrown_4','hdrown_5','hdead_0','hdead_1','hdead_2','hdead_3','ecobra_0','ecobra_1','ecobra_2','ecobra_3','ebat_0','ebat_1','ebat_2','ebat_3','ebat_4','ecrow_0','ecrow_1','ecrow_2','ecrow_3','egoon_0','egoon_1','egoon_2','eimp_0','eimp_1','eimp_2','bhadra_0','bhadra_1','palm_0','palm_1','palm_2','dc1_0','dc1_1','dc1_2','dc1_3','dc1_4','dc1_5','dc2_0','dc2_1','dc2_2','dc2_3','dc2_4','dc2_5','da1_0','da1_1','da1_2','da1_3','da1_4','da1_5','da2_0','da2_1','da2_2','da2_3','da2_4','da2_5','da3_0','da3_1','da3_2','da3_3','da3_4','da3_5'];
 if(typeof Image!=='undefined')ART_FILES.forEach(n=>{const im=new Image();
   im.onload=()=>{const c=document.createElement('canvas');c.width=im.width;c.height=im.height;c.getContext('2d').drawImage(im,0,0);ART[n]=c;
     if(A&&A.boss&&LV[lvl]&&LV[lvl].boss)A.boss=bossFrames(LV[lvl].boss);if(n.startsWith('palm_')&&A&&A.palms&&LV[lvl]&&!LV[lvl].bamboo){const pa=palmArt(LV[lvl]);if(pa)A.palms=pa}};
@@ -831,7 +831,8 @@ function loadLevel(i){fogK=1;bloomAt=-1;
   segs.slice(0,-1).forEach((s,si)=>{
     if(!L.foes||!L.foes.length)return;
     const st=s[0]+(si===0?260:50),en=s[1]-30,span=en-st;if(span<40)return;
-    const n=Math.max(1,Math.floor((s[1]-s[0])/(170-13*(L.hard||0))));
+    const prog=si/Math.max(1,segs.length-2),xtra=L.key==='pro'?0:(prog>.4?1:0)+(prog>.75?1:0);/* the nearer the boss, the more enemies */
+    const n=Math.min(Math.max(1,Math.floor((s[1]-s[0])/(170-13*(L.hard||0))))+xtra,Math.max(1,Math.floor((s[1]-s[0])/95)));
     for(let k=0;k<n;k++){const t=L.foes[r()*L.foes.length|0];let ex=st+(k+.5)*span/n+(r()-.5)*30;
       if(t==='crow'||t==='bat'||t==='wisp'){enemies.push(mkFoe(t,ex,70+r()*60,s));continue}
       if(t==='monkey'){const p=plats.find(p=>p[0]<ex+80&&p[0]+p[2]>ex-80&&p[0]>=s[0]&&p[0]<s[1]);
@@ -848,6 +849,8 @@ function loadLevel(i){fogK=1;bloomAt=-1;
   else if(cand.length>1){const mk=(p,k)=>pickups.push({x:p[0]+p[2]/2-5,y:p[1]-16,w:10,h:10,got:false,k});
     mk(cand[Math.floor(cand.length*.3)],'coco');mk(cand[cand.length-1],L.aru?'aru':'coco')}
   (L.extra||[]).forEach(f=>{const sg=segs[Math.min(f.seg,segs.length-1)];if(sg)pickups.push({x:sg[0]+Math.min(f.off,sg[1]-sg[0]-40),y:GY-16,w:10,h:10,got:false,k:f.k})});
+  /* tutorial: nothing waits ahead, each crab / parotta appears when its lesson starts (tutSpawn) */
+  tutFoes=[];tutPick=[];if(tut&&L.key==='pro'){tutFoes=enemies;enemies=[];tutPick=pickups;pickups=[]}
   motes=[];for(let k=0;k<28;k++)motes.push({x:r()*700,y:40+r()*150,ph:r()*6});
   A={sky:genSky(L),pit:genPit(L),clouds:genClouds(L),far:genFar(L),mid:genMid(L,seed),jung:genJungle(L,seed),
      canopy:L.canopy?genCanopy(L.canopy,seed):null,
@@ -910,17 +913,22 @@ function drawPause(){
 /* ===== Prologue guided tutorial (owner-approved exception): the game freezes on a message, you confirm, then the step finishes when you do the action. ===== */
 const TUT=[
  {x:40,h:'Move',msg:()=>isTouch?'Hold the right button to walk. The left button walks back.':'Walk with the arrow keys (or A and D).',hint:()=>isTouch?'Hold the right button':'Press the right arrow',btn:'r',done:()=>P.x>tut.x0+70},
- {x:230,h:'Throw',msg:()=>isTouch?'Hold THROW to throw coconuts. Hit the crab!':'Hold X to throw coconuts. Hit the crab!',hint:()=>isTouch?'Hold THROW':'Hold X',btn:'s',done:()=>stat.kills>tut.k0||stat.thrown>=tut.t0+4},
- {x:400,h:'Jump',msg:()=>isTouch?'Press JUMP to hop over things. You can stomp crabs too.':'Press Space to jump. You can stomp crabs too.',hint:()=>isTouch?'Press JUMP':'Press Space',btn:'j',done:()=>P.vy<-3&&!P.on},
- {x:445,h:'Parotta',msg:()=>'Parotta gives you a triple throw until you fall. Walk into it.',hint:()=>'Walk into the parotta',btn:null,done:()=>P.sp},
+ {x:200,h:'Throw',msg:()=>isTouch?'Hold THROW to throw coconuts. Hit the crab!':'Hold X to throw coconuts. Hit the crab!',hint:()=>isTouch?'Hold THROW':'Hold X',btn:'s',done:()=>stat.kills>tut.k0||stat.thrown>=tut.t0+4},
+ {x:330,h:'Jump',msg:()=>isTouch?'Press JUMP to hop over things. You can stomp crabs too.':'Press Space to jump. You can stomp crabs too.',hint:()=>isTouch?'Press JUMP':'Press Space',btn:'j',done:()=>P.vy<-3&&!P.on},
+ {x:440,h:'Parotta',msg:()=>'Parotta gives you a triple throw until you fall. Walk into it.',hint:()=>'Walk into the parotta',btn:null,done:()=>P.sp},
  {x:520,h:'Vine',msg:()=>isTouch?'Jump into the hanging vine and it swings you across.':'Jump into the hanging vine (Space) and it swings you across.',hint:()=>isTouch?'Jump into the vine':'Jump into the vine',btn:'j',done:()=>!!P.vine}];
+let tutFoes=[],tutPick=[];
+function tutSpawn(step){const sg=segs.find(s=>P.x>=s[0]&&P.x<s[1]);if(!sg)return;
+  if(step===1||step===2){const e=mkFoe('crab',Math.min(sg[1]-30,P.x+(step===1?150:125)),GY-9,sg);e.tutor=true;enemies.push(e)}
+  if(step===3)pickups.push({x:Math.min(sg[1]-40,P.x+95),y:GY-16,w:10,h:10,got:false,k:'parotta'})}
+function tutClear(){for(const e of enemies)if(e.tutor&&e.alive){e.alive=false;burst(e.x+7,e.y+4,['#ffffff','#d8c8a0'],6)}}
 function tutPulse(k){document.querySelectorAll('[data-k]').forEach(b=>b.classList.toggle('pulse',!!k&&b.dataset.k===k))}
-function tutConfirm(src){if(!tut||tut.phase!=='msg'||tut.t<14)return;const S=TUT[tut.step];tut.phase='do';tut.x0=P.x;tut.k0=stat.kills;tut.t0=stat.thrown;tut.t=0;if(typeof src==='string')keys[src]=false;tutPulse(S.btn);beep(660,.05,'triangle',.04)}
-function tutSkip(){tut=null;tutPulse(null);beep(300,.05,'square',.03)}
+function tutConfirm(src){if(!tut||tut.phase!=='msg'||tut.t<14)return;const S=TUT[tut.step];tut.phase='do';tutSpawn(tut.step);tut.x0=P.x;tut.k0=stat.kills;tut.t0=stat.thrown;tut.t=0;if(typeof src==='string')keys[src]=false;tutPulse(S.btn);beep(660,.05,'triangle',.04)}
+function tutSkip(){tut=null;tutPulse(null);/* skipping brings the normal level back ahead of the hero */for(const e of tutFoes)if(e.x>P.x+150)enemies.push(e);if(P.x<440)for(const p of tutPick)pickups.push(p);tutFoes=[];tutPick=[];beep(300,.05,'square',.03)}
 function tutStep(){if(!tut||state!=='play'||lvl!==0)return;const S=TUT[tut.step];
   if(!S){tut=null;tutPulse(null);return}
   if(tut.phase==='wait'){if(P.x>S.x){tut.phase='msg';tut.t=0;tutPulse(null);P.vx=0}}
-  else if(tut.phase==='do'){tut.t++;if(S.done()){tut.step++;tut.phase='wait';tutPulse(null);pops.push({x:P.x+7,y:P.y-8,s:'NICE!',t:70});if(!sfx('powerup'))beep(880,.12,'triangle',.05)}}}
+  else if(tut.phase==='do'){tut.t++;if(S.done()){tutClear();tut.step++;tut.phase='wait';tutPulse(null);pops.push({x:P.x+7,y:P.y-8,s:'NICE!',t:70});if(!sfx('powerup'))beep(880,.12,'triangle',.05)}}}
 function drawTut(){
   if(!tut||state!=='play')return;const S=TUT[tut.step];if(!S)return;
   if(tut.phase==='msg'){
@@ -1227,7 +1235,7 @@ function update(){
   tutStep();
   for(const t of (LV[lvl].sayAt||[]))if(!t.d&&P.x>t.x){t.d=1;say(t.who,t.text)}
   if(LV[lvl].scene&&!scene&&P.x>bossX+W-230){state='scene';scene={t:0};P.vx=0;return}
-  if(!LV[lvl].boss&&!LV[lvl].arena&&!LV[lvl].scene&&P.x>bossX+40){state='clear';clearT=200;banner={a:LV[lvl].clear[0],b:LV[lvl].clear[1],t:190};if(LV[lvl].sayClear)say(LV[lvl].sayClear[0],LV[lvl].sayClear[1]);return}
+  if(!LV[lvl].boss&&!LV[lvl].arena&&!LV[lvl].scene&&P.x>bossX+40){state='clear';clearT=lvl===0?360:200;banner=lvl===0?{a:'WELL DONE, KANNAN!',b:'YOU LEARNED FAST. THE REAL GROVE NEEDS YOU.',t:340}:{a:LV[lvl].clear[0],b:LV[lvl].clear[1],t:190};if(LV[lvl].sayClear)say(LV[lvl].sayClear[0],LV[lvl].sayClear[1]);return}
 
   shootCd--;
   if(S&&shootCd<=0&&P.aru){shootCd=16;slashT=8;swingId++;if(!sfx('slash'))beep(220,.08,'sawtooth',.05)}
@@ -1256,7 +1264,7 @@ function update(){
   updCrocs();
   if(locked)updBoss();
 }
-const HF=()=>1-.07*((LV[lvl]&&LV[lvl].hard)||0);
+const HF=()=>Math.max(.5,1-.07*((LV[lvl]&&LV[lvl].hard)||0)-.18*Math.min(1,P.x/Math.max(1,bossX)));
 function updFoes(cx){
   for(const e of enemies){
     if(!e.alive)continue;if(e.hurt>0)e.hurt--;
@@ -1315,16 +1323,16 @@ function yakshiAI(b,pc,bc,face,rage){
   if(b.state===0){
     const tx=clampX(pc+b.side*115-b.w/2);b.x+=Math.max(-1.3,Math.min(1.3,(tx-b.x)*.05))*sp;
     const ty=(Math.floor(b.tk/140)%2)?highY:lowY;b.y+=(ty-b.y)*.05+Math.sin(b.tk*.12)*.5;
-    if(--b.cd<=0){const gz=Math.random()<.55;b.state=gz?1:2;b.cd=gz?36:42;b.arm=b.cd}
+    if(--b.cd<=0){const gz=Math.random()<.55;b.state=gz?1:2;b.cd=gz?30:34;b.arm=b.cd}
   }else if(b.state===1){
     b.y+=((GY-90)-b.y)*.08;
-    if(--b.cd<=0){shot(bc-b.side*20,P.y+12,-b.side*(rage?3:2.4),0,0,'gaze');sfx('yakshi_laugh');b.state=0;b.cd=rage?65:105;b.arm=0}
+    if(--b.cd<=0){const gv=-b.side*(rage?3.8:3.1);shot(bc-b.side*20,P.y+12,gv,0,0,'gaze');if(rage){shot(bc-b.side*20,P.y-14,gv,0,0,'gaze');shot(bc-b.side*20,P.y+34,gv,0,0,'gaze')}sfx('yakshi_laugh');b.state=0;b.cd=rage?42:72;b.arm=0}
   }else if(b.state===2){
     b.y+=((GY-40)-b.y)*.12;b.x=clampX(b.x+b.side*.9);
     if(--b.cd<=0){b.state=3;b.arm=0}
   }else{
-    b.y+=((GY-40)-b.y)*.2;b.x+=-b.side*(rage?5.4:4.4);
-    if(b.x<=ax+10||b.x>=ax2-b.w-10){b.x=clampX(b.x);b.side=-b.side;b.state=0;b.cd=rage?55:85}
+    b.y+=((GY-40)-b.y)*.2;b.x+=-b.side*(rage?6.4:5.2);
+    if(b.x<=ax+10||b.x>=ax2-b.w-10){b.x=clampX(b.x);b.side=-b.side;b.state=0;b.cd=rage?38:60}
   }
 }
 const BHINT={chathan:'HIT HIM WHEN HE CRASHES',odiyan:'HIT HIM WHEN HE CHANGES FORM',komban:'HIT HIM AFTER HIS STOMP',karin:'HIT THE EYE WHEN IT OPENS'};
@@ -1728,8 +1736,10 @@ function drawStaffInHand(cx){
   if(slashT>0){/* pointing forward: the sun is the muzzle */
     g.save();g.translate(hx,hy+16);g.rotate(f>0?Math.PI/2:-Math.PI/2);g.drawImage(ART.tstaffs_2||sp,-12,-24);g.restore();
     glowAt(hx+f*22,hy+16,9,'#ffb060',.5);return}
-  g.drawImage(f>0?sp:flipOf(sp),hx-12,hy-8);
-  glowAt(hx,hy-1,9,'#ff8a3a',.16+.12*Math.sin(tick*.12));
+  /* carried like a spear: leaning forward and bobbing with his stride while running, tipped up in the air, upright when standing */
+  const run=P.on&&Math.abs(P.vx)>.3,air=!P.on,bob=run?Math.round(Math.sin(P.step*.9)*1.6):0,ang=f*(run?.42:air?.7:.08)+(run?Math.sin(P.step*.9)*.05:0),px=hx+(run?f*2:0),py=hy+15+bob;
+  g.save();g.translate(px,py);g.rotate(ang);g.drawImage(f>0?sp:flipOf(sp),-12,-23);g.restore();
+  glowAt(px+Math.round(Math.sin(ang)*22),py-Math.round(Math.cos(ang)*22),9,'#ff8a3a',.16+.12*Math.sin(tick*.12));
 }
 function drawSlash(cx){
   if(slashT<=0||!P||state!=='play')return;
@@ -2068,13 +2078,17 @@ function drawPagePic(P0,L,t){
     /* Bhadrakali stands below and reaches out; a golden beam from her hand catches Kannan in the air */
     const bh=ART.bhadra_1||ART.bhadra_0,kn=ART.hdead_1||ART.scenehero_0;
     const bx=Math.round(L*.22),sc=3;let hx=bx+60,hy=gy-90;
-    if(bh){const w=bh.width*sc,h=bh.height*sc;g.drawImage(bh,bx-Math.round(w/2),gy-h+6+Math.round(Math.sin(t*.05)*2),w,h);hx=bx-Math.round(w/2)+Math.round(w*.9);hy=gy-h+6+Math.round(h*.4)}
+    const bhS=ART.hs_bhadra_1;
+    if(bhS){const hh=Math.min(Math.round(H*.7),230),ww=Math.round(hh*bhS.width/bhS.height),ox=bx-Math.round(ww/2),oy=gy-hh+8+Math.round(Math.sin(t*.05)*2);nimg(bhS,ox,oy,ww,hh);hx=ox+Math.round(ww*.93);hy=oy+Math.round(hh*.3)}
+    else if(bh){const w=bh.width*sc,h=bh.height*sc;g.drawImage(bh,bx-Math.round(w/2),gy-h+6+Math.round(Math.sin(t*.05)*2),w,h);hx=bx-Math.round(w/2)+Math.round(w*.9);hy=gy-h+6+Math.round(h*.4)}
     const kx=Math.round(L*.7),ky=Math.round(gy-135+Math.sin(t*.04)*6);
     glowEll(hx,hy,16,16,'#ffd860',.55);
     for(let i=0;i<=28;i++){const u=i/28,px=Math.round(hx+(kx-hx)*u),py=Math.round(hy+(ky-hy)*u),rr=9+Math.round(u*8);glowEll(px,py,rr,rr,'#ffd860',.22);
       if(i%2===0){g.fillStyle=i%4?'#fff6c0':'#ffe898';g.fillRect(px-1,py-1,3,3)}}
     glowEll(kx,ky,48,44,'#ffd860',.3);
-    if(kn){const w=kn.width*3,h=kn.height*3;g.save();g.translate(kx,ky);g.rotate(-.55+Math.sin(t*.03)*.1);g.drawImage(kn,-Math.round(w/2),-Math.round(h/2),w,h);g.restore()}
+    const anS=ART.ang_4;
+    if(anS){const hh=100,ww=Math.round(hh*anS.width/anS.height);nimg(anS,kx-Math.round(ww/2),ky-Math.round(hh/2),ww,hh)}
+    else if(kn){const w=kn.width*3,h=kn.height*3;g.save();g.translate(kx,ky);g.rotate(-.55+Math.sin(t*.03)*.1);g.drawImage(kn,-Math.round(w/2),-Math.round(h/2),w,h);g.restore()}
     for(let k=0;k<14;k++){const an=t*.03+k*.45,rr=34+((k*13)%30),lx=Math.round(kx+Math.cos(an)*rr),ly=Math.round(ky+Math.sin(an)*rr*.7);g.fillStyle=k%2?'#ffe070':'#fff6c0';g.fillRect(lx,ly,3,2);g.fillRect(lx+1,ly-1,1,1)}}
   if(P0.pic==='maveli'||P0.pic==='kannan'){g.globalAlpha=al;pageLife(P0.pic,L,t,1)}
   g.globalAlpha=1}
