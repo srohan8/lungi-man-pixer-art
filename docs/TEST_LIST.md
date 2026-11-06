@@ -34,3 +34,8 @@ Uninstall the old build first, then install the newest debug APK.
 - Yakshi's dash and Odiyan's human-form walk glide: accepted, they read as floating spirits (no legs shown).
 - Amma's green-gold aura in code is not added yet.
 - Pey Komban in the finale: proportions depend on the sheet (about half of Komban).
+
+## Dialogue boxes (new)
+- [ ] Every in-play dialogue box (Biju, Kannan, Soniya, chai stalls, Velu, bosses...) freezes the game until you tap anywhere or press a key; "Tap to continue" blinks under the box.
+- [ ] The game does not freeze forever in any act; boxes at the level clear, cinematics and the ending still show and go away by themselves.
+- [ ] Act II ride: a box freezes the bike and the engine goes quiet until you tap.
