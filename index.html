@@ -148,7 +148,7 @@ function stepSfx(heavy){if(!AUD.on||!AUD.go)return;try{const c=actx(),m=audMaste
   for(let i=0;i<n;i++){const t=i/n;a[i]=(Math.random()*2-1)*Math.pow(1-t,3)}
   const src=c.createBufferSource();src.buffer=b;const f=c.createBiquadFilter();f.type='lowpass';f.frequency.value=heavy?260:700;const gn=c.createGain();gn.gain.value=heavy?.5:.14;src.connect(f);f.connect(gn);gn.connect(m);src.start()}catch(e){}}
 function toggleSnd(){AUD.on=!AUD.on;try{localStorage.setItem('lungiman-snd',AUD.on?'1':'0')}catch(e){}audMaster()}
-const SFX_NAMES=['throw','hit','jump','vine','slash','die','chai','powerup','boss_roar','boss_roar_yakshi','boss_roar_chathan','boss_roar_odiyan','boss_roar_karinkanni','boss_roar_komban','yakshi_laugh','thunder','heal_magic','angel_descent'];
+const SFX_NAMES=['throw','hit','jump','vine','slash','die','chai','powerup','boss_roar','boss_roar_yakshi','boss_roar_chathan','boss_roar_odiyan','boss_roar_karinkanni','boss_roar_komban','yakshi_laugh','thunder','heal_magic','angel_descent','kannan_yell'];
 function wantMusic(){
   if(P&&P.fly)return null;
   if(state==='cine')return cin&&cin.k==='mk'?'bgm_finale':null;
@@ -1093,6 +1093,7 @@ function mkTick(){const c=cin;c.t++;const t=c.t,te=mkTe(t);
   if(t<70){const u=Math.min(1,t/70),e=u*u*(3-2*u);boss.x=c.bx0+(c.bxT-c.bx0)*e}else boss.x=c.bxT;
   if(t===2){if(!sfx('boss_roar_komban'))beep(90,.5,'sawtooth',.07);shake=10}
   if(t===60||t===120||t===150)beep(300+t,.12,'triangle',.05);
+  if(t===175){if(!sfx('kannan_yell'))beep(220,.5,'sawtooth',.06)}/* Kannan's angry battle cry as he leaps, lands on the tusker's head and whirls the mundu */
   if(t===240+8){if(!sfx('boss_roar_komban'))beep(110,.4,'sawtooth',.06);shake=Math.max(shake,8)}
   if(t===MK_HIT){flashC='#ffffff';flashT=18;shake=22;thunder(true);burst(c.bcx-c.dir*20,boss.y+16,['#ffffff','#ffe070','#ff8030'],18)}
   if(t===250+MK_HOLD){startBloom();thunder(false);for(let k=0;k<4;k++)burst(c.bcx+(Math.random()-.5)*40,boss.y+20+Math.random()*30,['#ffe070','#ffd860','#ffffff'],10)}
@@ -1882,6 +1883,14 @@ function drawBlockade(cx){
   /* leaves and a few fireflies so it reads as a living wall */
   for(let k=0;k<5;k++){const a=tick*.04+k*1.9;g.fillStyle=(k+(tick>>4))%3?'#fff6a0':'#9aff80';g.fillRect(Math.round(x+8+k*16+Math.sin(a)*6),Math.round(GY-50-k*8+Math.cos(a)*5),2,2)}
 }
+/* Act IV (monsoon mangroves), a look only: the flood creeps up the screen as Kannan walks towards the boss, reaching his knees at the eye. It has no effect on play, and it drains away once the eye bursts and the rain turns clean. */
+function rwLevel(){const prog=Math.max(0,Math.min(1,(P.x-250)/Math.max(1,bossX-250))),rk=bloomAt>=0?Math.min(1,(tick-bloomAt)/220):0;return (1-rk)*Math.pow(prog,1.1)*(H-GY+11)}
+function drawRisingWater(cx){
+  if(!P||state==='title')return;const L=LV[lvl],lv=rwLevel();if(lv<2)return;const surf=H-lv,c1=L.pit.cols[1],c2=L.pit.cols[3],fo=L.pit.foam;
+  for(let x=0;x<W;x+=2){const y=Math.round(surf+Math.sin((x+cx)*.07+tick*.09)*1.6+Math.sin((x+cx)*.17-tick*.05));g.globalAlpha=.55;g.fillStyle=c1;g.fillRect(x,y,2,H-y);g.globalAlpha=.4;g.fillStyle=c2;g.fillRect(x,y+4,2,H-y-4);g.globalAlpha=.65;g.fillStyle=fo;g.fillRect(x,y,2,1)}
+  for(let k=0;k<10;k++){const x=((k*61+tick*.4)%W),y=Math.round(surf+4+((k*17)%Math.max(4,Math.round(lv)-6)));g.globalAlpha=.35;g.fillStyle=fo;g.fillRect(Math.round(x),y,4,1)}
+  g.globalAlpha=1;
+  if(state==='play'&&P.on&&Math.abs(P.vx)>.3&&surf<P.y+P.h-2&&tick%5===0)parts.push({x:P.x+7+(Math.random()-.5)*10,y:surf,vx:(Math.random()-.5)*.8,vy:-1.2-Math.random(),l:16,c:fo})}
 function drawMaveli(cx){
   const x=Math.round(bossX+W-110-cx),y=GY-56;if(x<-60||x>W+60||!A.mav)return;
   if(scene&&scene.t>=1340){glowEll(x+24,GY-44,44,54,'#ffe070',.2+.1*Math.sin(tick*.15))}
@@ -2338,6 +2347,7 @@ function draw(){TQ.length=0;syncPad();
   for(const p of parts){g.fillStyle=p.c;g.fillRect(Math.round(p.x-cx),Math.round(p.y),2,2)}
   drawRings(cx);
   if(P&&state!=='title'){drawPlayer(cx);drawSlash(cx);if(state==='scene'&&scene&&scene.t>=1340){const ax=Math.round(P.x-cx)+7,ay=Math.round(P.y)+14;glowEll(ax,ay,20,26,'#ffe070',.32+.1*Math.sin(tick*.15));glowEll(ax,ay,11,16,'#fff6d0',.25)}}
+  if(L.key==='a4')drawRisingWater(cx);
   if(!L.arena)drawMotes(L,cx);
   if(L.rain&&!(cin&&cin.k==='pt')){const rk=bloomAt>=0?Math.min(1,(tick-bloomAt)/150):0;g.fillStyle='rgba(180,210,220,'+(.45*(1-rk)).toFixed(2)+')';for(let i=0;i<70;i++){const x=((i*53+tick*4)%(W+60))-30,y=((i*97+tick*9)%(H+30))-15;g.fillRect(Math.round(x),Math.round(y),1,5);g.fillRect(Math.round(x)-1,Math.round(y)+5,1,3)}
     if(tick%520<5){g.fillStyle='rgba(220,240,255,.16)';g.fillRect(0,0,W,H)}}

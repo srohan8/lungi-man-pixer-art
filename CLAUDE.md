@@ -48,6 +48,7 @@ Chayakada: from Act II on, every checkpoint is a tea stall. Walking past it sets
 Progress: the game remembers the furthest act reached ("tap to continue"). The prologue is shown once.
 Coconut palms: every act has them (extra palms: prologue, Acts III, IV, V; `LV0[n].xpalms`). When the hero dies and respawns, nearby enemies stay (2.5 s of grace, no clearing).
 Act II ride end: the road is blocked by the hand-drawn blockade (assets/reference/blockade.png): pixel version pr_blockade_0 in the ride, sharp hs_blockade_0 in the story card. The code-drawn version is only a fallback.
+Act IV rising water: a look only (rwLevel in index.html): the flood rises up the screen as the hero advances, to about knee height at the boss, and drains when the eye bursts. No gameplay effect.
 Level selector (owner request): the title screen has left/right arrows (keys, A/D, or tap the arrows) to choose any level, default is the furthest act reached. It is on the title only, never during play. `TUNE.levelSelectAll=false` limits it to levels reached.
 
 ## Adding story or new acts (checklist)

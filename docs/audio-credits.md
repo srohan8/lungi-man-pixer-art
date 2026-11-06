@@ -68,3 +68,6 @@ The last two pages after the ending epilogue list the music (ItsWatR, Kamalesh S
 
 ## Angel descent sound (Disco or Die entry)
 `assets/audio/sfx/angel_descent.ogg` plays while Kannan floats down into the disco; the disco music starts when he lands. Made with ElevenLabs sound effects (two short takes, `angel_descent_a.mp3` and `angel_descent_b.mp3`, slowed, joined and given reverb), generated 2026-11-04. The sources are not packaged in the app.
+
+## Kannan's battle cry (mundu finale)
+`assets/audio/sfx/kannan_yell.ogg` plays when Kannan leaps at Pey Komban in the mundu finale; the finale music (`bgm_finale`) plays under the whole scene. Made with ElevenLabs sound effects (`eleven_text_to_sound_v2`), one take, 2 s, loudness-normalised, 2026-11-06. The source is `kannan_yell_a.mp3` (not packaged in the app).
