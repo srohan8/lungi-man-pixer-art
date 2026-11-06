@@ -401,7 +401,7 @@ const BOSSDEF={
 /* scenery props: shrunk to a believable size and dimmed with the act's haze so they read as background, not as obstacles */
 const PRS={goat:.7,bell:.55,paddy_bundle:.6,broken_idol:.8,stone_face:.85,stone_shrine:.85,highland_wall:.8,low_branch:.8,mangrove_roots:.9,bullock_cart:.9,houseboat:.85,stilt_hut:.9},PRC={};
 function propImg(n){const key=n+'|'+lvl;if(PRC[key]!==undefined)return PRC[key];const im=ART['pr_'+n+'_0'];if(!im)return null;const k=PRS[n]||1,w=Math.max(1,Math.round(im.width*k)),h=Math.max(1,Math.round(im.height*k)),c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');x.imageSmoothingEnabled=false;x.drawImage(im,0,0,w,h);x.globalCompositeOperation='source-atop';x.globalAlpha=.3;x.fillStyle='#161236';x.fillRect(0,0,w,h);return PRC[key]=c}
-const ART={},ART_FILES=['chathan_0','chathan_1','yakshi_0','yakshi_1','odiyan_0','odiyan_1','odiyan_2','karin_0','karin_1','karin_2','komban_0','komban_1','komban_2','hero_0','hero_1','hero_2','hero_3','heroidle_0','heroidle_1','heroidle_2','heroidle_3','heroswing_0','heroswing_1','heroswing_2','croc_0','croc_1','croc_2','croc_3','bike_0','bike_1','bike_2','bike_3','ravi_0','ravi_1','biju_0','biju_1','soniya_0','thoma_0','maveli_0','mooppan_0','scenehero_0','soniya_1','thoma_1','maveli_1','mooppan_1','scenehero_1','soniya_2','thoma_2','maveli_2','mooppan_2','scenehero_2','soniya_3','thoma_3','maveli_3','mooppan_3','scenehero_3','kili_0','kili_1','kili_2','stall_0','devi_0','komrun_0','komrun_1','komrun_2','komrun_3','komrun_4','komrun_5','komrun_6','komrun_7','komrun_8','komrun_9','odirun_0','odirun_1','odirun_2','odirun_3','odirun_4','odirun_5','odirun_6','odirun_7','odirun_8','odirun_9','odirun_10','odirun_11','strees_0','strees_1','strees_2','strees_3','strees_4','strees_5','strees_6','strees_7','strees_8','strees_9','hf_0','hf_1','hf_2','hf_3','hf_4','hf_5','hf_6','hf_7','hf_8','hf_9','hf_10','mvh_0','mvh_3','mvh_7','pr_broken_idol_0','pr_stone_shrine_0','pr_carnival_banner_0','pr_bullock_cart_0','pr_highland_wall_0','pr_low_branch_0','pr_mangrove_roots_0','pr_stilt_hut_0','pr_temple_gate_0','pr_stone_face_0','pr_sacred_banyan_0','pr_paddy_bundle_0','pr_goat_0','hs_fall_0','hs_fall_1','hs_fall_2','hs_fall_3','hs_fall_4','hs_fall_5','herot_run_0','herot_run_1','herot_run_2','herot_run_3','herot_run_4','herot_run_5','herot_run_6','herot_run_7','herot_idle_0','herot_idle_1','herot_jump0_0','herot_jump1_0','herot_throw0_0','herot_throw1_0','hp_yakshi_0','hp_chathan_0','hp_odiyan_0','hp_komban_0','hp_karin_2','hp_devi_0','hs_bhadra_0','hs_bhadra_1','pr_blockade_0','hs_blockade_0','pr_disco_ball_0','pr_speaker_stack_0','pr_bell_0','pr_houseboat_0','ang_0','ang_1','ang_2','ang_3','ang_4','ang_5','hk_0','hk_1','hk_2','hk_3','hk_4','hk_5','hk_6','hk_7','hk_8','hk_9','hk_10','hk_11','hs_soniya_0','hs_soniya_1','hs_soniya_2','hs_soniya_3','hs_kili_0','hs_kili_1','hs_kili_2','hs_mooppan_0','hs_mooppan_1','hs_scenehero_0','hs_scenehero_1','hs_scenehero_2','hs_scenehero_3','hs_thoma_0','hs_thoma_1','hs_thoma_2','hs_thoma_3','hs_biju_0','hs_biju_1','hs_ravi_0','hs_ravi_1','hs_basheer_0','hs_basheer_1','edog_0','edog_1','edog_2','edog_3','edog_4','edog_5','logo_0','logo_hi','porotta_0','basheer_0','basheer_1','basheer_2','bshp_0','naga_0','naga_1','naga_2','pg_0','pg_1','pg_2','pg_3','pg_4','tstaff_0','tstaffs_1','tstaffs_2','tdrops_0','tbeam_0','tbeam_1','tbeam_2','hdrown_0','hdrown_1','hdrown_2','hdrown_3','hdrown_4','hdrown_5','hdead_0','hdead_1','hdead_2','hdead_3','ecobra_0','ecobra_1','ecobra_2','ecobra_3','ebat_0','ebat_1','ebat_2','ebat_3','ebat_4','ecrow_0','ecrow_1','ecrow_2','ecrow_3','egoon_0','egoon_1','egoon_2','eimp_0','eimp_1','eimp_2','bhadra_0','bhadra_1','palm_0','palm_1','palm_2','dc1_0','dc1_1','dc1_2','dc1_3','dc1_4','dc1_5','dc2_0','dc2_1','dc2_2','dc2_3','dc2_4','dc2_5','da1_0','da1_1','da1_2','da1_3','da1_4','da1_5','da2_0','da2_1','da2_2','da2_3','da2_4','da2_5','da3_0','da3_1','da3_2','da3_3','da3_4','da3_5'];
+const ART={},ART_FILES=['chathan_0','chathan_1','yakshi_0','yakshi_1','odiyan_0','odiyan_1','odiyan_2','karin_0','karin_1','karin_2','komban_0','komban_1','komban_2','hero_0','hero_1','hero_2','hero_3','heroidle_0','heroidle_1','heroidle_2','heroidle_3','heroswing_0','heroswing_1','heroswing_2','croc_0','croc_1','croc_2','croc_3','bike_0','bike_1','bike_2','bike_3','ravi_0','ravi_1','biju_0','biju_1','soniya_0','thoma_0','maveli_0','mooppan_0','scenehero_0','soniya_1','thoma_1','maveli_1','mooppan_1','scenehero_1','soniya_2','thoma_2','maveli_2','mooppan_2','scenehero_2','soniya_3','thoma_3','maveli_3','mooppan_3','scenehero_3','kili_0','kili_1','kili_2','stall_0','devi_0','komrun_0','komrun_1','komrun_2','komrun_3','komrun_4','komrun_5','komrun_6','komrun_7','komrun_8','komrun_9','odirun_0','odirun_1','odirun_2','odirun_3','odirun_4','odirun_5','odirun_6','odirun_7','odirun_8','odirun_9','odirun_10','odirun_11','strees_0','strees_1','strees_2','strees_3','strees_4','strees_5','strees_6','strees_7','strees_8','strees_9','hf_0','hf_1','hf_2','hf_3','hf_4','hf_5','hf_6','hf_7','hf_8','hf_9','hf_10','mvh_0','mvh_3','mvh_7','pr_broken_idol_0','pr_stone_shrine_0','pr_carnival_banner_0','pr_bullock_cart_0','pr_highland_wall_0','pr_low_branch_0','pr_mangrove_roots_0','pr_stilt_hut_0','pr_temple_gate_0','pr_stone_face_0','pr_sacred_banyan_0','pr_paddy_bundle_0','pr_goat_0','mk_k_0','mk_k_1','mk_k_2','mk_k_3','mk_k_4','mk_k_5','mk_k_6','mk_k_7','mk_b_0','mk_b_1','mk_b_2','mk_b_3','mk_b_4','mk_b_5','mk_big_0','hs_fall_0','hs_fall_1','hs_fall_2','hs_fall_3','hs_fall_4','hs_fall_5','herot_run_0','herot_run_1','herot_run_2','herot_run_3','herot_run_4','herot_run_5','herot_run_6','herot_run_7','herot_idle_0','herot_idle_1','herot_jump0_0','herot_jump1_0','herot_throw0_0','herot_throw1_0','hp_yakshi_0','hp_chathan_0','hp_odiyan_0','hp_komban_0','hp_karin_2','hp_devi_0','hs_bhadra_0','hs_bhadra_1','pr_blockade_0','hs_blockade_0','pr_disco_ball_0','pr_speaker_stack_0','pr_bell_0','pr_houseboat_0','ang_0','ang_1','ang_2','ang_3','ang_4','ang_5','hk_0','hk_1','hk_2','hk_3','hk_4','hk_5','hk_6','hk_7','hk_8','hk_9','hk_10','hk_11','hs_soniya_0','hs_soniya_1','hs_soniya_2','hs_soniya_3','hs_kili_0','hs_kili_1','hs_kili_2','hs_mooppan_0','hs_mooppan_1','hs_scenehero_0','hs_scenehero_1','hs_scenehero_2','hs_scenehero_3','hs_thoma_0','hs_thoma_1','hs_thoma_2','hs_thoma_3','hs_biju_0','hs_biju_1','hs_ravi_0','hs_ravi_1','hs_basheer_0','hs_basheer_1','edog_0','edog_1','edog_2','edog_3','edog_4','edog_5','logo_0','logo_hi','porotta_0','basheer_0','basheer_1','basheer_2','bshp_0','naga_0','naga_1','naga_2','pg_0','pg_1','pg_2','pg_3','pg_4','tstaff_0','tstaffs_1','tstaffs_2','tdrops_0','tbeam_0','tbeam_1','tbeam_2','hdrown_0','hdrown_1','hdrown_2','hdrown_3','hdrown_4','hdrown_5','hdead_0','hdead_1','hdead_2','hdead_3','ecobra_0','ecobra_1','ecobra_2','ecobra_3','ebat_0','ebat_1','ebat_2','ebat_3','ebat_4','ecrow_0','ecrow_1','ecrow_2','ecrow_3','egoon_0','egoon_1','egoon_2','eimp_0','eimp_1','eimp_2','bhadra_0','bhadra_1','palm_0','palm_1','palm_2','dc1_0','dc1_1','dc1_2','dc1_3','dc1_4','dc1_5','dc2_0','dc2_1','dc2_2','dc2_3','dc2_4','dc2_5','da1_0','da1_1','da1_2','da1_3','da1_4','da1_5','da2_0','da2_1','da2_2','da2_3','da2_4','da2_5','da3_0','da3_1','da3_2','da3_3','da3_4','da3_5'];
 if(typeof Image!=='undefined')ART_FILES.forEach(n=>{const im=new Image();
   im.onload=()=>{const c=document.createElement('canvas');c.width=im.width;c.height=im.height;c.getContext('2d').drawImage(im,0,0);ART[n]=c;
     if(A&&A.boss&&LV[lvl]&&LV[lvl].boss)A.boss=bossFrames(LV[lvl].boss);if(n.startsWith('palm_')&&A&&A.palms&&LV[lvl]&&!LV[lvl].bamboo){const pa=palmArt(LV[lvl]);if(pa)A.palms=pa}};
@@ -545,7 +545,7 @@ Object.assign({},LV_OLD[0],{act:'PROLOGUE',name:'THE SWINGING AWAKENING',
  bush:['#0c1a12','#16301c','#26502c','#ffc040','#ffffff'],
  motes:'fly',foes:['goon','cobra','monkey','goon'],boss:'komban',len:3300,
  clear:['THE PORTAL IS SEALED','KERALA IS SAFE'],
- sayStart:['THOMA','IT IS TIME YOU KNEW. FIFTY YEARS AGO WE SOLD THE EDGE OF THE GROVE. THAT IS HOW THE SEAL CRACKED.'],sayAt:[{x:250,who:'THOMA',text:'IT TURNED THE GENTLE ANIMALS INTO BEASTS. WHAT YOU FACE NOW IS WORSE. WE WILL PRAY FOR YOU.',d:0},{x:430,who:'THOMA',text:'STAY ON THE TREES, KANNAN. PROMISE ME.',d:0},{x:1000,who:'KANNAN',text:'ALL OF YOU... MY VILLAGE BROKE THE SEAL. I MUST ACT FAST.',d:0}],sayChai:['SONIYA','HAVE SOME CHAI. THEN HIT THAT TUSKED THING WHERE IT HURTS.']}
+ sayStart:['THOMA','IT IS TIME YOU KNEW. FIFTY YEARS AGO WE SOLD THE EDGE OF THE GROVE. THAT IS HOW THE SEAL CRACKED.'],sayAt:[{x:250,who:'THOMA',text:'IT TURNED THE GENTLE ANIMALS INTO BEASTS. WHAT YOU FACE NOW IS WORSE. WE WILL PRAY FOR YOU.',d:0},{x:430,who:'THOMA',text:'STAY ON THE TREES, KANNAN. PROMISE ME.',d:0},{x:1000,who:'KANNAN',text:'ALL OF YOU... MY VILLAGE PEOPLE BROKE THE SEAL!!! I MUST ACT FAST TO FINISH THIS ONCE AND FOR ALL...',d:0}],sayChai:['SONIYA','HAVE SOME CHAI. THEN HIT THAT TUSKED THING WHERE IT HURTS.']}
 ];
 
 ['pro','a1','a2','a3','a4','a5'].forEach((k,i)=>{LV0[i].key=k;LV0[i].sid=i});
@@ -1101,33 +1101,45 @@ function mkTick(){const c=cin;c.t++;const t=c.t,te=mkTe(t);
   if(te>=256&&te<=380&&t>=240+MK_HOLD&&t%4===0)burst(c.bcx+(Math.random()-.5)*50,GY-10,['#ffe070','#fff6c0'],2);
   if(t===284+MK_HOLD){shake=Math.max(shake,6);burst(c.bcx-c.dir*74,GY,['#d8c8a0','#a89878'],8)}
   if(t>=MK_END)cineEnd()}
-function drawMk(cx){const c=cin,t=c.t,te=mkTe(t),F=A.boss[2]||A.boss[0];
-  const kp=mkPos(c,t),sx=Math.round(kp.x-cx),bx=Math.round(boss.x-cx),by=Math.round(boss.y);
-  /* Pey Komban: stunned, takes the coconut in the eye, then dissolves into golden light */
-  const faceR=c.dir>0,im=faceR?F.f:F.n;
-  if(t<MK_HIT){g.drawImage(t<20&&t%4<2?(faceR?F.wf:F.w):im,bx,by)}
-  else if(t<MK_HIT+14){g.drawImage(t%4<2?(faceR?F.wf:F.w):im,bx,by)}
-  else if(t<MK_HIT+75){g.globalAlpha=Math.max(0,1-(t-MK_HIT-14)/55);g.drawImage(faceR?F.wf:F.w,bx,by-Math.round((t-MK_HIT-14)*.15));g.globalAlpha=1}
+/* The mundu finale, drawn with the hand-drawn sheets (mk_k_* Kannan, mk_b_* Pey Komban, mk_big_0 the key illustration) as sharp art on the text layer. */
+const MKS_K=66/300,MKS_B=124/300;
+function mkImg(im,cxp,yb,sc,flip,rot){if(!im)return;const w=Math.round(im.width*sc),h=Math.round(im.height*sc);nimg(flip?FLIPPED(im):im,Math.round(cxp-w/2),Math.round(yb-h),w,h)}
+function drawMk(cx){const c=cin,t=c.t,te=mkTe(t),big=ART.mk_big_0;
+  const bxp=Math.round(boss.x+boss.w/2-cx),yb=GY+2,flip=c.dir<0;
+  /* Pey Komban: staggers, then the key shot (mundu knotted round his tusks), then topples, lies down and dissolves in gold */
+  let bi=-1,bx=bxp,by=yb,al=1;
+  if(t<240)bi=t<70?0:1;
+  else if(t<MK_HIT+2)bi=-1;
+  else if(t<MK_HIT+40){bi=3;bx=bxp+c.dir*Math.round(Math.min(1,(t-MK_HIT)/40)*22)}
+  else if(t<MK_HIT+130){bi=4;bx=bxp+c.dir*22}
+  else{bi=5;bx=bxp+c.dir*22;const u=(t-MK_HIT-130)/110;al=Math.max(0,1-u);by=yb-Math.round(u*26)}
+  if(bi>=0){const sway=bi===1?Math.round(Math.sin(t*.12)*2):0;g.globalAlpha=al;mkImg(ART['mk_b_'+bi],bx+sway,by,MKS_B*(bi===4?1:1),!flip);g.globalAlpha=1}
   if(t>=MK_HIT+14&&t<MK_HIT+160){const k=Math.min(1,(t-MK_HIT-14)/30)*(t>MK_HIT+100?Math.max(0,1-(t-MK_HIT-100)/60):1);glowEll(Math.round(c.bcx-cx),GY-30,Math.round(50*k)+8,Math.round(70*k)+8,'#ffd860',.3*k)}
-  /* the mundu lasso rope */
-  if(t>=120&&t<=MK_HIT){const hx=sx+c.dir*12,hy=Math.round(kp.y)-26,tx=Math.round(c.bcx-cx-c.dir*34),ty=by+26,n=26,slack=te<150?12:3;
-    g.fillStyle='#f4ecd0';for(let i=0;i<=n;i++){const u=i/n,px=Math.round(hx+(tx-hx)*u),py=Math.round(hy+(ty-hy)*u+Math.sin(u*Math.PI)*slack);g.fillRect(px,py,2,2);if(i%5===0){g.fillStyle='#e0b840';g.fillRect(px,py,2,1);g.fillStyle='#f4ecd0'}}}
-  /* a triumphant glow around him while he stands on the demon's head */
-  if(t>=240&&t<MK_HIT){glowEll(sx,Math.round(kp.y)-16,26,26,'#ffd860',.25+.1*Math.sin(t*.3))}
-  /* the knockout coconut, thrown down into the eye from the top of his head */
-  if(t>=MK_HIT-12&&t<=MK_HIT){const u=(t-(MK_HIT-12))/12,hx=sx+c.dir*10,hy=Math.round(kp.y)-34,ex=Math.round(c.bcx-cx-c.dir*20),ey=by+16;g.drawImage(COCO,Math.round(hx+(ex-hx)*u)-3,Math.round(hy+(ey-hy)*u)-3)}
+  /* the mundu pulled taut between his hand and the tusk while he swings in */
+  if(t>=150&&t<240){const kp=mkPos(c,t),hx=Math.round(kp.x-cx)+c.dir*6,hy=Math.round(kp.y)-34,tx=Math.round(c.bcx-cx-c.dir*30),ty=GY-86,n=24;
+    g.fillStyle='#f4ecd0';for(let i=0;i<=n;i++){const u=i/n,px=Math.round(hx+(tx-hx)*u),py=Math.round(hy+(ty-hy)*u+Math.sin(u*Math.PI)*3);g.fillRect(px,py,2,2);if(i%5===0){g.fillStyle='#e0b840';g.fillRect(px,py,2,1);g.fillStyle='#f4ecd0'}}}
+  /* the key illustration: Kannan on the demon's head, the mundu knotted round his tusks, pulled tight */
+  if(big&&t>=240-6&&t<MK_HIT+22){const fin=Math.min(1,(t-234)/14),fout=t>=MK_HIT?Math.max(0,1-(t-MK_HIT)/20):1,sh=t<MK_HIT?Math.round(Math.sin(t*1.7)*(1+(t-240)/60)):0;
+    g.globalAlpha=1;g.fillStyle='rgba(8,6,20,'+(.9*fin*fout).toFixed(2)+')';g.fillRect(0,0,W,H);
+    const w=Math.max(W,Math.round(270*big.width/big.height))+10,h=Math.round(w*big.height/big.width);g.globalAlpha=fin*fout;nimg(big,Math.round((W-w)/2)+sh,-Math.round((h-H)*.3)+Math.round(sh/2),w,h);g.globalAlpha=1}
   /* Thoma arrives with a fresh mundu */
-  if(te>=360&&t>=240+MK_HOLD){const th=ART.thoma_0;if(th){const tgx=c.bcx-c.dir*74-c.dir*34,from=c.dir>0?-40:W+40,p=Math.min(1,(te-360)/60),e=1-(1-p)*(1-p),tx=Math.round(from+(tgx-cx-from)*e);
-      const im2=c.dir>0?th:flipOf(th);g.drawImage(im2,tx-14,GY+2-th.height);
+  if(te>=360&&t>=240+MK_HOLD){const th=ART.hs_thoma_0;if(th){const tgx=c.bcx-c.dir*74-c.dir*38,from=c.dir>0?-40:W+40,p=Math.min(1,(te-360)/60),e=1-(1-p)*(1-p),tx=Math.round(from+(tgx-cx-from)*e);
+      mkImg(th,tx,GY+3,66/300,c.dir<0)
       if(te<440){g.fillStyle='#f4ecd0';g.fillRect(tx+c.dir*8,GY-22,8,5);g.fillStyle='#e0b840';g.fillRect(tx+c.dir*8,GY-20,8,1)}}
     if(te>=395&&te<500){const bw=Math.min(W-40,380),bxx=Math.round((W-bw)/2),byy=26;
       g.fillStyle='rgba(12,8,28,.9)';g.fillRect(bxx,byy,bw,40);g.fillStyle='#f0c040';g.fillRect(bxx,byy,bw,1);g.fillRect(bxx,byy+39,bw,1);g.fillRect(bxx,byy,1,40);g.fillRect(bxx+bw-1,byy,1,40);
       drawPortrait('THOMA',bxx+6,byy+4,32);ntext('Thoma',bxx+46,byy+5,8.5,'#f0c040');ntext('Here. A fresh mundu. Try not to lose this one.',bxx+46,byy+18,12.5,'#f4ecd0')}}
 }
-function drawMkPlayer(cx){const c=cin,t=c.t,kp=mkPos(c,t),map={idle:ART.heroidle_0||ART.hero_1,u:ART.hf_0,w:ART.hf_1,t:ART.hf_2,a:ART.hf_4,c:ART.hf_5,b:ART.hf_6,m:ART.hf_7},img=map[kp.f];if(!img)return;
-  const x=Math.round(kp.x-cx),y=Math.round(kp.y),flip=c.dir<0&&kp.f!=='idle',pic=flip?flipOf(img):img;
-  if(kp.f==='a'&&t<240){g.save();g.translate(x,y);g.rotate(c.dir*Math.min(.3,(t-150)/200));g.drawImage(pic,-Math.round(img.width/2),-img.height);g.restore();return}
-  g.drawImage(pic,x-Math.round(img.width/2),y-img.height)}
+function drawMkPlayer(cx){const c=cin,t=c.t,kp=mkPos(c,t),x=Math.round(kp.x-cx),flip=c.dir<0;
+  let k=-1,xx=x,yy=GY+2;
+  if(t<20)k=0;else if(t<60)k=1;else if(t<120)k=((t>>3)%2)?2:1;else if(t<150)k=3;
+  else if(t<205){k=4;yy=Math.round(kp.y)+22}
+  else if(t<240){k=5;yy=Math.round(kp.y)+22}
+  else if(t<MK_HIT+4)k=-1;            /* the key illustration is on screen */
+  else{k=7;xx=Math.round(c.bcx-cx-c.dir*74)}
+  if(k<0)return;
+  if(k===7){const u=Math.min(1,(t-MK_HIT-4)/24);g.globalAlpha=u;glowEll(xx,yy-34,22,36,'#ffd860',.25*u)}
+  mkImg(ART['mk_k_'+k],xx,yy,MKS_K,flip);g.globalAlpha=1}
 const LY=new WeakMap(),LYING=c=>{let r=LY.get(c);if(!r){r=document.createElement('canvas');r.width=c.height;r.height=c.width;const x=r.getContext('2d');x.translate(0,c.width);x.rotate(-Math.PI/2);x.drawImage(c,0,0);LY.set(c,r)}return r},FLIPPED=c=>flipOf(c),HS_H={soniya:74,kili:60,mooppan:82,scenehero:74,thoma:74,biju:76,ravi:78,basheer:76};
 function pickMax(){return TUNE.levelSelectAll?LV.length-1:Math.max(0,Math.min(resume,LV.length-1))}
 function pickDefault(){return seen?Math.max(1,Math.min(resume,LV.length-1)):0}

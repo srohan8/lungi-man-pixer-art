@@ -95,7 +95,7 @@ _Scene after this level:_
 - **Thoma**: It is time you knew. Fifty years ago we sold the edge of the grove. That is how the seal cracked. _(level starts)_
 - **Thoma**: It turned the gentle animals into beasts. What you face now is worse. We will pray for you. _(walking past x=250)_
 - **Thoma**: Stay on the trees, Kannan. Promise me. _(walking past x=430)_
-- **Kannan**: All of you... My village broke the seal. I must act fast. _(walking past x=1000)_
+- **Kannan**: All of you... My village people broke the seal!!! I must act fast to finish this once and for all... _(walking past x=1000)_
 - **Soniya**: Have some chai. Then hit that tusked thing where it hurts. _(first tea stall)_
 
 ## Ending epilogue
