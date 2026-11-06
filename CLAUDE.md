@@ -39,7 +39,7 @@ No fourth button. No menus during play, except the pause overlay (pause icon, P 
 | I | Bamboo hollow, shrine ruins | cobras, crows, crabs | Yakshi | gaze ring flips controls 3s, ground dash |
 | II | Abandoned festival | imps (hop), wisps (float), masked goons | Kuttichathan | fire ring (ground or head height), decoy clones that explode if popped up close, fireball charge into a wall, then a 1.7s stun (1.3s when enraged) = only hit window |
 | III | Foggy pepper hills | dogs (rush), bats, cobras | Odiyan | only hittable in human form; dog and bull forms charge |
-| IV | Monsoon mangroves | crabs, bats, crows | Karinkanni | eye only hittable when open; ray paralyzes 1.3s; 3 hits |
+| IV | Monsoon mangroves (rising flood, see below) | crabs, bats, crows | Karinkanni | eye only hittable when open; ray paralyzes 1.3s; 3 hits |
 | V | Banyan temple grove | goons, cobras, monkeys | Pey Komban | armored; only hittable for about 1.7 s right after his ground stomp (his charge just turns him at the wall); stomp makes ground waves |
 
 Weapons: coconut (always), parotta triple-throw (Acts I-V), Trishul pickup (code name aru) in Acts II, III and V (not IV: the eye needs range). Coconuts: start 40, max 60, +2 per kill, +1 per boss hit, slow regrow below 5, never below 25 after a death. Extra life: every 5,000 points a golden lamp leaves the score counter and arcs down onto the ground just ahead of the player; walking into it gives the life (cap 6, it can be missed; at the cap it gives +300 score).
@@ -48,7 +48,7 @@ Chayakada: from Act II on, every checkpoint is a tea stall. Walking past it sets
 Progress: the game remembers the furthest act reached ("tap to continue"). The prologue is shown once.
 Coconut palms: every act has them (extra palms: prologue, Acts III, IV, V; `LV0[n].xpalms`). When the hero dies and respawns, nearby enemies stay (2.5 s of grace, no clearing).
 Act II ride end: the road is blocked by the hand-drawn blockade (assets/reference/blockade.png): pixel version pr_blockade_0 in the ride, sharp hs_blockade_0 in the story card. The code-drawn version is only a fallback.
-Act IV rising water: a look only (rwLevel in index.html): the flood rises up the screen as the hero advances, to about knee height at the boss, and drains when the eye bursts. No gameplay effect.
+Act IV flood (owner-approved timer): the water rises with time from the start of the act (TUNE.floodStart to floodDrown over floodSeconds = 120 s). A tea stall lowers it to ankle height (floodChai) and respawning restores the level of the last stall. At head height the hero drowns (water death, back to the last stall). The boss arena lowers it to knee height and holds it, so the fight is never timed; it drains away when the eye bursts. Warnings pop up as it reaches the ankles and the knees.
 Level selector (owner request): the title screen has left/right arrows (keys, A/D, or tap the arrows) to choose any level, default is the furthest act reached. It is on the title only, never during play. `TUNE.levelSelectAll=false` limits it to levels reached.
 
 ## Adding story or new acts (checklist)
