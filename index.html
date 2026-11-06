@@ -1670,7 +1670,9 @@ function drawFoe(e,cx){
       if(fr.every(Boolean)){const im=fr[e.calm?(tick>>4)%2:(tick>>3)%3],pic=e.dir>=0?im:flipOf(im),bx=sx-4,by=sy+e.h-30;
         if(e.calm)g.drawImage(pic,bx,by+((tick>>3)%2));else dE(pic,bx,by,20,[],e.dir<0,e)}
       else{const dy=e.calm?(tick>>3)%2:0;if(e.calm)g.drawImage(DANCER[e.dir>0?1:0],sx,sy+dy);else dE(DANCER[e.dir>0?1:0],sx,sy,12,[[4,4],[7,4]],e.dir>0,e)}break}
-    case 'decoy':{const C=ART.chi_7&&runFrame('chi',7);if(C){g.globalAlpha=.85;g.drawImage(e.dir>0?C.f:C.n,sx-15,sy-8-Math.round(Math.abs(Math.sin(tick*.2))*2));g.globalAlpha=1;break}g.globalAlpha=.55;const F=A.boss[0];g.drawImage(e.dir>0?F.f:F.n,sx-7,sy-3);g.globalAlpha=1;break}
+    case 'decoy':{const C=ART.chaturun_0&&violetFrame((tick/5|0)%6,'chaturun');if(C){const bob=0,im=e.dir>0?C.f:C.n;/* the clone is his own imp turned to violet fire, shimmering */
+      g.globalAlpha=.62+.12*Math.sin(tick*.15+e.x);g.drawImage(im,sx-15,sy-8-bob);g.globalAlpha=1;
+      for(let k=0;k<3;k++){const ph=(tick*.7+k*13+e.x)%34;g.fillStyle='rgba(190,140,255,'+(1-ph/34).toFixed(2)+')';g.fillRect(sx+3+k*5+Math.round(Math.sin(ph*.3+k)*2),sy+24-Math.round(ph),2,2)}break}g.globalAlpha=.55;const F=A.boss[0];g.drawImage(e.dir>0?F.f:F.n,sx-7,sy-3);g.globalAlpha=1;break}
   }
 }
 /* Code-drawn extras on top of boss PNG art (positions are in the art's own right-facing pixels).
@@ -1693,6 +1695,7 @@ function drawBossFx(b,im,i,flip,cx){
 /* Run cycles from the reference sheets: Pey Komban charging (komrun_0..9), Odiyan as panther (odirun_0..5) and boar (odirun_6..11). The art faces right. */
 const RUNC={};
 function runFrame(name,k){const key=name+'_'+k;if(RUNC[key])return RUNC[key];const a=ART[key];if(!a)return null;const n=flipC(a);return RUNC[key]={n,f:a,w:tint(n,'#ffffff'),wf:tint(a,'#ffffff')}}
+const VIO={};function violetFrame(k,nm){nm=nm||'chi';const key=nm+'_'+k;if(VIO[key])return VIO[key];const F=runFrame(nm,k);if(!F)return null;const mk=im=>{const c=document.createElement('canvas');c.width=im.width;c.height=im.height;const x=c.getContext('2d');x.drawImage(im,0,0);x.globalCompositeOperation='source-atop';x.fillStyle='rgba(140,80,230,.62)';x.fillRect(0,0,c.width,c.height);x.globalCompositeOperation='lighter';x.fillStyle='rgba(40,20,70,.35)';x.fillRect(0,0,c.width,c.height);return c};return VIO[key]={n:mk(F.n),f:mk(F.f)}}
 function drawRun(b,F,flip,white,cx){const im=flip?F.f:F.n,bx=Math.round(b.x-cx)-(b.t==='chathan'?8:0),by=Math.round(b.y);let r=BRIM.get(im);if(!r){r=tint(im,'#ff3a2a');BRIM.set(im,r)}
   g.globalAlpha=.3+.25*Math.sin(tick*.12);for(const [ox,oy] of [[-1,0],[1,0],[0,-1],[0,1]])g.drawImage(r,bx+ox,by+oy);g.globalAlpha=1;g.drawImage(white?(flip?F.wf:F.w):im,bx,by)}
 function drawBoss(cx){
