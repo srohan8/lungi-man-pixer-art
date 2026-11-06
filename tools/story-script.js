@@ -23,7 +23,7 @@ LV.forEach(lv=>{OUT.push('','## '+(lv.act||'')+': '+nice(lv.name||''));
   if(lv.mav)lv.mav.forEach(t=>say_('MAVELI',t));
   (lv.cameos||[]).forEach(c=>{if(c.verses)c.verses.forEach(v=>OUT.push('- (song, '+c.id+') '+v));if(c.text)OUT.push('- (cameo, '+c.id+') '+nice(c.text))});
   const sc=SCENES[lv.key];if(sc){OUT.push('','_Scene after this level:_');(sc.caption||[]).forEach(c=>OUT.push('- (caption) '+nice(c)));(sc.lines||[]).forEach(l=>say_(l.who,l.text))}});
-OUT.push('','## Ending epilogue');EPILOGUE.forEach(p=>OUT.push('- **'+p.h+'**: '+p.text));
+OUT.push('','## Ending epilogue');EPILOGUE.filter(p=>p.pic!=='roll').forEach(p=>OUT.push('- **'+p.h+'**: '+p.text));OUT.push('','## Rolling credits (scroll upwards like a film)');CREDITS.forEach(c=>{if(c[1])OUT.push('- '+c[1])});
 OUT.push('','## Prologue tutorial');TUT.forEach(t=>OUT.push('- **'+t.h+'**: '+t.msg()));
 OUT.push('','## Act banners and clear banners (pixel font, shown in play)');
 LV.forEach(lv=>{OUT.push('- **'+nice((lv.act||'')+' '+(lv.name||''))+'**: '+(lv.clear?'clear banner: '+nice(lv.clear[0])+' / '+nice(lv.clear[1]):'(no clear banner)'))});

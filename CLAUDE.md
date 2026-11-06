@@ -18,7 +18,7 @@ No fourth button. No menus during play, except the pause overlay (pause icon, P 
 2. **Enemies are simple.** Each enemy has ONE behaviour (walk, fly, or throw). Max 2 HP.
 3. **Bosses have 2-3 moves max** and a visible health bar. Learnable in one try.
 4. **Levels are linear, left to right.** No backtracking, no maps, no keys, no puzzles, no branching paths.
-5. **Story is told in short beats.** Act banners (1-2 lines) plus small dialogue boxes: max 2 lines, one speaker. In-play dialogue boxes stay in their fixed place until the next line replaces them or the player taps the small X (owner request); they never pause the game and never require a tap, and boss lines fade after about 5 s so they never cover a fight. At most 5 boxes per act, including Kannan's short replies to what an NPC reveals. No choices, no text the player must read to progress. The only exception to "no cutscenes" is the coded story scenes (see below).
+5. **Story is told in short beats.** Act banners (1-2 lines) plus small dialogue boxes: max 2 lines, one speaker. In-play dialogue boxes stay in their fixed place until the next line replaces them or the player taps the small X (owner request); they never pause the game and never require a tap, The exceptions that stop the game until the player taps or presses a key are the boss's first line and Kannan's line at the start of the disco interlude. At most 5 boxes per act, including Kannan's short replies to what an NPC reveals. No choices, no text the player must read to progress. The only exception to "no cutscenes" is the coded story scenes (see below).
 6. **Power-ups are instant and automatic** (pick up, effect starts). No inventory or selection.
 7. **One weapon at a time, replaced by pickup, lost on death.** Coconut (default, ranged, limited ammo shown in the HUD), parotta triple coconut (one coconut per volley), and Bhadrakali's trishul (red-gold ray, pierces, cuts enemy shots, double boss damage, no ammo). All use the same THROW button. Never add a weapon-switch button. New weapons must follow the same rule.
 8. **Vines are automatic.** Jumping into a hanging vine grabs it, it swings you forward and releases on its own (or when you press JUMP). Used only to cross wide gaps. No climb button, no aiming.
@@ -95,7 +95,7 @@ Prologue, Act I, **Act II ride** (auto-run bike, only jump and throw), Act II, A
 - Ending: five trees bloom (teal, amber, indigo, green, gold) with 3 closing dialogue boxes. Tap to skip after a few seconds.
 - Bosses with a hit window show a blue shield while invulnerable and a one-time hint ("HIT HIM WHEN HE CRASHES"). Charges show a red "!" first.
 - Kuttichathan: fireball charge into a wall, stunned for 1.7 s (1.3 s enraged) = only hit window; a coconut needs about a second to cross the arena, so the window must be longer than that; clones explode when popped up close.
-Dialogue rule: at most 5 boxes per act; the throne scene and the ending are scripted exceptions with 3 each.
+Dialogue rule: at most 5 boxes per act; the throne scene (5 Maveli lines) and the ending (3) are scripted exceptions.
 
 ## Story scenes (owner-approved exception to the no-cutscene rule)
 - A short scene between two levels: a backdrop, the characters of that moment, one or two speech boxes. Drawn and moved by code (slide in, bob, hop when speaking), not animated sheets. Table in `SCENES` in index.html, wording in docs/STORY_CARDS.md.
@@ -106,7 +106,7 @@ Dialogue rule: at most 5 boxes per act; the throne scene and the ending are scri
 ## Story pass 3 (owner-approved, being built step by step; full plan in docs/STORY_PASS_3.md)
 Rules that change as each step lands:
 - **Story panel**: between levels and in the opening, longer text over several pages with the speaker's portrait, tap for next, skip any time. Never during play. In play only short banners and one-line boxes.
-- **Opening**: five story pages on the very first play (then the village scene and the prologue). Skippable.
+- **Opening**: five story pages on the very first play (place, seal, crack, the grove runs wild, the blessing) (then the village scene and the prologue). Skippable.
 - **Prologue tutorial (exception)**: step-by-step messages freeze the game until confirmed, and each step finishes when the player does the action (move, jump, throw, parotta, vine). First play or when the prologue is picked from the level selector. A visible SKIP. After the prologue nothing ever stops for a message.
 - **Weapon (done)**: the Sun Staff became Bhadrakali's **trishul** (same behaviour, same THROW button, same pickups in Acts II, III and V).
 - **Finishing cinematics (exception)**: coded, no controls, skippable: Odiyan's last strike and Kannan's fall (Act III), the ground opening into Pathalam (after Act IV), the mundu finale (Act V).

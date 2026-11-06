@@ -27,7 +27,7 @@ let lastL = -1, deaths = 0, lastState = '', grabs = 0, wasV = false, ok = false;
 for (let f = 0; f < 400000; f++) {
   if (state === "dead" && lastState !== "dead") { deaths++; if (deaths < 4) console.log("DEATH", LV[lvl].key, Math.round(P.x), P.dk, JSON.stringify(segs.map(s=>[Math.round(s[0]),Math.round(s[1])]).slice(0,8))); }
   if (state === 'dead') lives = 4;
-  if (state === 'pages') pagesSkip();                // opening / epilogue pages wait for a tap
+  if (state === "pages") pagesSkip(); if (typeof dlg !== "undefined" && dlg && dlg.pause) dlg = null;                // opening / epilogue pages wait for a tap
   lastState = state;
   const L = LV[lvl];
   if (L.arena) {                                   // dance arena: walk toward the nearest hostile dancer, hop when close
