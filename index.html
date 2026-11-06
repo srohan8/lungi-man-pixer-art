@@ -579,7 +579,7 @@ LV0.forEach((l,i)=>l.hard=i);
 [6,0,0,10,3,5].forEach((n,i)=>{if(n)LV0[i].xpalms=n});/* more coconut palms: prologue (village), Act III (had none), Act IV, Act V */
 const BIKE=Object.assign({},LV0[2],{sayAt:[],key:'bike',sid:6,act:'ACT II',name:'THE RIDE TO THE CARNIVAL',bike:true,foes:['wisp','imp'],boss:null,len:11500,gapW:[105,18],segW:[260,160],aru:false,
   clear:['THE FESTIVAL GATES','SOMETHING WRONG IS DANCING INSIDE'],sayStart:['RAVI','KEEP THE FRONT WHEEL UP, MACHANE! AND DO NOT SCRATCH MY BULLET!'],sayBoss:null,sayClear:null,sayChai:null});
-const DISCO={key:'disco',sid:7,act:'INTERLUDE',name:'DISCO OR DIE',arena:true,kills:12,
+const DISCO={key:'disco',sid:7,act:'INTERLUDE',name:'DISCO OR DIE',arena:true,kills:16,
  sky:['#0a0418','#1a0a3a','#34124e','#5a1a6a','#8a2a82','#c03a98'],stars:40,
  sun:{y:50,r:12,c:['#ffb0f0','#ff7ae0','#c040c0']},cloud:['#ff7ae0','#a02a90','#5a1a6a'],
  far:{c:'#2a0e4a',rim:'#ff7ae0',rim2:'#8a2a82',mist:'#5a1a6a',base:GY-84},
@@ -1334,6 +1334,7 @@ function update(){
 
   shootCd--;
   if(S&&shootCd<=0&&P.aru){shootCd=16;slashT=8;swingId++;if(!sfx('slash'))beep(220,.08,'sawtooth',.05)}
+  else if(S&&shootCd<=0&&LV[lvl].arena&&arena&&!arena.hostile&&!arena.done){shootCd=14;P.clap=12;burst(P.x+7,P.y+2,['#ffd860','#ff7ae0','#40e0ff'],7);beep(760,.05,'square',.04);for(const e of enemies)if(e.t==='dancer'&&e.calm&&e.y>=GY-24)e.vy=-3.2}/* in the dance part a throw is a clap, and the dancers hop */
   else if(S&&shootCd<=0&&ammo<=0&&!locked){shootCd=18;beep(150,.04,'square',.03)}
   else if(S&&shootCd<=0){shootCd=14;stat.thrown++;if(!locked)ammo--;const bx=P.x+P.w/2+P.f*8,by=P.y+14;(P.sp?[-.9,0,.9]:[0]).forEach(vy=>bullets.push({x:bx,y:by,vx:P.f*5,vy,life:70}));if(!sfx('throw'))beep(300,.06,'triangle',.05)}
   const cx=Math.round(camx);
@@ -1383,8 +1384,8 @@ function updFoes(cx){
       case 'decoy':e.dir=sg;e.x+=e.dir*1.2;e.x=Math.max(e.s1,Math.min(e.s2,e.x));
         if(--e.life<=0){e.alive=false;burst(e.x+9,e.y+16,['#a070d0','#e0c0ff'],8)}break;
       case 'dancer':e.vy=(e.vy||0)+.35;e.y+=e.vy;
-        if(e.y>=GY-24){e.y=GY-24;e.vy=0;e.hop=0;if(!e.calm&&--e.cd<=0){e.cd=70+(Math.random()*40|0);e.vy=-4.6;e.hop=1}}
-        if(e.calm)e.x+=Math.sin(tick*.08+e.cd)*.5;else{e.dir=sg;e.x+=e.dir*(e.hop||e.y<GY-24?1.7:1.2)}
+        if(e.y>=GY-24){e.y=GY-24;e.vy=0;e.hop=0;if(!e.calm&&--e.cd<=0){e.cd=(e.jm?50:70)+(Math.random()*40|0);e.vy=e.jm?-6.6:-4.6;e.hop=1}}
+        if(e.calm)e.x+=Math.sin(tick*.08+e.cd)*.5;else{e.dir=sg;e.x+=e.dir*(e.jm?(e.hop||e.y<GY-24?2.6:.4):(e.hop||e.y<GY-24?1.7:1.2))}
         e.x=Math.max(0,Math.min(W-14,e.x));break;
       case 'bat':if(e.mode===0){e.x-=.7;e.y=e.y0+Math.sin(tick*.06+e.x*.1)*22;
           if(adx<110){e.mode=1;const ddy=P.y+10-e.y,d=Math.hypot(dx,ddy)||1;e.vx=dx/d*2.2;e.vy=ddy/d*2.2}}
@@ -1676,8 +1677,8 @@ function drawFoe(e,cx){
     case 'imp':if(foeArt(e,sx,sy,ART['eimp_'+(e.y<GY-16?1:(tick>>4)%2?0:2)],right,true))break;dE(IMP[(tick>>4)%2][right?1:0],sx-1,sy,12,[[3,4],[6,4]],right,e);break;
     case 'wisp':g.drawImage(WISP[(tick>>3)%2],sx,sy);break;
     case 'dog':{const ad=Math.abs(P.x-e.x),k=e.rush?(ad<70?5:(tick>>1)%4):(ad<120?4:(tick>>3)%4);if(foeArt(e,sx,sy,ART['edog_'+k],e.dir>0,true))break;dE(DOG[(tick>>3)%2][e.dir>0?1:0],sx,sy,16,[[1,3]],e.dir>0,e);break}
-    case 'dancer':{const k=(e.k||0)%6,fr=e.calm?[ART['dc1_'+k],ART['dc2_'+k]]:[ART['da1_'+k],ART['da2_'+k],ART['da3_'+k]];
-      if(fr.every(Boolean)){const im=fr[e.calm?(tick>>4)%2:(tick>>3)%3],pic=e.dir>=0?im:flipOf(im),bx=sx-4,by=sy+e.h-30;
+    case 'dancer':{const k=(e.k||0)%6,fr=e.calm?[ART['dc1_'+k],ART['dc2_'+k]]:[ART['da1_'+k],ART['da2_'+k]];/* the third possessed pose (da3_*) came from the sheet with the pink flame glow and had a white band round it: not used */
+      if(fr.every(Boolean)){const im=fr[e.calm?(tick>>4)%2:(tick>>3)%2],pic=e.dir>=0?im:flipOf(im),bx=sx-4,by=sy+e.h-30;
         if(e.calm)g.drawImage(pic,bx,by+((tick>>3)%2));else dE(pic,bx,by,20,[],e.dir<0,e)}
       else{const dy=e.calm?(tick>>3)%2:0;if(e.calm)g.drawImage(DANCER[e.dir>0?1:0],sx,sy+dy);else dE(DANCER[e.dir>0?1:0],sx,sy,12,[[4,4],[7,4]],e.dir>0,e)}break}
     case 'decoy':{const C=ART.chaturun_0&&violetFrame((tick/5|0)%6,'chaturun');if(C){const bob=0,im=e.dir>0?C.f:C.n;/* the clone is his own imp turned to violet fire, shimmering */
@@ -1813,10 +1814,13 @@ function drawPlayer(cx){
   const hop=LV[lvl].bike&&state==='clear',ho=hop?30:0,onBike=LV[lvl].bike&&!hop;
   if(LV[lvl].bike){if(hop&&bikeArt){const b3=BK[3];g.drawImage(b3,Math.round(P.x+7-b3.width*.46-cx),Math.round(P.y+P.h-b3.height))}else g.drawImage(BIKE_SPR[hop?0:(P.step>>2)%2],Math.round(P.x-cx)-8,Math.round(P.y)+P.h-16)}
   const lg=onBike?'i':!P.on?'j':P.vx&&!hop?((P.step>>2)%2?'a':'b'):'i';
+  const dMode=LV[lvl].arena&&arena&&!arena.hostile&&!arena.done&&state==='play';
+  if(dMode){/* dancing: the hero bounces to the beat, leans when he moves, spins in a jump, claps on throw */const mv=Math.abs(P.vx)>.3,pcx=Math.round(P.x+P.w/2-cx),pcy=Math.round(P.y+P.h),bob=Math.round(Math.abs(Math.sin(tick*(mv?.3:.18)))*(mv?3:2)),ang=!P.on?(P.spin||0):mv?Math.sin(tick*.3)*.18:Math.sin(tick*.1)*.06;g.save();g.translate(pcx,pcy-bob);g.rotate(ang);g.translate(-pcx,-pcy)}
   const HA=heroArt();
   if(HA&&!onBike){const I=HERO_IDLE||(HERO_IDLE=artSet('heroidle',4)),S=HERO_SWING||(HERO_SWING=artSet('heroswing',3));
-    const TA=P.aru&&!P.vine?trishArt():null,fr=TA?trishFrame(TA,hop):P.vine&&S?S[1]:!P.on?HA[2]:P.vx&&!hop?HA[(P.step>>2)%4]:I?I[(tick>>5)%4]:HA[1],s=fr[P.f>0?0:1];g.drawImage(s,Math.round(P.x+ho+P.w/2-s.width/2-cx),Math.round(P.y+P.h-s.height))}
+    const TA=P.aru&&!P.vine?trishArt():null,fr=dMode&&P.clap>0?HA[2]:TA?trishFrame(TA,hop):P.vine&&S?S[1]:!P.on?HA[2]:P.vx&&!hop?HA[(P.step>>2)%4]:I?I[(tick>>5)%4]:HA[1],s=fr[P.f>0?0:1];g.drawImage(s,Math.round(P.x+ho+P.w/2-s.width/2-cx),Math.round(P.y+P.h-s.height))}
   else g.drawImage(PSPR[lg+(shootCd>6?1:0)][P.f>0?0:1],Math.round(P.x+ho-cx-1),Math.round(P.y));
+  if(dMode)g.restore();
   if(P.sp||P.chaiT>0){g.fillStyle='#9be06a';g.fillRect(Math.round(P.x-cx+5),Math.round(P.y)-3,4,1)}
   if(P.aru&&!(HA&&!onBike&&!P.vine&&trishArt()))drawStaffInHand(cx);
   if(false&&P.aru&&slashT<=0){const f=P.f,hx=Math.round(P.x-cx)+(f>0?14:-1),hy=Math.round(P.y)+11;
@@ -1939,15 +1943,17 @@ function drawDlg(){
 /* ---------- interlude arena, throne scene, ending ---------- */
 function mkDancer(x,calm,k){return {t:'dancer',k:k===undefined?(Math.random()*6|0):k,x,y:GY-24,w:12,h:24,alive:true,hp:1,hurt:0,cd:Math.floor(Math.random()*60),dir:1,arm:0,seen:true,calm,s1:-20,s2:W+20,vy:0}}
 function arenaTick(){
-  const L=LV[lvl];if(!arena)arena={t:0,kills:0,hostile:false,done:false};
-  arena.t++;
+  const L=LV[lvl];if(!arena)arena={t:0,kills:0,hostile:false,done:false,sp:0};
+  arena.t++;const DANCE_END=480;/* about 8 s of dancing before the dancers turn */
+  if(P.clap>0)P.clap--;if(P.on)P.spin=0;else P.spin=(P.spin||0)+.4*(P.f||1);
   if(arena.t===20){banner={a:'DANCE!',b:'THE FLOOR IS YOURS',t:150};for(let k=0;k<6;k++)enemies.push(mkDancer(70+k*(W-140)/5,true,k))}
-  if(arena.t===200)banner={a:'DANCE!',b:'FOLLOW THE STEPS, MACHANE!',t:120};
-  if(arena.t===340){arena.hostile=true;banner={a:'RED EYES!',b:'THE DANCERS TURN',t:110};beep(120,.5,'sawtooth',.07);shake=18;flashC='#e8f0ff';flashT=18;thunder(true)}
+  if(arena.t===200)banner={a:'DANCE!',b:'ANY BUTTON IS A STEP, MACHANE!',t:150};
+  if(arena.t===DANCE_END){arena.hostile=true;banner={a:'RED EYES!',b:'THE DANCERS TURN',t:110};beep(120,.5,'sawtooth',.07);shake=18;flashC='#e8f0ff';flashT=18;thunder(true)}
   if(arena.hostile&&!arena.done){
-    if((arena.t-340)%25===0){const c=enemies.find(e=>e.alive&&e.t==='dancer'&&e.calm);if(c){c.calm=false;shake=Math.max(shake,7);flashC='#ffb0b0';flashT=8;thunder(false)}}
-    const alive=enemies.filter(e=>e.alive&&e.t==='dancer').length;
-    if(arena.t%75===0&&arena.kills+alive<L.kills&&alive<6)enemies.push(mkDancer(P.x>W/2?4:W-18,false));
+    if((arena.t-DANCE_END)%25===0){const c=enemies.find(e=>e.alive&&e.t==='dancer'&&e.calm);if(c){c.calm=false;shake=Math.max(shake,7);flashC='#ffb0b0';flashT=8;thunder(false)}}
+    const alive=enemies.filter(e=>e.alive&&e.t==='dancer').length,w2=arena.kills>=Math.round(L.kills/2);
+    if(w2&&!arena.w2){arena.w2=true;banner={a:'THE BEAT DROPS!',b:'THEY LEAP, MACHANE!',t:120};flashC='#ffd0f4';flashT=14;shake=Math.max(shake,10);thunder(false)}
+    if(arena.t%(w2?45:60)===0&&arena.kills+alive<L.kills&&alive<(w2?8:7)){const side=(arena.sp++%2)?4:W-18,d=mkDancer(side,false);d.jm=Math.random()<(w2?.5:.3);enemies.push(d);flashC='#ff9ae0';flashT=4}/* they come from both sides, some of them leapers */
     if(arena.kills>=L.kills){arena.done=true;enemies.forEach(e=>{e.alive=false});flashC='#ffffff';flashT=40;state='clear';clearT=170;banner={a:L.clear[0],b:L.clear[1],t:160};if(L.sayClear)say(L.sayClear[0],L.sayClear[1])}
   }
 }
