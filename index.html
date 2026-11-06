@@ -884,7 +884,7 @@ function loadLevel(i){fogK=1;bloomAt=-1;
   boss=D?{t:L.boss,...D,x:0,y:-80,vx:0,vy:0,hp:D.hp,max:D.hp,cd:90,state:0,dir:-1,f:-1,hurt:0,arm:0,on:false,active:false,dead:false,tk:0,side:1,form:0,puff:0,vuln:true,n:0,stun:0,rayX:0,air:0,wind:0,next:0,dashes:0}
         :{t:'none',hp:0,max:1,hb:[0,0,0,0],w:0,h:0,x:0,y:0,active:false,dead:true,name:'',sub:'',foot:0,tk:0};
   locked=false;
-  if(L.sayStart)say(L.sayStart[0],L.sayStart[1],undefined,L.sayStartPause);
+  if(L.sayStart&&!(L.key==='disco'&&ART.hk_8))say(L.sayStart[0],L.sayStart[1],undefined,L.sayStartPause);
 }
 function mkFoe(t,x,y,s){const e={t,x,y,alive:true,hp:1,hurt:0,cd:60+(Math.random()*60|0),dir:-1,arm:0,seen:false};
   if(t==='crab'){e.w=14;e.h=9;e.y=GY-9;e.s1=s[0];e.s2=s[1]-14}
@@ -1279,7 +1279,10 @@ function update(){
   if(state!=='play')return;
   if(P.fly){const f=P.fly;f.t++;const u=Math.min(1,f.t/f.T),e=1-Math.pow(1-u,2);P.y=f.y0+(f.yE-f.y0)*e;P.x=f.x+(f.xE-f.x)*(u*u*(3-2*u))+Math.sin(f.t*.05)*5*(1-u);P.vy=0;P.on=false;P.vx=0;
     if(f.t%4===0)parts.push({x:P.x+7+(Math.random()-.5)*26,y:P.y+8+Math.random()*16,vx:(Math.random()-.5)*.3,vy:.35,l:40,c:f.t%8?'#fff6c0':'#ffd860'});
-    if(f.t>=f.T){P.fly=null;P.x=f.xE;P.f=1;P.y=f.yE;P.on=true;P.inv=70;flashC='#fff6d0';flashT=14;burst(P.x+7,GY,['#ffd860','#fff6c0','#ffffff'],16);beep(1320,.3,'sine',.06);beep(1760,.4,'sine',.04)}
+    /* disco dream: Kannan speaks as he drifts down (midway, near the landing) and once landed */
+    if(f.t===100)say('KANNAN','WHERE AM I...?',200);
+    if(f.t===205)say('KANNAN','WHY IS EVERYONE DANCING?',200);
+    if(f.t>=f.T){say('KANNAN','THIS CANNOT BE REAL...',undefined,true);P.fly=null;P.x=f.xE;P.f=1;P.y=f.yE;P.on=true;P.inv=70;flashC='#fff6d0';flashT=14;burst(P.x+7,GY,['#ffd860','#fff6c0','#ffffff'],16);beep(1320,.3,'sine',.06);beep(1760,.4,'sine',.04)}
     if(LV[lvl].arena)arenaTick();return}
 
   let L=inp.l(),R=inp.r();let J=inp.j();const S=inp.s();if(P.freeze>0){P.freeze--;L=false;R=false;J=false}if(P.rev>0){P.rev--;const tt=L;L=R;R=tt}const dir=(R?1:0)-(L?1:0);
