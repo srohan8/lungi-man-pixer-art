@@ -31,6 +31,6 @@ Uninstall the old build first, then install the newest debug APK.
 - [ ] Difficulty: Acts I to V get harder (more enemies, wider gaps, faster shooters); tell me which act feels too soft or too hard.
 
 ## Still open / known
-- Yakshi's dash and Odiyan's human-form walk still slide (accepted, feet hidden).
+- Yakshi's dash and Odiyan's human-form walk glide: accepted, they read as floating spirits (no legs shown).
 - Amma's green-gold aura in code is not added yet.
 - Pey Komban in the finale: proportions depend on the sheet (about half of Komban).
