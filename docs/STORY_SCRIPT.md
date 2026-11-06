@@ -117,7 +117,7 @@ _Scene after this level:_
 - Final stage: Train to Ernakulam Town by ItsWatR
 - Disco: Tamil Comedy Music by Kamalesh Siddu
 - Motorbike ride: Kaleidoscope Indian Fusion by Linesh Jose
-- Pey Komban fight and the mundu finale: 360 Indian Fusion Music by Linesh Jose
+- Pey Komban fight and finale: 360 Indian Fusion by Linesh Jose
 - All from Pixabay
 - All other music and the sound effects: ElevenLabs
 - Pictures and sprites
