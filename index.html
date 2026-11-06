@@ -2331,10 +2331,14 @@ function drawEndTrees(){for(let k=0;k<5;k++){const w=ART['strees_'+k],b=ART['str
   if(hw&&hb)nimg(hw,x-TW/2,GY+4-TH,TW,TH);else g.drawImage(w,x-Math.round(w.width/2),y);
   if(p>0){glowEll(x,y+50,66,52,gc,.22*p);g.globalAlpha=p;if(hw&&hb)nimg(hb,x-TW/2,GY+4-TH,TW,TH);else g.drawImage(b,x-Math.round(b.width/2),y);g.globalAlpha=1;
     for(let j=0;j<10;j++){const a=tick*.03+j*.63,r=34+(j*7)%32;g.fillStyle=(j+(tick>>3))%3?'#ffffff':gc;g.fillRect(Math.round(x+Math.cos(a)*r),Math.round(y+34+Math.sin(a)*r*.6),2,2)}}}}
+let endGround=null;
 function drawEnding(){
   const bands=['#04040c','#08081a','#101028','#1a1a38'],bh=Math.ceil(GY/bands.length);
   for(let i=0;i<bands.length;i++){g.fillStyle=bands[i];g.fillRect(0,i*bh,W,bh+1)}
-  g.fillStyle='#0c1a10';g.fillRect(0,GY,W,H-GY);g.fillStyle='#2a5a30';g.fillRect(0,GY,W,3);
+  g.fillStyle='#0c1a10';g.fillRect(0,GY,W,H-GY);
+  /* the same tiled ground as the Act V level (grass top, stone below) instead of a flat green strip */
+  if(!endGround||endGround.width!==W){try{endGround=genGround(W,5,LV[LV.length-1])}catch(e){endGround=null}}
+  if(endGround)g.drawImage(endGround,0,GY-6);else{g.fillStyle='#2a5a30';g.fillRect(0,GY,W,3)}
   for(let k=0;k<40;k++){g.fillStyle=(k+(tick>>4))%5?'#b8b8e8':'#ffffff';g.fillRect((k*97)%W,(k*53)%120,1,1)}
   if(ART.strees_0&&ART.strees_5)drawEndTrees();else for(let k=0;k<5;k++){
     const x=Math.round(W*(.12+.19*k)),t0=60+k*110,p=Math.max(0,Math.min(1,(endT-t0)/70));
