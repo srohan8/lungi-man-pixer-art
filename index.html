@@ -2092,15 +2092,15 @@ function drawPagePic(P0,L,t){
     const bhS=ART.hs_bhadra_1;
     if(bhS){const hh=Math.min(Math.round(H*.7),230),ww=Math.round(hh*bhS.width/bhS.height),ox=bx-Math.round(ww/2),oy=gy-hh+8+Math.round(Math.sin(t*.05)*2);nimg(bhS,ox,oy,ww,hh);hx=ox+Math.round(ww*.93);hy=oy+Math.round(hh*.3)}
     else if(bh){const w=bh.width*sc,h=bh.height*sc;g.drawImage(bh,bx-Math.round(w/2),gy-h+6+Math.round(Math.sin(t*.05)*2),w,h);hx=bx-Math.round(w/2)+Math.round(w*.9);hy=gy-h+6+Math.round(h*.4)}
-    const FALL=[0,1,2,3,4,5].map(i=>ART['hs_fall_'+i]),fallOk=FALL.every(Boolean),kx0=Math.round(L*.7),kyT=Math.round(gy-135),fu=Math.min(1,t/190),fe=1-Math.pow(1-fu,3);
-    const kx=fallOk&&t<190?kx0+Math.round(Math.sin(t*.07)*10*(1-fu)):kx0,ky=fallOk?Math.round(-70+(kyT+70)*fe+(fu>=1?Math.sin(t*.04)*6:0)):Math.round(gy-135+Math.sin(t*.04)*6);
-    const beam=fallOk?Math.max(0,Math.min(1,(t-110)/50)):1;
+    const FALL=[0,1,2,3,4,5].map(i=>ART['hs_fall_'+i]),fallOk=FALL.every(Boolean),kx0=Math.round(L*.7),kyT=Math.round(gy-135),fu=Math.min(1,t/290),fe=1-Math.pow(1-fu,2.2);
+    const kx=fallOk&&t<290?kx0+Math.round(Math.sin(t*.07)*10*(1-fu)):kx0,ky=fallOk?Math.round(-40+(kyT+40)*fe+(fu>=1?Math.sin(t*.04)*6:0)):Math.round(gy-135+Math.sin(t*.04)*6);
+    const beam=fallOk?Math.max(0,Math.min(1,(t-180)/60)):1;
     glowEll(hx,hy,16,16,'#ffd860',.55*beam);
     for(let i=0;i<=28&&beam>0;i++){const u=i/28,px=Math.round(hx+(kx-hx)*u),py=Math.round(hy+(ky-hy)*u),rr=9+Math.round(u*8);glowEll(px,py,rr,rr,'#ffd860',.22);
       if(i%2===0){g.fillStyle=i%4?'#fff6c0':'#ffe898';g.fillRect(px-1,py-1,3,3)}}
     glowEll(kx,ky,48,44,'#ffd860',.3);
     const anS=ART.ang_4;
-    if(fallOk){const fi=t<26?0:t<56?1:t<92?2:t<128?3:t<156?4:5,fr=FALL[fi],sc2=100/FALL[5].height,ww=Math.round(fr.width*sc2),hh=Math.round(fr.height*sc2);glowEll(kx,ky,40,40,'#ffd860',.3*beam);nimg(fr,kx-Math.round(ww/2),ky-Math.round(hh/2),ww,hh)}
+    if(fallOk){const fi=t<40?0:t<85?1:t<135?2:t<185?3:t<235?4:5,fr=FALL[fi],sc2=100/FALL[5].height,ww=Math.round(fr.width*sc2),hh=Math.round(fr.height*sc2);glowEll(kx,ky,40,40,'#ffd860',.3*beam);nimg(fr,kx-Math.round(ww/2),ky-Math.round(hh/2),ww,hh)}
     else if(anS){const hh=100,ww=Math.round(hh*anS.width/anS.height);nimg(anS,kx-Math.round(ww/2),ky-Math.round(hh/2),ww,hh)}
     else if(kn){const w=kn.width*3,h=kn.height*3;g.save();g.translate(kx,ky);g.rotate(-.55+Math.sin(t*.03)*.1);g.drawImage(kn,-Math.round(w/2),-Math.round(h/2),w,h);g.restore()}
     for(let k=0;k<14;k++){const an=t*.03+k*.45,rr=34+((k*13)%30),lx=Math.round(kx+Math.cos(an)*rr),ly=Math.round(ky+Math.sin(an)*rr*.7);g.fillStyle=k%2?'#ffe070':'#fff6c0';g.fillRect(lx,ly,3,2);g.fillRect(lx+1,ly-1,1,1)}}
