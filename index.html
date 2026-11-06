@@ -1742,8 +1742,8 @@ function drawDeath(cx){
   if(P.bk&&P.dk==='land'){/* the bullet tumbles over and slides on its back, throwing sparks; Kannan is flung off ahead of it */
     const b=ART.bike_3;
     if(b){const t=P.dt,k=Math.min(1,t/28),ang=k*Math.PI,hop=Math.sin(k*Math.PI)*22,bw=b.width,bh=b.height,
-        pcx=Math.round(P.bx+7-cx),pcy=Math.round(GY-bh/2-hop+2);
-      g.save();g.translate(pcx,pcy);g.rotate(ang);g.drawImage(b,-Math.round(bw*.46),-Math.round(bh/2));g.restore();
+        pcx=Math.round(P.bx+7-cx),pcy=Math.round(GY-12.5-hop+1);/* the picture has 15 px of empty space above the bike, so he turns about the middle of the bike itself: when it lands on its back it sits on the ground, not above it */
+      g.save();g.translate(pcx,pcy);g.rotate(ang);g.drawImage(b,-24,-28);g.restore();
       if(t>28&&P.bvx>.4)for(let i=0;i<4;i++){g.fillStyle=i%2?'#ffe070':'#ffffff';g.fillRect(pcx-8+((tick*3+i*7)%16)-Math.round(P.bvx*2),GY-2-((tick*5+i*3)%6),1,1)}}}
   /* hand-drawn sequences (assets/art/bosses/hdrown_*, hdead_*); the art faces right, feet / waterline on the bottom edge */
   {const pre=P.dk==='water'?'hdrown_':'hdead_',n=P.dk==='water'?6:4,F=[];for(let i=0;i<n;i++)F.push(ART[pre+i]);
