@@ -2116,6 +2116,12 @@ function drawPages(){
   if((tick>>5)%2===0)ntext(pg.rev>=pg.len?(isTouch?'Tap for next':'Press any key'):'',px+pw-12,H-32,8,'#cfe9c8','right');
   ntext('Skip',W-12,6,9,'#d8d0f0','right');
 }
+/* Story scenes, sharp characters: which poses are resting and which are gestures. While a character speaks the gestures come in on the beat of the words (irregular, a few frames each, with a small bounce at each beat); at rest he breathes and shifts slowly between the resting poses. */
+const S_IDLE={scenehero:[0,1],soniya:[0,1],thoma:[0,1],mooppan:[0,1]},S_GEST={scenehero:[2,3,1],soniya:[2,3],thoma:[2,3],kili:[2],biju:[1],ravi:[1],basheer:[1],mooppan:[1]};
+function storyPose(ac,talking,t,seed){const base=ac.pose||0,I=S_IDLE[ac.id]||[base],G=S_GEST[ac.id];
+  if(!talking||!G)return ac.pose!==undefined&&I.indexOf(base)<0?base:I[(Math.floor(t/70)+seed)%I.length];
+  const k=Math.floor(t/15),r=((k+seed*7)*2654435761>>>0)%100;return r<30?I[0]:G[(k+seed)%G.length]}
+function storyBounce(talking,t){if(!talking)return 0;const ph=t%15;return ph<5?-Math.round(2*(1-ph/5)):0}
 function drawStory(){
   const st=story,sc=st.sc,t=st.t,al=Math.max(0,Math.min(1,t/70,(st.total-t)/70)),B=sc.lines||[];
   const bi=t<STORY_START?-1:Math.min(B.length-1,Math.floor((t-STORY_START)/STORY_BOX)),cur=bi>=0?B[bi]:null,feet=GY+2;
@@ -2126,10 +2132,11 @@ function drawStory(){
   sc.actors.forEach((ac,i)=>{
     const talking=cur&&ac.who&&cur.who===ac.who,scl=ac.sc||2;
     let pose=ac.pose||0;if(talking&&ac.talk!==undefined&&(t>>3)%2)pose=ac.talk;
+    if(!ac.lying&&ART['hs_'+ac.id+'_0']&&ac.id!=='maveli')pose=storyPose(ac,talking,t,i);
     if(ac.id==='maveli'&&ART.mvh_3&&ART.mvh_7){const mi=pose>=2?ART.mvh_3:ART.mvh_7,hh=128,ww=Math.round(hh*mi.width/mi.height),p0=Math.min(1,t/100),e0=1-(1-p0)*(1-p0),off0=Math.round((1-e0)*(ac.from||0)*150),cx0=Math.round(ac.x*W+off0),bob0=Math.round(Math.sin(t*.09+i*2)),hop0=talking&&(t>>3)%2?-2:0;
       if((ac.f||1)>0)nimg(mi,cx0-Math.round(ww/2),feet-hh+bob0+hop0,ww,hh);else{g.save();/* facing left: mirrored copy on the full-resolution layer */nimg(FLIPPED(mi),cx0-Math.round(ww/2),feet-hh+bob0+hop0,ww,hh);g.restore()}return}
     const hsI=ART['hs_'+ac.id+'_'+pose];
-    if(hsI){const hh=HS_H[ac.id]||72,ww=Math.round(hh*hsI.width/hsI.height),p1=Math.min(1,t/100),e1=1-(1-p1)*(1-p1),off1=Math.round((1-e1)*(ac.from||0)*150),cx1=Math.round(ac.x*W+off1),bob1=Math.round(Math.sin(t*.09+i*2)),hop1=talking&&(t>>3)%2?-2:0;if(ac.lying&&ART.hk_8){const ix=ac.lying===2?HK_BREATH[(t>>5)&3]:11,im=ART['hk_'+ix],sc=(HS_H[ac.id]||72)/ART.hk_0.height,w2=Math.round(im.width*sc),h2=Math.round(im.height*sc);nimg(im,cx1-Math.round(w2/2),feet+3-h2,w2,h2);return}
+    if(hsI){const hh=HS_H[ac.id]||72,ww=Math.round(hh*hsI.width/hsI.height),p1=Math.min(1,t/100),e1=1-(1-p1)*(1-p1),off1=Math.round((1-e1)*(ac.from||0)*150),cx1=Math.round(ac.x*W+off1),bob1=Math.round(Math.sin(t*.05+i*2)*1.2),hop1=storyBounce(talking,t);if(ac.lying&&ART.hk_8){const ix=ac.lying===2?HK_BREATH[(t>>5)&3]:11,im=ART['hk_'+ix],sc=(HS_H[ac.id]||72)/ART.hk_0.height,w2=Math.round(im.width*sc),h2=Math.round(im.height*sc);nimg(im,cx1-Math.round(w2/2),feet+3-h2,w2,h2);return}
     if(ac.lying){const L=LYING(hsI);nimg(L,cx1-Math.round(hh/2),feet-ww+4,hh,ww);return}
     nimg((ac.f||1)>0?hsI:FLIPPED(hsI),cx1-Math.round(ww/2),feet-hh+bob1+hop1,ww,hh);return}
     const img=ART[ac.id+'_'+pose];if(!img)return;const im=(ac.f||1)>0?img:flipOf(img);
