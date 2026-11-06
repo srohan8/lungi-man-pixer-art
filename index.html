@@ -904,6 +904,8 @@ function placePlayer(x){
 }
 /* Every 5,000 points (TUNE.lifeEvery) a golden lamp falls from the sky onto the ground just ahead of the player. Walking into it gives the extra life (it can be missed). */
 function dropLifeLamp(k){
+  /* on the bike there is no steering and no stopping, so a lamp on the ground could never be picked up: the life is simply given (the lamp flies into the lives counter) */
+  if(LV[lvl]&&LV[lvl].bike){if(lives<TUNE.lifeMax){lives++;pops.push({x:P.x+7,y:P.y-12,s:'5000 POINTS! EXTRA LIFE!',t:110})}else{score+=300;pops.push({x:P.x+7,y:P.y-12,s:'LIVES FULL +300',t:110})}burst(P.x+7,P.y+6,['#ffd860','#fff6c0','#ffffff'],14);if(!sfx('powerup'))beep(1180,.3,'sine',.07);beep(1580,.4,'sine',.05);return}
   const feet=P.y+P.h,onGround=feet>=GY-3;
   const ground=x=>segs.some(sg=>x>sg[0]+10&&x<sg[1]-10),plat=x=>plats.find(p=>x>p[0]+4&&x<p[0]+p[2]-4&&p[1]<GY-6&&Math.abs(p[1]-feet)<46);
   let lx=P.x+4,ly=feet;
