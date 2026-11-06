@@ -2224,7 +2224,7 @@ function drawPagePic(P0,L,t){
     g.fillStyle='#1c1830';g.fillRect(0,gy,L,H-gy);
     const tr=ART['strees_'+(5+P0.tree)],tx=Math.round(L*.6),sc=2;
     const hst=ART['hs_strees_'+(5+P0.tree)];/* the hand-drawn tree on the sharp layer (the pixel sprite scaled up looked blocky) */
-    if(tr||hst){glowEll(tx,gy-100,110,90,TREE_GLOW[P0.tree],.14+.04*Math.sin(t*.05));if(hst){const tw=250,th=Math.round(tw*hst.height/hst.width);nimg(hst,tx-tw/2,gy+8-th,tw,th)}else g.drawImage(tr,tx-tr.width,gy-tr.height*2+8,tr.width*sc,tr.height*sc)}
+    if(tr||hst){glowEll(tx,gy-100,110,90,TREE_GLOW[P0.tree],.14+.04*Math.sin(t*.05));if(hst){const tw=Math.min(250,Math.round(L*.88)),th=Math.round(tw*hst.height/hst.width),cx0=Math.round(L*.55);/* kept inside the picture area, the sharp layer would otherwise draw over the text panel */nimg(hst,cx0-tw/2,gy+8-th,tw,th)}else g.drawImage(tr,tx-tr.width,gy-tr.height*2+8,tr.width*sc,tr.height*sc)}
     const np=ART[P0.npc+'_0'],nx=Math.round(L*.2),hsE=ART['hs_'+P0.npc+'_0'],nh=hsE?Math.round((HS_H[P0.npc]||72)*1.4):np?np.height*3:0;
     if(hsE){const ww=Math.round(nh*hsE.width/hsE.height);nimg(hsE,nx-Math.round(ww/2),gy-nh+(P0.prop==='halo'?10:0)+Math.round(Math.sin(t*.05)),ww,nh)}else if(np){const pic=P0.npc==='scenehero'?np:np;g.drawImage(pic,nx-Math.round(np.width*1.5),gy-nh+(P0.prop==='halo'?10:0)+Math.round(Math.sin(t*.05)),np.width*3,nh)}
     const fx=nx+34,fy=gy-26;
