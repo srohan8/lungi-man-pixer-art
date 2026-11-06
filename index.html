@@ -1997,12 +1997,12 @@ const SCENES={
  a2:{bg:'next',actors:[{id:'scenehero',who:'KANNAN',x:.5}],caption:['TWO GROVES FREED. THE EMBERS GO COOL.','THE HIGHLAND FOG IS WAITING.']},
  a3:{bg:'cur',actors:[{id:'scenehero',who:'KANNAN',x:.3,lying:2},{id:'mooppan',who:'VELU',x:.66,f:-1,from:1,talk:1},{id:'kili',who:'',x:.88,pose:0,f:-1,sc:2}],
   lines:[{who:'VELU',text:'KANNAN... THAT BEAST BIT DEEPER THAN IT FEELS. THE VENOM WILL SPREAD. DO NOT IGNORE IT.'},{who:'KANNAN',text:'...MY ANKLE. IT BURNS.'}]},
- disco:{bg:'a3',actors:[{id:'scenehero',who:'KANNAN',x:.36,lying:2},{id:'ravi',who:'RAVI',x:.66,f:-1,from:1,talk:1}],
+ disco:{bg:'a3',actors:[{id:'scenehero',who:'KANNAN',x:.36,lying:2,riseLine:2},{id:'ravi',who:'RAVI',x:.66,f:-1,from:1,talk:1}],
   lines:[{who:'RAVI',text:'YOU KEPT SHOUTING LEFT AND RIGHT.'},{who:'RAVI',text:"ODIYAN'S VENOM CAUGHT YOU. YOU WERE HALLUCINATING. THANK GOD YOU ARE FINE."},{who:'KANNAN',text:'WE DO NOT HAVE MUCH TIME. TWO GROVES LEFT. I MUST GO.'},{who:'RAVI',text:'THE RAIN IS COMING. BE CAREFUL OUT THERE.'}]},
  path:{bg:'next',actors:[{id:'scenehero',who:'KANNAN',x:.26},{id:'thoma',who:'THOMA',x:.52,f:-1,from:1,talk:3},{id:'soniya',who:'SONIYA',x:.78,f:-1,from:1,talk:2}],
   lines:[{who:'THOMA',text:'THE LAST GROVE IS THE WORST. WHATEVER HAPPENS, YOU ARE NOT ALONE.'},{who:'SONIYA',text:"I BROUGHT EVERYTHING. DON'T YOU DARE DIE."}]}
 };
-const STORY_START=100,STORY_BOX=270; /* slow scenes: about 1.7 s before the first line, 4.5 s per line */
+const STORY_START=100,STORY_BOX=270,RISE_DELAY=30,RISE_STEP=11,RISE_SEQ=[7,6,5,4,3,2,1,0]; /* slow scenes: about 1.7 s before the first line, 4.5 s per line */
 /* Draws the real scenery (sky, hills, trees, water, ground, canopy) of the loaded level once and keeps it as the scene backdrop,
    so the scene looks like the level you are about to play. */
 function snapshotBackdrop(cx){
@@ -2192,13 +2192,15 @@ function drawStory(){
   if(sc.prop==='blockade'&&ART.hs_blockade_0){const bp=ART.hs_blockade_0,bh=Math.round(H*.36),bw=Math.round(bh*bp.width/bp.height);nimg(bp,Math.round(W*.79-bw/2),feet-bh+6,bw,bh)}/* the same blockade as at the end of the ride */
   sc.actors.forEach((ac,i)=>{
     const talking=cur&&ac.who&&cur.who===ac.who,scl=ac.sc||2;
+    /* a lying actor with riseLine gets up when that line starts: the collapse played backwards (down, tipping, kneeling, buckling, staggering, hopping, bitten, ready), then he stands */
+    const rl=ac.lying&&ac.riseLine!==undefined&&bi>=ac.riseLine?t-(STORY_START+ac.riseLine*STORY_BOX)-RISE_DELAY:-1,ly=ac.lying&&!(rl>=RISE_SEQ.length*RISE_STEP);
     let pose=ac.pose||0;if(talking&&ac.talk!==undefined&&(t>>3)%2)pose=ac.talk;
-    if(!ac.lying&&ART['hs_'+ac.id+'_0']&&ac.id!=='maveli')pose=storyPose(ac,talking,t,i);
+    if(!ly&&ART['hs_'+ac.id+'_0']&&ac.id!=='maveli')pose=storyPose(ac,talking,t,i);
     if(ac.id==='maveli'&&ART.mvh_3&&ART.mvh_7){const mi=pose>=2?ART.mvh_3:ART.mvh_7,hh=128,ww=Math.round(hh*mi.width/mi.height),p0=Math.min(1,t/100),e0=1-(1-p0)*(1-p0),off0=Math.round((1-e0)*(ac.from||0)*150),cx0=Math.round(ac.x*W+off0),bob0=Math.round(Math.sin(t*.09+i*2)),hop0=talking&&(t>>3)%2?-2:0;
       if((ac.f||1)>0)nimg(mi,cx0-Math.round(ww/2),feet-hh+bob0+hop0,ww,hh);else{g.save();/* facing left: mirrored copy on the full-resolution layer */nimg(FLIPPED(mi),cx0-Math.round(ww/2),feet-hh+bob0+hop0,ww,hh);g.restore()}return}
     const hsI=ART['hs_'+ac.id+'_'+pose];
-    if(hsI){const hh=HS_H[ac.id]||72,ww=Math.round(hh*hsI.width/hsI.height),p1=Math.min(1,t/100),e1=1-(1-p1)*(1-p1),off1=Math.round((1-e1)*(ac.from||0)*150),cx1=Math.round(ac.x*W+off1),bob1=Math.round(Math.sin(t*.05+i*2)*1.2),hop1=storyBounce(talking,t);if(ac.lying&&ART.hk_8){const ix=ac.lying===2?HK_BREATH[(t>>5)&3]:11,im=ART['hk_'+ix],sc=(HS_H[ac.id]||72)/ART.hk_0.height,w2=Math.round(im.width*sc),h2=Math.round(im.height*sc);nimg(im,cx1-Math.round(w2/2),feet+3-h2,w2,h2);return}
-    if(ac.lying){const L=LYING(hsI);nimg(L,cx1-Math.round(hh/2),feet-ww+4,hh,ww);return}
+    if(hsI){const hh=HS_H[ac.id]||72,ww=Math.round(hh*hsI.width/hsI.height),p1=Math.min(1,t/100),e1=1-(1-p1)*(1-p1),off1=Math.round((1-e1)*(ac.from||0)*150),cx1=Math.round(ac.x*W+off1),bob1=Math.round(Math.sin(t*.05+i*2)*1.2),hop1=storyBounce(talking,t);if(ly&&ART.hk_8){const ix=rl>=0?RISE_SEQ[Math.min(RISE_SEQ.length-1,Math.floor(rl/RISE_STEP))]:ac.lying===2?HK_BREATH[(t>>5)&3]:11,im=ART['hk_'+ix],sc=(HS_H[ac.id]||72)/ART.hk_0.height,w2=Math.round(im.width*sc),h2=Math.round(im.height*sc);nimg(im,cx1-Math.round(w2/2),feet+3-h2,w2,h2);return}
+    if(ly){const L=LYING(hsI);nimg(L,cx1-Math.round(hh/2),feet-ww+4,hh,ww);return}
     nimg((ac.f||1)>0?hsI:FLIPPED(hsI),cx1-Math.round(ww/2),feet-hh+bob1+hop1,ww,hh);return}
     const img=ART[ac.id+'_'+pose];if(!img)return;const im=(ac.f||1)>0?img:flipOf(img);
     const p=Math.min(1,t/100),e=1-(1-p)*(1-p),off=Math.round((1-e)*(ac.from||0)*150),w=img.width*scl,h=img.height*scl;
