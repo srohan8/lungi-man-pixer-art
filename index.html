@@ -1791,7 +1791,7 @@ const PORTC={};
 const PORT_SRC={KANNAN:'scenehero_0',RAVI:'ravi_0',BIJU:'biju_0',THOMA:'thoma_0',SONIYA:'soniya_0',MAVELI:'mvh_3',VELU:'mooppan_0',KILI:'kili_0',YAKSHI:'yakshi_0',CHATHAN:'chathan_0',ODIYAN:'odiyan_0',KOMBAN:'komban_0',KARINKANNI:'karin_1',DEVI:'devi_0',BHADRAKALI:'bhadra_0',BASHEER:'bshp_0'};
 /* sharp portraits (full-resolution art, drawn on the text layer); the pixel sprites above are the fallback */
 const PORT_HS={KANNAN:'hs_scenehero_0',RAVI:'hs_ravi_0',BIJU:'hs_biju_0',THOMA:'hs_thoma_0',SONIYA:'hs_soniya_0',VELU:'hs_mooppan_0',KILI:'hs_kili_0',BHADRAKALI:'hs_bhadra_1',BASHEER:'hs_basheer_0',MAVELI:'mvh_3',YAKSHI:'hp_yakshi_0',CHATHAN:'hp_chathan_0',ODIYAN:'hp_odiyan_0',KOMBAN:'hp_komban_0',KARINKANNI:'hp_karin_2',DEVI:'hp_devi_0'};
-const PORT_WHOLE={KARINKANNI:1,KILI:1},PORT_LEFT={VELU:1};
+const PORT_WHOLE={KARINKANNI:1,KILI:1},PORT_LEFT={VELU:1},PORT_HEAD={DEVI:.3};/* PORT_HEAD: the head is this fraction of the figure's height (a robe widens the shoulders, so the usual width guess crops too wide) */
 function portraitCrop(who){
   if(PORTC[who])return PORTC[who];const src=ART[PORT_HS[who]]||ART[PORT_SRC[who]];if(!src)return null;
   let r;
@@ -1802,6 +1802,7 @@ function portraitCrop(who){
     else{const hh0=Math.max(6,Math.round(fh*.2));let a=w,b2=0;
       for(let y=y0;y<y0+hh0;y++)for(let x=0;x<w;x++)if(d[(y*w+x)*4+3]>128){if(x<a)a=x;if(x>b2)b2=x}
       let side=Math.min(w,Math.max(Math.round((b2-a+1)*1.25),Math.round(fh*.3)));
+      if(PORT_HEAD[who])side=Math.min(w,Math.round(fh*PORT_HEAD[who]));
       if(PORT_LEFT[who]){side=Math.round(fh*.3);b2=a+side}   /* a staff or similar widens the top rows: take the head from the left edge */
       const rx=Math.max(0,Math.min(w-side,Math.round((a+b2)/2-side/2)));side=Math.min(side,h-y0);r={x:rx,y:y0,w:side,h:side}}}
   catch(e){r={x:Math.round(src.width*.15),y:0,w:Math.round(src.width*.7),h:Math.round(src.height*.36)}}
