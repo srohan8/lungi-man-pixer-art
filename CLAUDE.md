@@ -77,7 +77,7 @@ Level selector (owner request): the title screen has left/right arrows (keys, A/
 Multiplayer, online features, accounts, ads, in-app purchases, procedural story, voice acting.
 
 ## Story cameos (from STORYLINE.md, hero stays "Kannan" for now)
-Prologue: Biju, Thoma, Bhadrakali. I: Soniya (first chai stall), Yakshi. II: Ravi, Kuttichathan. III: Velu, Ustad Basheer (bard cameo, sings verses), Odiyan. IV: Devi, Karinkanni. V: Thoma, Soniya (first stall), Bhadrakali.
+Prologue: Biju, Thoma, Bhadrakali. I: Soniya (first chai stall), Yakshi. II: Ravi, Kuttichathan. III: Velu, Ustad Basheer (bard cameo, sings verses), Odiyan. IV: Bhadrakali (her warning at the start; the nun Devi no longer speaks), Karinkanni. V: Thoma, Soniya (first stall), Bhadrakali.
 Thoma's token: every act after the prologue starts with 4 lives (shown as Nilavilakku lamps).
 Hero look: aviator sunglasses, satchel with a green coconut, no towel.
 Planned next (agreed order): Pathalam + Maveli + ending, Act III hoof-prints + Kili, disco dream interlude, Act II bike ride.

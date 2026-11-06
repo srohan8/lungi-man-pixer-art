@@ -75,7 +75,7 @@ _Scene after this level:_
 - **Ravi**: The rain is coming. Be careful out there.
 
 ## ACT IV: Karinkanni's curse
-- **Devi**: Be still when it looks at you. The eye hunts what moves. Your village carries an old guilt. _(level starts)_
+- **Bhadrakali**: Be still when it looks at you. The eye hunts what moves. Your village carries an old guilt. _(level starts)_
 - **Kannan**: Everyone talks about my village like it owes a debt. What did it do? _(walking past x=1200)_
 - **Karinkanni**: Look at me... And be still. _(boss appears, fades after about 5 s)_
 - **Karinkanni**: The storm... It passes. Thank you. _(level clear)_
