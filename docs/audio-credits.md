@@ -45,7 +45,7 @@ In `assets/audio/music/`: `sting_boss_intro` (3 s, +10 dB), `sting_gameover` (5 
 ## Act V music (replaced the generated track, 2026-11-04)
 | Used in | File | Source | Licence |
 |---|---|---|---|
-| `bgm_act5.ogg` (the final stage, before the boss) | `itswatr-watr-train-to-ernakulam-town-303208.mp3` (kept as `bgm_act5_pixabay_a.mp3`) | "Train to Ernakulam Town" by ItsWatR (Pixabay user Jonas), https://pixabay.com | Pixabay Content Licence. Attribution is not required but welcome: "Music by ItsWatR from Pixabay". Made loop-safe (3 s crossfade of the end into the start) and normalised to about -17 LUFS. The earlier ElevenLabs Act V track is in git history. |
+| `bgm_act5.ogg` (the final stage, before the boss) | `itswatr-watr-train-to-ernakulam-town-303208.mp3` (kept as `bgm_act5_pixabay_a.mp3`) | "Train to Ernakulam Town" by ItsWatR (Pixabay user Jonas), https://pixabay.com | Pixabay Content Licence. Attribution is not required but welcome: "Music by ItsWatR from Pixabay". Uses only the part from 1:00 of the original to the end (107 s), nothing before the 1 minute mark; loop-safe (3 s crossfade of the end into the start) and normalised to about -17 LUFS. The earlier ElevenLabs Act V track is in git history. |
 
 ## Disco (interlude) music (replaced the generated track, 2026-11-04)
 | Used in | File | Source | Licence |
