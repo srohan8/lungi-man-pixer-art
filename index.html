@@ -1141,6 +1141,11 @@ function drawMk(cx){const c=cin,t=c.t,te=mkTe(t),big=ART.mk_big_0;
   else{bi=5;bx=bxp+c.dir*22;const u=(t-MK_HIT-130)/110;al=Math.max(0,1-u);by=yb-Math.round(u*26)}
   if(bi>=0){const sway=bi===1?Math.round(Math.sin(t*.12)*2):0;g.globalAlpha=al;mkImg(ART['mk_b_'+bi],bx+sway,by,MKS_B*(bi===4?1:1),!flip);g.globalAlpha=1}
   if(t>=MK_HIT+14&&t<MK_HIT+160){const k=Math.min(1,(t-MK_HIT-14)/30)*(t>MK_HIT+100?Math.max(0,1-(t-MK_HIT-100)/60):1);glowEll(Math.round(c.bcx-cx),GY-30,Math.round(50*k)+8,Math.round(70*k)+8,'#ffd860',.3*k)}
+  /* the mundu stretched across the arena, from his hand to the tusk, from the throw until he lets go */
+  if(t>=125&&t<240){const kp=mkPos(c,t),px0=Math.round(kp.x-cx);let hx,hy;
+    if(t<150){hx=px0+c.dir*34;hy=GY+2-46}else{hx=px0+c.dir*5;hy=Math.round(kp.y)-58}
+    const tx=Math.round(c.bcx-cx-c.dir*28),ty=GY-92,n=30,slack=t<150?10:t<205?5:2;
+    for(let i=0;i<=n;i++){const u=i/n,px=Math.round(hx+(tx-hx)*u),py=Math.round(hy+(ty-hy)*u+Math.sin(u*Math.PI)*slack);g.fillStyle=(i%6===0)?'#e0b840':'#f4ecd0';g.fillRect(px,py,3,3)}}
   /* the key illustration: Kannan on the demon's head, the mundu knotted round his tusks, pulled tight */
   if(big&&t>=240-6&&t<MK_HIT+22){const fin=Math.min(1,(t-234)/14),fout=t>=MK_HIT?Math.max(0,1-(t-MK_HIT)/20):1,sh=t<MK_HIT?Math.round(Math.sin(t*1.7)*(1+(t-240)/60)):0;
     g.globalAlpha=1;g.fillStyle='rgba(8,6,20,'+(.9*fin*fout).toFixed(2)+')';g.fillRect(0,0,W,H);
@@ -1158,11 +1163,14 @@ function drawMk(cx){const c=cin,t=c.t,te=mkTe(t),big=ART.mk_big_0;
       g.fillStyle='rgba(12,8,28,.9)';g.fillRect(bxx,byy,bw,40);g.fillStyle='#f0c040';g.fillRect(bxx,byy,bw,1);g.fillRect(bxx,byy+39,bw,1);g.fillRect(bxx,byy,1,40);g.fillRect(bxx+bw-1,byy,1,40);
       drawPortrait('THOMA',bxx+6,byy+4,32);ntext('Thoma',bxx+46,byy+5,8.5,'#f0c040');ntext('Here. A fresh mundu. Try not to lose this one.',bxx+46,byy+18,12.5,'#f4ecd0')}}
 }
+const PIXR=new WeakMap();
+function pixRot(im,ang){const q=Math.round(ang*12);let m=PIXR.get(im);if(!m){m={};PIXR.set(im,m)}if(!m[q]){const w=im.width*2,h=im.height*2,d=Math.ceil(Math.hypot(w,h)),c=document.createElement('canvas');c.width=c.height=d;const x=c.getContext('2d');x.imageSmoothingEnabled=false;x.translate(d/2,d/2);x.rotate(q/12);x.drawImage(im,-w/2,-h/2,w,h);m[q]=c}return m[q]}
 function drawMkPlayer(cx){const c=cin,t=c.t,kp=mkPos(c,t),x=Math.round(kp.x-cx),flip=c.dir<0;
   let k=-1,xx=x,yy=GY+2;
   if(t<20)k=0;else if(t<60)k=1;else if(t<120)k=((t>>3)%2)?2:1;else if(t<150)k=3;
-  else if(t<205){k=4;yy=Math.round(kp.y)}
-  else if(t<240){k=5;yy=Math.round(kp.y)+14}
+  else if(t<240){/* the swing: the game's own pixel hero, so he keeps his normal look and size, tilting forward on the mundu */
+    const im=ART.hf_4;if(im){const sc=1.8,w=Math.round(im.width*sc),h=Math.round(im.height*sc),pic=flip?flipOf(im):im,ang=c.dir*(-.45+(t-150)/90*1.1);const rc=pixRot(pic,ang),k2=sc/2;/* drawn on the sharp layer so Pey Komban never hides him */nimg(rc,Math.round(x-rc.width*k2/2),Math.round(kp.y-h/2-rc.height*k2/2),Math.round(rc.width*k2),Math.round(rc.height*k2));return}
+    k=t<205?4:5;yy=Math.round(kp.y)+(t<205?0:14)}
   else if(t<MK_HIT+4)k=-1;            /* the key illustration is on screen */
   else if(t<MK_HIT+110)k=-1;           /* he only appears once Pey Komban is down */
   else{k=7;xx=Math.round(c.bcx-cx-c.dir*74)}
