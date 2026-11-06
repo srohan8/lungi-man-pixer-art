@@ -1838,23 +1838,28 @@ function drawStaffInHand(cx){
   if(!sp){g.fillStyle='#8a6020';g.fillRect(hx,hy+4,2,20);g.fillStyle='#d8b050';g.fillRect(hx,hy+4,1,20);g.fillStyle='#ffd860';g.fillRect(hx-2,hy-2,6,5);glowAt(hx+1,hy,7,'#ffd860',.35);return}
   if(slashT>0){/* pointing forward: the sun is the muzzle */
     g.save();g.translate(hx,hy+16);g.rotate(f>0?Math.PI/2:-Math.PI/2);g.drawImage(ART.tstaffs_2||sp,-12,-24);g.restore();
-    glowAt(hx+f*22,hy+16,9,'#ffb060',.5);return}
+    glowAt(hx+f*22,hy+16,9,'#9aff60',.5);return}
   /* carried like a spear: leaning forward and bobbing with his stride while running, tipped up in the air, upright when standing */
   const run=P.on&&Math.abs(P.vx)>.3,air=!P.on,bob=run?Math.round(Math.sin(P.step*.9)*1.6):0,ang=f*(run?.42:air?.7:.08)+(run?Math.sin(P.step*.9)*.05:0),px=hx+(run?f*2:0),py=hy+15+bob;
   g.save();g.translate(px,py);g.rotate(ang);g.drawImage(f>0?sp:flipOf(sp),-12,-23);g.restore();
   glowAt(px+Math.round(Math.sin(ang)*22),py-Math.round(Math.cos(ang)*22),9,'#ff8a3a',.16+.12*Math.sin(tick*.12));
 }
+/* Amma's leaf spear fires a green-gold ray: the golden beam pieces get their red and green channels swapped (gold becomes lime-green), cached once */
+const BEAMG={};function greenBeam(i){if(BEAMG[i])return BEAMG[i];const im=ART['tbeam_'+i];if(!im)return null;try{const c=document.createElement('canvas');c.width=im.width;c.height=im.height;const x=c.getContext('2d');x.drawImage(im,0,0);const d=x.getImageData(0,0,c.width,c.height),p=d.data;for(let k=0;k<p.length;k+=4){const R=p[k],G=p[k+1];p[k]=Math.round(G*.7);p[k+1]=Math.min(255,Math.round(R*1.02));p[k+2]=Math.round(p[k+2]*.8)}x.putImageData(d,0,0);return BEAMG[i]=c}catch(e){return BEAMG[i]=im}}
 function drawSlash(cx){
   if(slashT<=0||!P||state!=='play')return;
   const f=P.f,a=slashT/8,R=TUNE.rayRange,len=Math.round(R*Math.min(1,(9-slashT)/3)),y=Math.round(P.y+16),
-        ox=Math.round(P.x-cx)+(f>0?12:2)+f*22,B=[0,1,2].map(i=>ART['tbeam_'+i]);
+        ox=Math.round(P.x-cx)+(f>0?12:2)+f*22,B=[0,1,2].map(i=>greenBeam(i));
   if(B.every(Boolean)){/* flare at the sun, beam tiles along the ray, fading tip; added to the scene like light. Pieces are 56x18 boxes, so only their painted part (c0..c1) is used. */
     const pc=(im,c0,c1,ay,d)=>{const w=c1-c0+1;if(f>0)g.drawImage(im,c0,0,w,18,ox+d,y-ay,w,18);else g.drawImage(flipOf(im),55-c1,0,w,18,ox-d-w,y-ay,w,18)};
     g.save();g.globalCompositeOperation='lighter';g.globalAlpha=Math.min(1,.4+a);
     let d=14;while(d<len-24){pc(B[1],14,42,13,d);d+=29}
     pc(B[2],16,39,13,Math.max(14,len-24));pc(B[0],17,39,9,-12);
+    /* a soft green aura along the whole beam, and a few leaves flying off it */
+    g.globalAlpha=.16*a;g.fillStyle='#6adc5a';g.fillRect(f>0?ox:ox-len,y-9,len,18);g.globalAlpha=.1*a;g.fillStyle='#ffd860';g.fillRect(f>0?ox:ox-len,y-14,len,28);
+    for(let k=0;k<5;k++){const u=((tick*.09+k*.21)%1),lx=(f>0?ox+u*len:ox-u*len),ly=y+Math.sin(u*9+k*2)*8;g.globalAlpha=(1-u)*a;g.fillStyle=k%2?'#8aff7a':'#fff6a0';g.fillRect(Math.round(lx),Math.round(ly),2,2)}
     g.restore();
-    g.globalAlpha=a;g.fillStyle='#ffffff';g.fillRect(f>0?ox:ox-len,y-1,len,2);g.globalAlpha=1;return}
+    g.globalAlpha=a;g.fillStyle='#f4ffe0';g.fillRect(f>0?ox:ox-len,y-1,len,2);g.globalAlpha=1;return}
   const x1=f>0?ox:ox-len;
   g.globalAlpha=.28*a;g.fillStyle='#ffd860';g.fillRect(x1,y-6,len,12);
   g.globalAlpha=.65*a;g.fillStyle='#ffe898';g.fillRect(x1,y-3,len,6);
