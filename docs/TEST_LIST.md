@@ -44,3 +44,4 @@ Uninstall the old build first, then install the newest debug APK.
 - [ ] Story pages (opening, between acts, epilogue): a small back arrow at the bottom left of the text panel goes to the previous page.
 - [ ] After a boss falls, the boss's last words and Amma's lines wait for a tap.
 - [ ] Bike ride: reaching 5,000 points gives the extra life directly.
+- [ ] Every dialogue box in play now has a back arrow, a next arrow and a small X at the top right. Back shows the earlier lines of this act, next (or tapping anywhere) moves on and closes the last one, X closes at once. A counter like 2 / 3 shows when there are earlier lines.

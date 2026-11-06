@@ -61,7 +61,7 @@ document.querySelectorAll('[data-k]').forEach(b=>{
 cv.addEventListener('pointerdown',e=>{
   const r=cv.getBoundingClientRect(),x=(e.clientX-r.left)/r.width*W,y=(e.clientY-r.top)/r.height*H;
   if(tut&&tut.phase==='msg'&&state==='play'&&!paused){const r=tut.skipR;if(r&&x>r[0]&&x<r[0]+r[2]&&y>r[1]&&y<r[1]+r[3])tutSkip();else tutConfirm();return}
-  if(convo&&!paused){convoGo(x<W*.26?-1:1);return}
+  if(convo&&!paused){if(dlg&&dlg.xr&&dlg.pt>10&&x>dlg.xr[0]&&x<dlg.xr[0]+dlg.xr[2]&&y>dlg.xr[1]&&y<dlg.xr[1]+dlg.xr[3]){convoClose();return}convoGo(x<W*.26?-1:1);return}
   if(dlg&&dlg.pause&&state==='play'&&!paused&&dlg.armed&&dlg.pt>25){dlg=null;jumpPrev=true;return}
   if(dlg&&dlg.hold&&state==='clear'&&dlg.armed&&dlg.pt>40){dlg=null;return}
   if(dlg&&dlg.xr&&state==='play'&&!paused){const r=dlg.xr;if(x>r[0]&&x<r[0]+r[2]&&y>r[1]&&y<r[1]+r[3]){dlg=null;return}}
@@ -831,7 +831,7 @@ let dlg=null,actScore=0,seen=false,resume=0,pops=[],chaiSaid=false,prints=0,hoof
 const SC={crab:100,crow:150,bat:150,goon:200,cobra:200,monkey:250,imp:120,wisp:100,dog:200,decoy:0,dancer:100};
 
 function loadLevel(i){fogK=1;bloomAt=-1;
-  lvl=i;dlg=null;convo=null;chaiSaid=false;flood=TUNE.floodStart;cpFlood=TUNE.floodStart;floodWarn=0;const L=LV[i],si=L.sid,seed=si*31+7,r=rng(500+si*97);
+  lvl=i;dlg=null;convo=null;dlgHist.length=0;chaiSaid=false;flood=TUNE.floodStart;cpFlood=TUNE.floodStart;floodWarn=0;const L=LV[i],si=L.sid,seed=si*31+7,r=rng(500+si*97);
   segs=[[0,620]];let x=620,gi=0;vines=[];
   while(x<L.len){let gap=L.gapW?L.gapW[0]+(r()*L.gapW[1]|0):52+(r()*16|0)+2*(L.hard||0);const w=L.segW?L.segW[0]+(r()*L.segW[1]|0):300+(r()*380|0);
     const ve=L.vineEvery||3;if(L.vines&&gi%ve===(ve===3?1:0)){gap=140+(r()*16|0);vines.push({x:x+60,top:GY-110,len:86})}
@@ -928,7 +928,7 @@ function setPause(on){if(on&&state!=='play')return;if(paused===on)return;paused=
   if(on){touch.l=touch.r=touch.j=touch.s=0;document.querySelectorAll('[data-k]').forEach(b=>b.classList.remove('on'))}else jumpPrev=true;
   try{if(typeof ac!=='undefined'&&ac)on?ac.suspend():ac.resume()}catch(e){}}
 function togglePause(){if(splashT>0)return;setPause(!paused)}
-function pauseToMenu(){convo=null;paused=false;try{if(typeof ac!=='undefined'&&ac)ac.resume()}catch(e){}saveHi();pick=-1;loadLevel(0);state='title';camx=0;banner=null;dlg=null}
+function pauseToMenu(){convo=null;dlgHist.length=0;paused=false;try{if(typeof ac!=='undefined'&&ac)ac.resume()}catch(e){}saveHi();pick=-1;loadLevel(0);state='title';camx=0;banner=null;dlg=null}
 document.addEventListener('visibilitychange',()=>{if(document.hidden)setPause(true)});
 function drawPauseIcon(){const bx=W-66,by=10,R=(x,y,w,h)=>g.fillRect(bx+x,by+y,w,h);
   g.fillStyle='rgba(18,10,28,.75)';R(0,0,26,22);g.fillStyle='#3a2c58';R(0,0,26,1);R(0,21,26,1);R(0,0,1,22);R(25,0,1,22);g.fillStyle='#cfe9c8';R(8,6,3,10);R(15,6,3,10)}
@@ -1873,10 +1873,12 @@ function drawSlash(cx){
   g.globalAlpha=.65*a;g.fillStyle='#ffe898';g.fillRect(x1,y-3,len,6);
   g.globalAlpha=1;g.fillStyle='#ffffff';g.fillRect(x1,y-1,len,2);
 }
-function say(who,text,t,pause){pause=pause!==false;/* owner request after playtests: every in-play dialogue box stops the game until the player taps (people could not read them while running) */dlg={who,text,t:t||210,pause:pause,hold:state==='clear',pt:0,armed:false,x0:(typeof P!=='undefined'&&P)?P.x:0,dist:pause?0:((typeof lvl!=='undefined'&&LV[lvl]&&LV[lvl].bike)?520:1000)}}/* a box also closes by itself once the hero has moved on (the bike cannot stop, so there it is about 2.5 s of riding) */
+const dlgHist=[];
+function say(who,text,t,pause){if(pause!==false){/* every box is a small conversation: back shows the earlier lines of this act, next / the arrow closes it, X closes it at once */if(convo&&dlg&&dlg.who===who&&dlg.text===text)return;dlgHist.push({who,text});if(dlgHist.length>6)dlgHist.shift();startConvo(dlgHist.slice(),null,dlgHist.length-1);return}pause=pause!==false;/* owner request after playtests: every in-play dialogue box stops the game until the player taps (people could not read them while running) */dlg={who,text,t:t||210,pause:pause,hold:state==='clear',pt:0,armed:false,x0:(typeof P!=='undefined'&&P)?P.x:0,dist:pause?0:((typeof lvl!=='undefined'&&LV[lvl]&&LV[lvl].bike)?520:1000)}}/* a box also closes by itself once the hero has moved on (the bike cannot stop, so there it is about 2.5 s of riding) */
 /* A conversation (several lines from one NPC): the game stands still, each line has back and next buttons (tap the left of the screen or the left arrow for back, anywhere else, the right arrow or Space for next); the last next closes it. Used for the throne scene and the ending. */
 let convo=null;
-function startConvo(lines,done){convo={lines,i:0,done};convoShow()}
+function startConvo(lines,done,idx){convo={lines,i:idx||0,done};convoShow()}
+function convoClose(){const c=convo;convo=null;dlg=null;if(c&&c.done)c.done()}
 function convoShow(){const c=convo,l=c.lines[c.i];dlg={who:l.who,text:l.text,t:99999,pause:true,hold:false,conv:true,n:c.lines.length,i:c.i,pt:0,armed:true,x0:(typeof P!=='undefined'&&P)?P.x:0,dist:0}}
 function convoGo(d){if(!convo)return false;if(dlg&&dlg.pt<10)return true;const c=convo;if(d>0&&c.i>=c.lines.length-1){convo=null;dlg=null;if(c.done)c.done();return true}c.i=Math.max(0,Math.min(c.lines.length-1,c.i+d));convoShow();return true}
 /* a pausing dialogue: the game stands still until the player taps or presses a key (a fresh press, so a held button does not close it) */
@@ -1925,9 +1927,10 @@ function drawDlg(){
   drawPortrait(dlg.who,bx+4,by+4,Math.min(34,bh-8));
   if(dlg.conv){/* back and next buttons under the box, with the line counter */const ty=by+bh+5,tri=(x,dir,on)=>{g.fillStyle=on?'#f0c040':'#6a5a30';for(let k=0;k<7;k++){const w=7-k;g.fillRect(dir>0?x+k:x+7-k-1,ty+k,1,1);g.fillRect(dir>0?x+k:x+7-k-1,ty+13-k,1,1);g.fillRect(dir>0?x+k:x+(7-k-1),ty+k,1,14-2*k)}};
     g.fillStyle='rgba(12,8,28,.86)';g.fillRect(bx+bw-84,by+bh+1,84,22);g.fillRect(bx,by+bh+1,30,22);
-    tri(bx+10,-1,dlg.i>0);tri(bx+bw-18,1,true);ntext((dlg.i+1)+' / '+dlg.n,bx+bw-51,by+bh+6,8,'#f0c040','center')}
+    tri(bx+10,-1,dlg.i>0);tri(bx+bw-18,1,true);if(dlg.n>1)ntext((dlg.i+1)+' / '+dlg.n,bx+bw-51,by+bh+6,8,'#f0c040','center');
+    {const xx=bx+bw-18,yy=by+4;g.fillStyle='#f0c040';for(let k=0;k<8;k++){g.fillRect(xx+k,yy+k,2,2);g.fillRect(xx+7-k,yy+k,2,2)}dlg.xr=[bx+bw-28,by,28,28]}}
   else if(DP&&dlg.pt>DPT&&(tick>>4)%2===0)ntext(isTouch?'Tap to continue':'Press any key to continue',bx+bw-8,by+bh+3,8,'#f0c040','right');
-  dlg.xr=null;if(TUNE.dlgStay&&!DP){const xx=bx+bw-18,yy=by+4;g.fillStyle='#f0c040';for(let k=0;k<8;k++){g.fillRect(xx+k,yy+k,2,2);g.fillRect(xx+7-k,yy+k,2,2)}dlg.xr=[bx+bw-28,by,28,28]}
+  if(!dlg.conv)dlg.xr=null;if(TUNE.dlgStay&&!DP){const xx=bx+bw-18,yy=by+4;g.fillStyle='#f0c040';for(let k=0;k<8;k++){g.fillRect(xx+k,yy+k,2,2);g.fillRect(xx+7-k,yy+k,2,2)}dlg.xr=[bx+bw-28,by,28,28]}
   ntext(nice(dlg.who),bx+44,by+3,7.5,'#f0c040');T.lines.forEach((ln,k)=>ntext(ln,bx+44,by+13+k*(T.px+1.5),T.px,'#f4ecd0'));
 }
 /* ---------- interlude arena, throne scene, ending ---------- */
