@@ -28,3 +28,8 @@ Style: same art style, line weight and colours as my other hero and Pey Komban s
 
 ## After the art arrives
 Tell me the filename. I will cut the frames, keep one shared baseline and scale, and replace the separate Kannan and Pey Komban sprites in the fight, keeping the key illustration, the CRASH, the stones and the music/scream timing.
+
+## Second round: proportions (measured on the first combined sheet)
+In the game Kannan is 28 px and Pey Komban 60 px tall, so Kannan = 47% of Komban's height. On the first combined sheet Kannan is about 70% of Pey Komban (207 px against 300 px in frame 1, 218 against 300 in the last frame), and his size changes from frame to frame, so he reads far too big next to the boss.
+Use `assets/reference/mundu_proportion_guide.png` as a layout reference when generating the sheet again: 10 cells, one ground line per cell, a box for Pey Komban at 100% height (with a line at 70% for the tusk tips) and a box for Kannan at 47% of that. Add to the prompt:
+"Follow the attached guide exactly: in every frame Kannan's standing height is 47% of Pey Komban's standing height (the top of Kannan's head reaches Pey Komban's belt), the same in all ten frames. Pey Komban fills the 100% box. Only the poses change, never the sizes."
