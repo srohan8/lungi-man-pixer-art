@@ -45,3 +45,4 @@ Uninstall the old build first, then install the newest debug APK.
 - [ ] After a boss falls, the boss's last words and Amma's lines wait for a tap.
 - [ ] Bike ride: reaching 5,000 points gives the extra life directly.
 - [ ] Every dialogue box in play now has a back arrow, a next arrow and a small X at the top right. Back shows the earlier lines of this act, next (or tapping anywhere) moves on and closes the last one, X closes at once. A counter like 2 / 3 shows when there are earlier lines.
+- [ ] Between acts: after a boss falls (and after each level clear) the game waits with "Tap to continue" before the next scene; the story scene between acts waits at its last line until you tap (a tap during the scene skips it).
