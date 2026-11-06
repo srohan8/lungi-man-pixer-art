@@ -12,7 +12,7 @@ const only = args.includes('--only');
 const html = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
 const js = html.match(/<script>([\s\S]*)<\/script>/)[1];
 
-const ctx = () => ({ imageSmoothingEnabled: false, measureText: () => ({ width: 5 }), fillText() {}, strokeText() {}, clearRect() {}, setTransform() {}, createImageData: (w, h) => ({ data: new Uint8ClampedArray(w * h * 4) }), putImageData() {}, drawImage() {}, fillRect() {}, save() {}, restore() {}, beginPath() {}, rect() {}, clip() {}, arc() {}, fill() {}, stroke() {}, moveTo() {}, lineTo() {}, translate() {}, scale() {}, set fillStyle(v) {}, set globalCompositeOperation(v) {} });
+const ctx = () => ({ imageSmoothingEnabled: false, measureText: () => ({ width: 5 }), fillText() {}, strokeText() {}, clearRect() {}, setTransform() {}, createImageData: (w, h) => ({ data: new Uint8ClampedArray(w * h * 4) }), putImageData() {}, drawImage() {}, fillRect() {}, save() {}, restore() {}, beginPath() {}, closePath() {}, createRadialGradient: () => ({ addColorStop() {} }), set strokeStyle(v) {}, set lineWidth(v) {}, rect() {}, clip() {}, arc() {}, fill() {}, stroke() {}, moveTo() {}, lineTo() {}, translate() {}, scale() {}, set fillStyle(v) {}, set globalCompositeOperation(v) {} });
 const el = () => ({ width: 0, height: 0, style: {}, getContext: ctx, addEventListener() {}, classList: { add() {}, remove() {} }, dataset: {}, setPointerCapture() {} });
 global.document = { addEventListener() {}, hidden: false, getElementById: el, createElement: el, querySelectorAll: () => [], documentElement: {}, fullscreenElement: null };
 global.window = global; global.innerWidth = 844; global.innerHeight = 390;
