@@ -39,3 +39,8 @@ Uninstall the old build first, then install the newest debug APK.
 - [ ] Every in-play dialogue box (Biju, Kannan, Soniya, chai stalls, Velu, bosses...) freezes the game until you tap anywhere or press a key; "Tap to continue" blinks under the box.
 - [ ] The game does not freeze forever in any act; boxes at the level clear, cinematics and the ending still show and go away by themselves.
 - [ ] Act II ride: a box freezes the bike and the engine goes quiet until you tap.
+- [ ] Maveli's throne scene (Pathalam): the 5 lines wait for you, with back / next arrows and a 1/5 counter under the box; tap the left of the screen or the arrow for back, anywhere else for next; after the last one the blessing happens.
+- [ ] Ending: Thoma, Soniya and Maveli lines are a 3-line conversation with the same back / next arrows.
+- [ ] Story pages (opening, between acts, epilogue): a small back arrow at the bottom left of the text panel goes to the previous page.
+- [ ] After a boss falls, the boss's last words and Amma's lines wait for a tap.
+- [ ] Bike ride: reaching 5,000 points gives the extra life directly.

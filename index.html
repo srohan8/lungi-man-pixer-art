@@ -43,7 +43,9 @@ const isTouch=matchMedia('(hover:none)').matches;
 /* =================== input =================== */
 const keys={},touch={l:0,r:0,j:0,s:0};
 addEventListener('keydown',e=>{if(e.code==='KeyM'){toggleSnd();return}
+  if(convo&&!paused&&e.code!=='KeyP'&&e.code!=='Escape'){if(e.code==='ArrowLeft'||e.code==='KeyA')convoGo(-1);else if(!e.repeat)convoGo(1);e.preventDefault();return}
   if(state==='pages'&&e.code==='Escape'){pagesSkip();return}
+  if(state==='pages'&&(e.code==='ArrowLeft'||e.code==='KeyA')){pagesPrev();e.preventDefault();return}
   if(state==='play'&&tut&&tut.phase==='msg'&&e.code==='Escape'){tutSkip();return}
   if(e.code==='KeyP'||e.code==='Escape'){if(!e.repeat)togglePause();return}
   if(paused){if(e.code==='Space'||e.code==='Enter')setPause(false);else if(e.code==='KeyQ')pauseToMenu();e.preventDefault();return}
@@ -51,7 +53,7 @@ addEventListener('keydown',e=>{if(e.code==='KeyM'){toggleSnd();return}
 addEventListener('keyup',e=>{keys[e.code]=false});
 document.querySelectorAll('[data-k]').forEach(b=>{
   const k=b.dataset.k;
-  const on=e=>{e.preventDefault();if(paused)return;if(tut&&tut.phase==='msg'&&state==='play'){tutConfirm();return}try{b.setPointerCapture(e.pointerId)}catch(_){}touch[k]=1;b.classList.add('on');startIfNeeded(k)};
+  const on=e=>{e.preventDefault();if(paused)return;if(convo){convoGo(k==='l'?-1:1);return}if(tut&&tut.phase==='msg'&&state==='play'){tutConfirm();return}try{b.setPointerCapture(e.pointerId)}catch(_){}touch[k]=1;b.classList.add('on');startIfNeeded(k)};
   const off=e=>{e.preventDefault();touch[k]=0;b.classList.remove('on')};
   b.addEventListener('pointerdown',on);
   ['pointerup','pointercancel','lostpointercapture'].forEach(t=>b.addEventListener(t,off));
@@ -59,11 +61,13 @@ document.querySelectorAll('[data-k]').forEach(b=>{
 cv.addEventListener('pointerdown',e=>{
   const r=cv.getBoundingClientRect(),x=(e.clientX-r.left)/r.width*W,y=(e.clientY-r.top)/r.height*H;
   if(tut&&tut.phase==='msg'&&state==='play'&&!paused){const r=tut.skipR;if(r&&x>r[0]&&x<r[0]+r[2]&&y>r[1]&&y<r[1]+r[3])tutSkip();else tutConfirm();return}
+  if(convo&&!paused){convoGo(x<W*.26?-1:1);return}
   if(dlg&&dlg.pause&&state==='play'&&!paused&&dlg.armed&&dlg.pt>25){dlg=null;jumpPrev=true;return}
   if(dlg&&dlg.hold&&state==='clear'&&dlg.armed&&dlg.pt>40){dlg=null;return}
   if(dlg&&dlg.xr&&state==='play'&&!paused){const r=dlg.xr;if(x>r[0]&&x<r[0]+r[2]&&y>r[1]&&y<r[1]+r[3]){dlg=null;return}}
   if(paused){if(x>W*.25&&x<W*.75){if(y>112&&y<152)setPause(false);else if(y>164&&y<204)pauseToMenu()}return}
   if(state==='pages'&&x>W-80&&y<34){pagesSkip();return}
+  if(state==='pages'&&pg&&pg.pr&&x>pg.pr[0]&&x<pg.pr[0]+pg.pr[2]&&y>pg.pr[1]&&y<pg.pr[1]+pg.pr[3]){pagesPrev();return}
   if(state==='play'&&x>W-76&&x<W-46&&y<44){setPause(true);return}
   if(x>W-48&&y<44){toggleSnd();return}
   if(state==='title'&&splashT<=0&&y>120&&y<228&&(x<W*.36||x>W*.64)){pickLevel(x<W*.5?-1:1);return}
@@ -827,7 +831,7 @@ let dlg=null,actScore=0,seen=false,resume=0,pops=[],chaiSaid=false,prints=0,hoof
 const SC={crab:100,crow:150,bat:150,goon:200,cobra:200,monkey:250,imp:120,wisp:100,dog:200,decoy:0,dancer:100};
 
 function loadLevel(i){fogK=1;bloomAt=-1;
-  lvl=i;dlg=null;chaiSaid=false;flood=TUNE.floodStart;cpFlood=TUNE.floodStart;floodWarn=0;const L=LV[i],si=L.sid,seed=si*31+7,r=rng(500+si*97);
+  lvl=i;dlg=null;convo=null;chaiSaid=false;flood=TUNE.floodStart;cpFlood=TUNE.floodStart;floodWarn=0;const L=LV[i],si=L.sid,seed=si*31+7,r=rng(500+si*97);
   segs=[[0,620]];let x=620,gi=0;vines=[];
   while(x<L.len){let gap=L.gapW?L.gapW[0]+(r()*L.gapW[1]|0):52+(r()*16|0)+2*(L.hard||0);const w=L.segW?L.segW[0]+(r()*L.segW[1]|0):300+(r()*380|0);
     const ve=L.vineEvery||3;if(L.vines&&gi%ve===(ve===3?1:0)){gap=140+(r()*16|0);vines.push({x:x+60,top:GY-110,len:86})}
@@ -924,7 +928,7 @@ function setPause(on){if(on&&state!=='play')return;if(paused===on)return;paused=
   if(on){touch.l=touch.r=touch.j=touch.s=0;document.querySelectorAll('[data-k]').forEach(b=>b.classList.remove('on'))}else jumpPrev=true;
   try{if(typeof ac!=='undefined'&&ac)on?ac.suspend():ac.resume()}catch(e){}}
 function togglePause(){if(splashT>0)return;setPause(!paused)}
-function pauseToMenu(){paused=false;try{if(typeof ac!=='undefined'&&ac)ac.resume()}catch(e){}saveHi();pick=-1;loadLevel(0);state='title';camx=0;banner=null;dlg=null}
+function pauseToMenu(){convo=null;paused=false;try{if(typeof ac!=='undefined'&&ac)ac.resume()}catch(e){}saveHi();pick=-1;loadLevel(0);state='title';camx=0;banner=null;dlg=null}
 document.addEventListener('visibilitychange',()=>{if(document.hidden)setPause(true)});
 function drawPauseIcon(){const bx=W-66,by=10,R=(x,y,w,h)=>g.fillRect(bx+x,by+y,w,h);
   g.fillStyle='rgba(18,10,28,.75)';R(0,0,26,22);g.fillStyle='#3a2c58';R(0,0,26,1);R(0,21,26,1);R(0,0,1,22);R(25,0,1,22);g.fillStyle='#cfe9c8';R(8,6,3,10);R(15,6,3,10)}
@@ -1264,6 +1268,7 @@ function update(){
   for(const p of parts){p.x+=p.vx;p.vy+=.15;p.y+=p.vy;p.l--}parts=parts.filter(p=>p.l>0);if(flashT>0)flashT--;if(fadeT>0)fadeT--;for(const q of rings)q.t++;rings=rings.filter(q=>q.t<16);
   if(innerHeight>innerWidth&&isTouch)return;
   if(state==='title'){camx=(camx+.4)%(bossX-W);return}
+  if(convo&&!paused){if(dlg)dlg.pt++;return}
   if(state==='play'&&dlg&&dlg.pause&&!paused){dlgPauseTick();return}
   if(state==='dead'){P.dt++;
     if(P.dk==='water'){const t=P.dt;P.x+=Math.sin(t*.3)*.25;if(P.wx!=null)P.x+=Math.max(-1,Math.min(1,P.wx-P.x));P.y=t<16?GY+10-34*Math.sin(t/16*Math.PI):GY-24+(t-16)*.42;if(t===26||t===60)pops.push({x:P.x+7,y:GY-34,s:t===26?'GLUB!':'GLUB GLUB...',t:50})}
@@ -1869,6 +1874,11 @@ function drawSlash(cx){
   g.globalAlpha=1;g.fillStyle='#ffffff';g.fillRect(x1,y-1,len,2);
 }
 function say(who,text,t,pause){pause=pause!==false;/* owner request after playtests: every in-play dialogue box stops the game until the player taps (people could not read them while running) */dlg={who,text,t:t||210,pause:pause,hold:state==='clear',pt:0,armed:false,x0:(typeof P!=='undefined'&&P)?P.x:0,dist:pause?0:((typeof lvl!=='undefined'&&LV[lvl]&&LV[lvl].bike)?520:1000)}}/* a box also closes by itself once the hero has moved on (the bike cannot stop, so there it is about 2.5 s of riding) */
+/* A conversation (several lines from one NPC): the game stands still, each line has back and next buttons (tap the left of the screen or the left arrow for back, anywhere else, the right arrow or Space for next); the last next closes it. Used for the throne scene and the ending. */
+let convo=null;
+function startConvo(lines,done){convo={lines,i:0,done};convoShow()}
+function convoShow(){const c=convo,l=c.lines[c.i];dlg={who:l.who,text:l.text,t:99999,pause:true,hold:false,conv:true,n:c.lines.length,i:c.i,pt:0,armed:true,x0:(typeof P!=='undefined'&&P)?P.x:0,dist:0}}
+function convoGo(d){if(!convo)return false;if(dlg&&dlg.pt<10)return true;const c=convo;if(d>0&&c.i>=c.lines.length-1){convo=null;dlg=null;if(c.done)c.done();return true}c.i=Math.max(0,Math.min(c.lines.length-1,c.i+d));convoShow();return true}
 /* a pausing dialogue: the game stands still until the player taps or presses a key (a fresh press, so a held button does not close it) */
 function dlgPauseTick(){dlg.pt++;const down=Object.keys(keys).some(k=>keys[k])||touch.l||touch.r||touch.j||touch.s;if(!down)dlg.armed=true;else if(dlg.armed&&dlg.pt>25){dlg=null;jumpPrev=true}}
 const PORT={MAVELI:'#e0b030',KANNAN:'#b06a40','KANJIRAVANAM AMMA':'#6adc5a',YAKSHI:'#dcd8ec',SONIYA:'#e8a050',CHATHAN:'#e8602a',BASHEER:'#5a8ac0',ODIYAN:'#4a3a70',BIJU:'#4a9a8a',KARINKANNI:'#4ac060',DEVI:'#e8d8a8',KOMBAN:'#6a6a7a',RAVI:'#c8903a',THOMA:'#8a7a60',VELU:'#7a5a3a',KILI:'#3a3a4a'};
@@ -1909,11 +1919,14 @@ function drawPortrait(who,x,y,box){
 function drawDlg(){
   if(!dlg||state==='title'||state==='over'||state==='win'||(tut&&tut.phase==='msg'))return;
   const bw=Math.min(360,W-120),bx=Math.round(W/2-bw/2),by=54,tw=bw-46,T=twrap(nice(dlg.text),9.5,tw,2),bh=T.lines.length>1?42:36;
-  const DP=(dlg.pause&&state==='play')||(dlg.hold&&state==='clear'),DPT=DP?(dlg.hold&&state==='clear'?40:25):0;if(DP){g.fillStyle='rgba(8,6,20,.45)';g.fillRect(0,0,W,H)}
+  const DP=dlg.conv||(dlg.pause&&state==='play')||(dlg.hold&&state==='clear'),DPT=DP?(dlg.conv?10:dlg.hold&&state==='clear'?40:25):0;if(DP){g.fillStyle='rgba(8,6,20,.45)';g.fillRect(0,0,W,H)}
   g.fillStyle='rgba(12,8,28,.86)';g.fillRect(bx,by,bw,bh);
   g.fillStyle='#f0c040';g.fillRect(bx,by,bw,1);g.fillRect(bx,by+bh-1,bw,1);g.fillRect(bx,by,1,bh);g.fillRect(bx+bw-1,by,1,bh);
   drawPortrait(dlg.who,bx+4,by+4,Math.min(34,bh-8));
-  if(DP&&dlg.pt>DPT&&(tick>>4)%2===0)ntext(isTouch?'Tap to continue':'Press any key to continue',bx+bw-8,by+bh+3,8,'#f0c040','right');
+  if(dlg.conv){/* back and next buttons under the box, with the line counter */const ty=by+bh+5,tri=(x,dir,on)=>{g.fillStyle=on?'#f0c040':'#6a5a30';for(let k=0;k<7;k++){const w=7-k;g.fillRect(dir>0?x+k:x+7-k-1,ty+k,1,1);g.fillRect(dir>0?x+k:x+7-k-1,ty+13-k,1,1);g.fillRect(dir>0?x+k:x+(7-k-1),ty+k,1,14-2*k)}};
+    g.fillStyle='rgba(12,8,28,.86)';g.fillRect(bx+bw-84,by+bh+1,84,22);g.fillRect(bx,by+bh+1,30,22);
+    tri(bx+10,-1,dlg.i>0);tri(bx+bw-18,1,true);ntext((dlg.i+1)+' / '+dlg.n,bx+bw-51,by+bh+6,8,'#f0c040','center')}
+  else if(DP&&dlg.pt>DPT&&(tick>>4)%2===0)ntext(isTouch?'Tap to continue':'Press any key to continue',bx+bw-8,by+bh+3,8,'#f0c040','right');
   dlg.xr=null;if(TUNE.dlgStay&&!DP){const xx=bx+bw-18,yy=by+4;g.fillStyle='#f0c040';for(let k=0;k<8;k++){g.fillRect(xx+k,yy+k,2,2);g.fillRect(xx+7-k,yy+k,2,2)}dlg.xr=[bx+bw-28,by,28,28]}
   ntext(nice(dlg.who),bx+44,by+3,7.5,'#f0c040');T.lines.forEach((ln,k)=>ntext(ln,bx+44,by+13+k*(T.px+1.5),T.px,'#f4ecd0'));
 }
@@ -1935,19 +1948,13 @@ function arenaTick(){
 function goldLamp(){return lvl>IDX.path||(lvl===IDX.path&&scene&&scene.t>=1340)}
 function sceneTick(){
   const L=LV[lvl],t=++scene.t;P.vx=0;P.f=1;
-  if(t===1)say('MAVELI',L.mav[0],220);
-  if(t===260)say('MAVELI',L.mav[1],260);
-  if(t===540)say('MAVELI',L.mav[2],260);
-  if(t===820)say('MAVELI',L.mav[3],240);
-  if(t===1080)say('MAVELI',L.mav[4],240);
+  if(t===1)startConvo(L.mav.map(x=>({who:'MAVELI',text:x})),()=>{scene.t=1335});
   if(t===1340){banner={a:"MAVELI'S BLESSING",b:'THE LAMPS TURN GOLD. ONE FREE HIT.',t:150};beep(880,.3,'triangle',.06);beep(1320,.4,'triangle',.05);burst(P.x+7,P.y+10,['#ffe070','#ffffff'],20)}
   if(t>=1500){state='clear';clearT=60;banner={a:L.clear[0],b:L.clear[1],t:120}}
 }
 function endTick(){
   endT++;for(const k of [0,2,4])if(endT===60+k*110)healSfx();
-  if(endT===620)say('THOMA','I TOLD YOU TO STAY ON THE TREES. YOU DID NOT LISTEN ONCE.',230);
-  if(endT===860)say('SONIYA','ARE YOU ALL JUST STANDING THERE? WANT CHAI?',230);
-  if(endT===1100)say('MAVELI','ONAM IS IN THREE WEEKS. I HOPE THE FEAST IS GOOD.',230);
+  if(endT===620)startConvo([{who:'THOMA',text:'I TOLD YOU TO STAY ON THE TREES. YOU DID NOT LISTEN ONCE.'},{who:'SONIYA',text:'ARE YOU ALL JUST STANDING THERE? WANT CHAI?'},{who:'MAVELI',text:'ONAM IS IN THREE WEEKS. I HOPE THE FEAST IS GOOD.'}],()=>{endT=1340});
   if(endT>=1400)endFinish()
 }
 function genMaveli(){
@@ -2143,6 +2150,7 @@ function startPages(list,next,snap){pg={list,next,snap,i:0,t:0,rev:0,len:list[0]
 function pagesTick(){pg.t++;if(pg.rev<pg.len)pg.rev+=1.4}
 function pagesNext(){if(!pg||pg.t<12)return;if(pg.list[pg.i].pic==='roll'){pagesSkip();return}if(pg.rev<pg.len){pg.rev=pg.len;return}
   if(pg.i>=pg.list.length-1){pagesSkip();return}pg.i++;pg.t=0;pg.rev=0;pg.len=pg.list[pg.i].text.length}
+function pagesPrev(){if(!pg||pg.i<=0||pg.t<12)return;if(pg.list[pg.i].pic==='roll')return;pg.i--;pg.t=0;pg.len=pg.list[pg.i].text.length;pg.rev=pg.len}
 function pagesSkip(){const n=pg&&pg.next;pg=null;if(n)n()}
 function fillEll(cx,cy,rx,ry,c){g.fillStyle=c;for(let j=-ry;j<=ry;j++){const w=Math.round(rx*Math.sqrt(1-(j*j)/(ry*ry)));g.fillRect(cx-w,cy+j,w*2,1)}}
 function pageTree(x,gy,col,dim){const c=dim?'#2a2a3a':col;
@@ -2269,6 +2277,8 @@ function drawPages(){
   T.lines.forEach((ln,k)=>{if(left<=0)return;ntext(ln.slice(0,left),px+12,ty+k*(T.px+4),T.px,'#f4ecd0');left-=ln.length+1});
   for(let k=0;k<pg.list.length;k++){g.fillStyle=k===pg.i?'#f0c040':'#3a2c58';g.fillRect(px+12+k*10,H-26,6,3)}
   if((tick>>5)%2===0)ntext(pg.rev>=pg.len?(isTouch?'Tap for next':'Press any key'):'',px+pw-12,H-32,8,'#cfe9c8','right');
+  /* back button (bottom left of the text panel) */
+  pg.pr=pg.i>0?[px,H-52,46,40]:null;if(pg.i>0){g.fillStyle='rgba(12,8,28,.7)';g.fillRect(px+4,H-48,34,26);g.fillStyle='#cfe9c8';for(let k=0;k<7;k++)g.fillRect(px+13+k,H-41+k,1,14-2*k)}
   ntext('Skip',W-12,6,9,'#d8d0f0','right');
 }
 /* Story scenes, sharp characters: which poses are resting and which are gestures. While a character speaks the gestures come in on the beat of the words (irregular, a few frames each, with a small bounce at each beat); at rest he breathes and shifts slowly between the resting poses. */
