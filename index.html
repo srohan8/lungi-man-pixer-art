@@ -1499,7 +1499,7 @@ function drawRings(cx){for(const q of rings){const k=q.t/16,rad=Math.round((q.bi
   g.globalAlpha=1}}
 function slashHits(){
   if(slashT<=0)return;slashT--;
-  const sb={x:P.f>0?P.x+P.w-2:P.x+2-TUNE.rayRange,y:P.y+10,w:TUNE.rayRange,h:12};
+  const sb={x:P.f>0?P.x+P.w-2:P.x+2-TUNE.rayRange,y:P.y+(trishArt()?6:10),w:TUNE.rayRange,h:trishArt()?18:12};/* with the hand-drawn spear the ray leaves 8 px higher, so the box grows downwards to keep hitting ground enemies */
   for(const e of enemies){if(!e.alive||e.sw===swingId)continue;
     if(!e.calm&&hit(sb,e)){e.sw=swingId;e.hp=0;sunHit(e.x+e.w/2,e.y+e.h/2);kill(e)}}
   for(const s of shots)if(s.life>0&&hit(sb,{x:s.x-2,y:s.y-2,w:4,h:4})){s.life=0;score+=10;sunHit(s.x,s.y);beep(900,.04,'square',.04)}
@@ -1848,7 +1848,7 @@ function drawStaffInHand(cx){
 const BEAMG={};function greenBeam(i){if(BEAMG[i])return BEAMG[i];const im=ART['tbeam_'+i];if(!im)return null;try{const c=document.createElement('canvas');c.width=im.width;c.height=im.height;const x=c.getContext('2d');x.drawImage(im,0,0);const d=x.getImageData(0,0,c.width,c.height),p=d.data;for(let k=0;k<p.length;k+=4){const R=p[k],G=p[k+1];p[k]=Math.round(G*.7);p[k+1]=Math.min(255,Math.round(R*1.02));p[k+2]=Math.round(p[k+2]*.8)}x.putImageData(d,0,0);return BEAMG[i]=c}catch(e){return BEAMG[i]=im}}
 function drawSlash(cx){
   if(slashT<=0||!P||state!=='play')return;
-  const f=P.f,a=slashT/8,R=TUNE.rayRange,len=Math.round(R*Math.min(1,(9-slashT)/3)),y=Math.round(P.y+16),
+  const f=P.f,a=slashT/8,R=TUNE.rayRange,len=Math.round(R*Math.min(1,(9-slashT)/3)),y=Math.round(P.y+(trishArt()?8:16)),/* the hand-drawn spear is held 8 px below the top of the hero box: the ray leaves from its tip */
         ox=Math.round(P.x-cx)+(f>0?12:2)+f*22,B=[0,1,2].map(i=>greenBeam(i));
   if(B.every(Boolean)){/* flare at the sun, beam tiles along the ray, fading tip; added to the scene like light. Pieces are 56x18 boxes, so only their painted part (c0..c1) is used. */
     const pc=(im,c0,c1,ay,d)=>{const w=c1-c0+1;if(f>0)g.drawImage(im,c0,0,w,18,ox+d,y-ay,w,18);else g.drawImage(flipOf(im),55-c1,0,w,18,ox-d-w,y-ay,w,18)};
