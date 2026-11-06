@@ -127,7 +127,7 @@ He is not a warrior. He is not brave in the heroic sense. He climbs trees for a 
 
 He is also, without knowing it, the only person in Muruthikudi with no connection to what happened fifty years ago. He wasn't born yet. His family had nothing to do with the logging deal. He is clean in a way that nobody else in the village is.
 
-Bhadrakali noticed.
+Kanjiravanam Amma noticed.
 
 ---
 
@@ -137,7 +137,7 @@ On an ordinary morning, LungiMan climbed into Kanjiravanam for a routine harvest
 
 He should have died.
 
-Instead, the forest goddess **Bhadrakali** appeared to him in a vision. Not gentle. Not reassuring. Bhadrakali is the goddess of the forest, of time, of the reckoning that comes when things have been wrong for too long. She appeared because the Kazhukans were close to tearing the seal open completely, and she had run out of better options.
+Instead, the forest guardian **Kanjiravanam Amma** appeared to him in a vision. Not gentle. Not reassuring. Kanjiravanam Amma is the guardian of the forest, of time, of the reckoning that comes when things have been wrong for too long. She appeared because the Kazhukans were close to tearing the seal open completely, and she had run out of better options.
 
 She showed him what had happened. The ancient seal. The five trees. The crack. The fifty years of corruption spreading through Kanjiravanam grove by grove. She showed him five sacred trees, each one held hostage by a Kazhukan who had grown powerful and comfortable in its corrupted grove.
 
@@ -179,7 +179,7 @@ They all help him. None of them explain why. LungiMan thinks his village is unus
 ### Prologue: The Swinging Awakening
 *Muruthikudi village. Golden hour. The day after.*
 
-LungiMan moves through the village edge for the first time with Bhadrakali's blessing, learning what his body can now do. Everything is still warm and familiar — the chai stall, the village paths, the riverside. Captain Biju gives him a coconut and a warning. Brother Thoma gives him a token and a heavier warning.
+LungiMan moves through the village edge for the first time with Kanjiravanam Amma's blessing, learning what his body can now do. Everything is still warm and familiar — the chai stall, the village paths, the riverside. Captain Biju gives him a coconut and a warning. Brother Thoma gives him a token and a heavier warning.
 
 He crosses the river. He fights his first Coconut Crab — a thrall, a lesser Kazhukan spirit too small to hold a grove, just large enough to be dangerous. At the edge of the village, the forest deepens. The golden hour ends. He goes in.
 
@@ -188,7 +188,7 @@ He crosses the river. He fights his first Coconut Crab — a thrall, a lesser Ka
 ### Act I: Yakshi's Hollow
 *Bamboo groves. Dusk into nightfall.*
 
-The first corrupted grove is a bamboo hollow by the river bend, held by **Yakshi** — a seductress spirit who has flooded the area with illusions. Mirror clones of LungiMan move through the mist. False paths loop back on themselves. The river is treacherous. A broken bridge forces him to use his rope and the trees the way Bhadrakali intended.
+The first corrupted grove is a bamboo hollow by the river bend, held by **Yakshi** — a seductress spirit who has flooded the area with illusions. Mirror clones of LungiMan move through the mist. False paths loop back on themselves. The river is treacherous. A broken bridge forces him to use his rope and the trees the way Kanjiravanam Amma intended.
 
 Soniya Chechi's chai stall appears in the middle of the corruption — she set up here years ago on the edge of what used to be safe land. She serves him chai from her clean spring and doesn't ask questions.
 
@@ -222,7 +222,7 @@ This is the act where **Mooppan Velu** appears. He lives in a cave near the thir
 
 He tells LungiMan everything about Odiyan. He says nothing about why he knows so much. He will not say it. Saying it would make it real in a way that fifty years of cave-dwelling penance has not.
 
-**Kili** — a spirit crow sent by Bhadrakali — appears here too, perching at a shrine. Kili watches. Kili caws one second before each transform. Kili was sent because Bhadrakali knew LungiMan would need a warning system in a fight where the enemy is invisible until the last moment.
+**Kili** — a spirit crow sent by Kanjiravanam Amma — appears here too, perching at a shrine. Kili watches. Kili caws one second before each transform. Kili was sent because Kanjiravanam Amma knew LungiMan would need a warning system in a fight where the enemy is invisible until the last moment.
 
 The fourth hoof-print triggers the bull charge — Odiyan comes directly at LungiMan in full fury, the camera pulling back to show the scale of it. One jump. One vault over a root. The fight begins.
 
@@ -321,7 +321,7 @@ He stands. The lamps burn brighter.
 
 *"Kanjiravanam was protected once. By better men than either of us. They are gone now. You are what is left."*
 
-He places his hand on LungiMan's chest. LungiMan's HP fills completely. The Nilavilakku lamp on the HUD blazes — golden now, not orange. Maveli's blessing layers on Bhadrakali's. It will last through everything ahead.
+He places his hand on LungiMan's chest. LungiMan's HP fills completely. The Nilavilakku lamp on the HUD blazes — golden now, not orange. Maveli's blessing layers on Kanjiravanam Amma's. It will last through everything ahead.
 
 *"Go up. Finish it. Onam is coming — my people need a home to come back to."*
 
@@ -356,7 +356,7 @@ When Pey Komban falls, it dissolves into golden light at the banyan's roots. The
 
 The fireflies rise. All of them, from all five groves, converging on the temple banyan in a white swarm.
 
-Bhadrakali speaks. Not in a vision this time — in the sound of the forest itself. *"Kanjiravanam breathes again."*
+Kanjiravanam Amma speaks. Not in a vision this time — in the sound of the forest itself. *"Kanjiravanam breathes again."*
 
 The five sacred trees bloom in sequence, each one the colour of the act where it was freed — teal from the bamboo hollow, amber from the carnival grounds, indigo from the highland fog, deep green from the monsoon mangroves, gold from the temple grove. The corruption retreats. The backwater water runs clean. The forest that has been sick for fifty years begins to recover.
 
@@ -400,7 +400,7 @@ The village of Muruthikudi goes on.
 |---|---|---|
 | **LungiMan** | Coconut tapper, reluctant hero | The only clean person in the village |
 | **Maveli (Mahabali)** | Kerala's golden-age king, exiled underground | Has been watching Kanjiravanam decay for fifty years, waiting for someone to come down |
-| **Bhadrakali** | Forest goddess | Chose LungiMan because she ran out of better options |
+| **Kanjiravanam Amma** | Forest guardian | Chose LungiMan because she ran out of better options |
 | **Mooppan Velu** | Forest monk, cave-dweller | Made the deal that started everything |
 | **Captain Biju** | Houseboat captain, ex-fighter | Transported the timber. His boat is built from it. |
 | **Brother Thoma** | Christian hermit, protector | Witnessed the deal and said nothing |
@@ -408,7 +408,7 @@ The village of Muruthikudi goes on.
 | **Soniya Chechi** | Chai stall owner | Built her stall on the cleared land |
 | **Mundakkal Ravi** | Toddy shop owner | Bought the timber. Never stops talking because of it. |
 | **Sr. Devi** | Buddhist nun | The only one with no connection to the deal |
-| **Kili** | Spirit crow, Bhadrakali's messenger | Judges silently. Has seen everything. |
+| **Kili** | Spirit crow, Kanjiravanam Amma's messenger | Judges silently. Has seen everything. |
 
 ---
 

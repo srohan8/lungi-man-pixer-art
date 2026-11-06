@@ -8,7 +8,7 @@ Edit the words in index.html (OPENING, SCENES, the LV lines, EPILOGUE, the cinem
 2. **The seal**: Long ago a gate to the demon realm tore open in the grove. The gods locked it to five sacred trees, each tended by a family of grove-priests. For centuries the seal held, and the demons, the Kazhukans, could only wait.
 3. **The crack**: Then, a few decades ago, something began to break. The trees withered one by one. A crack ran through the seal, and red light seeped out. Nobody in the village will say how it happened.
 4. **The grove runs wild**: The little creatures of the grove felt it first. Crabs, dogs, cobras and bats turned red-eyed and wild, and began to hunt. Tree by tree, the groves fell to the Kazhukans.
-5. **The blessing**: One morning a coconut tapper fell deeper into the grove than anyone had gone. He should have died. A goddess caught him. "You are the chosen one," she said. "Take this. Go." Thus Kannan's journey began!
+5. **The blessing**: One morning a coconut tapper fell deeper into the grove than anyone had gone. He should have died. The grove's guardian caught him. "You are the chosen one," she said. "Take this. Go." Thus Kannan's journey began!
 
 ## Village scene (before the prologue)
 - **Biju**: The forest is restless again. Take this coconut.
@@ -18,7 +18,7 @@ Edit the words in index.html (OPENING, SCENES, the LV lines, EPILOGUE, the cinem
 - **Kannan**: Something inside me keeps pulling me to the forbidden groves. Is this a blessing or a curse? Why me? _(level starts)_
 - **Biju**: Those crabs are Kazhukan scouts. Red eyes mean the grove is watching you. _(walking past x=300)_
 - **Kannan**: Red eyes mean something has sickened the grove. Then I will find out what. _(walking past x=440)_
-- **Bhadrakali**: Five sacred trees hold the seal. The Kazhukans want it broken. Free them, Kannan. _(level clear)_
+- **Kanjiravanam Amma**: Five sacred trees hold the seal. The Kazhukans want it broken. Free them, Kannan. _(level clear)_
 
 _Scene after this level:_
 - (caption) Dusk falls, the hour when the Kazhukan creatures stir.
@@ -42,7 +42,7 @@ _Scene after this level:_
 - **Kannan**: The bike cannot get through this. Looks like I have to go on foot from here.
 
 ## ACT II: Kuttichathan's carnival
-- **Bhadrakali**: Kuttichathan loves a party. His clones all look alike. Hit the real one. _(level starts)_
+- **Kanjiravanam Amma**: Kuttichathan loves a party. His clones all look alike. Hit the real one. _(level starts)_
 - **Kannan**: A whole festival and not one person left. The Kazhukans emptied the place. _(walking past x=900)_
 - **Kuttichathan**: Catch me if you can, toddy boy! Hehe! _(boss appears, fades after about 5 s)_
 - **Kuttichathan**: Fine, fine... Take the relic. Spoilsport. _(level clear)_
@@ -75,7 +75,7 @@ _Scene after this level:_
 - **Ravi**: The rain is coming. Be careful out there.
 
 ## ACT IV: Karinkanni's curse
-- **Bhadrakali**: Be still when it looks at you. The eye hunts what moves. Your village carries an old guilt. _(level starts)_
+- **Kanjiravanam Amma**: Be still when it looks at you. The eye hunts what moves. Your village carries an old guilt. _(level starts)_
 - **Kannan**: Everyone talks about my village like it owes a debt. What did it do? _(walking past x=1200)_
 - **Karinkanni**: Look at me... And be still. _(boss appears, fades after about 5 s)_
 - **Karinkanni**: The storm... It passes. Thank you. _(level clear)_
@@ -134,7 +134,7 @@ _Scene after this level:_
 - **Vine**: Jump into the hanging vine (Space) and it swings you across.
 
 ## Act banners and clear banners (pixel font, shown in play)
-- **Prologue the swinging awakening**: clear banner: Bhadrakali smiles / The forest gives you its power
+- **Prologue the swinging awakening**: clear banner: Kanjiravanam Amma smiles / The forest gives you its power
 - **Act I Yakshi's hollow**: clear banner: Tree awakened / Yakshi is free of the curse
 - **Act ii the ride to the carnival**: clear banner: The festival gates / Something wrong is dancing inside
 - **Act ii Kuttichathan's carnival**: clear banner: Second tree awakened / Kuttichathan hands over the relic

@@ -20,7 +20,7 @@ No fourth button. No menus during play, except the pause overlay (pause icon, P 
 4. **Levels are linear, left to right.** No backtracking, no maps, no keys, no puzzles, no branching paths.
 5. **Story is told in short beats.** Act banners (1-2 lines) plus small dialogue boxes: max 2 lines, one speaker. In-play dialogue boxes stay in their fixed place until the next line replaces them or the player taps the small X (owner request); they never pause the game and never require a tap, The exceptions that stop the game until the player taps or presses a key are the boss's first line and Kannan's line at the start of the disco interlude. At most 5 boxes per act, including Kannan's short replies to what an NPC reveals. No choices, no text the player must read to progress. The only exception to "no cutscenes" is the coded story scenes (see below).
 6. **Power-ups are instant and automatic** (pick up, effect starts). No inventory or selection.
-7. **One weapon at a time, replaced by pickup, lost on death.** Coconut (default, ranged, limited ammo shown in the HUD), parotta triple coconut (one coconut per volley), and Bhadrakali's trishul (red-gold ray, pierces, cuts enemy shots, double boss damage, no ammo). All use the same THROW button. Never add a weapon-switch button. New weapons must follow the same rule.
+7. **One weapon at a time, replaced by pickup, lost on death.** Coconut (default, ranged, limited ammo shown in the HUD), parotta triple coconut (one coconut per volley), and Kanjiravanam Amma's trishul (red-gold ray, pierces, cuts enemy shots, double boss damage, no ammo). All use the same THROW button. Never add a weapon-switch button. New weapons must follow the same rule.
 8. **Vines are automatic.** Jumping into a hanging vine grabs it, it swings you forward and releases on its own (or when you press JUMP). Used only to cross wide gaps. No climb button, no aiming.
 9. **No new systems** without asking first (the coconut count and the 5,000-point extra life are the only counters; numbers live in TUNE): no crafting, shops, XP, skill trees, stats, combos, save slots, difficulty menus.
 10. **Difficulty comes from layout and enemy count, not complexity.** It ramps by act through `LV0[n].hard` (0 prologue to 5 Act V): more enemies per stretch, slightly wider gaps, faster shooters, tougher bosses.
@@ -61,7 +61,7 @@ Level selector (owner request): the title screen has left/right arrows (keys, A/
 ## Visual rules
 - Pixel art only. Internal canvas height is 270; width adapts to the screen.
 - No image smoothing. No gradients except dithered ones. Fonts: the built-in pixel font for the title, HUD, banners and pop-ups; story text (dialogue, scenes, story panel, captions, ending) uses a normal bold font in sentence case on a full-resolution text layer.
-- Lore: the red eyes and rim are the mark of the Kazhukan corruption (illusions, poison, rage). Bhadrakali explains it at the end of the prologue. Bosses are the corrupted guardians.
+- Lore: the red eyes and rim are the mark of the Kazhukan corruption (illusions, poison, rage). Kanjiravanam Amma explains it at the end of the prologue. Bosses are the corrupted guardians.
 - Haunted look: every small enemy has a pulsing red rim, glowing red eyes and a few red sparkles. Keep that for any new enemy.
 - Small enemies must stay readable on every background: warm mid-tone colours (like the monkey) plus the light rim. Never make an enemy near-black or dark blue.
 - Each act has its own limited palette. Props have no outline; characters and enemies do.
@@ -77,7 +77,7 @@ Level selector (owner request): the title screen has left/right arrows (keys, A/
 Multiplayer, online features, accounts, ads, in-app purchases, procedural story, voice acting.
 
 ## Story cameos (from STORYLINE.md, hero stays "Kannan" for now)
-Prologue: Biju, Thoma, Bhadrakali. I: Soniya (first chai stall), Yakshi. II: Ravi, Kuttichathan. III: Velu, Ustad Basheer (bard cameo, sings verses), Odiyan. IV: Bhadrakali (her warning at the start; the nun Devi no longer speaks), Karinkanni. V: Thoma, Soniya (first stall), Bhadrakali.
+Prologue: Biju, Thoma, Kanjiravanam Amma. I: Soniya (first chai stall), Yakshi. II: Ravi, Kuttichathan. III: Velu, Ustad Basheer (bard cameo, sings verses), Odiyan. IV: Kanjiravanam Amma (her warning at the start; the nun Devi no longer speaks), Karinkanni. V: Thoma, Soniya (first stall), Kanjiravanam Amma.
 Thoma's token: every act after the prologue starts with 4 lives (shown as Nilavilakku lamps).
 Hero look: aviator sunglasses, satchel with a green coconut, no towel.
 Planned next (agreed order): Pathalam + Maveli + ending, Act III hoof-prints + Kili, disco dream interlude, Act II bike ride.
@@ -109,7 +109,7 @@ Rules that change as each step lands:
 - **Story panel**: between levels and in the opening, longer text over several pages with the speaker's portrait, tap for next, skip any time. Never during play. In play only short banners and one-line boxes.
 - **Opening**: five story pages on the very first play (place, seal, crack, the grove runs wild, the blessing) (then the village scene and the prologue). Skippable.
 - **Prologue tutorial (exception)**: step-by-step messages freeze the game until confirmed, and each step finishes when the player does the action (move, jump, throw, parotta, vine). First play or when the prologue is picked from the level selector. A visible SKIP. After the prologue nothing ever stops for a message.
-- **Weapon (done)**: the Sun Staff became Bhadrakali's **trishul** (same behaviour, same THROW button, same pickups in Acts II, III and V).
+- **Weapon (done)**: the Sun Staff became Kanjiravanam Amma's **trishul** (same behaviour, same THROW button, same pickups in Acts II, III and V).
 - **Finishing cinematics (exception)**: coded, no controls, skippable: Odiyan's last strike and Kannan's fall (Act III), the ground opening into Pathalam (after Act IV), the mundu finale (Act V: hand-drawn sheets mk_k_* Kannan and mk_b_* Pey Komban, the key illustration mk_big_0, the lasso rope and the game's pixel hero for the swing, stones/sparks/CRASH at the hit; sources in assets/reference, prompts in docs/MUNDU_SCENE_PROMPTS.md).
 - **Entry scenes**: play when advancing and when a level is picked from the selector. "Tap to continue" is silent except into the interlude and Pathalam.
 - **Sacred trees**: one in each boss arena, withered before the boss, blooming in the act colour after (teal, amber, indigo, green, gold). Replaying a beaten act shows it healed.

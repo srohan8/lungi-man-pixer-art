@@ -13,7 +13,7 @@ Hero stays **Kannan** for now. Source of the backstory: `docs/STORYLINE.md` (and
 1. **Story panel** (between levels and the opening): longer text, several pages, tap for next, skip any time. Never during play.
 2. **Prologue tutorial exception**: step-by-step messages freeze the game until confirmed; each step completes when the player does the action.
    First play, or when the prologue is picked from the level selector. A visible SKIP. After the prologue nothing ever stops for a message.
-3. **Weapon**: the Sun Staff becomes **Bhadrakali's trishul** (same behaviour: one pickup replaces the coconut, hits in a line, cuts enemy shots,
+3. **Weapon**: the Sun Staff becomes **Kanjiravanam Amma's trishul** (same behaviour: one pickup replaces the coconut, hits in a line, cuts enemy shots,
    double boss damage, no ammo, same THROW button).
 4. **Mundu finale**: after Pey Komban's last hit the controls go away and a coded scene plays (once, skippable).
 5. **Dialogue rule 5**: "max 3 boxes per act" stays for in-play boxes; the panel is separate.
@@ -23,7 +23,7 @@ Hero stays **Kannan** for now. Source of the backstory: `docs/STORYLINE.md` (and
 2. **The seal.** "Long ago a gate to the demon realm tore open in the grove. The gods locked it to five sacred trees, each tended by a family of grove-priests. The demons, the Kazhukans, waited." (picture: the five trees)
 3. **Maveli.** "Beneath the roots, a king was sent below a thousand years ago. He gave his word, and he keeps it. Every Onam he comes home, and every year the grove smells worse."
 4. **The crack.** "Fifty years ago the seal cracked. Tree by tree, the groves fell to the Kazhukans. Nobody in the village will say how."
-5. **Kannan.** "One morning a coconut tapper fell deeper into the grove than anyone had gone. He should have died. A goddess caught him." Bhadrakali: "You are the chosen one. Take this. Go." Thus Kannan's journey began! She gives him the trishul.
+5. **Kannan.** "One morning a coconut tapper fell deeper into the grove than anyone had gone. He should have died. The grove's guardian caught him." Kanjiravanam Amma: "You are the chosen one. Take this. Go." Thus Kannan's journey began! She gives him the trishul.
 
 Never named in the opening: Velu, the logging deal, the guilt.
 
@@ -38,7 +38,7 @@ Guided steps (message freezes the game, confirm, then do the action; the matchin
 5. **Vine**: "Jump into the vine and it swings you across." Done when the vine is grabbed.
 
 ## 3. The trishul
-After the opening, Bhadrakali leaves her trishul at forest shrines along the way. That is the pickup in Acts II, III and V (not Act IV: the eye needs range).
+After the opening, Kanjiravanam Amma leaves her trishul at forest shrines along the way. That is the pickup in Acts II, III and V (not Act IV: the eye needs range).
 Art: a new sheet from the prompt we write (trishul held, charging, firing, ray with fire-red and gold). The Sun Staff art stays as the fallback.
 
 ## 4. Sacred trees and healing, every act
@@ -73,7 +73,7 @@ Short beats over the healed grove, each skippable:
 - **Ravi** closes the toddy shop, finally quiet.
 - **Soniya** pours the last of her spring over the roots.
 - **Thoma** kneels at the shrine and, for the first time, does not ask forgiveness.
-- **Kannan** picks up his rope. There are coconuts to harvest. Bhadrakali: "Kanjiravanam breathes again." Maveli, below: "Onam is coming. I will come home."
+- **Kannan** picks up his rope. There are coconuts to harvest. Kanjiravanam Amma: "Kanjiravanam breathes again." Maveli, below: "Onam is coming. I will come home."
 
 ## 7b. Finishing cinematics (coded, no controls, skippable, ~8-10 s each)
 Three of them. They start from the last hit or the clear of the level and never need input.
@@ -102,11 +102,11 @@ Three of them. They start from the last hit or the clear of the level and never 
 (a sleeping serpent as scenery is fine).
 
 ## Art and assets needed
-- Trishul sheet (prompt to write), Bhadrakali sprite is done.
+- Trishul sheet (prompt to write), Kanjiravanam Amma sprite is done.
 - Hero frames: mundu lasso, tusk climb, boxers. Sacred tree sprites (withered + bloomed in 5 colours). Bell prop.
 - Story panel UI (code), tutorial pulse ring on the buttons (code).
 - **Opening page illustrations (proper art, after all the changes):** the five pages are drawn in code for now (village, five glowing trees, Maveli below the roots,
-  the red crack across the third tree, Bhadrakali with Kannan). The trees look like glowing balls on sticks. Needed: one illustration per page, same style as the
+  the red crack across the third tree, Kanjiravanam Amma with Kannan). The trees look like glowing balls on sticks. Needed: one illustration per page, same style as the
   reference art; the five sacred trees are the same ones used in the boss arenas (withered and bloomed versions).
 
 ## Art received and converted (2026-11-04)

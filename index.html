@@ -217,7 +217,7 @@ const FONT={A:'010101111101101',B:'110101110101110',C:'011100100100011',D:'11010
 /* Story text (dialogue, scenes, captions, ending) is drawn with a normal font on a second, full-resolution canvas laid over the game, so it stays sharp and readable on a phone.
    Everything else keeps the pixel font. ntext() only queues; flushText() paints after the frame. */
 const tcv=document.getElementById('t'),tg=tcv.getContext('2d'),TQ=[],TFONT='"Trebuchet MS","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
-const NAMES=['Kannan','Biju','Thoma','Ravi','Soniya','Yakshi','Kuttichathan','Odiyan','Karinkanni','Komban','Pey Komban','Bhadrakali','Devi','Velu','Maveli','Kili','Basheer','Kanjiravanam','Kerala','Kazhukans','Kazhukan','Muruthikudi','Onam','Bullet','Pathalam','Nilavilakku'];
+const NAMES=['Kannan','Biju','Thoma','Ravi','Soniya','Yakshi','Kuttichathan','Odiyan','Karinkanni','Komban','Pey Komban','Kanjiravanam Amma','Devi','Velu','Maveli','Kili','Basheer','Kanjiravanam','Kerala','Kazhukans','Kazhukan','Muruthikudi','Onam','Bullet','Pathalam','Nilavilakku'];
 /* ALL CAPS data text -> sentence case ("THE FOREST IS RESTLESS." -> "The forest is restless.") */
 function nice(s){if(!s)return s;let t=s.toLowerCase().replace(/(^|[.!?…]\s+)([a-z])/g,(m,a,b)=>a+b.toUpperCase()).replace(/\bi\b/g,'I').replace(/\bi'(m|ll|ve|d)\b/g,(m,a)=>"I'"+a);
   t=t.replace(/(^|[^a-z])chathan(?![a-z])/gi,(m,a)=>a+'Kuttichathan');
@@ -494,8 +494,8 @@ Object.assign({},LV_OLD[0],{act:'PROLOGUE',name:'THE SWINGING AWAKENING',
   foes:['crab'],boss:null,len:600,endVine:true,
   fixed:[{x:480,k:'parotta'}],
   tut:[{x:40,a:'MOVE',b:'LEFT AND RIGHT BUTTONS',d:0},{x:230,a:'THROW',b:'HOLD THROW. KILLS DROP COCONUTS',d:0},{x:400,a:'JUMP',b:'TAP JUMP. STOMP CRABS TOO',d:0},{x:540,a:'VINE',b:'JUMP INTO THE VINE TO SWING',d:0}],
-  clear:['BHADRAKALI SMILES','THE FOREST GIVES YOU ITS POWER'],
-  sayStart:['KANNAN','SOMETHING INSIDE ME KEEPS PULLING ME TO THE FORBIDDEN GROVES. IS THIS A BLESSING OR A CURSE? WHY ME?'],sayAt:[{x:300,who:'BIJU',text:'THOSE CRABS ARE KAZHUKAN SCOUTS. RED EYES MEAN THE GROVE IS WATCHING YOU.',d:0},{x:440,who:'KANNAN',text:'RED EYES MEAN SOMETHING HAS SICKENED THE GROVE. THEN I WILL FIND OUT WHAT.',d:0}],sayClear:['BHADRAKALI','FIVE SACRED TREES HOLD THE SEAL. THE KAZHUKANS WANT IT BROKEN. FREE THEM, KANNAN.']}),
+  clear:['AMMA SMILES','THE FOREST GIVES YOU ITS POWER'],
+  sayStart:['KANNAN','SOMETHING INSIDE ME KEEPS PULLING ME TO THE FORBIDDEN GROVES. IS THIS A BLESSING OR A CURSE? WHY ME?'],sayAt:[{x:300,who:'BIJU',text:'THOSE CRABS ARE KAZHUKAN SCOUTS. RED EYES MEAN THE GROVE IS WATCHING YOU.',d:0},{x:440,who:'KANNAN',text:'RED EYES MEAN SOMETHING HAS SICKENED THE GROVE. THEN I WILL FIND OUT WHAT.',d:0}],sayClear:['KANJIRAVANAM AMMA','FIVE SACRED TREES HOLD THE SEAL. THE KAZHUKANS WANT IT BROKEN. FREE THEM, KANNAN.']}),
 {act:'ACT I',name:"YAKSHI'S HOLLOW",
  sky:['#050a1a','#0a1a30','#12304a','#1c4a5a','#2a6a6a','#4a8a7a'],stars:55,
  sun:{y:52,r:22,c:['#f4f4e0','#dcdcc4','#8aa8a0'],crater:'#c0c0aa'},cloud:['#4a7a80','#2c5460','#1a3a48'],
@@ -523,7 +523,7 @@ Object.assign({},LV_OLD[0],{act:'PROLOGUE',name:'THE SWINGING AWAKENING',
  bush:['#2a2a1c','#3a4a24','#5a7a30','#ff8a20','#ffd040'],
  motes:'fly',foes:['imp','wisp','goon','imp'],boss:'chathan',len:3100,
  clear:['SECOND TREE AWAKENED','CHATHAN HANDS OVER THE RELIC'],
- sayStart:['BHADRAKALI','KUTTICHATHAN LOVES A PARTY. HIS CLONES ALL LOOK ALIKE. HIT THE REAL ONE.'],sayAt:[{x:900,who:'KANNAN',text:'A WHOLE FESTIVAL AND NOT ONE PERSON LEFT. THE KAZHUKANS EMPTIED THE PLACE.',d:0}],sayBoss:['CHATHAN','CATCH ME IF YOU CAN, TODDY BOY! HEHE!'],sayClear:['CHATHAN','FINE, FINE... TAKE THE RELIC. SPOILSPORT.']},
+ sayStart:['KANJIRAVANAM AMMA','KUTTICHATHAN LOVES A PARTY. HIS CLONES ALL LOOK ALIKE. HIT THE REAL ONE.'],sayAt:[{x:900,who:'KANNAN',text:'A WHOLE FESTIVAL AND NOT ONE PERSON LEFT. THE KAZHUKANS EMPTIED THE PLACE.',d:0}],sayBoss:['CHATHAN','CATCH ME IF YOU CAN, TODDY BOY! HEHE!'],sayClear:['CHATHAN','FINE, FINE... TAKE THE RELIC. SPOILSPORT.']},
 {act:'ACT III',name:"ODIYAN'S HUNT",
  sky:['#0c121e','#16202e','#22304a','#344a62','#506a7c','#7a92a0'],stars:14,
  sun:{y:54,r:15,c:['#e8ecf0','#b8c0c8','#6a7e8a'],crater:'#98a8aa'},cloud:['#7a8e9a','#506470','#344454'],
@@ -551,7 +551,7 @@ Object.assign({},LV_OLD[0],{act:'PROLOGUE',name:'THE SWINGING AWAKENING',
  bush:['#0a1e1c','#143a32','#24604a','#a0e0d0','#ffffff'],
  motes:'mist',rain:true,foes:['crab','bat','crow','bat'],boss:'karin',len:3000,vines:true,vineEvery:2,
  clear:['FOURTH TREE AWAKENED','THE RAIN FALLS QUIET.'],
- sayStart:['BHADRAKALI','BE STILL WHEN IT LOOKS AT YOU. THE EYE HUNTS WHAT MOVES. YOUR VILLAGE CARRIES AN OLD GUILT.'],sayAt:[{x:1200,who:'KANNAN',text:'EVERYONE TALKS ABOUT MY VILLAGE LIKE IT OWES A DEBT. WHAT DID IT DO?',d:0}],sayBoss:['KARINKANNI','LOOK AT ME... AND BE STILL.'],sayClear:['KARINKANNI','THE STORM... IT PASSES. THANK YOU.']},
+ sayStart:['KANJIRAVANAM AMMA','BE STILL WHEN IT LOOKS AT YOU. THE EYE HUNTS WHAT MOVES. YOUR VILLAGE CARRIES AN OLD GUILT.'],sayAt:[{x:1200,who:'KANNAN',text:'EVERYONE TALKS ABOUT MY VILLAGE LIKE IT OWES A DEBT. WHAT DID IT DO?',d:0}],sayBoss:['KARINKANNI','LOOK AT ME... AND BE STILL.'],sayClear:['KARINKANNI','THE STORM... IT PASSES. THANK YOU.']},
 {act:'ACT V',name:"PEY KOMBAN'S RAMPAGE",
  sky:['#06060e','#0e0e1c','#1a1a30','#2a2444','#3a2c52','#4a3460'],stars:60,
  sun:{y:50,r:14,c:['#f4f0e0','#d8d4c8','#4a3460'],crater:'#c8c0b0'},cloud:['#4a3a6a','#2e2448','#1c1630'],
@@ -1098,7 +1098,7 @@ function drawPt(cx){const c=cin,t=c.t,gx=Math.round(c.gx-cx);
 }
 /* ===== Finishing cinematic, Act V: the mundu finale. After Pey Komban's last hit the controls go away: Kannan whips off his mundu, lassos the tusk, swings up and
    throws the knockout coconut from above, lands in his boxers, Thoma brings a fresh mundu. Coded from the hf_* frames. ~8 s, skippable. ===== */
-const MK_HOLD=84,MK_END=500+MK_HOLD,MK_HIT=240+MK_HOLD-2;
+const MK_HOLD=84,MK_END=700,MK_HIT=240+MK_HOLD-2;/* the scene ends a little later so Thoma's line comes only after Pey Komban has vanished */
 /* te: the timeline without the "standing on his head" hold, so every later beat keeps its old timing */
 const mkTe=t=>t<240?t:(t<240+MK_HOLD?240:t-MK_HOLD);
 function mkPos(c,t){const gy=GY+1,te=mkTe(t),hold=t>=240&&t<240+MK_HOLD,headY=GY-104;let x=c.sx,y=gy,f='idle';
@@ -1189,10 +1189,10 @@ function drawMk(cx){const c=cin,t=c.t,te=mkTe(t),big=null;/* the single key illu
   if(t>=MK_HIT&&t<MK_HIT+26){const u=(t-MK_HIT)/26,rs=Math.round(60+u*620);g.globalAlpha=1-u;nimg(mkFxImg('ring'),Math.round(W*.5-rs/2),Math.round(H*.55-rs/2),rs,rs);ntext('CRASH!',Math.round(W/2),Math.round(H*.18-u*12),Math.round(34+u*10),'#fff0b0','center');g.globalAlpha=1}
   mkFxDraw(c,t);
   /* Thoma arrives with a fresh mundu */
-  if(te>=360&&t>=240+MK_HOLD){const th=ART.hs_thoma_0;if(th){const tgx=c.bcx-c.dir*74-c.dir*38,from=c.dir>0?-40:W+40,p=Math.min(1,(te-360)/60),e=1-(1-p)*(1-p),tx=Math.round(from+(tgx-cx-from)*e);
+  if(t>=MK_HIT+190){const th=ART.hs_thoma_0;if(th){const tgx=c.bcx-c.dir*74-c.dir*38,from=c.dir>0?-40:W+40,p=Math.min(1,(t-MK_HIT-190)/60),e=1-(1-p)*(1-p),tx=Math.round(from+(tgx-cx-from)*e);
       mkImg(th,tx,GY+3,66/300,c.dir<0)
-      if(te<440){g.fillStyle='#f4ecd0';g.fillRect(tx+c.dir*8,GY-22,8,5);g.fillStyle='#e0b840';g.fillRect(tx+c.dir*8,GY-20,8,1)}}
-    if(te>=395&&te<500){const bw=Math.min(W-40,380),bxx=Math.round((W-bw)/2),byy=26;
+      if(t<MK_HIT+300){g.fillStyle='#f4ecd0';g.fillRect(tx+c.dir*8,GY-22,8,5);g.fillStyle='#e0b840';g.fillRect(tx+c.dir*8,GY-20,8,1)}}
+    if(t>=MK_HIT+252&&t<MK_END-4){const bw=Math.min(W-40,380),bxx=Math.round((W-bw)/2),byy=26;
       g.fillStyle='rgba(12,8,28,.9)';g.fillRect(bxx,byy,bw,40);g.fillStyle='#f0c040';g.fillRect(bxx,byy,bw,1);g.fillRect(bxx,byy+39,bw,1);g.fillRect(bxx,byy,1,40);g.fillRect(bxx+bw-1,byy,1,40);
       drawPortrait('THOMA',bxx+6,byy+4,32);ntext('Thoma',bxx+46,byy+5,8.5,'#f0c040');ntext('Here. A fresh mundu. Try not to lose this one.',bxx+46,byy+18,12.5,'#f4ecd0')}}
 }
@@ -1335,7 +1335,7 @@ function update(){
   shots=shots.filter(s=>s.life>0&&s.y<H&&s.x>cx-30&&s.x<cx+W+30);
   for(const p of pickups)if(p.drop&&!p.got&&p.t<p.T){p.t++;const u=p.t/p.T;p.x=p.sx+(p.lx-p.sx)*u;p.y=p.sy+(p.landY-p.sy)*u*u;if(p.t%2===0)parts.push({x:p.x+6,y:p.y+6,vx:(Math.random()-.5)*.6,vy:.3,l:18,c:p.t%4?'#fff6c0':'#ffd860'});if(p.t>=p.T){p.x=p.lx;p.y=p.landY;burst(p.x+6,p.y+12,['#ffd860','#fff6c0'],8);beep(1320,.25,'sine',.05)}}
   for(const p of pickups)if(!p.got&&(!p.drop||p.t>=p.T)&&hit(P,p)){p.got=true;if(p.k!=='life')score+=200;if(!sfx('powerup'))beep(900,.2,'triangle',.06);
-    if(p.k==='aru'){P.aru=true;P.sp=false;banner={a:'TRISHUL',b:"BHADRAKALI'S GIFT. RAYS PIERCE EVERYTHING",t:100};burst(p.x+5,p.y+5,['#ffd860','#ff6a3a','#ffffff'],12)}
+    if(p.k==='aru'){P.aru=true;P.sp=false;banner={a:'TRISHUL',b:"AMMA'S GIFT. RAYS PIERCE EVERYTHING",t:100};burst(p.x+5,p.y+5,['#ffd860','#ff6a3a','#ffffff'],12)}
     else if(p.k==='life'){if(lives<TUNE.lifeMax){lives++;pops.push({x:p.x+5,y:p.y-12,s:'EXTRA LIFE!',t:90})}else{score+=300;pops.push({x:p.x+5,y:p.y-12,s:'LIVES FULL +300',t:90})}burst(p.x+6,p.y+6,['#ffd860','#fff6c0','#ffffff'],14);beep(1180,.3,'sine',.07);beep(1580,.45,'sine',.05)}
     else if(p.k==='bell'){lives=Math.min(TUNE.lifeMax,lives+1);pops.push({x:p.x+5,y:p.y-12,s:'THE BELL RINGS! +1 LIFE',t:110});burst(p.x+5,p.y+5,['#ffd860','#fff6c0'],10);beep(1180,.35,'sine',.07);beep(1580,.5,'sine',.04)}
     else if(p.k==='rice'){ammo=Math.min(TUNE.ammoMax,ammo+12);pops.push({x:p.x+5,y:p.y-12,s:'KILI CAWS! +COCONUTS',t:110});burst(p.x+5,p.y+5,['#f4ecd0','#8ccf55'],8);beep(500,.12,'square',.05);beep(380,.18,'square',.05)}
@@ -1855,13 +1855,13 @@ function drawSlash(cx){
 function say(who,text,t,pause){dlg={who,text,t:t||210,pause:!!pause,pt:0,armed:false,x0:(typeof P!=='undefined'&&P)?P.x:0,dist:pause?0:((typeof lvl!=='undefined'&&LV[lvl]&&LV[lvl].bike)?520:1000)}}/* a box also closes by itself once the hero has moved on (the bike cannot stop, so there it is about 2.5 s of riding) */
 /* a pausing dialogue: the game stands still until the player taps or presses a key (a fresh press, so a held button does not close it) */
 function dlgPauseTick(){dlg.pt++;const down=Object.keys(keys).some(k=>keys[k])||touch.l||touch.r||touch.j||touch.s;if(!down)dlg.armed=true;else if(dlg.armed&&dlg.pt>25){dlg=null;jumpPrev=true}}
-const PORT={MAVELI:'#e0b030',KANNAN:'#b06a40',BHADRAKALI:'#c0303a',YAKSHI:'#dcd8ec',SONIYA:'#e8a050',CHATHAN:'#e8602a',BASHEER:'#5a8ac0',ODIYAN:'#4a3a70',BIJU:'#4a9a8a',KARINKANNI:'#4ac060',DEVI:'#e8d8a8',KOMBAN:'#6a6a7a',RAVI:'#c8903a',THOMA:'#8a7a60',VELU:'#7a5a3a',KILI:'#3a3a4a'};
+const PORT={MAVELI:'#e0b030',KANNAN:'#b06a40','KANJIRAVANAM AMMA':'#c0303a',YAKSHI:'#dcd8ec',SONIYA:'#e8a050',CHATHAN:'#e8602a',BASHEER:'#5a8ac0',ODIYAN:'#4a3a70',BIJU:'#4a9a8a',KARINKANNI:'#4ac060',DEVI:'#e8d8a8',KOMBAN:'#6a6a7a',RAVI:'#c8903a',THOMA:'#8a7a60',VELU:'#7a5a3a',KILI:'#3a3a4a'};
 /* Dialogue portraits: the speaker's own face, cropped from the character sprite (head only; the eye and the crow use the whole sprite).
-   Speakers without art yet (Bhadrakali, Devi, Basheer) keep the coloured badge. */
+   Speakers without art yet (Kanjiravanam Amma, Devi, Basheer) keep the coloured badge. */
 const PORTC={};
-const PORT_SRC={KANNAN:'scenehero_0',RAVI:'ravi_0',BIJU:'biju_0',THOMA:'thoma_0',SONIYA:'soniya_0',MAVELI:'mvh_3',VELU:'mooppan_0',KILI:'kili_0',YAKSHI:'yakshi_0',CHATHAN:'chathan_0',ODIYAN:'odiyan_0',KOMBAN:'komban_0',KARINKANNI:'karin_1',DEVI:'devi_0',BHADRAKALI:'bhadra_0',BASHEER:'bshp_0'};
+const PORT_SRC={KANNAN:'scenehero_0',RAVI:'ravi_0',BIJU:'biju_0',THOMA:'thoma_0',SONIYA:'soniya_0',MAVELI:'mvh_3',VELU:'mooppan_0',KILI:'kili_0',YAKSHI:'yakshi_0',CHATHAN:'chathan_0',ODIYAN:'odiyan_0',KOMBAN:'komban_0',KARINKANNI:'karin_1',DEVI:'devi_0','KANJIRAVANAM AMMA':'bhadra_0',BASHEER:'bshp_0'};
 /* sharp portraits (full-resolution art, drawn on the text layer); the pixel sprites above are the fallback */
-const PORT_HS={KANNAN:'hs_scenehero_0',RAVI:'hs_ravi_0',BIJU:'hs_biju_0',THOMA:'hs_thoma_0',SONIYA:'hs_soniya_0',VELU:'hs_mooppan_0',KILI:'hs_kili_0',BHADRAKALI:'hs_bhadra_1',BASHEER:'hs_basheer_0',MAVELI:'mvh_3',YAKSHI:'hp_yakshi_0',CHATHAN:'hp_chathan_0',ODIYAN:'hp_odiyan_0',KOMBAN:'hp_komban_0',KARINKANNI:'hp_karin_2',DEVI:'hp_devi_0'};
+const PORT_HS={KANNAN:'hs_scenehero_0',RAVI:'hs_ravi_0',BIJU:'hs_biju_0',THOMA:'hs_thoma_0',SONIYA:'hs_soniya_0',VELU:'hs_mooppan_0',KILI:'hs_kili_0','KANJIRAVANAM AMMA':'hs_bhadra_1',BASHEER:'hs_basheer_0',MAVELI:'mvh_3',YAKSHI:'hp_yakshi_0',CHATHAN:'hp_chathan_0',ODIYAN:'hp_odiyan_0',KOMBAN:'hp_komban_0',KARINKANNI:'hp_karin_2',DEVI:'hp_devi_0'};
 const PORT_WHOLE={KARINKANNI:1,KILI:1},PORT_LEFT={VELU:1},PORT_HEAD={DEVI:.3};/* PORT_HEAD: the head is this fraction of the figure's height (a robe widens the shoulders, so the usual width guess crops too wide) */
 function portraitCrop(who){
   if(PORTC[who])return PORTC[who];const src=ART[PORT_HS[who]]||ART[PORT_SRC[who]];if(!src)return null;
@@ -2093,7 +2093,7 @@ const OPENING=[
  {pic:'seal',art:'pg_1',h:'The seal',text:"Long ago a gate to the demon realm tore open in the grove. The gods locked it to five sacred trees, each tended by a family of grove-priests. For centuries the seal held, and the demons, the Kazhukans, could only wait."},
  {pic:'crack',art:'pg_3',h:'The crack',text:"Then, a few decades ago, something began to break. The trees withered one by one. A crack ran through the seal, and red light seeped out. Nobody in the village will say how it happened."},
  {pic:'wild',art:'pg_3',h:'The grove runs wild',text:"The little creatures of the grove felt it first. Crabs, dogs, cobras and bats turned red-eyed and wild, and began to hunt. Tree by tree, the groves fell to the Kazhukans."},
- {pic:'kannan',who:'BHADRAKALI',h:'The blessing',text:"One morning a coconut tapper fell deeper into the grove than anyone had gone. He should have died. A goddess caught him. \"You are the chosen one,\" she said. \"Take this. Go.\" Thus Kannan's journey began!"}];
+ {pic:'kannan',who:'KANJIRAVANAM AMMA',h:'The blessing',text:"One morning a coconut tapper fell deeper into the grove than anyone had gone. He should have died. The grove's guardian caught him. \"You are the chosen one,\" she said. \"Take this. Go.\" Thus Kannan's journey began!"}];
 /* Epilogue (after the ending): what each villager does once the forest heals. Kannan never learns why they helped him. */
 const EPILOGUE=[
  {pic:'ep',npc:'scenehero',tree:4,prop:'halo',who:'KANNAN',h:'Kannan',text:"Kannan finally understood. Velu, Biju, Ravi, Soniya, Basheer and Thoma, every one of them had a hand in breaking the seal. He looked at the five trees blooming and forgave them. Mistakes can be mended."},
@@ -2216,7 +2216,7 @@ function drawPagePic(P0,L,t){
     const hi=ART.logo_hi;if(hi){const lw=Math.min(L-16,320),lh=lw*hi.height/hi.width;nimg(hi,Math.round((L-lw)/2),Math.round((H-lh)/2),lw,lh)}}
   if(P0.pic==='kannan'){for(let y=0;y<H;y+=2){g.fillStyle='rgb('+(18+(y/8|0))+','+(14+(y/14|0))+','+(38+(y/12|0))+')';g.fillRect(0,y,L,2)}
     g.fillStyle='#1c1830';g.fillRect(0,gy,L,H-gy);
-    /* Bhadrakali stands below and reaches out; a golden beam from her hand catches Kannan in the air */
+    /* Kanjiravanam Amma stands below and reaches out; a golden beam from her hand catches Kannan in the air */
     const bh=ART.bhadra_1||ART.bhadra_0,kn=ART.hdead_1||ART.scenehero_0;
     const bx=Math.round(L*.22),sc=3;let hx=bx+60,hy=gy-90;
     const bhS=ART.hs_bhadra_1;
