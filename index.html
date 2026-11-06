@@ -2147,7 +2147,10 @@ function drawStory(){
     const bob=ac.id==='bike'?0:Math.round(Math.sin(t*.09+i*2)),hop=talking&&(t>>3)%2?-2:0,cx=Math.round(ac.x*W+off);
     if(ac.lying){g.save();g.translate(cx,feet-w/2+2);g.rotate(-Math.PI/2);g.drawImage(im,-w/2,-h,w,h);g.restore()}
     else g.drawImage(im,cx-Math.round(w/2),feet-h+bob+hop,w,h)});
-  if(sc.caption&&t>20){sc.caption.forEach((ln,k)=>ntext(nice(ln),W/2,30+k*20,14,'#f4ecd0','center'))}
+  if(sc.caption&&t>20){/* narration uses the same gold-framed box as the speech boxes, without a portrait */
+    const bw=Math.min(W-30,480),bx=Math.round((W-bw)/2),by=14,TL=sc.caption.flatMap(c=>twrap(nice(c),12.5,bw-34,2).lines),T={lines:TL,px:12.5},bh=Math.max(34,16+TL.length*(T.px+3));
+    g.fillStyle='rgba(12,8,28,.9)';g.fillRect(bx,by,bw,bh);g.fillStyle='#f0c040';g.fillRect(bx,by,bw,1);g.fillRect(bx,by+bh-1,bw,1);g.fillRect(bx,by,1,bh);g.fillRect(bx+bw-1,by,1,bh);
+    T.lines.forEach((ln,k)=>ntext(ln,Math.round(W/2),by+8+k*(T.px+3),T.px,'#f4ecd0','center'))}
   if(cur){const bw=Math.min(W-30,480),bx=Math.round((W-bw)/2),by=14,T=twrap(nice(cur.text),12.5,bw-58,2),bh=T.lines.length>1?60:46;
     g.fillStyle='rgba(12,8,28,.9)';g.fillRect(bx,by,bw,bh);g.fillStyle='#f0c040';g.fillRect(bx,by,bw,1);g.fillRect(bx,by+bh-1,bw,1);g.fillRect(bx,by,1,bh);g.fillRect(bx+bw-1,by,1,bh);
     drawPortrait(cur.who,bx+6,by+8,32);
