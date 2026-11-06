@@ -3,6 +3,8 @@
 Regenerate with: node tools/story-script.js > docs/STORY_SCRIPT.md
 Edit the words in index.html (OPENING, SCENES, the LV lines, EPILOGUE, the cinematics), then regenerate.
 
+How it plays: every dialogue box during play stops the game until the player taps or presses a key. After a victory the last words of the boss and the lines of Amma wait for a tap. The throne scene of Maveli and the ending lines are conversations with back and next buttons. Story pages have a back button. The weapon pickup banner reads LEAF SPEAR (a gift from Amma).
+
 ## Opening pages (first play)
 1. **The place**: At the edge of Kerala's backwaters sits Muruthikudi. Beyond it lies the sacred grove, Kanjiravanam. Children are told never to go there after dark.
 2. **The seal**: Long ago a gate to the demon realm tore open in the grove. The gods locked it to five sacred trees, each tended by a family of grove-priests. For centuries the seal held, and the demons, the Kazhukans, could only wait.
@@ -66,7 +68,9 @@ _Scene after this level:_
 - **Kannan**: ...my ankle. It burns.
 
 ## INTERLUDE: Disco or die
-- **Kannan**: Where am I? Why is everyone dancing? This cannot be real... _(level starts)_
+- **Kannan**: Where am I...? _(drifting down, midway)_
+- **Kannan**: Why is everyone dancing? _(drifting down, near the landing)_
+- **Kannan**: This cannot be real... _(after landing)_
 
 _Scene after this level:_
 - **Ravi**: You kept shouting left and right.
@@ -134,7 +138,7 @@ _Scene after this level:_
 - **Vine**: Jump into the hanging vine (Space) and it swings you across.
 
 ## Act banners and clear banners (pixel font, shown in play)
-- **Prologue the swinging awakening**: clear banner: Kanjiravanam Amma smiles / The forest gives you its power
+- **Prologue the swinging awakening**: clear banner: Amma smiles / The forest gives you its power
 - **Act I Yakshi's hollow**: clear banner: Tree awakened / Yakshi is free of the curse
 - **Act ii the ride to the carnival**: clear banner: The festival gates / Something wrong is dancing inside
 - **Act ii Kuttichathan's carnival**: clear banner: Second tree awakened / Kuttichathan hands over the relic

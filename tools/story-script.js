@@ -15,11 +15,11 @@ global.localStorage = { getItem: () => 0, setItem() {} }; global.requestAnimatio
 eval(js + `
 const OUT=[];
 const say_=(who,text,when)=>OUT.push('- **'+nice(who||'')+'**: '+nice(text)+(when?' _('+when+')_':''));
-OUT.push('# Story script (generated, play order)','','Regenerate with: node tools/story-script.js > docs/STORY_SCRIPT.md','Edit the words in index.html (OPENING, SCENES, the LV lines, EPILOGUE, the cinematics), then regenerate.','');
+OUT.push('# Story script (generated, play order)','','Regenerate with: node tools/story-script.js > docs/STORY_SCRIPT.md','Edit the words in index.html (OPENING, SCENES, the LV lines, EPILOGUE, the cinematics), then regenerate.','','How it plays: every dialogue box during play stops the game until the player taps or presses a key. After a victory the last words of the boss and the lines of Amma wait for a tap. The throne scene of Maveli and the ending lines are conversations with back and next buttons. Story pages have a back button. The weapon pickup banner reads LEAF SPEAR (a gift from Amma).','');
 OUT.push('## Opening pages (first play)');OPENING.forEach((p,i)=>OUT.push((i+1)+'. **'+p.h+'**: '+p.text));
 OUT.push('','## Village scene (before the prologue)');SCENES.start.lines.forEach(l=>say_(l.who,l.text));
 LV.forEach(lv=>{OUT.push('','## '+(lv.act||'')+': '+nice(lv.name||''));
-  if(lv.sayStart)say_(lv.sayStart[0],lv.sayStart[1],'level starts');(lv.sayAt||[]).slice().sort((p,q)=>p.x-q.x).forEach(a=>say_(a.who,a.text,'walking past x='+a.x));if(lv.sayChai)say_(lv.sayChai[0],lv.sayChai[1],'first tea stall');if(lv.sayBoss)say_(lv.sayBoss[0],lv.sayBoss[1],'boss appears, fades after about 5 s');if(lv.sayClear)say_(lv.sayClear[0],lv.sayClear[1],'level clear');
+  if(lv.sayStart){if(lv.key==='disco'){say_(lv.sayStart[0],'Where am I...?','drifting down, midway');say_(lv.sayStart[0],'Why is everyone dancing?','drifting down, near the landing');say_(lv.sayStart[0],'This cannot be real...','after landing')}else say_(lv.sayStart[0],lv.sayStart[1],'level starts')}(lv.sayAt||[]).slice().sort((p,q)=>p.x-q.x).forEach(a=>say_(a.who,a.text,'walking past x='+a.x));if(lv.sayChai)say_(lv.sayChai[0],lv.sayChai[1],'first tea stall');if(lv.sayBoss)say_(lv.sayBoss[0],lv.sayBoss[1],'boss appears, fades after about 5 s');if(lv.sayClear)say_(lv.sayClear[0],lv.sayClear[1],'level clear');
   if(lv.mav)lv.mav.forEach(t=>say_('MAVELI',t));
   (lv.cameos||[]).forEach(c=>{if(c.verses)c.verses.forEach(v=>OUT.push('- (song, '+c.id+') '+v));if(c.text)OUT.push('- (cameo, '+c.id+') '+nice(c.text))});
   const sc=SCENES[lv.key];if(sc){OUT.push('','_Scene after this level:_');(sc.caption||[]).forEach(c=>OUT.push('- (caption) '+nice(c)));(sc.lines||[]).forEach(l=>say_(l.who,l.text))}});
