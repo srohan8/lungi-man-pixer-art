@@ -2039,13 +2039,11 @@ const EPILOGUE=[
 const CREDITS=[['T','KANNAN AND THE'],['T','KANJIRAVANAM CHRONICLES'],['S','A Moonga Studio game'],['G'],['H','Music'],['L','Final stage: Train to Ernakulam Town by ItsWatR'],['L','Disco: Tamil Comedy Music by Kamalesh Siddu'],['L','Motorbike ride: Kaleidoscope Indian Fusion by Linesh Jose'],['L','Pey Komban fight and finale: 360 Indian Fusion by Linesh Jose'],['S','All from Pixabay'],['L','All other music and the sound effects: ElevenLabs'],['G'],['H','Pictures and sprites'],['L','Made with AI image tools'],['L','Edited into the game by Moonga Studio'],['G'],['H','Thank you for playing'],['G'],['LOGO'],['G']];
 function rollMetrics(){let y=0;const rows=CREDITS.map(c=>{const h=c[0]==='T'?30:c[0]==='H'?24:c[0]==='G'?30:c[0]==='LOGO'?120:20;const r={c,y,h};y+=h;return r});return {rows,total:y}}
 function drawRoll(t){
-  for(let y=0;y<H;y+=2){g.fillStyle='rgb('+(8+(y/18|0))+','+(6+(y/28|0))+','+(24+(y/14|0))+')';g.fillRect(0,y,W,2)}
-  for(let i=0;i<30;i++){const x=(i*71+13)%W,y=(i*53)%H,a=.4+.5*Math.sin(t*.05+i*2.3);if(a>.3){g.globalAlpha=a;g.fillStyle='#fff6d0';g.fillRect(x,y,1,1);g.globalAlpha=1}}
-  /* the five healed trees bloom in their colours under the credits, with fireflies */
-  g.fillStyle='#0c1a10';g.fillRect(0,GY,W,H-GY);g.fillStyle='#2a5a30';g.fillRect(0,GY,W,3);
-  for(let k=0;k<5;k++){const b=ART['strees_'+(5+k)];if(!b)continue;const x=Math.round(W*(.1+.2*k)),y=GY+4-b.height;glowEll(x,y+50,70,56,TREE_GLOW[k],.2+.05*Math.sin(t*.04+k));g.drawImage(b,x-Math.round(b.width/2),y)}
-  for(let k=0;k<26;k++){g.fillStyle='rgba(255,240,120,'+(.4+.4*Math.sin(t*.05+k)).toFixed(2)+')';g.fillRect(Math.round((k*61+t*.3)%W),Math.round(GY-((t*.4+k*23)%170)),1,1)}
-  g.fillStyle='rgba(8,6,20,.5)';g.fillRect(0,0,W,H);
+  /* black background; a little Kannan runs along the bottom-left corner for fun */
+  g.fillStyle='#000';g.fillRect(0,0,W,H);
+  const HA=heroArt(),gyR=H-14;
+  g.fillStyle='#2a2a32';for(let x=-((t*2)%16);x<150;x+=16)g.fillRect(x,gyR,9,1);
+  if(HA){const fr=HA[(t>>3)%4][0],sc=1.5,w=Math.round(fr.width*sc),h=Math.round(fr.height*sc),bob=((t>>3)%2)?-1:0;g.drawImage(fr,14,gyR-h+bob,w,h)}
   const M=rollMetrics(),top=H+10-t*.55;
   M.rows.forEach(({c,y,h})=>{const yy=Math.round(top+y);if(yy<-130||yy>H+10)return;const k=c[0],cx=Math.round(W/2);
     if(k==='T')ntext(c[1],cx,yy,20,'#f0c040','center');else if(k==='H')ntext(c[1],cx,yy,13,'#f0c040','center');else if(k==='S')ntext(c[1],cx,yy,11,'#b8b0d0','center');else if(k==='L')ntext(c[1],cx,yy,12,'#f4ecd0','center');
