@@ -1338,7 +1338,7 @@ function update(){
   shots=shots.filter(s=>s.life>0&&s.y<H&&s.x>cx-30&&s.x<cx+W+30);
   for(const p of pickups)if(p.drop&&!p.got&&p.t<p.T){p.t++;const u=p.t/p.T;p.x=p.sx+(p.lx-p.sx)*u;p.y=p.sy+(p.landY-p.sy)*u*u;if(p.t%2===0)parts.push({x:p.x+6,y:p.y+6,vx:(Math.random()-.5)*.6,vy:.3,l:18,c:p.t%4?'#fff6c0':'#ffd860'});if(p.t>=p.T){p.x=p.lx;p.y=p.landY;burst(p.x+6,p.y+12,['#ffd860','#fff6c0'],8);beep(1320,.25,'sine',.05)}}
   for(const p of pickups)if(!p.got&&(!p.drop||p.t>=p.T)&&hit(P,p)){p.got=true;if(p.k!=='life')score+=200;if(!sfx('powerup'))beep(900,.2,'triangle',.06);
-    if(p.k==='aru'){P.aru=true;P.sp=false;banner={a:'TRISHUL',b:"AMMA'S GIFT. RAYS PIERCE EVERYTHING",t:100};burst(p.x+5,p.y+5,['#ffd860','#ff6a3a','#ffffff'],12)}
+    if(p.k==='aru'){P.aru=true;P.sp=false;banner={a:'LEAF SPEAR',b:"AMMA'S GIFT. RAYS PIERCE EVERYTHING",t:100};burst(p.x+5,p.y+5,['#ffd860','#ff6a3a','#ffffff'],12)}
     else if(p.k==='life'){if(lives<TUNE.lifeMax){lives++;pops.push({x:p.x+5,y:p.y-12,s:'EXTRA LIFE!',t:90})}else{score+=300;pops.push({x:p.x+5,y:p.y-12,s:'LIVES FULL +300',t:90})}burst(p.x+6,p.y+6,['#ffd860','#fff6c0','#ffffff'],14);beep(1180,.3,'sine',.07);beep(1580,.45,'sine',.05)}
     else if(p.k==='bell'){lives=Math.min(TUNE.lifeMax,lives+1);pops.push({x:p.x+5,y:p.y-12,s:'THE BELL RINGS! +1 LIFE',t:110});burst(p.x+5,p.y+5,['#ffd860','#fff6c0'],10);beep(1180,.35,'sine',.07);beep(1580,.5,'sine',.04)}
     else if(p.k==='rice'){ammo=Math.min(TUNE.ammoMax,ammo+12);pops.push({x:p.x+5,y:p.y-12,s:'KILI CAWS! +COCONUTS',t:110});burst(p.x+5,p.y+5,['#f4ecd0','#8ccf55'],8);beep(500,.12,'square',.05);beep(380,.18,'square',.05)}
@@ -2459,7 +2459,7 @@ function draw(){TQ.length=0;syncPad();
     ptext('SCORE '+String(score).padStart(6,'0'),10,10,2,'#ffffff');
     for(let i=0;i<lives;i++)g.drawImage((goldLamp()?LAMPG:LAMP)[((tick>>4)+i)%2],10+i*10,24);
     ptext(LV[lvl].act,10,36,1,'#d8d0e8');
-    ptext(P.aru?'TRISHUL':P.sp?'PAROTTA X3  '+ammo:'COCONUT  '+ammo,10,46,1,P.aru?'#ffe898':ammo<=5?'#ff9a80':'#c8b890');
+    ptext(P.aru?'LEAF SPEAR':P.sp?'PAROTTA X3  '+ammo:'COCONUT  '+ammo,10,46,1,P.aru?'#ffe898':ammo<=5?'#ff9a80':'#c8b890');
     if(P.rev>0)ptext('DIZZY! CONTROLS FLIPPED',W/2,36,1,'#ff9ac0','center');
     if(P.freeze>0)ptext('PARALYZED!',W/2,36,1,'#9aff60','center');
     if(LV[lvl].prints)ptext('PRINTS '+prints+'/'+LV[lvl].prints,10,56,1,'#d8b0ff');
