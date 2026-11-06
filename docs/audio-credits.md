@@ -45,7 +45,7 @@ In `assets/audio/music/`: `sting_boss_intro` (3 s, +10 dB), `sting_gameover` (5 
 ## Act V music (replaced the generated track, 2026-11-04)
 | Used in | File | Source | Licence |
 |---|---|---|---|
-| `bgm_act5.ogg` (the final stage, before the boss) | `itswatr-watr-train-to-ernakulam-town-303208.mp3` (kept as `bgm_act5_pixabay_a.mp3`) | "Train to Ernakulam Town" by ItsWatR (Pixabay user Jonas), https://pixabay.com | Pixabay Content Licence. Attribution is not required but welcome: "Music by ItsWatR from Pixabay". Uses only the part from 1:00 of the original to the end (107 s), nothing before the 1 minute mark; loop-safe (3 s crossfade of the end into the start) and normalised to about -17 LUFS. The earlier ElevenLabs Act V track is in git history. |
+| `bgm_act5.ogg` (the final stage, before the boss) | `itswatr-watr-train-to-ernakulam-town-303208.mp3` (kept as `bgm_act5_pixabay_a.mp3`) | "Train to Ernakulam Town" by ItsWatR (Pixabay user Jonas), https://pixabay.com | Pixabay Content Licence. Attribution is not required but welcome: "Music by ItsWatR from Pixabay". Loop-safe (3 s crossfade of the end into the start) and normalised to about -17 LUFS. The earlier ElevenLabs Act V track is in git history. |
 
 ## Disco (interlude) music (replaced the generated track, 2026-11-04)
 | Used in | File | Source | Licence |
@@ -75,7 +75,7 @@ The last two pages after the ending epilogue list the music (ItsWatR, Kamalesh S
 ## Pey Komban boss and the mundu finale (replaced the generated tracks, 2026-11-06)
 | Used in | File | Source | Licence |
 |---|---|---|---|
-| `bgm_boss_komban.ogg` (Pey Komban fight, 50 s loop from 0:20 to 1:13, 3 s crossfade, about -17 LUFS) and `bgm_finale.ogg` (mundu finale, 16.8 s from 0:40, fade out) | `lineshjose-360-indian-fusion-music-288635.mp3` (kept as `bgm_boss_komban_pixabay_a.mp3`, not packaged) | "360 Indian Fusion Music" by Linesh Jose, Pixabay | Pixabay Content Licence. Attribution welcome: "Music by Linesh Jose from Pixabay". The earlier ElevenLabs tracks are in `assets/audio/music-old/` (`bgm_boss_komban_elevenlabs.ogg`, `bgm_finale_elevenlabs.ogg`). |
+| `bgm_boss_komban.ogg` (Pey Komban fight, 50 s loop from 1:00 to 1:53, 3 s crossfade, about -17 LUFS) and `bgm_finale.ogg` (mundu finale, 16.8 s from 1:00, fade out) | `lineshjose-360-indian-fusion-music-288635.mp3` (kept as `bgm_boss_komban_pixabay_a.mp3`, not packaged) | "360 Indian Fusion Music" by Linesh Jose, Pixabay | Pixabay Content Licence. Attribution welcome: "Music by Linesh Jose from Pixabay". The earlier ElevenLabs tracks are in `assets/audio/music-old/` (`bgm_boss_komban_elevenlabs.ogg`, `bgm_finale_elevenlabs.ogg`). |
 
 ## Motorbike engine (Act II ride, 2026-11-06)
 Synthesised in code (no file): two detuned sawtooth oscillators through a low-pass filter, pulsed like a single-cylinder thumper. It revs up for about 1.5 s when the ride starts, then idles low and follows the bike's speed. It is quiet, fades when the bike stops, dies or the game is paused, and follows the SND toggle. Tune it in `engineSet` in index.html.
