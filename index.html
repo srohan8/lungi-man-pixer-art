@@ -1084,11 +1084,14 @@ const mkTe=t=>t<240?t:(t<240+MK_HOLD?240:t-MK_HOLD);
 function mkPos(c,t){const gy=GY+1,te=mkTe(t),hold=t>=240&&t<240+MK_HOLD,headY=GY-104;let x=c.sx,y=gy,f='idle';
   /* he hangs from his own mundu, tied to the tusk: a pendulum whose length is the cloth from his hands to his feet, then he lets go and dives onto the head */
   const L=61,Ax=c.bcx-c.dir*28,Ay=GY-92,th0=-1.15,pend=th=>({x:Ax+c.dir*L*Math.sin(th),y:Ay+L*Math.cos(th)});
+  const sx0=c.sx+c.dir*Math.min(34,Math.max(0,te-20)*.35);/* he steps towards Komban while he whirls the mundu */
   if(te<20)f='idle';else if(te<60)f='u';else if(te<120)f='w';else if(te<150)f='t';
+  if(te>=20&&te<150)x=sx0;
+  if(te<150){}
   else if(hold){x=c.bcx-c.dir*8;y=headY;f=(t-240)%30<15?'w':'a'}
-  else if(te<170){const u=(te-150)/20,p=pend(th0);x=c.sx+(p.x-c.sx)*u;y=gy+(p.y-gy)*u-Math.sin(u*Math.PI)*34;f='a'}
+  else if(te<170){const u=(te-150)/20,p=pend(th0);x=sx0+(p.x-sx0)*u;y=gy+(p.y-gy)*u-Math.sin(u*Math.PI)*34;f='a'}
   else if(te<205){const u=(te-170)/35,e=u*u*(3-2*u),th=th0+(.12-th0)*e,p=pend(th);x=p.x;y=p.y;f='a'}
-  else if(te<240){const u=(te-205)/35,e=u*u*(3-2*u),th=.12+(.95-.12)*e,p=pend(th);x=p.x;y=p.y;f='a'}   /* the swing carries him up over the demon's head, where he lets go */
+  else if(te<240){const u=(te-205)/35,e=u*u*(3-2*u),th=.12+(1.75-.12)*e,p=pend(th);x=p.x;y=p.y;f='a'}   /* the swing carries him up over the demon's head, where he lets go */
   else if(te<284){const u=(te-240)/44;x=(c.bcx-c.dir*8)+((c.bcx-c.dir*74)-(c.bcx-c.dir*8))*u;y=headY+(gy-headY)*u*u;f='a'}
   else if(te<302){x=c.bcx-c.dir*74;f='c'}
   else if(te<440){x=c.bcx-c.dir*74;f='b'}else{x=c.bcx-c.dir*74;f='m'}
@@ -1096,24 +1099,29 @@ function mkPos(c,t){const gy=GY+1,te=mkTe(t),hold=t>=240&&t<240+MK_HOLD,headY=GY
 /* Effects for the key illustration (stones and sparks leaping off the ground, dust, a pulsing eye, a shock ring at the hit). They are small canvases drawn on the full-resolution layer so they show over the illustration. */
 const MKFX={};
 function mkFxImg(k){if(MKFX[k])return MKFX[k];const c=document.createElement('canvas'),x=c.getContext('2d');
-  if(k==='stone'){c.width=9;c.height=8;x.fillStyle='#2a1c14';x.beginPath();x.moveTo(1,6);x.lineTo(2,2);x.lineTo(5,0);x.lineTo(8,3);x.lineTo(7,7);x.closePath();x.fill();x.fillStyle='#6a5240';x.beginPath();x.moveTo(2,2);x.lineTo(5,0);x.lineTo(6,2);x.lineTo(3,3);x.closePath();x.fill();x.fillStyle='#ffb840';x.fillRect(7,3,1,2)}
+  if(k==='white'){c.width=c.height=4;x.fillStyle='#fff';x.fillRect(0,0,4,4)}
+  else if(k==='stone0'||k==='stone1'||k==='stone2'){c.width=12;c.height=11;const poly=(pts,col)=>{x.fillStyle=col;x.beginPath();pts.forEach((p,i)=>i?x.lineTo(p[0],p[1]):x.moveTo(p[0],p[1]));x.closePath();x.fill()};
+    const P=k==='stone0'?[[1,8],[0,4],[3,1],[7,0],[11,3],[10,9],[5,10]]:k==='stone1'?[[0,6],[2,2],[8,1],[11,4],[10,8],[3,9]]:[[2,10],[1,5],[5,0],[8,4],[11,9],[6,10]];
+    poly(P.map(p=>[p[0]+.5,p[1]+.5]),'#1a100a');poly(P.map(p=>[p[0]*.86+1,p[1]*.86+1]),'#4a382a');poly(P.slice(0,4).map(p=>[p[0]*.7+1.4,p[1]*.7+1.2]),'#8a6f56');x.fillStyle='#2a1c14';x.fillRect(6,6,3,2);x.fillStyle='#ffb840';x.fillRect(9,5,1,2)}
+  else if(k==='stone'){c.width=9;c.height=8;x.fillStyle='#2a1c14';x.beginPath();x.moveTo(1,6);x.lineTo(2,2);x.lineTo(5,0);x.lineTo(8,3);x.lineTo(7,7);x.closePath();x.fill();x.fillStyle='#6a5240';x.beginPath();x.moveTo(2,2);x.lineTo(5,0);x.lineTo(6,2);x.lineTo(3,3);x.closePath();x.fill();x.fillStyle='#ffb840';x.fillRect(7,3,1,2)}
   else if(k==='spark'){c.width=5;c.height=5;x.fillStyle='#fff6c0';x.fillRect(2,0,1,5);x.fillRect(0,2,5,1);x.fillStyle='#ffd860';x.fillRect(1,1,3,3)}
   else if(k==='dust'||k==='glow'){c.width=c.height=48;const gr=x.createRadialGradient(24,24,2,24,24,24);if(k==='dust'){gr.addColorStop(0,'rgba(190,160,120,.7)');gr.addColorStop(1,'rgba(190,160,120,0)')}else{gr.addColorStop(0,'rgba(255,170,40,.95)');gr.addColorStop(1,'rgba(255,120,0,0)')}x.fillStyle=gr;x.fillRect(0,0,48,48)}
   else if(k==='ring'){c.width=c.height=96;x.strokeStyle='rgba(255,236,170,.9)';x.lineWidth=5;x.beginPath();x.arc(48,48,42,0,6.2832);x.stroke()}
   return MKFX[k]=c}
 function mkFxTick(c,t){const fx=c.fx||(c.fx=[]);
+  if(t===238){for(let i=0;i<10;i++)fx.push({k:'dust',x:W*(.25+Math.random()*.5),y:H-24,vx:(Math.random()-.5)*3,vy:-.5-Math.random()*.6,g:0,r:0,vr:0,l:70,s:1.6+Math.random()*1.4});shake=Math.max(shake,12)}
   const hold=t>=240&&t<MK_HIT;
   if(hold){shake=Math.max(shake,2+Math.floor((t-240)/30));
-    if(t%2===0)fx.push({k:'stone',x:W*(.08+Math.random()*.84),y:H-6,vx:(Math.random()-.5)*1.4,vy:-(2.4+Math.random()*3),g:.16,r:0,vr:(Math.random()-.5)*.3,l:70,s:1+Math.random()*.8});
+    if(t%2===0)fx.push({k:'stone',v:(Math.random()*3)|0,x:W*(.08+Math.random()*.84),y:H-6,vx:(Math.random()-.5)*1.4,vy:-(2.4+Math.random()*3),g:.16,r:0,vr:(Math.random()-.5)*.3,l:70,s:1+Math.random()*.8});
     if(t%3===0)fx.push({k:'spark',x:W*(.1+Math.random()*.8),y:H-10-Math.random()*60,vx:(Math.random()-.5)*.6,vy:-(.6+Math.random()*1.4),g:-.005,r:0,vr:0,l:60,s:1.2});
     if(t%7===0)fx.push({k:'dust',x:W*(.05+Math.random()*.9),y:H-18,vx:(Math.random()-.5)*.5,vy:-.35,g:0,r:0,vr:0,l:60,s:1+Math.random()*.9})}
-  if(t===MK_HIT){for(let i=0;i<46;i++)fx.push({k:'stone',x:W*(.18+Math.random()*.6),y:H-8,vx:(Math.random()-.5)*5.5,vy:-(4+Math.random()*7),g:.2,r:0,vr:(Math.random()-.5)*.5,l:110,s:1.2+Math.random()*1.4});
+  if(t===MK_HIT){for(let i=0;i<46;i++)fx.push({k:'stone',v:(Math.random()*3)|0,x:W*(.18+Math.random()*.6),y:H-8,vx:(Math.random()-.5)*5.5,vy:-(4+Math.random()*7),g:.2,r:0,vr:(Math.random()-.5)*.5,l:110,s:1.2+Math.random()*1.4});
     for(let i=0;i<30;i++)fx.push({k:'spark',x:W*(.3+Math.random()*.4),y:H*.45+Math.random()*50,vx:(Math.random()-.5)*6,vy:-(1+Math.random()*4),g:.06,r:0,vr:0,l:70,s:1.4});
     for(let i=0;i<6;i++)fx.push({k:'dust',x:W*(.15+Math.random()*.7),y:H-22,vx:(Math.random()-.5)*2,vy:-.8,g:0,r:0,vr:0,l:80,s:1.8+Math.random()})}
   for(const p of fx){p.x+=p.vx;p.vy+=p.g;p.y+=p.vy;p.r+=p.vr;p.l--}
   c.fx=fx.filter(p=>p.l>0&&p.y<H+20)}
 function mkFxDraw(c,t){const fx=c.fx||[];
-  for(const p of fx){const im=mkFxImg(p.k),a=Math.max(0,Math.min(1,p.l/(p.k==='dust'?40:25))),sz=Math.round(im.width*p.s*(p.k==='dust'?1+(70-Math.min(70,p.l))*.01:1));g.globalAlpha=a*(p.k==='dust'?.5:1);nimg(im,Math.round(p.x-sz/2),Math.round(p.y-sz/2),sz,sz)}
+  for(const p of fx){const im=mkFxImg(p.k==='stone'?'stone'+(p.v||0):p.k),a=Math.max(0,Math.min(1,p.l/(p.k==='dust'?40:25))),sz=Math.round(im.width*p.s*(p.k==='dust'?1+(70-Math.min(70,p.l))*.01:1));g.globalAlpha=a*(p.k==='dust'?.5:1);nimg(im,Math.round(p.x-sz/2),Math.round(p.y-sz/2),sz,sz)}
   g.globalAlpha=1}
 function mkTick(){const c=cin;c.t++;const t=c.t,te=mkTe(t);mkFxTick(c,t);
   /* Pey Komban staggers away from the wall towards the middle of the arena */
@@ -1143,15 +1151,16 @@ function drawMk(cx){const c=cin,t=c.t,te=mkTe(t),big=ART.mk_big_0;
   if(t>=MK_HIT+14&&t<MK_HIT+160){const k=Math.min(1,(t-MK_HIT-14)/30)*(t>MK_HIT+100?Math.max(0,1-(t-MK_HIT-100)/60):1);glowEll(Math.round(c.bcx-cx),GY-30,Math.round(50*k)+8,Math.round(70*k)+8,'#ffd860',.3*k)}
   /* the mundu stretched across the arena, from his hand to the tusk, from the throw until he lets go */
   if(t>=125&&t<240){const kp=mkPos(c,t),px0=Math.round(kp.x-cx);let hx,hy;
-    if(t<150){hx=px0+c.dir*34;hy=GY+2-46}else{hx=px0+c.dir*5;hy=Math.round(kp.y)-58}
+    if(t<150){hx=px0+c.dir*34;hy=GY+2-46}else if(t<205){hx=px0+c.dir*3;hy=Math.round(kp.y)-60}else{hx=px0+c.dir*10;hy=Math.round(kp.y)+14-50}
     const tx=Math.round(c.bcx-cx-c.dir*28),ty=GY-92,n=30,slack=t<150?10:t<205?5:2;
-    for(let i=0;i<=n;i++){const u=i/n,px=Math.round(hx+(tx-hx)*u),py=Math.round(hy+(ty-hy)*u+Math.sin(u*Math.PI)*slack);g.fillStyle=(i%6===0)?'#e0b840':'#f4ecd0';g.fillRect(px,py,3,3)}}
+    for(let i=0;i<=n;i++){const u=i/n,px=Math.round(hx+(tx-hx)*u),py=Math.round(hy+(ty-hy)*u+Math.sin(u*Math.PI)*slack);g.fillStyle='#b8a888';g.fillRect(px,py+1,2,1);g.fillStyle='#f6efd8';g.fillRect(px,py,2,2)}}
   /* the key illustration: Kannan on the demon's head, the mundu knotted round his tusks, pulled tight */
   if(big&&t>=240-6&&t<MK_HIT+22){const fin=Math.min(1,(t-234)/14),fout=t>=MK_HIT?Math.max(0,1-(t-MK_HIT)/20):1,sh=t<MK_HIT?Math.round(Math.sin(t*1.7)*(1+(t-240)/60)):0;
     g.globalAlpha=1;g.fillStyle='rgba(8,6,20,'+(.9*fin*fout).toFixed(2)+')';g.fillRect(0,0,W,H);
-    const w=Math.max(W,Math.round(270*big.width/big.height))+10,h=Math.round(w*big.height/big.width),ix=Math.round((W-w)/2)+sh,iy=-Math.round((h-H)*.3)+Math.round(sh/2);g.globalAlpha=fin*fout;nimg(big,ix,iy,w,h);
-    /* his eye pulses, the ground glows where the stones fly */
-    const pu=.65+.35*Math.sin(t*.35);g.globalAlpha=fin*fout*pu*.8;const gl=mkFxImg('glow');nimg(gl,Math.round(ix+w*.462-24),Math.round(iy+h*.404-24),48,48);
+    const w=Math.max(W,Math.round(270*big.width/big.height))+10,h=Math.round(w*big.height/big.width),ix=Math.round((W-w)/2)+sh,iy=-Math.round((h-H)*.3)+Math.round(sh/2);const zz=t<258?1.22-.22*Math.pow((t-234)/24,.6):1+.06*Math.min(1,(t-258)/(MK_HIT-258)),zw=Math.round(w*zz),zh=Math.round(h*zz);g.globalAlpha=fin*fout;nimg(big,Math.round(W/2-zw/2)+sh,Math.round(H*.5-zh*.5-(zh-H)*.04)+Math.round(sh/2),zw,zh);
+    /* his eye pulses (the glow follows the zoom), the ground glows where the stones fly */
+    const pu=.65+.35*Math.sin(t*.35);g.globalAlpha=fin*fout*pu*.8;const gl=mkFxImg('glow'),ex=Math.round(W/2+(.462-.5)*zw)+sh,ey=Math.round(H*.5-zh*.5-(zh-H)*.04+.404*zh)+Math.round(sh/2);nimg(gl,ex-24,ey-24,48,48);
+    if(t>=238&&t<252){g.globalAlpha=(1-(t-238)/14)*.7;nimg(mkFxImg('white'),0,0,W,H)}
     g.globalAlpha=1}
   if(t>=MK_HIT&&t<MK_HIT+26){const u=(t-MK_HIT)/26,rs=Math.round(60+u*620);g.globalAlpha=1-u;nimg(mkFxImg('ring'),Math.round(W*.5-rs/2),Math.round(H*.55-rs/2),rs,rs);ntext('CRASH!',Math.round(W/2),Math.round(H*.18-u*12),Math.round(34+u*10),'#fff0b0','center');g.globalAlpha=1}
   mkFxDraw(c,t);
@@ -1168,8 +1177,8 @@ function pixRot(im,ang){const q=Math.round(ang*12);let m=PIXR.get(im);if(!m){m={
 function drawMkPlayer(cx){const c=cin,t=c.t,kp=mkPos(c,t),x=Math.round(kp.x-cx),flip=c.dir<0;
   let k=-1,xx=x,yy=GY+2;
   if(t<20)k=0;else if(t<60)k=1;else if(t<120)k=((t>>3)%2)?2:1;else if(t<150)k=3;
-  else if(t<240){/* the swing: the game's own pixel hero, so he keeps his normal look and size, tilting forward on the mundu */
-    const im=ART.hf_4;if(im){const sc=1.8,w=Math.round(im.width*sc),h=Math.round(im.height*sc),pic=flip?flipOf(im):im,ang=c.dir*(-.45+(t-150)/90*1.1);const rc=pixRot(pic,ang),k2=sc/2;/* drawn on the sharp layer so Pey Komban never hides him */nimg(rc,Math.round(x-rc.width*k2/2),Math.round(kp.y-h/2-rc.height*k2/2),Math.round(rc.width*k2),Math.round(rc.height*k2));return}
+  else if(t<240){/* the swing, on the sharp sprites; a short trail behind him */
+    for(let i=3;i>=1;i--){const tp=t-i*3;if(tp<150)continue;const q=mkPos(c,tp),kk=tp<205?4:5;g.globalAlpha=.14*(4-i)/3;mkImg(ART['mk_k_'+kk],Math.round(q.x-cx),Math.round(q.y)+(tp<205?0:14),MKS_K,flip)}g.globalAlpha=1;
     k=t<205?4:5;yy=Math.round(kp.y)+(t<205?0:14)}
   else if(t<MK_HIT+4)k=-1;            /* the key illustration is on screen */
   else if(t<MK_HIT+110)k=-1;           /* he only appears once Pey Komban is down */
