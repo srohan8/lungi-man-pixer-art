@@ -1201,7 +1201,7 @@ function update(){
     if(SCENES[sk]){const bgk=SCENES[sk].bg;let cxs=Math.round(camx);if(bgk==='next'){loadLevel(ni);cxs=0}else if(bgk!=='cur'){loadLevel(LV.findIndex(l=>l.key===bgk));cxs=0}
       const snap=snapshotBackdrop(cxs);state='story';startStory(SCENES[sk],go,snap)}else go()}else{state='ending';endT=0;saveHi();resume=1;try{localStorage.setItem('lungiman-act','1')}catch(e){}}}return}
   if(state==='story'){storyTick();return}
-  if(state==='pages'){pagesTick();return}
+  if(state==='pages'){(pg?pagesTick():0);return}
   if(state==='cine'){cineTick();return}
   if(state==='ending'){endTick();return}
   if(state==='scene'){sceneTick();return}
