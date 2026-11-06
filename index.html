@@ -1704,7 +1704,7 @@ function drawBoss(cx){
   if(b.vuln===false&&(b.t==='chathan'||b.t==='odiyan'||b.t==='komban'||b.t==='karin')){const base=flip?F.f:F.n;let r=SHLD.get(base);if(!r){r=tint(base,'#9ad0ff');SHLD.set(base,r)}
     const sx0=Math.round(b.x-cx),sy0=Math.round(b.y);glowEll(sx0+Math.round(b.w/2),sy0+Math.round(b.h/2),Math.round(b.w*.85),Math.round(b.h*.7),'#9ad0ff',.22+.1*Math.sin(tick*.2));g.globalAlpha=.25+.2*Math.sin(tick*.2);for(const [ox,oy] of [[-1,0],[1,0],[0,-1],[0,1],[-1,-1],[1,-1],[-1,1],[1,1]])g.drawImage(r,sx0+ox,sy0+oy);g.globalAlpha=1}
   if(b.puff>0)g.globalAlpha=.35+.3*Math.sin(tick*.8);
-  const wb=b.t==='chathan'&&b.state===0&&b.on&&b.stun<=0&&b.arm<=0?-Math.abs(Math.round(Math.sin(tick*.28)*3)):0;/* Kuttichathan only has two poses: he bounces along instead of sliding */
+  const wb=b.t==='chathan'&&b.state===0&&b.on&&b.stun<=0&&b.arm<=0?-Math.abs(Math.round(Math.sin(tick*.28)*3)):(b.t==='chathan'&&b.state===4&&b.stun<=0?-Math.abs(Math.round(Math.sin(tick*.55)*4)):0);/* the fireball charge is a fast bounding run *//* Kuttichathan only has two poses: he bounces along instead of sliding */
   if(wb){g.save();g.translate(0,wb)}
   if(run)drawRun(b,F,flip,white,cx);else if(white||!drawBossFx(b,flip?F.f:F.n,i,flip,cx))g.drawImage(white?(flip?F.wf:F.w):(flip?F.f:F.n),Math.round(b.x-cx),Math.round(b.y));
   if(wb)g.restore();
