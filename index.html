@@ -60,6 +60,7 @@ cv.addEventListener('pointerdown',e=>{
   const r=cv.getBoundingClientRect(),x=(e.clientX-r.left)/r.width*W,y=(e.clientY-r.top)/r.height*H;
   if(tut&&tut.phase==='msg'&&state==='play'&&!paused){const r=tut.skipR;if(r&&x>r[0]&&x<r[0]+r[2]&&y>r[1]&&y<r[1]+r[3])tutSkip();else tutConfirm();return}
   if(dlg&&dlg.pause&&state==='play'&&!paused&&dlg.armed&&dlg.pt>25){dlg=null;jumpPrev=true;return}
+  if(dlg&&dlg.hold&&state==='clear'&&dlg.armed&&dlg.pt>40){dlg=null;return}
   if(dlg&&dlg.xr&&state==='play'&&!paused){const r=dlg.xr;if(x>r[0]&&x<r[0]+r[2]&&y>r[1]&&y<r[1]+r[3]){dlg=null;return}}
   if(paused){if(x>W*.25&&x<W*.75){if(y>112&&y<152)setPause(false);else if(y>164&&y<204)pauseToMenu()}return}
   if(state==='pages'&&x>W-80&&y<34){pagesSkip();return}
@@ -1269,7 +1270,7 @@ function update(){
     else{if(P.bk){P.bx+=P.bvx;P.bvx*=.965}P.vy+=.4;P.y+=P.vy;P.x+=P.vx;P.vx*=.94;
       if(P.vy>=0){for(const [x1,x2,top] of segs.map(s=>[s[0],s[1],GY]).concat(plats.map(p=>[p[0],p[0]+p[2],p[1]])))if(P.x+P.w>x1&&P.x<x2&&P.y+P.h-P.vy<=top+2&&P.y+P.h>=top){P.y=top-P.h;if(P.vy>1.5){burst(P.x+7,top,['#d8c8a0','#a89878'],6);shake=Math.max(shake,3)}P.vy=0;P.vx*=.5;if(!P.dl)P.dl=P.dt;break}}}
   if(--deadT<=0){if(lives<=0){state='over';lockT=60;saveHi()}else respawn()}return}
-  if(state==='clear'){if(--clearT<=0){if(lvl<LV.length-1){if(lvl===0){seen=true;try{localStorage.setItem('lungiman-prologue','1')}catch(e){}}actScore=score;resume=Math.max(resume,lvl+1);try{localStorage.setItem('lungiman-act',resume)}catch(e){}const sk=LV[lvl].key,ni=lvl+1,go=()=>{loadLevel(ni);placePlayer(40);fadeCol=null;if(LV[ni].arena)fadeT=90;if(LV[ni].key==='path'){fadeT=80;fadeCol='#ffd890'}if(!LV[ni].arena&&LV[ni].key!=='path'){fadeT=90;fadeCol='#05030c'}ammo=Math.max(ammo,TUNE.ammoStart);state='play';banner={a:LV[lvl].act,b:LV[lvl].name,t:150}};
+  if(state==='clear'){if(dlg&&dlg.hold){/* the boss's last words and Amma's lines after a victory wait for a tap (the clear countdown holds); about 25 s at most */clearT=Math.max(clearT,30);dlg.pt++;const dn=Object.keys(keys).some(k=>keys[k])||touch.l||touch.r||touch.j||touch.s;if(!dn)dlg.armed=true;else if(dlg.armed&&dlg.pt>40)dlg=null;if(dlg&&dlg.pt>1500)dlg=null;return}if(--clearT<=0){if(lvl<LV.length-1){if(lvl===0){seen=true;try{localStorage.setItem('lungiman-prologue','1')}catch(e){}}actScore=score;resume=Math.max(resume,lvl+1);try{localStorage.setItem('lungiman-act',resume)}catch(e){}const sk=LV[lvl].key,ni=lvl+1,go=()=>{loadLevel(ni);placePlayer(40);fadeCol=null;if(LV[ni].arena)fadeT=90;if(LV[ni].key==='path'){fadeT=80;fadeCol='#ffd890'}if(!LV[ni].arena&&LV[ni].key!=='path'){fadeT=90;fadeCol='#05030c'}ammo=Math.max(ammo,TUNE.ammoStart);state='play';banner={a:LV[lvl].act,b:LV[lvl].name,t:150}};
     if(sk==='a4'){startCine('pt',go);return}
     if(SCENES[sk]){const bgk=SCENES[sk].bg;let cxs=Math.round(camx);if(bgk==='next'){loadLevel(ni);cxs=0}else if(bgk!=='cur'){loadLevel(LV.findIndex(l=>l.key===bgk));cxs=0}
       const snap=snapshotBackdrop(cxs);state='story';startStory(SCENES[sk],go,snap)}else go()}else{state='ending';endT=0;saveHi();resume=1;try{localStorage.setItem('lungiman-act','1')}catch(e){}}}return}
@@ -1867,7 +1868,7 @@ function drawSlash(cx){
   g.globalAlpha=.65*a;g.fillStyle='#ffe898';g.fillRect(x1,y-3,len,6);
   g.globalAlpha=1;g.fillStyle='#ffffff';g.fillRect(x1,y-1,len,2);
 }
-function say(who,text,t,pause){pause=pause!==false;/* owner request after playtests: every in-play dialogue box stops the game until the player taps (people could not read them while running) */dlg={who,text,t:t||210,pause:pause,pt:0,armed:false,x0:(typeof P!=='undefined'&&P)?P.x:0,dist:pause?0:((typeof lvl!=='undefined'&&LV[lvl]&&LV[lvl].bike)?520:1000)}}/* a box also closes by itself once the hero has moved on (the bike cannot stop, so there it is about 2.5 s of riding) */
+function say(who,text,t,pause){pause=pause!==false;/* owner request after playtests: every in-play dialogue box stops the game until the player taps (people could not read them while running) */dlg={who,text,t:t||210,pause:pause,hold:state==='clear',pt:0,armed:false,x0:(typeof P!=='undefined'&&P)?P.x:0,dist:pause?0:((typeof lvl!=='undefined'&&LV[lvl]&&LV[lvl].bike)?520:1000)}}/* a box also closes by itself once the hero has moved on (the bike cannot stop, so there it is about 2.5 s of riding) */
 /* a pausing dialogue: the game stands still until the player taps or presses a key (a fresh press, so a held button does not close it) */
 function dlgPauseTick(){dlg.pt++;const down=Object.keys(keys).some(k=>keys[k])||touch.l||touch.r||touch.j||touch.s;if(!down)dlg.armed=true;else if(dlg.armed&&dlg.pt>25){dlg=null;jumpPrev=true}}
 const PORT={MAVELI:'#e0b030',KANNAN:'#b06a40','KANJIRAVANAM AMMA':'#6adc5a',YAKSHI:'#dcd8ec',SONIYA:'#e8a050',CHATHAN:'#e8602a',BASHEER:'#5a8ac0',ODIYAN:'#4a3a70',BIJU:'#4a9a8a',KARINKANNI:'#4ac060',DEVI:'#e8d8a8',KOMBAN:'#6a6a7a',RAVI:'#c8903a',THOMA:'#8a7a60',VELU:'#7a5a3a',KILI:'#3a3a4a'};
@@ -1908,11 +1909,11 @@ function drawPortrait(who,x,y,box){
 function drawDlg(){
   if(!dlg||state==='title'||state==='over'||state==='win'||(tut&&tut.phase==='msg'))return;
   const bw=Math.min(360,W-120),bx=Math.round(W/2-bw/2),by=54,tw=bw-46,T=twrap(nice(dlg.text),9.5,tw,2),bh=T.lines.length>1?42:36;
-  const DP=dlg.pause&&state==='play';if(DP){g.fillStyle='rgba(8,6,20,.45)';g.fillRect(0,0,W,H)}
+  const DP=(dlg.pause&&state==='play')||(dlg.hold&&state==='clear'),DPT=DP?(dlg.hold&&state==='clear'?40:25):0;if(DP){g.fillStyle='rgba(8,6,20,.45)';g.fillRect(0,0,W,H)}
   g.fillStyle='rgba(12,8,28,.86)';g.fillRect(bx,by,bw,bh);
   g.fillStyle='#f0c040';g.fillRect(bx,by,bw,1);g.fillRect(bx,by+bh-1,bw,1);g.fillRect(bx,by,1,bh);g.fillRect(bx+bw-1,by,1,bh);
   drawPortrait(dlg.who,bx+4,by+4,Math.min(34,bh-8));
-  if(DP&&dlg.pt>25&&(tick>>4)%2===0)ntext(isTouch?'Tap to continue':'Press any key to continue',bx+bw-8,by+bh+3,8,'#f0c040','right');
+  if(DP&&dlg.pt>DPT&&(tick>>4)%2===0)ntext(isTouch?'Tap to continue':'Press any key to continue',bx+bw-8,by+bh+3,8,'#f0c040','right');
   dlg.xr=null;if(TUNE.dlgStay&&!DP){const xx=bx+bw-18,yy=by+4;g.fillStyle='#f0c040';for(let k=0;k<8;k++){g.fillRect(xx+k,yy+k,2,2);g.fillRect(xx+7-k,yy+k,2,2)}dlg.xr=[bx+bw-28,by,28,28]}
   ntext(nice(dlg.who),bx+44,by+3,7.5,'#f0c040');T.lines.forEach((ln,k)=>ntext(ln,bx+44,by+13+k*(T.px+1.5),T.px,'#f4ecd0'));
 }
