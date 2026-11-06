@@ -15,41 +15,46 @@ Edit the words in index.html (OPENING, SCENES, the LV lines, EPILOGUE, the cinem
 - **Thoma**: Stay on the trees. The ground belongs to them now.
 
 ## PROLOGUE: The swinging awakening
-- **Kannan**: A goddess caught me yesterday. Today I just want to pick coconuts.
-- **Biju**: The crabs are their scouts. Red eyes mean the forest is watching.
-- **Bhadrakali**: Thralls of the Kazhukans roam the wild. Red eyes mark them. Go in, Kannan.
+- **Kannan**: A goddess caught me when I fell. Now I must go into the grove, and I do not know why it is me. _(level starts)_
+- **Biju**: Those crabs are Kazhukan scouts. Red eyes mean the grove is watching you. _(walking past x=300)_
+- **Kannan**: Red eyes mean something has sickened the grove. Then I will find out what. _(walking past x=440)_
+- **Bhadrakali**: Five sacred trees hold the seal. The Kazhukans want it broken. Free them, Kannan. _(level clear)_
 
 _Scene after this level:_
 - (caption) The first tree waits in the bamboo hollow.
 - (caption) The golden hour ends. He goes in.
 
 ## ACT I: Yakshi's hollow
-- **Soniya**: Chai from my last clean spring. No questions.
-- **Yakshi**: Stay a while, toddy boy. Look at me...
-- **Yakshi**: The curse lifts. Thank you, Kannan.
+- **Kannan**: The bamboo hollow. The first sacred tree should be past these ruins. _(level starts)_
+- **Kannan**: Bitter water, red eyes, and nobody in the village will talk. Someone knows more than they say. _(walking past x=1500)_
+- **Soniya**: Chai from my last clean spring. All the other water has turned bitter. _(first tea stall)_
+- **Yakshi**: Stay a while, toddy boy. Look at me... _(boss appears, fades after about 5 s)_
+- **Yakshi**: The curse lifts. Thank you, Kannan. _(level clear)_
 
 _Scene after this level:_
 - **Ravi**: One grove down. The carnival is far and the next tree is withering. Take my bike!
 - **Ravi**: No time to walk it. Go, hold tight!
 
 ## ACT II: The ride to the carnival
-- **Ravi**: Keep the front wheel up, machane! And do not scratch my Bullet!
+- **Ravi**: Keep the front wheel up, machane! And do not scratch my Bullet! _(level starts)_
 
 _Scene after this level:_
 - **Kannan**: The forest closed in. From here, on foot.
 
 ## ACT II: Kuttichathan's carnival
-- **Bhadrakali**: Kuttichathan loves a party. His clones all look alike. Hit the real one.
-- **Kuttichathan**: Catch me if you can, toddy boy! Hehe!
-- **Kuttichathan**: Fine, fine... Take the relic. Spoilsport.
+- **Bhadrakali**: Kuttichathan loves a party. His clones all look alike. Hit the real one. _(level starts)_
+- **Kannan**: A whole festival and not one person left. The Kazhukans emptied the place. _(walking past x=900)_
+- **Kuttichathan**: Catch me if you can, toddy boy! Hehe! _(boss appears, fades after about 5 s)_
+- **Kuttichathan**: Fine, fine... Take the relic. Spoilsport. _(level clear)_
 
 _Scene after this level:_
 - (caption) Two groves freed. The embers go cool.
 - (caption) The highland fog is waiting.
 
 ## ACT III: Odiyan's hunt
-- **Velu**: He wears three forms. I know every pattern by heart. Do not ask how.
-- **Odiyan**: You cannot catch what you cannot see.
+- **Velu**: Odiyan wears three forms: man, dog and bull. I know his patterns because I once fed him. Do not ask. _(level starts)_
+- **Kannan**: Velu knows far too much. Everyone from my village seems to be hiding something. _(walking past x=1000)_
+- **Odiyan**: You cannot catch what you cannot see. _(boss appears, fades after about 5 s)_
 - (song, basheer) A boat went down the river, low with timber.
 - (song, basheer) Nobody asked whose trees they were.
 - (song, basheer) A bard found the buyer, and called it kindness.
@@ -60,16 +65,17 @@ _Scene after this level:_
 - **Kannan**: ...my ankle. It burns.
 
 ## INTERLUDE: Disco or die
-- **Kannan**: Why is everyone dancing...?
+- **Kannan**: Dancing? This must be the venom talking. I am dreaming, and I have to wake up. _(level starts)_
 
 _Scene after this level:_
 - **Ravi**: You kept shouting left and right.
 - **Ravi**: Odiyan's venom. Two groves left. The rain is coming.
 
 ## ACT IV: Karinkanni's curse
-- **Devi**: Be still. The eye hunts what moves. Your village carries a stone.
-- **Karinkanni**: Look at me... And be still.
-- **Karinkanni**: The storm... It passes. Thank you.
+- **Devi**: Be still when it looks at you. The eye hunts what moves. Your village carries an old guilt. _(level starts)_
+- **Kannan**: Everyone talks about my village like it owes a debt. What did it do? _(walking past x=1200)_
+- **Karinkanni**: Look at me... And be still. _(boss appears, fades after about 5 s)_
+- **Karinkanni**: The storm... It passes. Thank you. _(level clear)_
 
 ## PATHALAM: Maveli's realm
 - **Maveli**: I brought you down. I hope that was acceptable.
@@ -81,8 +87,9 @@ _Scene after this level:_
 - **Soniya**: I brought everything. Don't you dare die.
 
 ## ACT V: Pey Komban's rampage
-- **Thoma**: I should have spoken fifty years ago. Stay. On. The. Trees. Promise me.
-- **Soniya**: Have some chai. Then hit that tusked thing where it hurts.
+- **Thoma**: Fifty years ago we sold the edge of the grove. That is how the seal cracked. Stay on the trees, Kannan. _(level starts)_
+- **Kannan**: So my village broke the seal. Then I will be the one to close it. _(walking past x=1000)_
+- **Soniya**: Have some chai. Then hit that tusked thing where it hurts. _(first tea stall)_
 
 ## Ending epilogue
 - **Mooppan Velu**: In his cave, an old man finally stands. Velu walks to the third tree and lights a lamp. He does not say sorry. He stays until it burns down.
@@ -102,3 +109,28 @@ _Scene after this level:_
 - **Jump**: Press Space to jump. You can stomp crabs too.
 - **Parotta**: Parotta gives you a triple throw until you fall. Walk into it.
 - **Vine**: Jump into the hanging vine (Space) and it swings you across.
+
+## Act banners and clear banners (pixel font, shown in play)
+- **Prologue the swinging awakening**: clear banner: Bhadrakali smiles / The forest gives you its power
+- **Act I Yakshi's hollow**: clear banner: Tree awakened / Yakshi is free of the curse
+- **Act ii the ride to the carnival**: clear banner: The festival gates / Something wrong is dancing inside
+- **Act ii Kuttichathan's carnival**: clear banner: Second tree awakened / Kuttichathan hands over the relic
+- **Act iii Odiyan's hunt**: clear banner: Third tree awakened / A bite burns... The world spins
+- **Interlude disco or die**: clear banner: The venom fades / You wake up...
+- **Act iv Karinkanni's curse**: clear banner: Fourth tree awakened / The rain falls quiet.
+- **Pathalam Maveli's realm**: clear banner: Maveli's blessing / Go. Finish it.
+- **Act v Pey Komban's rampage**: clear banner: The portal is sealed / Kerala is safe
+- **Prologue end (replaces its clear banner)**: Well done, Kannan! / You learned fast. The real grove needs you.
+
+## Boss hints (shown once at the first fight)
+- **chathan**: Hit him when he crashes
+- **odiyan**: Hit him when he changes form
+- **komban**: Hit him after his stomp
+- **karin**: Hit the eye when it opens
+
+## Lines written directly in the game code
+- **Thoma** (Act III fall, new mundu): Here. A fresh mundu. Try not to lose this one.
+- **Thoma** (ending): I told you to stay on the trees. You did not listen once.
+- **Soniya** (ending): Are you all just standing there? Want chai?
+- **Maveli** (ending): Onam is in three weeks. I hope the feast is good.
+- **Ending title**: Kanjiravanam breathes again

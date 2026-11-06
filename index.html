@@ -59,6 +59,7 @@ document.querySelectorAll('[data-k]').forEach(b=>{
 cv.addEventListener('pointerdown',e=>{
   const r=cv.getBoundingClientRect(),x=(e.clientX-r.left)/r.width*W,y=(e.clientY-r.top)/r.height*H;
   if(tut&&tut.phase==='msg'&&state==='play'&&!paused){const r=tut.skipR;if(r&&x>r[0]&&x<r[0]+r[2]&&y>r[1]&&y<r[1]+r[3])tutSkip();else tutConfirm();return}
+  if(dlg&&dlg.xr&&state==='play'&&!paused){const r=dlg.xr;if(x>r[0]&&x<r[0]+r[2]&&y>r[1]&&y<r[1]+r[3]){dlg=null;return}}
   if(paused){if(x>W*.25&&x<W*.75){if(y>112&&y<152)setPause(false);else if(y>164&&y<204)pauseToMenu()}return}
   if(state==='pages'&&x>W-80&&y<34){pagesSkip();return}
   if(state==='play'&&x>W-76&&x<W-46&&y<44){setPause(true);return}
@@ -473,7 +474,7 @@ Object.assign({},LV_OLD[0],{act:'PROLOGUE',name:'THE SWINGING AWAKENING',
   fixed:[{x:480,k:'parotta'}],
   tut:[{x:40,a:'MOVE',b:'LEFT AND RIGHT BUTTONS',d:0},{x:230,a:'THROW',b:'HOLD THROW. KILLS DROP COCONUTS',d:0},{x:400,a:'JUMP',b:'TAP JUMP. STOMP CRABS TOO',d:0},{x:540,a:'VINE',b:'JUMP INTO THE VINE TO SWING',d:0}],
   clear:['BHADRAKALI SMILES','THE FOREST GIVES YOU ITS POWER'],
-  sayStart:['KANNAN','A GODDESS CAUGHT ME YESTERDAY. TODAY I JUST WANT TO PICK COCONUTS.'],sayAt:[{x:300,who:'BIJU',text:'THE CRABS ARE THEIR SCOUTS. RED EYES MEAN THE FOREST IS WATCHING.',d:0}],sayClear:['BHADRAKALI','THRALLS OF THE KAZHUKANS ROAM THE WILD. RED EYES MARK THEM. GO IN, KANNAN.']}),
+  sayStart:['KANNAN','A GODDESS CAUGHT ME WHEN I FELL. NOW I MUST GO INTO THE GROVE, AND I DO NOT KNOW WHY IT IS ME.'],sayAt:[{x:300,who:'BIJU',text:'THOSE CRABS ARE KAZHUKAN SCOUTS. RED EYES MEAN THE GROVE IS WATCHING YOU.',d:0},{x:440,who:'KANNAN',text:'RED EYES MEAN SOMETHING HAS SICKENED THE GROVE. THEN I WILL FIND OUT WHAT.',d:0}],sayClear:['BHADRAKALI','FIVE SACRED TREES HOLD THE SEAL. THE KAZHUKANS WANT IT BROKEN. FREE THEM, KANNAN.']}),
 {act:'ACT I',name:"YAKSHI'S HOLLOW",
  sky:['#050a1a','#0a1a30','#12304a','#1c4a5a','#2a6a6a','#4a8a7a'],stars:55,
  sun:{y:52,r:22,c:['#f4f4e0','#dcdcc4','#8aa8a0'],crater:'#c0c0aa'},cloud:['#4a7a80','#2c5460','#1a3a48'],
@@ -487,7 +488,7 @@ Object.assign({},LV_OLD[0],{act:'PROLOGUE',name:'THE SWINGING AWAKENING',
  bush:['#0e2a24','#1a4a38','#2c6a4c','#ffd0e8','#ffffff'],
  motes:'fly',foes:['cobra','crow','crab','cobra'],boss:'yakshi',len:3000,
  clear:['TREE AWAKENED','YAKSHI IS FREE OF THE CURSE'],
- sayChai:['SONIYA','CHAI FROM MY LAST CLEAN SPRING. NO QUESTIONS.'],sayBoss:['YAKSHI','STAY A WHILE, TODDY BOY. LOOK AT ME...'],sayClear:['YAKSHI','THE CURSE LIFTS. THANK YOU, KANNAN.']},
+ sayStart:['KANNAN','THE BAMBOO HOLLOW. THE FIRST SACRED TREE SHOULD BE PAST THESE RUINS.'],sayChai:['SONIYA','CHAI FROM MY LAST CLEAN SPRING. ALL THE OTHER WATER HAS TURNED BITTER.'],sayAt:[{x:1500,who:'KANNAN',text:'BITTER WATER, RED EYES, AND NOBODY IN THE VILLAGE WILL TALK. SOMEONE KNOWS MORE THAN THEY SAY.',d:0}],sayBoss:['YAKSHI','STAY A WHILE, TODDY BOY. LOOK AT ME...'],sayClear:['YAKSHI','THE CURSE LIFTS. THANK YOU, KANNAN.']},
 {act:'ACT II',name:"CHATHAN'S CARNIVAL",
  sky:['#1a0e2e','#3a1a4a','#6a2a56','#a8424e','#d8704a','#f0a050'],stars:20,
  sun:{y:56,r:16,c:['#ffe8a0','#f0b860','#d8704a']},cloud:['#c8604e','#8a3a56','#4a2448'],
@@ -501,7 +502,7 @@ Object.assign({},LV_OLD[0],{act:'PROLOGUE',name:'THE SWINGING AWAKENING',
  bush:['#2a2a1c','#3a4a24','#5a7a30','#ff8a20','#ffd040'],
  motes:'fly',foes:['imp','wisp','goon','imp'],boss:'chathan',len:3100,
  clear:['SECOND TREE AWAKENED','CHATHAN HANDS OVER THE RELIC'],
- sayStart:['BHADRAKALI','KUTTICHATHAN LOVES A PARTY. HIS CLONES ALL LOOK ALIKE. HIT THE REAL ONE.'],sayBoss:['CHATHAN','CATCH ME IF YOU CAN, TODDY BOY! HEHE!'],sayClear:['CHATHAN','FINE, FINE... TAKE THE RELIC. SPOILSPORT.']},
+ sayStart:['BHADRAKALI','KUTTICHATHAN LOVES A PARTY. HIS CLONES ALL LOOK ALIKE. HIT THE REAL ONE.'],sayAt:[{x:900,who:'KANNAN',text:'A WHOLE FESTIVAL AND NOT ONE PERSON LEFT. THE KAZHUKANS EMPTIED THE PLACE.',d:0}],sayBoss:['CHATHAN','CATCH ME IF YOU CAN, TODDY BOY! HEHE!'],sayClear:['CHATHAN','FINE, FINE... TAKE THE RELIC. SPOILSPORT.']},
 {act:'ACT III',name:"ODIYAN'S HUNT",
  sky:['#0c121e','#16202e','#22304a','#344a62','#506a7c','#7a92a0'],stars:14,
  sun:{y:54,r:15,c:['#e8ecf0','#b8c0c8','#6a7e8a'],crater:'#98a8aa'},cloud:['#7a8e9a','#506470','#344454'],
@@ -515,7 +516,7 @@ Object.assign({},LV_OLD[0],{act:'PROLOGUE',name:'THE SWINGING AWAKENING',
  bush:['#16301e','#244a2c','#3a6a40','#d83030','#ffd0c0'],
  motes:'mist',foes:['dog','bat','cobra','dog'],boss:'odiyan',len:3200,prints:4,
  clear:['THIRD TREE AWAKENED','A BITE BURNS... THE WORLD SPINS'],
- sayStart:['VELU','HE WEARS THREE FORMS. I KNOW EVERY PATTERN BY HEART. DO NOT ASK HOW.'],sayBoss:['ODIYAN','YOU CANNOT CATCH WHAT YOU CANNOT SEE.']},
+ sayStart:['VELU','ODIYAN WEARS THREE FORMS: MAN, DOG AND BULL. I KNOW HIS PATTERNS BECAUSE I ONCE FED HIM. DO NOT ASK.'],sayAt:[{x:1000,who:'KANNAN',text:'VELU KNOWS FAR TOO MUCH. EVERYONE FROM MY VILLAGE SEEMS TO BE HIDING SOMETHING.',d:0}],sayBoss:['ODIYAN','YOU CANNOT CATCH WHAT YOU CANNOT SEE.']},
 {act:'ACT IV',name:"KARINKANNI'S CURSE",
  sky:['#0a1214','#14222a','#1e343c','#2c4a50','#44666a','#6a8a88'],stars:0,
  sun:{y:56,r:14,c:['#98aeb0','#70888c','#44666a']},cloud:['#5a7478','#3a5258','#24383c'],
@@ -529,7 +530,7 @@ Object.assign({},LV_OLD[0],{act:'PROLOGUE',name:'THE SWINGING AWAKENING',
  bush:['#0a1e1c','#143a32','#24604a','#a0e0d0','#ffffff'],
  motes:'mist',rain:true,foes:['crab','bat','crow','bat'],boss:'karin',len:3000,vines:true,vineEvery:2,
  clear:['FOURTH TREE AWAKENED','THE RAIN FALLS QUIET.'],
- sayStart:['DEVI','BE STILL. THE EYE HUNTS WHAT MOVES. YOUR VILLAGE CARRIES A STONE.'],sayBoss:['KARINKANNI','LOOK AT ME... AND BE STILL.'],sayClear:['KARINKANNI','THE STORM... IT PASSES. THANK YOU.']},
+ sayStart:['DEVI','BE STILL WHEN IT LOOKS AT YOU. THE EYE HUNTS WHAT MOVES. YOUR VILLAGE CARRIES AN OLD GUILT.'],sayAt:[{x:1200,who:'KANNAN',text:'EVERYONE TALKS ABOUT MY VILLAGE LIKE IT OWES A DEBT. WHAT DID IT DO?',d:0}],sayBoss:['KARINKANNI','LOOK AT ME... AND BE STILL.'],sayClear:['KARINKANNI','THE STORM... IT PASSES. THANK YOU.']},
 {act:'ACT V',name:"PEY KOMBAN'S RAMPAGE",
  sky:['#06060e','#0e0e1c','#1a1a30','#2a2444','#3a2c52','#4a3460'],stars:60,
  sun:{y:50,r:14,c:['#f4f0e0','#d8d4c8','#4a3460'],crater:'#c8c0b0'},cloud:['#4a3a6a','#2e2448','#1c1630'],
@@ -543,14 +544,14 @@ Object.assign({},LV_OLD[0],{act:'PROLOGUE',name:'THE SWINGING AWAKENING',
  bush:['#0c1a12','#16301c','#26502c','#ffc040','#ffffff'],
  motes:'fly',foes:['goon','cobra','monkey','goon'],boss:'komban',len:3300,
  clear:['THE PORTAL IS SEALED','KERALA IS SAFE'],
- sayStart:['THOMA','I SHOULD HAVE SPOKEN FIFTY YEARS AGO. STAY. ON. THE. TREES. PROMISE ME.'],sayChai:['SONIYA','HAVE SOME CHAI. THEN HIT THAT TUSKED THING WHERE IT HURTS.']}
+ sayStart:['THOMA','FIFTY YEARS AGO WE SOLD THE EDGE OF THE GROVE. THAT IS HOW THE SEAL CRACKED. STAY ON THE TREES, KANNAN.'],sayAt:[{x:1000,who:'KANNAN',text:'SO MY VILLAGE BROKE THE SEAL. THEN I WILL BE THE ONE TO CLOSE IT.',d:0}],sayChai:['SONIYA','HAVE SOME CHAI. THEN HIT THAT TUSKED THING WHERE IT HURTS.']}
 ];
 
 ['pro','a1','a2','a3','a4','a5'].forEach((k,i)=>{LV0[i].key=k;LV0[i].sid=i});
 /* difficulty ramp: 0 (prologue) to 5 (Act V). More enemies per stretch, wider gaps, faster shooters, tougher bosses. Layout and count only, no new rules. */
 LV0.forEach((l,i)=>l.hard=i);
 [6,0,0,10,3,5].forEach((n,i)=>{if(n)LV0[i].xpalms=n});/* more coconut palms: prologue (village), Act III (had none), Act IV, Act V */
-const BIKE=Object.assign({},LV0[2],{key:'bike',sid:6,act:'ACT II',name:'THE RIDE TO THE CARNIVAL',bike:true,foes:['wisp','imp'],boss:null,len:11500,gapW:[105,18],segW:[260,160],aru:false,
+const BIKE=Object.assign({},LV0[2],{sayAt:[],key:'bike',sid:6,act:'ACT II',name:'THE RIDE TO THE CARNIVAL',bike:true,foes:['wisp','imp'],boss:null,len:11500,gapW:[105,18],segW:[260,160],aru:false,
   clear:['THE FESTIVAL GATES','SOMETHING WRONG IS DANCING INSIDE'],sayStart:['RAVI','KEEP THE FRONT WHEEL UP, MACHANE! AND DO NOT SCRATCH MY BULLET!'],sayBoss:null,sayClear:null,sayChai:null});
 const DISCO={key:'disco',sid:7,act:'INTERLUDE',name:'DISCO OR DIE',arena:true,kills:12,
  sky:['#0a0418','#1a0a3a','#34124e','#5a1a6a','#8a2a82','#c03a98'],stars:40,
@@ -564,7 +565,7 @@ const DISCO={key:'disco',sid:7,act:'INTERLUDE',name:'DISCO OR DIE',arena:true,ki
  palm:LV_OLD[0].palm,palms:false,bush:['#2a1a4a','#40e0ff','#ff7ae0','#ffffff','#40e0ff'],
  motes:'fly',foes:[],boss:null,len:0,
  clear:['THE VENOM FADES','YOU WAKE UP...'],
- sayStart:['KANNAN','WHY IS EVERYONE DANCING...?']};
+ sayStart:['KANNAN','DANCING? THIS MUST BE THE VENOM TALKING. I AM DREAMING, AND I HAVE TO WAKE UP.']};
 const PATH={key:'path',sid:8,act:'PATHALAM',name:"MAVELI'S REALM",scene:true,
  sky:['#020a12','#041a26','#08323e','#0c4a58','#12707a','#2aa0a0'],stars:90,
  sun:{y:50,r:10,c:['#d8fff4','#8af0e0','#2aa0a0']},cloud:['#2a8a90','#16606a','#0c3a46'],
@@ -791,7 +792,7 @@ function genBush(seed,C){const r=rng(seed),b=buf(40,20);
 
 /* =================== game state =================== */
 /* Tunable numbers for coconuts, lives and the Sun Staff */
-const TUNE={levelSelectAll:true,ammoStart:40,ammoMax:60,ammoPerKill:2,ammoRegenBelow:5,ammoRegenFrames:180,lifeEvery:5000,lifeMax:6,rayRange:150};
+const TUNE={dlgStay:true,/* true: in-play dialogue stays in its fixed place until the next line replaces it or the X is tapped (never pauses the game) */levelSelectAll:true,ammoStart:40,ammoMax:60,ammoPerKill:2,ammoRegenBelow:5,ammoRegenFrames:180,lifeEvery:5000,lifeMax:6,rayRange:150};
 let ammo=40,ammoT=0,lifeBank=0,rings=[],pick=-1,paused=false,cin=null,fogK=1,fadeT=0,fadeCol=null,autoKill=false,bloomAt=-1,tut=null,tutPending=false,tutAny=false,stat={thrown:0,kills:0},flashT=0,flashC='#e8f0ff',cameos=[];
 /* Palm sway: how far (px) the crown moves per level; the trunk base stays put */
 const WIND={pro:1.2,a1:1,a2:1.5,a3:2,a4:3.4,a5:1.2};
@@ -1179,7 +1180,7 @@ function kill(e){e.alive=false;stat.kills++;if(e.t==='dancer'&&arena)arena.kills
 /* =================== update =================== */
 function update(){
   if(tut&&tut.phase==='msg'&&state==='play'&&!paused){tut.t++;return}
-  tick++;if(splashT>0&&--splashT<=30&&preDone<preN&&tick<600)splashT=31;if(lockT>0)lockT--;if(shake>0)shake--;if(banner&&--banner.t<=0)banner=null;for(const q of pops)q.t--;pops=pops.filter(q=>q.t>0);if(dlg&&--dlg.t<=0)dlg=null;
+  tick++;if(splashT>0&&--splashT<=30&&preDone<preN&&tick<600)splashT=31;if(lockT>0)lockT--;if(shake>0)shake--;if(banner&&--banner.t<=0)banner=null;for(const q of pops)q.t--;pops=pops.filter(q=>q.t>0);if(dlg&&(!TUNE.dlgStay||dlg.fight)&&--dlg.t<=0)dlg=null;
   for(const p of parts){p.x+=p.vx;p.vy+=.15;p.y+=p.vy;p.l--}parts=parts.filter(p=>p.l>0);if(flashT>0)flashT--;if(fadeT>0)fadeT--;for(const q of rings)q.t++;rings=rings.filter(q=>q.t<16);
   if(innerHeight>innerWidth&&isTouch)return;
   if(state==='title'){camx=(camx+.4)%(bossX-W);return}
@@ -1423,7 +1424,7 @@ function slashHits(){
   if(locked&&boss.active&&!boss.dead&&boss.sw!==swingId){const b=boss,hb={x:b.x+b.hb[0],y:b.y+b.hb[1],w:b.hb[2],h:b.hb[3]};
     if(hit(sb,hb)){b.sw=swingId;if(b.vuln===false){burst(P.x+(P.f>0?24:-2),P.y+12,['#c8c8d8','#ffffff'],4);beep(160,.06,'square',.05);return}b.hp-=2;b.hurt=8;score+=100;sunHit(b.x+b.hb[0]+b.hb[2]/2,b.y+b.hb[1]+b.hb[3]/2,true);beep(300,.1,'sawtooth',.05)}}
 }
-function spawnBoss(){boss.active=true;if(LV[lvl].sayBoss)say(LV[lvl].sayBoss[0],LV[lvl].sayBoss[1]);boss.x=bossX+W-boss.w-30;boss.y=-80;boss.vy=0;banner={a:boss.name,b:boss.sub,t:140};if(!sfx('boss_roar_'+(boss.t==='karin'?'karinkanni':boss.t))&&!sfx('boss_roar'))beep(110,.6,'sawtooth',.06);sting('sting_boss_intro')}
+function spawnBoss(){boss.active=true;if(LV[lvl].sayBoss){say(LV[lvl].sayBoss[0],LV[lvl].sayBoss[1],330);dlg.fight=true}boss.x=bossX+W-boss.w-30;boss.y=-80;boss.vy=0;banner={a:boss.name,b:boss.sub,t:140};if(!sfx('boss_roar_'+(boss.t==='karin'?'karinkanni':boss.t))&&!sfx('boss_roar'))beep(110,.6,'sawtooth',.06);sting('sting_boss_intro')}
 function updBoss(){
   {const b=boss;if(tick%11===0&&b.active&&!b.dead&&((b.t==='komban'&&b.state===2&&b.stun<=0)||(b.t==='odiyan'&&!b.puff&&(b.form===1||(b.form===2&&b.wind<=0)))))stepSfx(true)}
   const b=boss;if(!b.active||b.dead)return;b.tk++;if(b.hurt>0)b.hurt--;if(b.arm>0)b.arm--;
@@ -1804,6 +1805,7 @@ function drawDlg(){
   g.fillStyle='rgba(12,8,28,.86)';g.fillRect(bx,by,bw,bh);
   g.fillStyle='#f0c040';g.fillRect(bx,by,bw,1);g.fillRect(bx,by+bh-1,bw,1);g.fillRect(bx,by,1,bh);g.fillRect(bx+bw-1,by,1,bh);
   drawPortrait(dlg.who,bx+4,by+4,Math.min(34,bh-8));
+  dlg.xr=null;if(TUNE.dlgStay){const xx=bx+bw-18,yy=by+4;g.fillStyle='#f0c040';for(let k=0;k<8;k++){g.fillRect(xx+k,yy+k,2,2);g.fillRect(xx+7-k,yy+k,2,2)}dlg.xr=[bx+bw-28,by,28,28]}
   ntext(nice(dlg.who),bx+44,by+3,7.5,'#f0c040');T.lines.forEach((ln,k)=>ntext(ln,bx+44,by+13+k*(T.px+1.5),T.px,'#f4ecd0'));
 }
 /* ---------- interlude arena, throne scene, ending ---------- */
