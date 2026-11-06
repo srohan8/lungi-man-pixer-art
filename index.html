@@ -1170,7 +1170,7 @@ function drawMk(cx){const c=cin,t=c.t,te=mkTe(t),big=null;/* the single key illu
   else{
     if(t<HT+34)cdraw(ART.mk_c_7,0,1);
     else if(t<HT+94)cdraw(ART.mk_c_8,Math.round(Math.min(1,(t-HT-34)/20)*12),1);
-    else{const R=ART.mk_c_9R,L=ART.mk_c_9L;if(R&&L){const rw=Math.round(R.width*SC),lw=Math.round(L.width*(66/218)),lh=Math.round(L.height*(66/218))/* the standing Kannan in the sheet is drawn too big next to Komban: 66 px, the same as Thoma */,rh=Math.round(R.height*SC),dxR=34,rLeft=flip?sCx-62-dxR:sCx+62+dxR-rw,lLeft=flip?rLeft+rw+8:rLeft-lw-8+Math.round(2*SC);
+    else{const R=ART.mk_c_9R,L=ART.mk_c_9L;if(R&&L){const rw=Math.round(R.width*SC),lw=Math.round(L.width*(66/L.height)),lh=Math.round(L.height*(66/L.height))/* the standing Kannan in the sheet is drawn too big next to Komban: 66 px, the same as Thoma */,rh=Math.round(R.height*SC),dxR=34,rLeft=flip?sCx-62-dxR:sCx+62+dxR-rw,lLeft=flip?rLeft+rw+8:rLeft-lw-8+Math.round(2*SC);
       const u=Math.max(0,Math.min(1,(t-HT-110)/30)),fade=t>=HT+140?Math.max(0,1-(t-HT-140)/110):1,rise=t>=HT+140?Math.round((1-fade)*26):0;
       g.globalAlpha=(1-u)*1;nimg(flip?FLIPPED(R):R,rLeft,yb-rh,rw,rh);
       const gold=ART.mk_b_5;if(gold&&u>0){const gw=Math.round(gold.width*MKS_B),gh=Math.round(gold.height*MKS_B);g.globalAlpha=u*fade;nimg(gold,Math.round(rLeft+rw/2-gw/2),yb-gh-rise,gw,gh)}
@@ -1675,7 +1675,7 @@ function drawFoe(e,cx){
 }
 /* Code-drawn extras on top of boss PNG art (positions are in the art's own right-facing pixels).
    Dark sprites get a pulsing red rim and glowing eyes (Kazhukan mark); the bull gets angry nose smoke. */
-const BOSS_EYES={odiyan_0:[[35,6],[37,6]],odiyan_1:[[41,35]],odiyan_2:[[47,30]],komban_0:[[47,4]],komban_1:[[47,19]],komban_2:[[49,19]]},BRIM=new WeakMap();
+const BOSS_EYES={odiyan_0:[[35,6],[37,6]],odiyan_1:[[41,35]],odiyan_2:[[47,30]],komban_0:[[47,4]],komban_1:[[49,9]],komban_2:[[51,9]]},BRIM=new WeakMap();
 /* dithered elliptical halo: solid pixels thinning out from the centre, so a glow reads round and flickery instead of boxy */
 function glowEll(x,y,rx,ry,c,a){g.globalAlpha=a;g.fillStyle=c;for(let j=-ry;j<=ry;j++)for(let i=-rx;i<=rx;i++){const d=Math.hypot(i/rx,j/ry);if(d<1&&bay((x+i)&255,(y+j)&255)>d*d)g.fillRect(x+i,y+j,1,1)}g.globalAlpha=1}
 function drawBossFx(b,im,i,flip,cx){
