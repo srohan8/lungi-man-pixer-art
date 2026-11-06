@@ -23,7 +23,7 @@ Hero stays **Kannan** for now. Source of the backstory: `docs/STORYLINE.md` (and
 2. **The seal.** "Long ago a gate to the demon realm tore open in the grove. The gods locked it to five sacred trees, each tended by a family of grove-priests. The demons, the Kazhukans, waited." (picture: the five trees)
 3. **Maveli.** "Beneath the roots, a king was sent below a thousand years ago. He gave his word, and he keeps it. Every Onam he comes home, and every year the grove smells worse."
 4. **The crack.** "Fifty years ago the seal cracked. Tree by tree, the groves fell to the Kazhukans. Nobody in the village will say how."
-5. **Kannan.** "One morning a coconut tapper fell deeper into the grove than anyone had gone. He should have died. A goddess caught him." Bhadrakali: "You are clean. Take this. Go." She gives him the trishul.
+5. **Kannan.** "One morning a coconut tapper fell deeper into the grove than anyone had gone. He should have died. A goddess caught him." Bhadrakali: "You are the chosen one. Take this. Go." Thus Kannan's journey began! She gives him the trishul.
 
 Never named in the opening: Velu, the logging deal, the guilt.
 
