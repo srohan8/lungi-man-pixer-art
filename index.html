@@ -1156,7 +1156,7 @@ function mkTick(){const c=cin;c.t++;const t=c.t,te=mkTe(t);mkFxTick(c,t);
   if(t===284+MK_HOLD){shake=Math.max(shake,6);burst(c.bcx-c.dir*74,GY,['#d8c8a0','#a89878'],8)}
   if(t>=MK_END)cineEnd()}
 /* The mundu finale, drawn with the hand-drawn sheets (mk_k_* Kannan, mk_b_* Pey Komban, mk_big_0 the key illustration) as sharp art on the text layer. */
-const MKS_K=66/300,MKS_B=124/300;
+const MKS_K=42/300,MKS_B=124/300;
 function mkImg(im,cxp,yb,sc,flip,rot){if(!im)return;const w=Math.round(im.width*sc),h=Math.round(im.height*sc);nimg(flip?FLIPPED(im):im,Math.round(cxp-w/2),Math.round(yb-h),w,h)}
 function drawMk(cx){const c=cin,t=c.t,te=mkTe(t),big=null;/* the single key illustration is no longer used: the combined sprites carry the scene */
   const bxp=Math.round(boss.x+boss.w/2-cx),yb=GY+2,flip=c.dir<0;
@@ -1170,7 +1170,7 @@ function drawMk(cx){const c=cin,t=c.t,te=mkTe(t),big=null;/* the single key illu
   else{
     if(t<HT+34)cdraw(ART.mk_c_7,0,1);
     else if(t<HT+94)cdraw(ART.mk_c_8,Math.round(Math.min(1,(t-HT-34)/20)*12),1);
-    else{const R=ART.mk_c_9R,L=ART.mk_c_9L;if(R&&L){const rw=Math.round(R.width*SC),lw=Math.round(L.width*(66/L.height)),lh=Math.round(L.height*(66/L.height))/* the standing Kannan in the sheet is drawn too big next to Komban: 66 px, the same as Thoma */,rh=Math.round(R.height*SC),dxR=34,rLeft=flip?sCx-62-dxR:sCx+62+dxR-rw,lLeft=flip?rLeft+rw+8:rLeft-lw-8+Math.round(2*SC);
+    else{const R=ART.mk_c_9R,L=ART.mk_c_9L;if(R&&L){const rw=Math.round(R.width*SC),lw=Math.round(L.width*(42/L.height)),lh=Math.round(L.height*(42/L.height))/* the standing Kannan in the sheet is drawn too big next to Komban and the trees: 42 px, the same as Thoma */,rh=Math.round(R.height*SC),dxR=34,rLeft=flip?sCx-62-dxR:sCx+62+dxR-rw,lLeft=flip?rLeft+rw+8:rLeft-lw-8+Math.round(2*SC);
       const u=Math.max(0,Math.min(1,(t-HT-110)/30)),fade=t>=HT+140?Math.max(0,1-(t-HT-140)/110):1,rise=t>=HT+140?Math.round((1-fade)*26):0;
       g.globalAlpha=(1-u)*1;nimg(flip?FLIPPED(R):R,rLeft,yb-rh,rw,rh);
       const gold=ART.mk_b_5;if(gold&&u>0){const gw=Math.round(gold.width*MKS_B),gh=Math.round(gold.height*MKS_B);g.globalAlpha=u*fade;nimg(gold,Math.round(rLeft+rw/2-gw/2),yb-gh-rise,gw,gh)}
@@ -1190,7 +1190,7 @@ function drawMk(cx){const c=cin,t=c.t,te=mkTe(t),big=null;/* the single key illu
   mkFxDraw(c,t);
   /* Thoma arrives with a fresh mundu */
   if(t>=MK_HIT+190){const th=ART.hs_thoma_0;if(th){const tgx=c.bcx-c.dir*74-c.dir*38,from=c.dir>0?-40:W+40,p=Math.min(1,(t-MK_HIT-190)/60),e=1-(1-p)*(1-p),tx=Math.round(from+(tgx-cx-from)*e);
-      mkImg(th,tx,GY+3,66/300,c.dir<0)
+      mkImg(th,tx,GY+3,42/300,c.dir<0)
       if(t<MK_HIT+300){g.fillStyle='#f4ecd0';g.fillRect(tx+c.dir*8,GY-22,8,5);g.fillStyle='#e0b840';g.fillRect(tx+c.dir*8,GY-20,8,1)}}
     if(t>=MK_HIT+252&&t<MK_END-4){const bw=Math.min(W-40,380),bxx=Math.round((W-bw)/2),byy=26;
       g.fillStyle='rgba(12,8,28,.9)';g.fillRect(bxx,byy,bw,40);g.fillStyle='#f0c040';g.fillRect(bxx,byy,bw,1);g.fillRect(bxx,byy+39,bw,1);g.fillRect(bxx,byy,1,40);g.fillRect(bxx+bw-1,byy,1,40);
