@@ -79,3 +79,6 @@ The last two pages after the ending epilogue list the music (ItsWatR, Kamalesh S
 
 ## Motorbike engine (Act II ride, 2026-11-06)
 Synthesised in code (no file): two detuned sawtooth oscillators through a low-pass filter, pulsed like a single-cylinder thumper. It revs up for about 1.5 s when the ride starts, then idles low and follows the bike's speed. It is quiet, fades when the bike stops, dies or the game is paused, and follows the SND toggle. Tune it in `engineSet` in index.html.
+
+## Motorbike engine, correction (2026-11-06)
+The ride now uses the original recording again: `freesound_community-350cc-bike-firing-32391.mp3` (Pixabay Content Licence, a Royal Enfield; the old ride track had it mixed in for the first 20 s). It is cut into `assets/audio/sfx/bike_start.ogg` (first 6.5 s, quiet) and `bike_loop.ogg` (a steady 5 s loop of 3.2 to 8.2 s, crossfaded, played very low and slightly faster with the bike's speed). The source is kept as `bike_engine_pixabay_a.mp3` (not packaged). The synthesised engine is only a fallback if those two files are missing.

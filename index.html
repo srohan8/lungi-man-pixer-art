@@ -148,7 +148,7 @@ function stepSfx(heavy){if(!AUD.on||!AUD.go)return;try{const c=actx(),m=audMaste
   for(let i=0;i<n;i++){const t=i/n;a[i]=(Math.random()*2-1)*Math.pow(1-t,3)}
   const src=c.createBufferSource();src.buffer=b;const f=c.createBiquadFilter();f.type='lowpass';f.frequency.value=heavy?260:700;const gn=c.createGain();gn.gain.value=heavy?.5:.14;src.connect(f);f.connect(gn);gn.connect(m);src.start()}catch(e){}}
 function toggleSnd(){AUD.on=!AUD.on;try{localStorage.setItem('lungiman-snd',AUD.on?'1':'0')}catch(e){}audMaster()}
-const SFX_NAMES=['throw','hit','jump','vine','slash','die','chai','powerup','boss_roar','boss_roar_yakshi','boss_roar_chathan','boss_roar_odiyan','boss_roar_karinkanni','boss_roar_komban','yakshi_laugh','thunder','heal_magic','angel_descent','kannan_yell'];
+const SFX_NAMES=['throw','hit','jump','vine','slash','die','chai','powerup','boss_roar','boss_roar_yakshi','boss_roar_chathan','boss_roar_odiyan','boss_roar_karinkanni','boss_roar_komban','yakshi_laugh','thunder','heal_magic','angel_descent','kannan_yell','bike_start','bike_loop'];
 function wantMusic(){
   if(P&&P.fly)return null;
   if(state==='cine')return cin&&cin.k==='mk'?'bgm_finale':null;
@@ -161,7 +161,16 @@ function wantMusic(){
 }
 /* ---- motorbike engine (Act II ride), synthesised: two detuned saws through a low-pass, pulsed like a single-cylinder thumper ---- */
 let ENG=null,bikeT=0;
-function engineSet(on,sp,t){try{const c=actx(),m=audMaster();if(!c||!m||!AUD.go)return;
+/* the real recording (350cc bike firing, Pixabay) cut into a start-up (bike_start) and a steady loop (bike_loop); the synthesised engine below is the fallback when the files are missing */
+let ENGS=null;
+function engineSamples(on,sp,t){try{const c=actx(),m=audMaster();if(!c||!m||!AUD.go)return false;const bs=AUD.ready.bike_start,bl=AUD.ready.bike_loop;if(!bs||!bl)return false;
+  const E=ENGS||(ENGS={started:false,sg:null,loop:null,lg:null}),now=c.currentTime;if(t===0)E.started=false;
+  if(on&&t<=2&&!E.started){E.started=true;const so=c.createBufferSource(),gn=c.createGain();so.buffer=bs;gn.gain.value=.5;so.connect(gn);gn.connect(m);so.start();E.sg=gn}
+  if(!on&&E.sg)E.sg.gain.setTargetAtTime(0,now,.2);
+  if(on&&t>150){if(!E.loop){const so=c.createBufferSource(),gn=c.createGain();so.buffer=bl;so.loop=true;gn.gain.value=0;so.connect(gn);gn.connect(m);so.start();E.loop=so;E.lg=gn}E.lg.gain.setTargetAtTime(.2+.08*sp,now,.4);E.loop.playbackRate.setTargetAtTime(.92+.2*sp,now,.3)}
+  else if(E.loop){const lp=E.loop;E.lg.gain.setTargetAtTime(0,now,.2);setTimeout(()=>{try{lp.stop()}catch(e){}},900);E.loop=null;E.lg=null}
+  return true}catch(e){return false}}
+function engineSet(on,sp,t){if(engineSamples(on,sp,t))return;try{const c=actx(),m=audMaster();if(!c||!m||!AUD.go)return;
   if(!ENG){if(!on)return;const o1=c.createOscillator(),o2=c.createOscillator(),f=c.createBiquadFilter(),amp=c.createGain(),out=c.createGain(),lfo=c.createOscillator(),lg=c.createGain();
     o1.type='sawtooth';o2.type='sawtooth';o2.detune.value=14;f.type='lowpass';f.frequency.value=240;f.Q.value=3;amp.gain.value=.5;lfo.type='sine';lg.gain.value=.5;out.gain.value=0;
     o1.connect(f);o2.connect(f);f.connect(amp);amp.connect(out);out.connect(m);lfo.connect(lg);lg.connect(amp.gain);o1.start();o2.start();lfo.start();ENG={o1,o2,f,out,lfo}}
@@ -2097,7 +2106,7 @@ const EPILOGUE=[
  {pic:'maveli',who:'MAVELI',h:'The king below',text:"Far below, a king smiles. \"Onam is coming,\" says Maveli. \"This year, I will come home.\""},
  {pic:'roll',h:'Credits',text:' '}];
 /* Rolling credits, like a film: the text rises from the bottom of the screen. Tap or any key skips. */
-const CREDITS=[['T','KANNAN AND THE'],['T','KANJIRAVANAM CHRONICLES'],['S','A Moonga Studio game'],['G'],['H','Music'],['L','Final stage: Train to Ernakulam Town by ItsWatR'],['L','Disco: Tamil Comedy Music by Kamalesh Siddu'],['L','Motorbike ride: Kaleidoscope Indian Fusion by Linesh Jose'],['L','Pey Komban fight and finale: 360 Indian Fusion by Linesh Jose'],['S','All from Pixabay'],['L','All other music and the sound effects: ElevenLabs'],['G'],['H','Pictures and sprites'],['L','Made with AI image tools'],['L','Edited into the game by Moonga Studio'],['G'],['H','Thank you for playing'],['G'],['LOGO'],['G']];
+const CREDITS=[['T','KANNAN AND THE'],['T','KANJIRAVANAM CHRONICLES'],['S','A Moonga Studio game'],['G'],['H','Music'],['L','Final stage: Train to Ernakulam Town by ItsWatR'],['L','Disco: Tamil Comedy Music by Kamalesh Siddu'],['L','Motorbike ride: Kaleidoscope Indian Fusion by Linesh Jose'],['L','Motorbike engine: 350cc bike firing, freesound_community'],['L','Pey Komban fight and finale: 360 Indian Fusion by Linesh Jose'],['S','All from Pixabay'],['L','All other music and the sound effects: ElevenLabs'],['G'],['H','Pictures and sprites'],['L','Made with AI image tools'],['L','Edited into the game by Moonga Studio'],['G'],['H','Thank you for playing'],['G'],['LOGO'],['G']];
 function rollMetrics(){let y=0;const rows=CREDITS.map(c=>{const h=c[0]==='T'?30:c[0]==='H'?24:c[0]==='G'?30:c[0]==='LOGO'?120:20;const r={c,y,h};y+=h;return r});return {rows,total:y}}
 function drawRoll(t){
   /* black background; a little Kannan runs along the bottom-left corner for fun */
