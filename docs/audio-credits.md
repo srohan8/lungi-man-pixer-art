@@ -71,3 +71,8 @@ The last two pages after the ending epilogue list the music (ItsWatR, Kamalesh S
 
 ## Kannan's battle cry (mundu finale)
 `assets/audio/sfx/kannan_yell.ogg` plays when Kannan leaps at Pey Komban in the mundu finale; the finale music (`bgm_finale`) plays under the whole scene. Made with ElevenLabs sound effects (`eleven_text_to_sound_v2`), one take, 2 s, loudness-normalised, 2026-11-06. The source is `kannan_yell_a.mp3` (not packaged in the app).
+
+## Pey Komban boss and the mundu finale (replaced the generated tracks, 2026-11-06)
+| Used in | File | Source | Licence |
+|---|---|---|---|
+| `bgm_boss_komban.ogg` (Pey Komban fight, 50 s loop from 0:20 to 1:13, 3 s crossfade, about -17 LUFS) and `bgm_finale.ogg` (mundu finale, 16.8 s from 0:40, fade out) | `lineshjose-360-indian-fusion-music-288635.mp3` (kept as `bgm_boss_komban_pixabay_a.mp3`, not packaged) | "360 Indian Fusion Music" by Linesh Jose, Pixabay | Pixabay Content Licence. Attribution welcome: "Music by Linesh Jose from Pixabay". The earlier ElevenLabs tracks are in `assets/audio/music-old/` (`bgm_boss_komban_elevenlabs.ogg`, `bgm_finale_elevenlabs.ogg`). |
