@@ -2278,7 +2278,7 @@ function drawPages(){
   for(let k=0;k<pg.list.length;k++){g.fillStyle=k===pg.i?'#f0c040':'#3a2c58';g.fillRect(px+12+k*10,H-26,6,3)}
   if((tick>>5)%2===0)ntext(pg.rev>=pg.len?(isTouch?'Tap for next':'Press any key'):'',px+pw-12,H-32,8,'#cfe9c8','right');
   /* back button (bottom left of the text panel) */
-  pg.pr=pg.i>0?[px,H-52,46,40]:null;if(pg.i>0){g.fillStyle='rgba(12,8,28,.7)';g.fillRect(px+4,H-48,34,26);g.fillStyle='#cfe9c8';for(let k=0;k<7;k++)g.fillRect(px+13+k,H-41+k,1,14-2*k)}
+  pg.pr=pg.i>0?[px,H-52,46,40]:null;if(pg.i>0){g.fillStyle='rgba(12,8,28,.7)';g.fillRect(px+4,H-48,34,26);g.fillStyle='#cfe9c8';for(let k=0;k<7;k++)g.fillRect(px+13+(6-k),H-41+k,1,14-2*k)}
   ntext('Skip',W-12,6,9,'#d8d0f0','right');
 }
 /* Story scenes, sharp characters: which poses are resting and which are gestures. While a character speaks the gestures come in on the beat of the words (irregular, a few frames each, with a small bounce at each beat); at rest he breathes and shifts slowly between the resting poses. */
