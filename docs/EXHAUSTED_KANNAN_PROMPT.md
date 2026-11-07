@@ -28,3 +28,16 @@ He is BEATEN UP and EXHAUSTED: scratches and purple bruises on the chest, arms a
 
 ## After the art arrives
 Tell me the filenames. I will cut the 8 frames, add them to the Pathalam cinematic, and add the sounds (the game stays silent or uses simple beeps when a sound file is missing).
+
+# Beaten-up walk for Maveli's realm (art prompt)
+
+Why: in Maveli's realm Kannan is still beaten up and tired until Maveli's blessing, then he is healed and runs normally in Act V. Right now the game only leans his normal run frames and shows the hunched breathing pose when he stands still.
+
+Attach: `Kannan's Exhausted Fall Animation Strip.png` (the beaten-up look) and `Kannan Trident Action Sprite Sheet.png` (size and line weight).
+
+## Prompt
+A walk-cycle sprite sheet of Kannan, beaten up and exhausted, one row of 8 frames, side view facing right, plain flat white background or real transparency, no checkerboard, no ground, no shadow, no glow, no white outline, no text. Same character and style as the exhausted strip: bruises, scratches, a cut above the eyebrow, mud and sweat, torn dirty mundu, cracked sunglasses, torn satchel strap. The same size in every frame (the same standing height as in the strip, a normal adult), feet on the same baseline.
+He drags himself forward: a slow, heavy, limping walk, shoulders slumped, head low, one hand holding his side, the other arm swinging weakly, knees buckling a little, each step short and tired, the chest heaving. Frames 1 to 8 are one full walk cycle that loops (left foot contact, down, passing, right foot contact, and so on). In frames 3 and 7 his head lifts slightly as he gasps.
+
+## After the art arrives
+Tell me the filename. I will cut the 8 frames (name them `exw_0..7`), use them for his walk in Maveli's realm until the blessing, and switch back to his normal run afterwards.

@@ -156,7 +156,7 @@ function toggleSnd(){AUD.on=!AUD.on;try{localStorage.setItem('lungiman-snd',AUD.
 const SFX_NAMES=['throw','hit','jump','vine','slash','die','chai','powerup','boss_roar','boss_roar_yakshi','boss_roar_chathan','boss_roar_odiyan','boss_roar_karinkanni','boss_roar_komban','yakshi_laugh','thunder','heal_magic','angel_descent','kannan_yell','bike_start','bike_loop','kannan_pant','kannan_fall_scream'];
 function wantMusic(){
   if(P&&P.fly)return null;
-  if(state==='cine')return cin&&cin.k==='mk'?'bgm_finale':null;
+  if(state==='cine')return cin&&cin.k==='mk'?'bgm_finale':(cin&&cin.k==='pt'&&cin.ex>=PT_EX&&cin.t>=232?'bgm_pathalam':null);/* the Pathalam music starts as he drops through the ground and carries on into the level */
   if(state==='pages'&&pg&&pg.list===EPILOGUE)return 'bgm_ending';
   if(state==='title'||state==='pages')return 'bgm_menu';
   if(state==='win'||state==='ending')return 'bgm_ending';
@@ -1337,6 +1337,7 @@ function update(){
   if(P.on&&(dir||LV[lvl].bike))P.step++;
   if(P.on&&dir&&!LV[lvl].bike&&(P.step&7)===1)stepSfx(false);
   if(P.inv>0)P.inv--;if(P.chaiT>0)P.chaiT--;
+  if(LV[lvl].key==='path'&&!goldLamp()&&tick%300===120)sfx('kannan_pant');/* still out of breath in Maveli's realm */
   if(ammo<TUNE.ammoRegenBelow&&!P.aru){if(++ammoT>=TUNE.ammoRegenFrames){ammoT=0;ammo++}}else ammoT=0;
   {const lb=Math.floor(score/TUNE.lifeEvery);if(lb>lifeBank){const n=lb-lifeBank;lifeBank=lb;for(let k=0;k<n;k++)dropLifeLamp(k)}}
   if(P.y>GY+14){P.inv=0;die(true,true);return}
@@ -1847,12 +1848,17 @@ function drawPlayer(cx){
   const dMode=LV[lvl].arena&&arena&&!arena.hostile&&!arena.done&&state==='play';
   if(dMode){/* dancing: the hero bounces to the beat, leans when he moves, spins in a jump, claps on throw */const mv=Math.abs(P.vx)>.3,pcx=Math.round(P.x+P.w/2-cx),pcy=Math.round(P.y+P.h),bob=Math.round(Math.abs(Math.sin(tick*(mv?.35:.2)))*(mv?5:3)),ang=!P.on?(P.spin||0):mv?Math.sin(tick*.4)*.34:Math.sin(tick*.14)*.12;if(mv&&tick%14===0)burst(P.x+7,P.y+2,['#ffd860','#ff7ae0','#40e0ff'],2);g.save();if(!herodFrames()){g.translate(pcx,pcy-bob);g.rotate(ang);g.translate(-pcx,-pcy)}}
   const HA=heroArt();
+  /* in Maveli's realm, until his blessing, Kannan is still beaten up and tired: hunched and breathing when he stands, leaning and heavy when he walks (art: exh_0 and exh_1; a hand-drawn tired walk can replace the lean) */
+  const tired=LV[lvl].key==='path'&&!goldLamp()&&(state==='play'||state==='scene')&&!P.vine&&!onBike,exh0=ART.exh_0,exh1=ART.exh_1,tiredIdle=tired&&P.on&&Math.abs(P.vx)<.3&&exh0&&exh1,tiredWalk=tired&&!tiredIdle;
+  if(tiredWalk){const px0=Math.round(P.x+P.w/2-cx),py0=Math.round(P.y+P.h);g.save();g.translate(px0,py0+(P.on?Math.round(Math.abs(Math.sin(P.step*.5))*1):0)+1);g.rotate(.15*(P.f>0?1:-1));g.translate(-px0,-py0)}
   const HDF=(dMode||(LV[lvl].arena&&arena&&!arena.done&&state==='play'&&(!P.on||arena.landT>0)))?herodFrames():null;/* in the whole dance stage a jump or a stomp uses the dance jump frames, not the running pose */
-  if(HDF){const im=HDF[herodPick()],pic=P.f>0?im:flipOf(im);g.drawImage(pic,Math.round(P.x+P.w/2-im.width/2-cx),Math.round(P.y+P.h-im.height))}
+  if(tiredIdle){const im=((tick>>5)&1)?exh1:exh0,pic=P.f>0?im:flipOf(im);g.drawImage(pic,Math.round(P.x+P.w/2-im.width/2-cx),Math.round(P.y+P.h-im.height)+1)}
+  else if(HDF){const im=HDF[herodPick()],pic=P.f>0?im:flipOf(im);g.drawImage(pic,Math.round(P.x+P.w/2-im.width/2-cx),Math.round(P.y+P.h-im.height))}
   else if(HA&&!onBike){const I=HERO_IDLE||(HERO_IDLE=artSet('heroidle',4)),S=HERO_SWING||(HERO_SWING=artSet('heroswing',3));
     const TA=P.aru&&!P.vine?trishArt():null,fr=dMode&&P.clap>0?HA[2]:TA?trishFrame(TA,hop):P.vine&&S?S[1]:!P.on?HA[2]:P.vx&&!hop?HA[(P.step>>2)%4]:I?I[(tick>>5)%4]:HA[1],s=fr[(P.f>0)!==!!(dMode&&Math.abs(P.vx)>.3&&((tick>>3)&1))?0:1];/* the disco shuffle: he turns on the beat while he moves */g.drawImage(s,Math.round(P.x+ho+P.w/2-s.width/2-cx),Math.round(P.y+P.h-s.height))}
   else g.drawImage(PSPR[lg+(shootCd>6?1:0)][P.f>0?0:1],Math.round(P.x+ho-cx-1),Math.round(P.y));
   if(dMode)g.restore();
+  if(tiredWalk)g.restore();
   if(P.sp||P.chaiT>0){g.fillStyle='#9be06a';g.fillRect(Math.round(P.x-cx+5),Math.round(P.y)-3,4,1)}
   if(P.aru&&!(HA&&!onBike&&!P.vine&&trishArt()))drawStaffInHand(cx);
   if(false&&P.aru&&slashT<=0){const f=P.f,hx=Math.round(P.x-cx)+(f>0?14:-1),hy=Math.round(P.y)+11;
