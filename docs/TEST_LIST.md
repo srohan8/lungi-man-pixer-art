@@ -86,3 +86,7 @@ Uninstall the old build first, then install the newest debug APK.
 - [ ] Maveli's realm: Kannan floats down into the level (the last frame of the exhausted strip, with a soft golden glow and the descent sound) and lands on the first platform; then he is hunched and tired until Maveli's blessing.
 - [ ] Maveli's realm until the blessing: his walk is the hand-drawn beaten-up walk (8 frames, slow and heavy); standing he breathes hunched; jumping keeps a leaning run. After the blessing he is normal again.
 - [ ] Maveli's realm until the blessing: jumping uses the hand-drawn beaten-up jump (take-off, rising, peak, falling, landing) and the rope swing uses the beaten-up grab / swing / let-go frames. Check they line up with the rope on the phone.
+
+## New hand-drawn Kannan set (hn*) + bigger beaten-up jump/swing
+- Normal hero now uses the new sheet: idle (hnidle), run (hnrun), jump crouch/take-off/rising/peak/falling/landing (hnjump), rope grab/swing/let-go (hnact 0,1,3), coconut throw (hnact 5 standing, 6 while running). Check: run, jump arc, landing dust, throwing standing and running, vine grab alignment (hand on the rope), trishul still uses its own frames.
+- Maveli's realm jump and rope swing (exj_*) re-cut about 11% bigger so they match the panting walk.
