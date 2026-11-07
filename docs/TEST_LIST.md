@@ -80,3 +80,4 @@ Uninstall the old build first, then install the newest debug APK.
 - [ ] Dance stage retry after a game over: no angel descent and none of Kannan's five lines again; he starts on the floor and the dancing begins.
 - [ ] Pey Komban's stomp jump: he crouches (the glowing crouch pose) before it, and is in a legs-apart leaping pose in the air, not standing.
 - [ ] Pey Komban never jumps onto or across the two platforms: standing on one is a safe haven (he can still charge and stomp on the floor). If it is now too easy or the fight stalls, tell me.
+- [ ] Pey Komban's stomp is back to the original (lands about 120 px from you); the only change is that while you stand on a platform he never stomps on or across it (safe haven). His jump animation (crouch, leap) is kept.
