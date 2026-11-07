@@ -79,3 +79,4 @@ Uninstall the old build first, then install the newest debug APK.
 - [ ] Failing Pey Komban (or any boss) and retrying after a game over does NOT replay the village / Thoma lines or the opening line of the level; the boss's own opening line is heard once, not on every try.
 - [ ] Dance stage retry after a game over: no angel descent and none of Kannan's five lines again; he starts on the floor and the dancing begins.
 - [ ] Pey Komban's stomp jump: he crouches (the glowing crouch pose) before it, and is in a legs-apart leaping pose in the air, not standing.
+- [ ] Pey Komban never jumps onto or across the two platforms: standing on one is a safe haven (he can still charge and stomp on the floor). If it is now too easy or the fight stalls, tell me.

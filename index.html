@@ -1512,7 +1512,8 @@ function kombanAI(b,pc,bc,face,rage){
   else if(b.state===1){b.f=face;if(--b.cd<=0){b.dir=face;b.state=2;b.arm=0}}
   else if(b.state===2){b.x+=b.dir*(rage?6.4:5.4);b.f=b.dir;
     if(b.x<=lo||b.x>=hi){b.x=cl(b.x);b.state=0;b.cd=rage?25:45;shake=18;beep(70,.5,'sawtooth',.08);burst(bc,b.y+10,['#6a5a40','#a89878','#ffffff'],16)}}
-  else if(b.state===3){b.f=face;if(--b.cd<=0){b.vy=-9.5;/* the stomp lands at a random spot of the arena (not always at the far ends), never right on top of the hero */let tx=bc;for(let k=0;k<8;k++){const c=lo+b.w/2+Math.random()*(hi-lo);if(Math.abs(c-pc)>75){tx=c;break}}b.vx=Math.max(-5,Math.min(5,(tx-bc)/47.5));b.state=4;b.air=0;b.arm=0}}
+  else if(b.state===3){b.f=face;if(--b.cd<=0){b.vy=-9.5;/* the stomp lands at a random spot of the arena, never on or across a platform: the platforms are the hero's safe haven */const pl=plats.filter(p=>p[0]>ax-10&&p[0]<ax2&&p[1]<GY-40),cross=(x0,x1)=>pl.some(p=>Math.max(x0,x1)>p[0]-18&&Math.min(x0,x1)<p[0]+p[2]+18);let tx=null;for(let k=0;k<30;k++){const c=lo+b.w/2+Math.random()*(hi-lo);if(Math.abs(c-pc)>75&&!cross(bc,c)){tx=c;break}}
+    if(tx===null){b.state=0;b.cd=30;b.vy=0;return}/* no clear landing: he does not jump now */b.vx=Math.max(-5,Math.min(5,(tx-bc)/47.5));b.state=4;b.air=0;b.arm=0}}
   else{b.x=cl(b.x+b.vx);if(!b.on)b.air=1;
     if(b.on&&b.air){shot(bc-20,GY-5,-2.8,0,0,'wave');shot(bc+20,GY-5,2.8,0,0,'wave');b.state=0;b.cd=rage?30:55;b.stun=rage?80:105;burst(bc,GY-4,['#6a5a40','#a89878','#ffffff'],10)}}
 }
