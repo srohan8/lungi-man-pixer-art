@@ -1795,7 +1795,7 @@ function newHeroFrame(N){const mv=P.on&&Math.abs(P.vx)>.3;
   if(P.landT>4)return{f:N.jump[5],dx:0};
   if(P.landT>0)return{f:N.jump[0],dx:0};
   if(shootCd>8&&!P.aru)return{f:N.act[mv?6:5],dx:0};
-  return{f:mv?N.run[(P.step>>2)%8]:N.idle[(tick>>5)%2],dx:0}}
+  return mv?{f:N.run[(P.step>>1)%8],dx:0,dy:-Math.round(Math.abs(Math.sin(P.step*Math.PI/8))*2)}:{f:N.idle[(tick>>5)%2],dx:0,dy:0}}/* the 8 run frames are close to each other, so the cycle is as fast as the old 4-frame one (2 ticks a frame) and he bounces on every stride */
 let HERO_IDLE=null,HERO_SWING=null;
 function artSet(pre,n){const f=[...Array(n)].map((_,i)=>ART[pre+'_'+i]);return f.every(Boolean)?f.map(c=>[c,flipC(c)]):null}
 /* Death poses, drawn in code: topple over backwards and lie flat with circling stars, or flail in the water with bubbles and floating sunglasses. */
@@ -1872,7 +1872,7 @@ function drawPlayer(cx){
   else if(tiredStep){const im=EXW[(P.step>>2)&7],pic=P.f>0?im:flipOf(im);g.drawImage(pic,Math.round(P.x+P.w/2-im.width/2-cx),Math.round(P.y+P.h-im.height)+1)}/* the hand-drawn beaten-up walk */
   else if(HDF){const im=HDF[herodPick()],pic=P.f>0?im:flipOf(im);g.drawImage(pic,Math.round(P.x+P.w/2-im.width/2-cx),Math.round(P.y+P.h-im.height))}
   else if((HA||newHeroArt())&&!onBike){const NH=P.aru?null:newHeroArt(),NF=NH&&!(dMode&&P.clap>0)?newHeroFrame(NH):null,I=HERO_IDLE||(HERO_IDLE=artSet('heroidle',4)),S=HERO_SWING||(HERO_SWING=artSet('heroswing',3));
-    const TA=P.aru&&!P.vine?trishArt():null,fr=NF?null:dMode&&P.clap>0?HA[2]:TA?trishFrame(TA,hop):P.vine&&S?S[1]:!P.on?HA[2]:P.vx&&!hop?HA[(P.step>>2)%4]:I?I[(tick>>5)%4]:HA[1],s=(NF?NF.f:fr)[(P.f>0)!==!!(dMode&&Math.abs(P.vx)>.3&&((tick>>3)&1))?0:1];/* the disco shuffle: he turns on the beat while he moves */g.drawImage(s,Math.round(P.x+ho+P.w/2-s.width/2-cx)-(NF?NF.dx*(P.f>0?1:-1):0),Math.round(P.y+P.h-s.height))}
+    const TA=P.aru&&!P.vine?trishArt():null,fr=NF?null:dMode&&P.clap>0?HA[2]:TA?trishFrame(TA,hop):P.vine&&S?S[1]:!P.on?HA[2]:P.vx&&!hop?HA[(P.step>>2)%4]:I?I[(tick>>5)%4]:HA[1],s=(NF?NF.f:fr)[(P.f>0)!==!!(dMode&&Math.abs(P.vx)>.3&&((tick>>3)&1))?0:1];/* the disco shuffle: he turns on the beat while he moves */g.drawImage(s,Math.round(P.x+ho+P.w/2-s.width/2-cx)-(NF?NF.dx*(P.f>0?1:-1):0),Math.round(P.y+P.h-s.height)+(NF&&NF.dy||0))}
   else g.drawImage(PSPR[lg+(shootCd>6?1:0)][P.f>0?0:1],Math.round(P.x+ho-cx-1),Math.round(P.y));
   if(dMode)g.restore();
   if(tiredWalk)g.restore();
