@@ -75,6 +75,7 @@ Level selector (owner request): the title screen has left/right arrows (keys, A/
 
 ## Out of scope (say no, suggest the simple alternative)
 Multiplayer, online features, accounts, ads, in-app purchases, procedural story, voice acting.
+Planned exception (owner-approved direction, NOT built yet, build only when the owner asks): a free app with one full-screen ad at a few story breaks and one optional "Remove ads" purchase, never during play and never blocking play. Full plan in `docs/MONETISATION.md`. Until it is built, keep the build free of ads and purchases.
 
 ## Story cameos (from STORYLINE.md, hero stays "Kannan" for now)
 Prologue: Biju, Thoma, Kanjiravanam Amma. I: Soniya (first chai stall), Yakshi. II: Ravi, Kuttichathan. III: Velu, Ustad Basheer (bard cameo, sings verses), Odiyan. IV: Kanjiravanam Amma (her warning at the start; the nun Devi no longer speaks), Karinkanni. V: Thoma, Soniya (first stall), Kanjiravanam Amma.

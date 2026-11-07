@@ -33,7 +33,10 @@ for (let f = 0; f < 400000; f++) {
   if (L.arena) {                                   // dance arena: walk toward the nearest hostile dancer, hop when close
     const n = enemies.filter(e => e.alive && e.t === 'dancer' && !e.calm).sort((a, b) => Math.abs(a.x - P.x) - Math.abs(b.x - P.x))[0];
     keys.ArrowRight = !!(n && n.x > P.x + 30); keys.ArrowLeft = !!(n && n.x < P.x - 30);
+    if (n && Math.abs(n.x - P.x) <= 30 && Math.abs((n.y + 24) - (P.y + P.h)) > 50) { const w = Math.floor(f / 90) % 2; keys.ArrowRight = w === 0; keys.ArrowLeft = w === 1 }   // the dancer is on a platform far above or below: wander so the pile breaks up and the bot can reach it
     keys.Space = !!(n && Math.abs(n.x - P.x) < 46 && (P.on || f % 20 < 10));
+    if (n && P.on && (n.y + 24) - (P.y + P.h) > 26 && Math.abs(n.x - P.x) < 90) { keys.ArrowRight = true; keys.ArrowLeft = false; keys.Space = false }   // standing on a platform above a dancer: walk off its edge so the dancer can be stomped from above
+    if (n && Math.abs(n.x - P.x) < 18 && Math.abs((n.y + 24) - (P.y + P.h)) < 22) { keys.ArrowRight = n.x < P.x; keys.ArrowLeft = n.x >= P.x; keys.Space = false }   // standing inside a dancer: back off so it can be stomped from above next time
   } else {                                         // everything else: run right, jump at gap edges, pulse jump in boss arenas
     keys.ArrowRight = !locked || P.x < bossX + 80; keys.ArrowLeft = false;
     const sg = segs.find(s => P.x >= s[0] - 14 && P.x < s[1]);
