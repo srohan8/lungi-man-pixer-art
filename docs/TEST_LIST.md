@@ -65,6 +65,6 @@ Uninstall the old build first, then install the newest debug APK.
 
 ## Skips (new)
 - [ ] During a dialogue box only a tap on the box or its back / next / X buttons does anything; tapping the rest of the screen, or pressing JUMP / THROW / the arrows, never skips it.
-- [ ] Cinematics (the fall into Pathalam, Odiyan's last strike, the mundu finale): one tap only shows "Tap again to skip"; a second tap within 2 s skips.
+- [ ] Cinematics (the fall into Pathalam, Odiyan's last strike, the mundu finale) cannot be skipped: taps and keys do nothing and they play to the end.
 - [ ] Karinkanni: after dying in the boss fight you respawn at the tea stall and she waits (no ray, no falling stones) until you walk back into the arena; then she starts her pattern again after a short pause.
 - [ ] Maveli's story page ("the king below") has him looking left.

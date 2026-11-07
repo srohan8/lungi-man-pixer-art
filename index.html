@@ -1225,7 +1225,7 @@ function newGame(){score=0;actScore=0;const picked=pick>=0,st=pick<0?pickDefault
   if(st>0&&(picked||LV[st].key==='disco'||LV[st].key==='path')){playEntry(st);return}
   begin(st,40)}
 function startIfNeeded(src){
-  if(state==='cine'){/* a cinematic is skipped with two taps within 2 s: one accidental tap does nothing but show the hint */if(cin&&cin.t>40){if(cin.skipUntil&&cin.t<=cin.skipUntil)cineEnd();else cin.skipUntil=cin.t+120}return}
+  if(state==='cine'){return}/* owner decision: the finishing cinematics cannot be skipped, they always play to the end */
   if(state==='play'&&tut&&tut.phase==='msg'&&!paused){tutConfirm(src);return}
   if(state==='title'&&splashT<=0){if(src==='ArrowLeft'||src==='KeyA'||src==='l'){pickLevel(-1);return}if(src==='ArrowRight'||src==='KeyD'||src==='r'){pickLevel(1);return}}
   goFull();
