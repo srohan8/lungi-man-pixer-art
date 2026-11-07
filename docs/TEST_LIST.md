@@ -54,3 +54,5 @@ Uninstall the old build first, then install the newest debug APK.
 - [ ] Is it fun and hard enough? Tell me what to change (number to defeat, how many at once, leaper share).
 - [ ] The turn has a warning: the last 5 s of dancing the lights flicker red with a low rumble and the dancers' eyes glow; 2 s before, "Kannan thinks "Why are their eyes turning red?" and they stop swaying; then Kannan says "This doesn't look good... Thomakutty, vittoda!", about 1.5 s of safety before the first dancer turns, and new dancers only start coming about 4 s after.
 - [ ] Left / right while dancing: lean, bounce, and he turns on the beat (disco shuffle).
+- [ ] Dance stage layout: two low steps at the ends, two mid platforms, and one high golden platform in the middle (Kannan's haven). Dancers hop up onto the steps and mid platforms after you but cannot reach the haven; from a mid platform, jump and steer onto it. If the haven makes the fight too easy (a safe spot to rest), tell me and I'll lower or shrink it.
+- [ ] Dance frames: Kannan uses his own dance frames in the dance part; the crowd uses the new clean sheets.
