@@ -923,7 +923,7 @@ function dropLifeLamp(k){
   /* it leaves the score counter at the top left and arcs down to the ground ahead, so the player sees where it came from */
   pickups.push({x:camx+46,y:12,w:12,h:14,got:false,k:'life',drop:true,sx:camx+46,sy:12,lx:lx-6,landY:ly-14,t:0,T:75});
   pops.push({x:P.x+7,y:P.y-8,s:'5000 POINTS! A LAMP DROPS',t:100});if(!sfx('powerup'))beep(1000,.2,'triangle',.06)}
-function begin(i,x){bikeT=0;if(i===0&&tutPending){tut={step:0,phase:'wait',t:0};tutPending=false;tutAny=true;tutPulse(null)}else if(i!==0&&tut){tut=null;tutPulse(null)}lives=i>=1?4:3;actScore=actScore||0;ammo=TUNE.ammoStart;ammoT=0;lifeBank=Math.floor(score/TUNE.lifeEvery);loadLevel(i);placePlayer(x);state='play';mercyGift();if(dlg&&dlg.pause&&!dlg.conv){const d0=dlg;dlg=null;say(d0.who,d0.text)}/* a line said while the level loaded becomes a normal conversation box */banner={a:LV[i].act,b:LV[i].name,t:150}}
+function begin(i,x){quiet=false;bikeT=0;if(i===0&&tutPending){tut={step:0,phase:'wait',t:0};tutPending=false;tutAny=true;tutPulse(null)}else if(i!==0&&tut){tut=null;tutPulse(null)}lives=i>=1?4:3;actScore=actScore||0;ammo=TUNE.ammoStart;ammoT=0;lifeBank=Math.floor(score/TUNE.lifeEvery);loadLevel(i);placePlayer(x);state='play';mercyGift();for(const t of (LV[i].sayAt||[]))if(t.x<x)t.d=1;/* starting beyond a line (a retry from the checkpoint) does not replay it */if(dlg&&dlg.pause&&!dlg.conv){const d0=dlg;dlg=null;say(d0.who,d0.text)}/* a line said while the level loaded becomes a normal conversation box */banner={a:LV[i].act,b:LV[i].name,t:150}}
 /* Title screen level selector: left / right (arrows, A / D, or tap the arrows). TUNE.levelSelectAll=false limits it to the levels reached so far. */
 /* Pause: icon (top, left of the sound icon), P / Esc, and automatically when the app goes to the background. Only two choices: RESUME and MENU (back to the title screen). */
 function setPause(on){if(on&&state!=='play')return;if(paused===on)return;paused=on;
@@ -1218,12 +1218,12 @@ function pickLevel(d){if(pick<0)pick=pickDefault();pick=Math.max(0,Math.min(pick
    cinematics play. "Tap to continue" is silent except into the interlude and Pathalam. */
 function playEntry(st){
   const prev=LV[st-1],sk=prev&&prev.key;
-  if(sk==='a3'||sk==='a4'){begin(st-1,40);P.x=bossX+60;P.y=GY-P.h;camx=bossX;autoKill=true;return}
+  if(sk==='a3'||sk==='a4'){begin(st-1,40);dlg=null;convo=null;/* no opening line and no boss line: this only plays the finishing scene */P.x=bossX+60;P.y=GY-P.h;camx=bossX;autoKill=true;quiet=true;return}
   const sc=sk&&SCENES[sk];if(!sc){begin(st,40);return}
   const bgk=sc.bg;let cxs=0;
   if(bgk==='next')loadLevel(st);else if(bgk==='cur'){loadLevel(st-1);cxs=Math.max(0,Math.round(bossX-W*.6))}else{const bi=LV.findIndex(l=>l.key===bgk);loadLevel(bi>=0?bi:st)}
   const snap=snapshotBackdrop(cxs);state='story';startStory(sc,()=>begin(st,40),snap)}
-function newGame(){score=0;actScore=0;const picked=pick>=0,st=pick<0?pickDefault():Math.min(pick,pickMax());pick=-1;if(st===0)tutPending=true;
+function newGame(){bossHeard=-1;score=0;actScore=0;const picked=pick>=0,st=pick<0?pickDefault():Math.min(pick,pickMax());pick=-1;if(st===0)tutPending=true;
   if(st===0&&(!seen||picked)&&SCENES.start){loadLevel(0);const snap=snapshotBackdrop(0);startPages(OPENING,()=>{state='story';startStory(SCENES.start,()=>begin(0,40),snap)},snap);return}
   if(st>0&&(picked||LV[st].key==='disco'||LV[st].key==='path')){playEntry(st);return}
   begin(st,40)}
@@ -1339,9 +1339,9 @@ function update(){
   if(LV[lvl].key==='a4')floodTick();
   if(!tutAny)for(const t of (LV[lvl].tut||[]))if(!t.d&&P.x>t.x){t.d=1;banner={a:t.a,b:t.b,t:120}}
   tutStep();
-  for(const t of (LV[lvl].sayAt||[]))if(!t.d&&P.x>t.x){t.d=1;say(t.who,t.text)}
+  for(const t of (LV[lvl].sayAt||[]))if(!t.d&&P.x>t.x){t.d=1;if(!quiet)say(t.who,t.text)}/* not while a finishing scene is only being replayed from the selector */
   if(LV[lvl].scene&&!scene&&P.x>bossX+W-230){state='scene';scene={t:0};P.vx=0;return}
-  if(!LV[lvl].boss&&!LV[lvl].arena&&!LV[lvl].scene&&P.x>bossX+40){state='clear';clearT=lvl===0?360:200;banner=lvl===0?{a:'WELL DONE, KANNAN!',b:'YOU LEARNED FAST. THE REAL GROVE NEEDS YOU.',t:340}:{a:LV[lvl].clear[0],b:LV[lvl].clear[1],t:190};if(LV[lvl].sayClear)say(LV[lvl].sayClear[0],LV[lvl].sayClear[1]);return}
+  if(!LV[lvl].boss&&!LV[lvl].arena&&!LV[lvl].scene&&P.x>bossX+40){state='clear';clearT=lvl===0?360:200;banner=lvl===0?{a:'WELL DONE, KANNAN!',b:'YOU LEARNED FAST. THE REAL GROVE NEEDS YOU.',t:340}:{a:LV[lvl].clear[0],b:LV[lvl].clear[1],t:190};if(LV[lvl].sayClear&&!quiet)say(LV[lvl].sayClear[0],LV[lvl].sayClear[1]);return}
 
   shootCd--;
   if(S&&shootCd<=0&&P.aru){shootCd=16;slashT=8;swingId++;if(!sfx('slash'))beep(220,.08,'sawtooth',.05)}
@@ -1531,7 +1531,7 @@ function slashHits(){
   if(locked&&boss.active&&!boss.dead&&boss.sw!==swingId){const b=boss,hb={x:b.x+b.hb[0],y:b.y+b.hb[1],w:b.hb[2],h:b.hb[3]};
     if(hit(sb,hb)){b.sw=swingId;if(b.vuln===false){burst(P.x+(P.f>0?24:-2),P.y+12,['#c8c8d8','#ffffff'],4);beep(160,.06,'square',.05);return}b.hp-=2;b.hurt=8;score+=100;sunHit(b.x+b.hb[0]+b.hb[2]/2,b.y+b.hb[1]+b.hb[3]/2,true);beep(300,.1,'sawtooth',.05)}}
 }
-function spawnBoss(){if(LV[lvl].key==='a4'){flood=Math.min(flood,TUNE.floodBoss);cpFlood=Math.min(cpFlood,flood)}boss.active=true;if(LV[lvl].sayBoss)say(LV[lvl].sayBoss[0],LV[lvl].sayBoss[1],330,true);boss.x=bossX+W-boss.w-30;boss.y=-80;boss.vy=0;banner={a:boss.name,b:boss.sub,t:140};if(!sfx('boss_roar_'+(boss.t==='karin'?'karinkanni':boss.t))&&!sfx('boss_roar'))beep(110,.6,'sawtooth',.06);sting('sting_boss_intro')}
+function spawnBoss(){if(LV[lvl].key==='a4'){flood=Math.min(flood,TUNE.floodBoss);cpFlood=Math.min(cpFlood,flood)}boss.active=true;if(LV[lvl].sayBoss&&!quiet&&bossHeard!==lvl){say(LV[lvl].sayBoss[0],LV[lvl].sayBoss[1],330,true);bossHeard=lvl}/* the boss's opening line is heard once, not on every retry */boss.x=bossX+W-boss.w-30;boss.y=-80;boss.vy=0;banner={a:boss.name,b:boss.sub,t:140};if(!sfx('boss_roar_'+(boss.t==='karin'?'karinkanni':boss.t))&&!sfx('boss_roar'))beep(110,.6,'sawtooth',.06);sting('sting_boss_intro')}
 function updBoss(){
   {const b=boss;if(tick%11===0&&b.active&&!b.dead&&((b.t==='komban'&&b.state===2&&b.stun<=0)||(b.t==='odiyan'&&!b.puff&&(b.form===1||(b.form===2&&b.wind<=0)))))stepSfx(true)}
   const b=boss;if(!b.active||b.dead)return;if(!locked&&!LV[lvl].arena)return;/* after a death the boss waits (no ray, no falling stones) until the hero walks back into the arena */b.tk++;if(b.hurt>0)b.hurt--;if(b.arm>0)b.arm--;
@@ -1565,9 +1565,9 @@ function updBoss(){
     if(b.vuln===false){burst(s.x,s.y,['#c8c8d8','#ffffff'],3);beep(160,.05,'square',.04);if(!b.hinted&&BHINT[b.t]){b.hinted=true;banner={a:'SHIELDED!',b:BHINT[b.t],t:130}}}
     else{b.hp--;b.hurt=6;score+=50;ammo=Math.min(TUNE.ammoMax,ammo+1);burst(s.x,s.y,['#ffe070','#ffffff'],3);beep(500,.05,'square',.04);
       if(b.t==='karin'){b.state=0;b.cd=100;b.vuln=false;b.arm=0}}}
-  if(b.hp<=0){b.dead=true;if(LV[lvl].key==='a5')bossDeaths=0;if(b.t==='chathan'||b.t==='odiyan')b.drop={x:b.x+b.w/2};score+=3000;shake=20;beep(200,.8,'sawtooth',.07);
+  if(b.hp<=0){b.dead=true;bossHeard=-1;if(LV[lvl].key==='a5')bossDeaths=0;if(b.t==='chathan'||b.t==='odiyan')b.drop={x:b.x+b.w/2};score+=3000;shake=20;beep(200,.8,'sawtooth',.07);
     for(let k=0;k<5;k++)burst(b.x+Math.random()*b.w,b.y+Math.random()*b.h,['#ffe070','#ff8030','#ffffff','#d8432e'],10);
-    shots=[];if(b.t==='odiyan'){startCine('od');return}if(b.t==='komban'){startCine('mk');return}state='clear';clearT=360;banner={a:LV[lvl].clear[0],b:LV[lvl].clear[1],t:210};if(LV[lvl].sayClear)say(LV[lvl].sayClear[0],LV[lvl].sayClear[1]);return}
+    shots=[];if(b.t==='odiyan'){startCine('od');return}if(b.t==='komban'){startCine('mk');return}state='clear';clearT=360;banner={a:LV[lvl].clear[0],b:LV[lvl].clear[1],t:210};if(LV[lvl].sayClear&&!quiet)say(LV[lvl].sayClear[0],LV[lvl].sayClear[1]);return}
   if(!(b.puff>0)&&!(b.stun>0)&&!(b.t==='odiyan'&&b.form===0)&&hit({x:P.x+3,y:P.y+3,w:P.w-6,h:P.h-4},hb))die();
 }
 
@@ -1583,7 +1583,7 @@ function floodTick(){
 }
 function drinkChai(x){
   if(LV[lvl].key==='a4'){flood=Math.min(flood,TUNE.floodChai);cpFlood=flood;floodWarn=flood<0?0:floodWarn}
-  const cured=P.rev>0||P.freeze>0;if(LV[lvl].sayChai&&!chaiSaid){chaiSaid=true;say(LV[lvl].sayChai[0],LV[lvl].sayChai[1])}P.rev=0;P.freeze=0;ammo=TUNE.ammoMax;if(!sfx('chai')){beep(660,.1,'triangle',.05);beep(880,.14,'triangle',.04)}
+  const cured=P.rev>0||P.freeze>0;if(LV[lvl].sayChai&&!chaiSaid){chaiSaid=true;if(!quiet)say(LV[lvl].sayChai[0],LV[lvl].sayChai[1])}P.rev=0;P.freeze=0;ammo=TUNE.ammoMax;if(!sfx('chai')){beep(660,.1,'triangle',.05);beep(880,.14,'triangle',.04)}
   burst(x,GY-20,['#ffffff','#ffe8a0'],6);pops.push({x,y:GY-44,s:cured?'CHAI! FEELING CLEAR, COCONUTS FULL':'CHAI! COCONUTS REFILLED',t:80});
 }
 /* dithered halo (warm lights): solid pixels thinning out from the centre */
@@ -1899,7 +1899,7 @@ function drawSlash(cx){
   g.globalAlpha=1;g.fillStyle='#ffffff';g.fillRect(x1,y-1,len,2);
 }
 const dlgHist=[];
-let loadingLvl=false,noStartSay=false;
+let loadingLvl=false,noStartSay=false,quiet=false,bossHeard=-1;/* quiet: a finishing scene is only being replayed from the level selector, so no dialogue boxes */
 function say(who,text,t,pause){if(pause!==false&&!loadingLvl&&(state==='play'||state==='clear'||state==='scene'||state==='ending')){/* every box is a small conversation: back shows the earlier lines of this act, next / the arrow closes it, X closes it at once */if(convo&&dlg&&dlg.who===who&&dlg.text===text)return;dlgHist.push({who,text});if(dlgHist.length>6)dlgHist.shift();startConvo(dlgHist.slice(),null,dlgHist.length-1);return}pause=pause!==false;/* owner request after playtests: every in-play dialogue box stops the game until the player taps (people could not read them while running) */dlg={who,text,t:t||210,pause:pause,hold:state==='clear',pt:0,armed:false,x0:(typeof P!=='undefined'&&P)?P.x:0,dist:pause?0:((typeof lvl!=='undefined'&&LV[lvl]&&LV[lvl].bike)?520:1000)}}/* a box also closes by itself once the hero has moved on (the bike cannot stop, so there it is about 2.5 s of riding) */
 /* A conversation (several lines from one NPC): the game stands still, each line has back and next buttons (tap the left of the screen or the left arrow for back, anywhere else, the right arrow or Space for next); the last next closes it. Used for the throne scene and the ending. */
 let convo=null,clearOK=false,clearHold=0;

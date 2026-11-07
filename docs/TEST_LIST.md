@@ -75,3 +75,5 @@ Uninstall the old build first, then install the newest debug APK.
 - [ ] Act III start: Velu is standing by the path where his opening line appears (he had no picture before).
 - [ ] After a game over, the retry of a level does NOT repeat the opening line of the level.
 - [ ] After a boss falls (Act III included): any dialogue shows first, then the sacred tree blooms in front of you, and the clear screen waits until the bloom is done before "Tap to continue".
+- [ ] Choosing the Interlude (dance) from the level selector: no stray dialogue boxes appear during the quick replay of Odiyan's last strike; it goes on by itself to the dance stage (before, a hidden dialogue box froze the screen).
+- [ ] Failing Pey Komban (or any boss) and retrying after a game over does NOT replay the village / Thoma lines or the opening line of the level; the boss's own opening line is heard once, not on every try.
