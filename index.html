@@ -1388,6 +1388,7 @@ function updFoes(cx){
         const above=!e.calm&&P.on&&P.y+P.h<e.y+24-14&&adx<70;/* only when the hero STANDS above them (a platform): in the air they must not jump into a stomp *//* the hero is above them: they hop up after him */
         if(e.y>=fl){e.y=fl;e.vy=0;e.hop=0;if(!e.calm&&(--e.cd<=0||(above&&e.cd>12))){e.cd=(e.jm?50:70)+(Math.random()*40|0);e.vy=e.jm?-7.1:-5.2;e.hop=1}}}
         if(e.calm){if(!(arena&&arena.t>=1080))e.x+=Math.sin(tick*.08+e.cd)*.5}else{e.dir=sg;e.x+=e.dir*(e.jm?(e.hop||e.vy!==0?2.6:.4):(e.hop||e.vy!==0?1.7:1.2))}
+        if(!e.calm){/* never more than 3 dancers in one pile: the later ones are pushed aside */let n=0;for(const o of enemies){if(o===e)break;if(o.alive&&o.t==='dancer'&&!o.calm&&Math.abs(o.x-e.x)<9&&Math.abs(o.y-e.y)<18)n++}if(n>=3)e.x+=(enemies.indexOf(e)%2?2.6:-2.6)-e.dir*1.8}
         e.x=Math.max(0,Math.min(W-14,e.x));break;
       case 'bat':if(e.mode===0){e.x-=.7;e.y=e.y0+Math.sin(tick*.06+e.x*.1)*22;
           if(adx<110){e.mode=1;const ddy=P.y+10-e.y,d=Math.hypot(dx,ddy)||1;e.vx=dx/d*2.2;e.vy=ddy/d*2.2}}
