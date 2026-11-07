@@ -94,11 +94,11 @@ Prologue, Act I, **Act II ride** (auto-run bike, only jump and throw), Act II, A
 - Act II ride: forward speed is automatic, gaps are jumped, no left/right.
 - Act III: no pickups (the hoof-prints were removed); Odiyan is only hittable while he changes form (about 1.7 s, `TUNE.odiyanWindow`), Kili the crow caws a moment before each change. Human form is harmless to touch.
 - Interlude: 6 calm dancers; for about 20 seconds the hero dances with the same buttons (left or right = lean, jump = spin, throw = clap, no coconut, the dancers hop along), then they turn red-eyed one by one; defeat 16 to wake up (up to 7 at once, some of them leapers, they come from both sides, the beat drops at half way for more leapers and faster spawns). Locked one-screen arena.
-- Pathalam: enemy-free rope-swinging level, then Maveli's throne scene (3 dialogue boxes, player stands still), blessing = one free hit in Act V (golden lamps).
+- Pathalam: enemy-free rope-swinging level, then Maveli's throne scene (he sits facing left, towards Kannan; 6 lines, the first is "Son, you do not look good..."; player stands still), blessing = light gathers round the battered hero, then a little revival jump and he switches to the normal, healthy look; one free hit in Act V (golden lamps).
 - Ending: five trees bloom (teal, amber, indigo, green, gold) with 3 closing dialogue boxes. Tap to skip after a few seconds.
 - Bosses with a hit window show a blue shield while invulnerable and a one-time hint ("HIT HIM WHEN HE CRASHES"). Charges show a red "!" first.
 - Kuttichathan: fireball charge into a wall, stunned for 1.7 s (1.3 s enraged) = only hit window; a coconut needs about a second to cross the arena, so the window must be longer than that; clones explode when popped up close.
-Dialogue rule: at most 5 boxes per act; the throne scene (5 Maveli lines) and the ending (3) are scripted exceptions.
+Dialogue rule: at most 5 boxes per act; the throne scene (6 Maveli lines) and the ending (3) are scripted exceptions.
 
 ## Story scenes (owner-approved exception to the no-cutscene rule)
 - A short scene between two levels: a backdrop, the characters of that moment, one or two speech boxes. Drawn and moved by code (slide in, bob, hop when speaking), not animated sheets. Table in `SCENES` in index.html, wording in docs/STORY_CARDS.md.

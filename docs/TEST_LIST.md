@@ -90,3 +90,8 @@ Uninstall the old build first, then install the newest debug APK.
 ## New hand-drawn Kannan set (hn*) + bigger beaten-up jump/swing
 - Normal hero now uses the new sheet: idle (hnidle), run (hnrun), jump crouch/take-off/rising/peak/falling/landing (hnjump), rope grab/swing/let-go (hnact 0,1,3), coconut throw (hnact 5 standing, 6 while running). Check: run, jump arc, landing dust, throwing standing and running, vine grab alignment (hand on the rope), trishul still uses its own frames.
 - Maveli's realm jump and rope swing (exj_*) re-cut about 11% bigger so they match the panting walk.
+
+## Maveli's throne scene
+- Seated Maveli on the throne now faces left, towards Kannan.
+- First line before the story: "Son, you do not look good..." (6 lines now).
+- Blessing: after the last line a golden light gathers round the battered Kannan (about 0.8 s, soft chime), then a little revival jump, flash, and he switches from the beaten-up look to the normal hero. Check it reads well and the lamps turn gold at the same moment.

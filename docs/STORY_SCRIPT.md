@@ -87,6 +87,7 @@ _Scene after this level:_
 - **Karinkanni**: The storm... It passes. Thank you. _(level clear)_
 
 ## PATHALAM: Maveli's realm
+- **Maveli**: Son, you do not look good...
 - **Maveli**: I brought you down. I hope that was acceptable.
 - **Maveli**: A thousand years ago I was sent below, and I gave my word to stay. Every Onam I come home to see my people.
 - **Maveli**: Lately every visit felt worse. Someone sold the edge of my grove and I felt the seal crack. I could only watch.
