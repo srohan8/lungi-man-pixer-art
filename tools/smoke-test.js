@@ -33,7 +33,7 @@ for (let f = 0; f < 400000; f++) {
   if (L.arena) {                                   // dance arena: walk toward the nearest hostile dancer, hop when close
     const n = enemies.filter(e => e.alive && e.t === 'dancer' && !e.calm).sort((a, b) => Math.abs(a.x - P.x) - Math.abs(b.x - P.x))[0];
     keys.ArrowRight = !!(n && n.x > P.x + 30); keys.ArrowLeft = !!(n && n.x < P.x - 30);
-    keys.Space = !!(n && Math.abs(n.x - P.x) < 46 && P.on);
+    keys.Space = !!(n && Math.abs(n.x - P.x) < 46 && (P.on || f % 20 < 10));
   } else {                                         // everything else: run right, jump at gap edges, pulse jump in boss arenas
     keys.ArrowRight = !locked || P.x < bossX + 80; keys.ArrowLeft = false;
     const sg = segs.find(s => P.x >= s[0] - 14 && P.x < s[1]);
