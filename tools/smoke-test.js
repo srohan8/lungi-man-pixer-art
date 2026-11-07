@@ -46,7 +46,7 @@ for (let f = 0; f < 400000; f++) {
   if (state === 'win') { console.log('WIN at frame', f, 'score', score); ok = true; break; }
   if (${only} && lvl > ${from}) { console.log('level ${from} cleared'); ok = true; break; }
 }
-if (!ok) console.log('STUCK AT', state, 'lvl', lvl, LV[lvl].key, 'x', Math.round(P.x), 'convo', !!convo, 'dlg', dlg && dlg.who, 'story', !!story, 'cin', cin && cin.k, 'clearT', clearT, 'arena', arena && JSON.stringify({t: arena.t, k: arena.kills, h: arena.hostile}));
+if (!ok) console.log('STUCK AT', state, 'lvl', lvl, LV[lvl].key, 'x', Math.round(P.x), 'convo', !!convo, 'dlg', dlg && dlg.who, 'story', !!story, 'cin', cin && cin.k, 'clearT', clearT, 'arena', arena && JSON.stringify({t: arena.t, k: arena.kills, h: arena.hostile}), 'dancers', JSON.stringify(enemies.filter(e => e.alive).map(e => [e.t, Math.round(e.x), Math.round(e.y), e.calm ? 'calm' : 'hostile', e.jm ? 'leaper' : 'walker', Math.round(e.vy || 0)])), 'P', Math.round(P.x), Math.round(P.y), P.on);
 console.log('mode', ${mortal} ? 'mortal' : 'invulnerable', '| deaths', deaths, '| vine grabs', grabs, '| result', ok ? 'PASS' : 'FAIL (stuck)');
 process.exitCode = ok ? 0 : 1;
 `);

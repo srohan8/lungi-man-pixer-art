@@ -1798,7 +1798,7 @@ const ROTC=new WeakMap();
 function rotImg(im,ang){const q=Math.round(ang*12);let m=ROTC.get(im);if(!m){m={};ROTC.set(im,m)}if(!m[q]){const d=Math.ceil(Math.hypot(im.width,im.height)),c=document.createElement('canvas');c.width=c.height=d;const x=c.getContext('2d');x.translate(d/2,d/2);x.rotate(q/12);x.drawImage(im,-im.width/2,-im.height/2);m[q]=c}return m[q]}
 /* Kannan's dance frames (herod_0..9 from the Kerala Disco Dance Hero sheet): 0-1 idle point, 2-4 steps and shuffle, 5 jump start, 6 mid-air, 7 landing, 8-9 clap. Used in the dance part of the interlude. */
 let HD_FR=null;function herodFrames(){if(HD_FR!==null)return HD_FR||null;const f=[...Array(10)].map((_,i)=>ART['herod_'+i]);if(!f.every(Boolean))return null;return HD_FR=f}
-function herodPick(){const mv=Math.abs(P.vx)>.3;if(P.clap>0)return 8+((tick>>2)&1);if(!P.on)return (arena&&arena.airT<5)?5:6;if(arena&&arena.landT>0)return 7;if(mv)return [2,3,2,4][(tick/6|0)%4];return (tick>>4)&1}
+function herodPick(){const mv=Math.abs(P.vx)>.3;if(P.clap>0)return 8+((tick>>2)&1);if(!P.on)return P.vy>2?7:(arena&&arena.airT<5)?5:6;/* falling = the feet-first crouch, which also shows a stomp on a head */if(arena&&arena.landT>0)return 7;if(mv)return [2,3,2,4][(tick/6|0)%4];return (tick>>4)&1}
 function drawPlayer(cx){
   if(P.fly&&(ART.ang_4||ART.hk_1)){const f=P.fly,A4=ART.ang_4,sc=A4?30/A4.height:HK_H/ART.hk_0.height*1.05,cxp=Math.round(P.x+P.w/2-cx),cyp=Math.round(P.y+P.h/2),bob=Math.round(Math.sin(f.t*.07)*2);
     glowEll(cxp,cyp,28,26,'#ffd860',.22+.1*Math.sin(tick*.1));glowEll(cxp,cyp,15,14,'#fff6d0',.2);
@@ -1822,7 +1822,7 @@ function drawPlayer(cx){
   const dMode=LV[lvl].arena&&arena&&!arena.hostile&&!arena.done&&state==='play';
   if(dMode){/* dancing: the hero bounces to the beat, leans when he moves, spins in a jump, claps on throw */const mv=Math.abs(P.vx)>.3,pcx=Math.round(P.x+P.w/2-cx),pcy=Math.round(P.y+P.h),bob=Math.round(Math.abs(Math.sin(tick*(mv?.35:.2)))*(mv?5:3)),ang=!P.on?(P.spin||0):mv?Math.sin(tick*.4)*.34:Math.sin(tick*.14)*.12;if(mv&&tick%14===0)burst(P.x+7,P.y+2,['#ffd860','#ff7ae0','#40e0ff'],2);g.save();if(!herodFrames()){g.translate(pcx,pcy-bob);g.rotate(ang);g.translate(-pcx,-pcy)}}
   const HA=heroArt();
-  const HDF=dMode?herodFrames():null;
+  const HDF=(dMode||(LV[lvl].arena&&arena&&!arena.done&&state==='play'&&(!P.on||arena.landT>0)))?herodFrames():null;/* in the whole dance stage a jump or a stomp uses the dance jump frames, not the running pose */
   if(HDF){const im=HDF[herodPick()],pic=P.f>0?im:flipOf(im);g.drawImage(pic,Math.round(P.x+P.w/2-im.width/2-cx),Math.round(P.y+P.h-im.height))}
   else if(HA&&!onBike){const I=HERO_IDLE||(HERO_IDLE=artSet('heroidle',4)),S=HERO_SWING||(HERO_SWING=artSet('heroswing',3));
     const TA=P.aru&&!P.vine?trishArt():null,fr=dMode&&P.clap>0?HA[2]:TA?trishFrame(TA,hop):P.vine&&S?S[1]:!P.on?HA[2]:P.vx&&!hop?HA[(P.step>>2)%4]:I?I[(tick>>5)%4]:HA[1],s=fr[(P.f>0)!==!!(dMode&&Math.abs(P.vx)>.3&&((tick>>3)&1))?0:1];/* the disco shuffle: he turns on the beat while he moves */g.drawImage(s,Math.round(P.x+ho+P.w/2-s.width/2-cx),Math.round(P.y+P.h-s.height))}
