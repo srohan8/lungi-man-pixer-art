@@ -9,7 +9,16 @@ Until then the rules in CLAUDE.md still apply (no ads, no in-app purchases in th
 - Later, optional: a rewarded video (opt in) on the game-over screen, for example a coconut refill. Needs the owner's approval first.
 - Long term: the character (Kannan) as a brand: stickers, a WhatsApp sticker pack, merchandise. Only after the game has an audience.
 
-## Where the ad breaks are
+## iPhone model (owner decision, NOT built yet; Android keeps the model above)
+- iPhone app: **free download, no ads at all**. Prologue, Act I and the Act II ride are free. After the ride ends, a one-time **Unlock full game** purchase opens Act II to the ending.
+- One non-consumable in-app product, price string taken from the store (never hardcoded). Price to be set in App Store Connect; suggested around 2.99 to 3.99 USD with regional prices, Rs price lower for India.
+- The unlock screen sits on the same spot as an ad break (after the ride clear countdown, before the Act II story panel). It must be a plain screen with one big UNLOCK button, the price, and a small "Restore purchase" (Apple requires it) and a way back to the title. Never during play, never in a cinematic.
+- Locked acts show as locked in the title-screen level selector; the selector must not bypass the unlock. This ties in with the planned progress-based selector (see Related plan).
+- Needs the same "stand-in" approach as above: the game works in the browser with a fake unlock and no plugins, and the locked content flag is one TUNE line (for example `TUNE.freeUpTo='bike'`).
+- Apple side: App Store Connect product, Capacitor iOS platform plus a StoreKit purchase plugin, TestFlight sandbox testers. Privacy label can stay "Data not collected" because there are no ads.
+- CLAUDE.md must be updated when this is built: this is a new system (a paywall), allowed only as this one exception to guardrail 9 and "Out of scope".
+
+## Where the ad breaks are (Android)
 | Transition | Ad? | Why |
 |---|---|---|
 | Prologue to Act I | No | First impression, still teaching the controls |
