@@ -78,3 +78,4 @@ Uninstall the old build first, then install the newest debug APK.
 - [ ] Choosing the Interlude (dance) from the level selector: no stray dialogue boxes appear during the quick replay of Odiyan's last strike; it goes on by itself to the dance stage (before, a hidden dialogue box froze the screen).
 - [ ] Failing Pey Komban (or any boss) and retrying after a game over does NOT replay the village / Thoma lines or the opening line of the level; the boss's own opening line is heard once, not on every try.
 - [ ] Dance stage retry after a game over: no angel descent and none of Kannan's five lines again; he starts on the floor and the dancing begins.
+- [ ] Pey Komban's stomp jump: he crouches (the glowing crouch pose) before it, and is in a legs-apart leaping pose in the air, not standing.
