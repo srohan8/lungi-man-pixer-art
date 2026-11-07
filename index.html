@@ -1318,7 +1318,7 @@ function update(){
   P.vy=Math.min(P.vy+.5,9);
   const minX=locked?bossX:camx,maxX=locked?bossX+W-P.w:bossX+690;
   P.x=Math.max(minX,Math.min(maxX,P.x+P.vx));
-  prevBottom=P.y+P.h;const fallV=P.vy;P.y+=P.vy;P.on=false;
+  prevBottom=P.y+P.h;const fallV=P.vy;P.fv=fallV;/* the speed before landing: a stomp still counts when the floor stopped him in the same frame */P.y+=P.vy;P.on=false;
   if(P.vy>=0){for(const [x1,x2,top] of segs.map(s=>[s[0],s[1],GY]).concat(plats.map(p=>[p[0],p[0]+p[2],p[1]]))){
     if(P.x+P.w>x1&&P.x<x2&&prevBottom<=top+1&&P.y+P.h>=top){P.y=top-P.h;P.vy=0;P.on=true;P.boost=0;if(fallV>6)burst(P.x+7,top,['#d8c8a0','#a89878'],3);break}}
     /* ledge forgiveness: a jump that ends just below the bank, with the body clearly over the ground, is pulled up onto the edge instead of dropping into the river */
@@ -1409,7 +1409,7 @@ function updFoes(cx){
     for(const b of bullets)if(!e.calm&&b.life>0&&hit({x:b.x-3,y:b.y-4,w:6,h:20},e)){b.life=0;e.hp--;e.hurt=8;burst(b.x,b.y,['#ffe070','#ffffff'],3);if(e.hp<=0){kill(e);break}}
     if(!e.alive)continue;
     if(!e.calm&&hit({x:P.x+2,y:P.y+3,w:P.w-4,h:P.h-3},e)){
-      if(['crab','goon','cobra','imp','dog','dancer'].includes(e.t)&&P.vy>0&&(prevBottom<=e.y+5||(e.t==='dancer'&&P.y+P.h<=e.y+13))){kill(e);P.vy=-6;beep(800,.1)}else die()}
+      if(['crab','goon','cobra','imp','dog','dancer'].includes(e.t)&&(P.vy>0||P.fv>1)&&(prevBottom<=e.y+5||P.y+P.h<=e.y+Math.max(9,(e.h||16)*.7))){kill(e);P.vy=-6;beep(800,.1)}else die()}
     if(state!=='play')return;
   }
 }
