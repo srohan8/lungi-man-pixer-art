@@ -82,3 +82,6 @@ Synthesised in code (no file): two detuned sawtooth oscillators through a low-pa
 
 ## Motorbike engine, correction (2026-11-06)
 The ride now uses the original recording again: `freesound_community-350cc-bike-firing-32391.mp3` (Pixabay Content Licence, a Royal Enfield; the old ride track had it mixed in for the first 20 s). It is cut into `assets/audio/sfx/bike_start.ogg` (first 6.5 s, quiet) and `bike_loop.ogg` (a steady 5 s loop of 3.2 to 8.2 s, crossfaded, played very low and slightly faster with the bike's speed). The source is kept as `bike_engine_pixabay_a.mp3` (not packaged). The synthesised engine is only a fallback if those two files are missing.
+
+## Exhausted Kannan before Pathalam (2026-11-07)
+`assets/audio/sfx/kannan_pant.ogg` (panting, plays every 110 ticks while he is beaten up and out of breath) and `kannan_fall_scream.ogg` (his scream at the start of the fall into Pathalam). Made with ElevenLabs sound effects (`eleven_text_to_sound_v2`), one take each, loudness-normalised to -16 LUFS. Sources `kannan_pant_a.mp3` and `kannan_fall_scream_a.mp3` (not packaged in the app). The model returned 2 s and 1 s instead of the 6 s and 2.5 s that were asked for.
