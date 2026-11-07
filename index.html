@@ -907,6 +907,7 @@ function placePlayer(x){
   P={x,y:GY-28,w:14,h:28,vx:0,vy:0,f:1,on:false,inv:0,sp:false,aru:false,step:0,rev:0,vine:null,vineCd:0,boost:0,bvx:0,freeze:0,chaiT:0};
   camx=Math.max(0,x-60);cp=x;bestX=x;bullets=[];shots=[];locked=!!LV[lvl].arena;jumpPrev=true;shootCd=0;slashT=0;
   /* Disco or Die: he drifts slowly down from above like an angel, then lands and the dream begins */
+  if(LV[lvl]&&LV[lvl].key==='path'&&ART.exh_7){/* Maveli's realm: Kannan floats down into it (the floating frame of the exhausted strip) and lands on the first platform */P.fly={t:0,T:210,x:P.x,xE:P.x,y0:-60,yE:GY-P.h,keep:true};P.y=-60;P.inv=999;if(!sfx('angel_descent'))healSfx()}
   if(LV[lvl]&&LV[lvl].key==='disco'&&retryLvl===lvl){P.x=bossX+Math.round(W/2)-7}/* a retry after a game over skips the angel descent and goes straight to the floor */
   else if(LV[lvl]&&LV[lvl].key==='disco'&&ART.hk_8){P.x=bossX+Math.round(W/2)-7;/* he drifts straight down into the middle of the floor (the start used to be wherever the last level left him) */P.fly={t:0,T:260,x:P.x,xE:bossX+Math.round(W/2)-7,y0:-80,yE:GY-P.h};P.y=-80;P.inv=999;if(!sfx('angel_descent'))healSfx()}
 }
@@ -1304,12 +1305,13 @@ function update(){
   if(state==='ending'){endTick();return}
   if(state==='scene'){sceneTick();return}
   if(state!=='play')return;
-  if(P.fly){const f=P.fly;f.t++;const u=Math.min(1,f.t/f.T),e=1-Math.pow(1-u,2);P.y=f.y0+(f.yE-f.y0)*e;P.x=bossX+Math.round(W/2)-7+Math.sin(f.t*.05)*5*(1-u);/* always the middle of the floor at the current screen width */P.vy=0;P.on=false;P.vx=0;
+  if(P.fly){const f=P.fly;f.t++;const u=Math.min(1,f.t/f.T),e=1-Math.pow(1-u,2);P.y=f.y0+(f.yE-f.y0)*e;P.x=f.keep?f.x+Math.sin(f.t*.05)*3*(1-u):bossX+Math.round(W/2)-7+Math.sin(f.t*.05)*5*(1-u);/* always the middle of the floor at the current screen width */P.vy=0;P.on=false;P.vx=0;
     if(f.t%4===0)parts.push({x:P.x+7+(Math.random()-.5)*26,y:P.y+8+Math.random()*16,vx:(Math.random()-.5)*.3,vy:.35,l:40,c:f.t%8?'#fff6c0':'#ffd860'});
     /* disco dream: Kannan speaks as he drifts down (midway, near the landing) and once landed */
-    if(f.t===100)say('KANNAN','WHERE AM I...?',200);
-    if(f.t===205)say('KANNAN','WHY IS EVERYONE DANCING?',200);
-    if(f.t>=f.T){say('KANNAN','THIS CANNOT BE REAL...',undefined,true);P.fly=null;P.x=bossX+Math.round(W/2)-7;P.f=1;P.y=f.yE;P.on=true;P.inv=70;flashC='#fff6d0';flashT=14;burst(P.x+7,GY,['#ffd860','#fff6c0','#ffffff'],16);beep(1320,.3,'sine',.06);beep(1760,.4,'sine',.04)}
+    if(!f.keep&&f.t===100)say('KANNAN','WHERE AM I...?',200);
+    if(!f.keep&&f.t===205)say('KANNAN','WHY IS EVERYONE DANCING?',200);
+    if(f.keep&&f.t>=f.T){P.fly=null;P.x=f.xE;P.f=1;P.y=f.yE;P.on=true;P.inv=70;burst(P.x+7,GY,['#ffd860','#fff6c0','#ffffff'],10);beep(1320,.25,'sine',.05)}
+    else if(f.t>=f.T){say('KANNAN','THIS CANNOT BE REAL...',undefined,true);P.fly=null;P.x=bossX+Math.round(W/2)-7;P.f=1;P.y=f.yE;P.on=true;P.inv=70;flashC='#fff6d0';flashT=14;burst(P.x+7,GY,['#ffd860','#fff6c0','#ffffff'],16);beep(1320,.3,'sine',.06);beep(1760,.4,'sine',.04)}
     if(LV[lvl].arena)arenaTick();return}
 
   let L=inp.l(),R=inp.r();let J=inp.j();const S=inp.s();if(P.freeze>0){P.freeze--;L=false;R=false;J=false}if(P.rev>0){P.rev--;const tt=L;L=R;R=tt}const dir=(R?1:0)-(L?1:0);
@@ -1826,6 +1828,7 @@ function rotImg(im,ang){const q=Math.round(ang*12);let m=ROTC.get(im);if(!m){m={
 let HD_FR=null;function herodFrames(){if(HD_FR!==null)return HD_FR||null;const f=[...Array(10)].map((_,i)=>ART['herod_'+i]);if(!f.every(Boolean))return null;return HD_FR=f}
 function herodPick(){const mv=Math.abs(P.vx)>.3;if(P.clap>0)return 8+((tick>>2)&1);if(!P.on)return P.vy>2?7:(arena&&arena.airT<5)?5:6;/* falling = the feet-first crouch, which also shows a stomp on a head */if(arena&&arena.landT>0)return 7;if(mv)return [2,3,2,4][(tick/6|0)%4];return (tick>>4)&1}
 function drawPlayer(cx){
+  if(P.fly&&P.fly.keep&&ART.exh_7){const f=P.fly,im=ART.exh_7,cxp=Math.round(P.x+P.w/2-cx),cyp=Math.round(P.y+P.h/2),bob=Math.round(Math.sin(f.t*.07)*2);glowEll(cxp,cyp,26,24,'#ffd860',.18+.08*Math.sin(tick*.1));g.drawImage(im,cxp-Math.round(im.width/2),cyp-Math.round(im.height/2)+bob);return}/* floating down into Maveli's realm */
   if(P.fly&&(ART.ang_4||ART.hk_1)){const f=P.fly,A4=ART.ang_4,sc=A4?30/A4.height:HK_H/ART.hk_0.height*1.05,cxp=Math.round(P.x+P.w/2-cx),cyp=Math.round(P.y+P.h/2),bob=Math.round(Math.sin(f.t*.07)*2);
     glowEll(cxp,cyp,28,26,'#ffd860',.22+.1*Math.sin(tick*.1));glowEll(cxp,cyp,15,14,'#fff6d0',.2);
     let im,look=Math.sin(f.t*.045)<0;
