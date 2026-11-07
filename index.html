@@ -1385,7 +1385,7 @@ function updFoes(cx){
       case 'decoy':e.dir=sg;e.x+=e.dir*1.2;e.x=Math.max(e.s1,Math.min(e.s2,e.x));
         if(--e.life<=0){e.alive=false;burst(e.x+9,e.y+16,['#a070d0','#e0c0ff'],8)}break;
       case 'dancer':e.vy=(e.vy||0)+.35;{const pb=e.y+24;e.y+=e.vy;let fl=GY-24;const bt=e.y+24;for(const p of plats){if(e.vy>=0&&pb<=p[1]+3&&bt>=p[1]&&e.x+12>p[0]+2&&e.x<p[0]+p[2]-2)fl=Math.min(fl,p[1]-24)}/* they land on the platforms and steps too */
-        const above=!e.calm&&P.y+P.h<e.y+24-14&&adx<70;/* the hero is above them: they hop up after him */
+        const above=!e.calm&&P.on&&P.y+P.h<e.y+24-14&&adx<70;/* only when the hero STANDS above them (a platform): in the air they must not jump into a stomp *//* the hero is above them: they hop up after him */
         if(e.y>=fl){e.y=fl;e.vy=0;e.hop=0;if(!e.calm&&(--e.cd<=0||(above&&e.cd>12))){e.cd=(e.jm?50:70)+(Math.random()*40|0);e.vy=e.jm?-7.1:-5.2;e.hop=1}}}
         if(e.calm){if(!(arena&&arena.t>=1080))e.x+=Math.sin(tick*.08+e.cd)*.5}else{e.dir=sg;e.x+=e.dir*(e.jm?(e.hop||e.vy!==0?2.6:.4):(e.hop||e.vy!==0?1.7:1.2))}
         e.x=Math.max(0,Math.min(W-14,e.x));break;
@@ -1396,7 +1396,7 @@ function updFoes(cx){
     for(const b of bullets)if(!e.calm&&b.life>0&&hit({x:b.x-3,y:b.y-4,w:6,h:20},e)){b.life=0;e.hp--;e.hurt=8;burst(b.x,b.y,['#ffe070','#ffffff'],3);if(e.hp<=0){kill(e);break}}
     if(!e.alive)continue;
     if(!e.calm&&hit({x:P.x+2,y:P.y+3,w:P.w-4,h:P.h-3},e)){
-      if(['crab','goon','cobra','imp','dog','dancer'].includes(e.t)&&P.vy>0&&prevBottom<=e.y+5){kill(e);P.vy=-6;beep(800,.1)}else die()}
+      if(['crab','goon','cobra','imp','dog','dancer'].includes(e.t)&&P.vy>0&&(prevBottom<=e.y+5||(e.t==='dancer'&&P.y+P.h<=e.y+13))){kill(e);P.vy=-6;beep(800,.1)}else die()}
     if(state!=='play')return;
   }
 }
