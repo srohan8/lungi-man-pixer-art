@@ -43,6 +43,7 @@ No fourth button. No menus during play, except the pause overlay (pause icon, P 
 | V | Banyan temple grove | goons, cobras, monkeys | Pey Komban | armored; only hittable for about 1.7 s right after his ground stomp (his charge just turns him at the wall); stomp makes ground waves |
 
 Weapons: coconut (always), parotta triple-throw (Acts I-V), Trishul pickup (code name aru) in Acts II, III and V (not IV: the eye needs range). Coconuts: start 40, max 60, +2 per kill, +1 per boss hit, slow regrow below 5, never below 25 after a death. Extra life: every 5,000 points a golden lamp leaves the score counter and arcs down onto the ground just ahead of the player; walking into it gives the life (cap 6, it can be missed; at the cap it gives +300 score).
+Mercy gift (owner request): in Pey Komban's arena, after 4 deaths there (counted over game overs too, reset when he falls, `TUNE.mercyDeaths`) every respawn starts with Amma's leaf spear, with a banner. No button, no counter on screen.
 Enemy rule of thumb: ground chasers only chase while the player is on their own platform, so nothing camps the landing spot after a vine or gap.
 Chayakada: from Act II on, every checkpoint is a tea stall. Walking past it sets the checkpoint, clears dizzy or paralysis, and refills coconuts to the cap. It is automatic, no button.
 Progress: the game remembers the furthest act reached ("tap to continue"). The prologue is shown once.

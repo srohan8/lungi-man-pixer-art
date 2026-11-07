@@ -818,7 +818,7 @@ function genBush(seed,C){const r=rng(seed),b=buf(40,20);
 
 /* =================== game state =================== */
 /* Tunable numbers for coconuts, lives and the Sun Staff */
-const TUNE={floodStart:-60,floodChai:-25,floodBoss:8,floodDrown:26,floodSeconds:120,/* Act IV flood: height of the water above the ground line in px; it rises with time from floodStart to floodDrown over floodSeconds, a tea stall lowers it to floodChai, the boss arena lowers it to knee height and holds it */dlgStay:true,/* true: in-play dialogue stays in its fixed place until the next line replaces it or the X is tapped (never pauses the game) */levelSelectAll:true,ammoStart:40,ammoMax:60,ammoPerKill:2,ammoRegenBelow:5,ammoRegenFrames:180,lifeEvery:5000,lifeMax:6,rayRange:150};
+const TUNE={mercyDeaths:4,/* Pey Komban: after this many deaths in his arena the next tries start with Amma's leaf spear (a gift, no button) */floodStart:-60,floodChai:-25,floodBoss:8,floodDrown:26,floodSeconds:120,/* Act IV flood: height of the water above the ground line in px; it rises with time from floodStart to floodDrown over floodSeconds, a tea stall lowers it to floodChai, the boss arena lowers it to knee height and holds it */dlgStay:true,/* true: in-play dialogue stays in its fixed place until the next line replaces it or the X is tapped (never pauses the game) */levelSelectAll:true,ammoStart:40,ammoMax:60,ammoPerKill:2,ammoRegenBelow:5,ammoRegenFrames:180,lifeEvery:5000,lifeMax:6,rayRange:150};
 let ammo=40,ammoT=0,lifeBank=0,rings=[],pick=-1,paused=false,cin=null,fogK=1,fadeT=0,fadeCol=null,autoKill=false,bloomAt=-1,tut=null,tutPending=false,tutAny=false,stat={thrown:0,kills:0},flashT=0,flashC='#e8f0ff',cameos=[];
 /* Palm sway: how far (px) the crown moves per level; the trunk base stays put */
 const WIND={pro:1.2,a1:1,a2:1.5,a3:2,a4:3.4,a5:1.2};
@@ -922,7 +922,7 @@ function dropLifeLamp(k){
   /* it leaves the score counter at the top left and arcs down to the ground ahead, so the player sees where it came from */
   pickups.push({x:camx+46,y:12,w:12,h:14,got:false,k:'life',drop:true,sx:camx+46,sy:12,lx:lx-6,landY:ly-14,t:0,T:75});
   pops.push({x:P.x+7,y:P.y-8,s:'5000 POINTS! A LAMP DROPS',t:100});if(!sfx('powerup'))beep(1000,.2,'triangle',.06)}
-function begin(i,x){bikeT=0;if(i===0&&tutPending){tut={step:0,phase:'wait',t:0};tutPending=false;tutAny=true;tutPulse(null)}else if(i!==0&&tut){tut=null;tutPulse(null)}lives=i>=1?4:3;actScore=actScore||0;ammo=TUNE.ammoStart;ammoT=0;lifeBank=Math.floor(score/TUNE.lifeEvery);loadLevel(i);placePlayer(x);state='play';if(dlg&&dlg.pause&&!dlg.conv){const d0=dlg;dlg=null;say(d0.who,d0.text)}/* a line said while the level loaded becomes a normal conversation box */banner={a:LV[i].act,b:LV[i].name,t:150}}
+function begin(i,x){bikeT=0;if(i===0&&tutPending){tut={step:0,phase:'wait',t:0};tutPending=false;tutAny=true;tutPulse(null)}else if(i!==0&&tut){tut=null;tutPulse(null)}lives=i>=1?4:3;actScore=actScore||0;ammo=TUNE.ammoStart;ammoT=0;lifeBank=Math.floor(score/TUNE.lifeEvery);loadLevel(i);placePlayer(x);state='play';mercyGift();if(dlg&&dlg.pause&&!dlg.conv){const d0=dlg;dlg=null;say(d0.who,d0.text)}/* a line said while the level loaded becomes a normal conversation box */banner={a:LV[i].act,b:LV[i].name,t:150}}
 /* Title screen level selector: left / right (arrows, A / D, or tap the arrows). TUNE.levelSelectAll=false limits it to the levels reached so far. */
 /* Pause: icon (top, left of the sound icon), P / Esc, and automatically when the app goes to the background. Only two choices: RESUME and MENU (back to the title screen). */
 function setPause(on){if(on&&state!=='play')return;if(paused===on)return;paused=on;
@@ -1244,12 +1244,15 @@ function spawnRoom(){for(const e of enemies){if(!e.alive||Math.abs(e.x-P.x)>=90)
 function respawn(){
   P.x=cp;P.y=GY-40;P.vx=0;P.vy=0;P.on=false;P.inv=120;P.sp=false;P.aru=false;slashT=0;P.rev=0;P.vine=null;P.boost=0;P.freeze=0;P.chaiT=0;ammo=Math.max(ammo,25);P.inv=150;if(LV[lvl].key==='a4'&&!locked){flood=cpFlood;floodWarn=flood<0?0:floodWarn}
   camx=Math.min(bossX,Math.max(0,cp-100));bullets=[];shots=[];locked=!!LV[lvl].arena;if(boss&&boss.active&&!boss.dead&&!LV[lvl].arena){/* the boss starts its pattern again, with a pause, when the hero comes back */boss.state=0;boss.cd=110;boss.arm=0;boss.para=false;boss.aim=false;boss.stun=0}
-  spawnRoom();
+  spawnRoom();mercyGift();
   if(boss.active&&!boss.dead){boss.x=bossX+W-boss.w-20;boss.y=GY-1-boss.foot;boss.vx=0;boss.vy=0;boss.state=0}
   state='play';jumpPrev=true;
 }
+let bossDeaths=0,bossDeathLvl=-1;
+function mercyGift(){if(LV[lvl].key==='a5'&&bossDeathLvl===lvl&&bossDeaths>=TUNE.mercyDeaths&&!(boss&&boss.dead)){P.aru=true;P.sp=false;banner={a:'LEAF SPEAR',b:"AMMA'S GIFT. TRY AGAIN, KANNAN",t:150};burst(P.x+7,P.y+8,['#ffd86a','#8aff7a','#ffffff'],14)}}
 function die(force,water){if(state!=='play'||P.inv>0)return;
   if(blessing&&!force){blessing=false;P.inv=150;beep(880,.2,'triangle',.06);burst(P.x+7,P.y+10,['#ffe070','#ffffff'],14);pops.push({x:P.x+7,y:P.y-8,s:'BLESSING!',t:70});return}
+  if(locked&&boss&&boss.active&&!boss.dead&&LV[lvl].key==='a5'){if(bossDeathLvl!==lvl){bossDeathLvl=lvl;bossDeaths=0}bossDeaths++}/* counted over game overs too, until the boss falls */
   lives--;state='dead';P.dt=0;P.dk=water?'water':'land';P.vine=null;
   /* drowning: slide him out over the middle of the river so he never sinks hugging the bank */
   P.wx=null;if(water){const c=P.x+P.w/2;for(let i=0;i<segs.length-1;i++){const g0=segs[i][1],g1=segs[i+1][0];if(c>=g0-14&&c<=g1+14){const m=(g0+g1)/2,half=Math.max(0,(g1-g0)/2-24);P.wx=Math.max(m-half,Math.min(m+half,c))-P.w/2;break}}}
@@ -1558,7 +1561,7 @@ function updBoss(){
     if(b.vuln===false){burst(s.x,s.y,['#c8c8d8','#ffffff'],3);beep(160,.05,'square',.04);if(!b.hinted&&BHINT[b.t]){b.hinted=true;banner={a:'SHIELDED!',b:BHINT[b.t],t:130}}}
     else{b.hp--;b.hurt=6;score+=50;ammo=Math.min(TUNE.ammoMax,ammo+1);burst(s.x,s.y,['#ffe070','#ffffff'],3);beep(500,.05,'square',.04);
       if(b.t==='karin'){b.state=0;b.cd=100;b.vuln=false;b.arm=0}}}
-  if(b.hp<=0){b.dead=true;if(b.t==='chathan'||b.t==='odiyan')b.drop={x:b.x+b.w/2};score+=3000;shake=20;beep(200,.8,'sawtooth',.07);
+  if(b.hp<=0){b.dead=true;if(LV[lvl].key==='a5')bossDeaths=0;if(b.t==='chathan'||b.t==='odiyan')b.drop={x:b.x+b.w/2};score+=3000;shake=20;beep(200,.8,'sawtooth',.07);
     for(let k=0;k<5;k++)burst(b.x+Math.random()*b.w,b.y+Math.random()*b.h,['#ffe070','#ff8030','#ffffff','#d8432e'],10);
     shots=[];if(b.t==='odiyan'){startCine('od');return}if(b.t==='komban'){startCine('mk');return}state='clear';clearT=360;banner={a:LV[lvl].clear[0],b:LV[lvl].clear[1],t:210};if(LV[lvl].sayClear)say(LV[lvl].sayClear[0],LV[lvl].sayClear[1]);return}
   if(!(b.puff>0)&&!(b.stun>0)&&!(b.t==='odiyan'&&b.form===0)&&hit({x:P.x+3,y:P.y+3,w:P.w-6,h:P.h-4},hb))die();
@@ -1875,11 +1878,11 @@ const BEAMG={};function greenBeam(i){if(BEAMG[i])return BEAMG[i];const im=ART['t
 function drawSlash(cx){
   if(slashT<=0||!P||state!=='play')return;
   const f=P.f,a=slashT/8,R=TUNE.rayRange,len=Math.round(R*Math.min(1,(9-slashT)/3)),y=Math.round(P.y+(trishArt()?8:16)),/* the hand-drawn spear is held 8 px below the top of the hero box: the ray leaves from its tip */
-        ox=Math.round(P.x-cx)+(f>0?12:2)+f*22,B=[0,1,2].map(i=>greenBeam(i));
+        ox=Math.round(P.x-cx)+(f>0?12:2)+f*(trishArt()?12:22),B=[0,1,2].map(i=>greenBeam(i));
   if(B.every(Boolean)){/* flare at the sun, beam tiles along the ray, fading tip; added to the scene like light. Pieces are 56x18 boxes, so only their painted part (c0..c1) is used. */
     const pc=(im,c0,c1,ay,d)=>{const w=c1-c0+1;if(f>0)g.drawImage(im,c0,0,w,18,ox+d,y-ay,w,18);else g.drawImage(flipOf(im),55-c1,0,w,18,ox-d-w,y-ay,w,18)};
     g.save();g.globalCompositeOperation='lighter';g.globalAlpha=Math.min(1,.4+a);
-    let d=14;while(d<len-24){pc(B[1],14,42,13,d);d+=29}
+    let d=6;while(d<len-24){pc(B[1],14,42,13,d);d+=28}/* starts right at the flare and the tiles overlap by a pixel, so the ray has no gap */
     pc(B[2],16,39,13,Math.max(14,len-24));pc(B[0],17,39,9,-12);
     /* a soft green aura along the whole beam, and a few leaves flying off it */
     g.globalAlpha=.16*a;g.fillStyle='#6adc5a';g.fillRect(f>0?ox:ox-len,y-9,len,18);g.globalAlpha=.1*a;g.fillStyle='#ffd860';g.fillRect(f>0?ox:ox-len,y-14,len,28);

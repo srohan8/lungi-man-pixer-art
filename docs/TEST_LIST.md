@@ -68,3 +68,6 @@ Uninstall the old build first, then install the newest debug APK.
 - [ ] Cinematics (the fall into Pathalam, Odiyan's last strike, the mundu finale) cannot be skipped: taps and keys do nothing and they play to the end.
 - [ ] Karinkanni: after dying in the boss fight you respawn at the tea stall and she waits (no ray, no falling stones) until you walk back into the arena; then she starts her pattern again after a short pause.
 - [ ] Maveli's story page ("the king below") has him looking left.
+
+- [ ] Pey Komban: after dying 4 times in his arena, the next respawns start with the leaf spear and an "AMMA'S GIFT" banner (also after a game over).
+- [ ] The spear ray: no gap between the spear tip and the green flare, and the beam is continuous.
