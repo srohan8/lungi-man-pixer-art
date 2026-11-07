@@ -77,3 +77,4 @@ Uninstall the old build first, then install the newest debug APK.
 - [ ] After a boss falls (Act III included): any dialogue shows first, then the sacred tree blooms in front of you, and the clear screen waits until the bloom is done before "Tap to continue".
 - [ ] Choosing the Interlude (dance) from the level selector: no stray dialogue boxes appear during the quick replay of Odiyan's last strike; it goes on by itself to the dance stage (before, a hidden dialogue box froze the screen).
 - [ ] Failing Pey Komban (or any boss) and retrying after a game over does NOT replay the village / Thoma lines or the opening line of the level; the boss's own opening line is heard once, not on every try.
+- [ ] Dance stage retry after a game over: no angel descent and none of Kannan's five lines again; he starts on the floor and the dancing begins.
