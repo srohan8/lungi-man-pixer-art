@@ -2025,7 +2025,7 @@ function sceneTick(){
   if(t===1)startConvo(L.mav.map(x=>({who:'MAVELI',text:x})),()=>{scene.t=1290});
   if(t>1290&&t<1340){if(t===1292)healSfx();if(t%5===0)burst(P.x+7,P.y+8+Math.random()*14,['#ffe070','#fff6d0'],2)}/* the blessing gathers around the battered hero */
   if(t===1340)scene.y0=P.y;
-  if(t>=1340&&t<1366){const k=(t-1340)/26;P.on=false;P.y=scene.y0-Math.round(Math.sin(k*Math.PI)*15)}else if(t===1366){P.y=scene.y0;P.on=true}/* revived: a little jump, and the beaten-up look is gone */
+  if(t>=1340&&t<1440){const k=(t-1340)/100,e=Math.sin(k*Math.PI);P.on=false;P.vy=0;P.y=scene.y0-Math.round(e*e*(3-2*e)*40)}else if(t===1440){P.y=scene.y0;P.on=true;P.landT=6}/* revived: he floats up like in the angel scene, arms out, and drifts back down; the beaten-up look is gone */
   if(t===1340){banner={a:"MAVELI'S BLESSING",b:'THE LAMPS TURN GOLD. ONE FREE HIT.',t:150};beep(880,.3,'triangle',.06);beep(1320,.4,'triangle',.05);burst(P.x+7,P.y+10,['#ffe070','#ffffff'],20)}
   if(t>=1500){state='clear';clearT=60;banner={a:L.clear[0],b:L.clear[1],t:120}}
 }
@@ -2552,7 +2552,7 @@ function draw(){TQ.length=0;syncPad();
   for(const b of bullets)g.drawImage(COCO,Math.round(b.x-cx-3),Math.round(b.y-3));
   for(const p of parts){g.fillStyle=p.c;g.fillRect(Math.round(p.x-cx),Math.round(p.y),2,2)}
   drawRings(cx);
-  if(P&&state!=='title'){drawPlayer(cx);drawSlash(cx);if(state==='scene'&&scene&&scene.t>=1292){const ax=Math.round(P.x-cx)+7,ay=Math.round((scene.y0!==undefined&&scene.t>=1340?scene.y0:P.y))+14,k=Math.min(1,(scene.t-1292)/48);glowEll(ax,ay,Math.round(8+12*k),Math.round(10+16*k),'#ffe070',.12+.2*k+.1*Math.sin(tick*.15)*k);glowEll(ax,ay,Math.round(4+7*k),Math.round(6+10*k),'#fff6d0',.25*k);for(let i=0;i<7;i++){const u=((tick*.7+i*11)%36);g.fillStyle=i%2?'#ffe070':'#ffffff';g.globalAlpha=1-u/36;g.fillRect(ax+Math.round(Math.sin(tick*.09+i*1.9)*(5+8*k)),ay+12-Math.round(u),2,2)}g.globalAlpha=1}}
+  if(P&&state!=='title'){drawPlayer(cx);drawSlash(cx);if(state==='scene'&&scene&&scene.t>=1292){const ax=Math.round(P.x-cx)+7,ay=Math.round(P.y)+14,k=Math.min(1,(scene.t-1292)/48);glowEll(ax,ay,Math.round(8+12*k),Math.round(10+16*k),'#ffe070',.12+.2*k+.1*Math.sin(tick*.15)*k);glowEll(ax,ay,Math.round(4+7*k),Math.round(6+10*k),'#fff6d0',.25*k);for(let i=0;i<7;i++){const u=((tick*.7+i*11)%36);g.fillStyle=i%2?'#ffe070':'#ffffff';g.globalAlpha=1-u/36;g.fillRect(ax+Math.round(Math.sin(tick*.09+i*1.9)*(5+8*k)),ay+12-Math.round(u),2,2)}g.globalAlpha=1}}
   if(L.key==='a4')drawRisingWater(cx);
   if(!L.arena)drawMotes(L,cx);
   if(L.rain&&!(cin&&cin.k==='pt')){const rk=bloomAt>=0?Math.min(1,(tick-bloomAt)/150):0;g.fillStyle='rgba(180,210,220,'+(.45*(1-rk)).toFixed(2)+')';for(let i=0;i<70;i++){const x=((i*53+tick*4)%(W+60))-30,y=((i*97+tick*9)%(H+30))-15;g.fillRect(Math.round(x),Math.round(y),1,5);g.fillRect(Math.round(x)-1,Math.round(y)+5,1,3)}

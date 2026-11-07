@@ -95,3 +95,4 @@ Uninstall the old build first, then install the newest debug APK.
 - Seated Maveli on the throne now faces left, towards Kannan.
 - First line before the story: "Son, you do not look good..." (6 lines now).
 - Blessing: after the last line a golden light gathers round the battered Kannan (about 0.8 s, soft chime), then a little revival jump, flash, and he switches from the beaten-up look to the normal hero. Check it reads well and the lamps turn gold at the same moment.
+- Blessing revival is now a float: he rises about 40 px with arms out (glow and sparkles follow him), hovers, and drifts back down (about 1.7 s) in the healthy look. Check the length feels right before the act clears.
