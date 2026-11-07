@@ -41,3 +41,26 @@ He drags himself forward: a slow, heavy, limping walk, shoulders slumped, head l
 
 ## After the art arrives
 Tell me the filename. I will cut the 8 frames (name them `exw_0..7`), use them for his walk in Maveli's realm until the blessing, and switch back to his normal run afterwards.
+
+# Beaten-up jump and rope swing for Maveli's realm (art prompt)
+
+Why: Maveli's realm is a rope-swinging level, and until the blessing Kannan is beaten up. The walk and breathing now match his hurt look, but his jump and his rope swing still use the normal healthy frames.
+
+Attach: `beatenup-walk.png` (the hurt look and size) and `Kannan's Exhausted Fall Animation Strip.png`.
+
+## Prompt
+A sprite sheet of Kannan, beaten up and exhausted, one row of 9 frames, side view facing right, plain flat white background or real transparency, no checkerboard, no ground, no shadow, no glow, no white outline, no text. Same character, size and style as `beatenup-walk.png`: bruises, scratches, a cut above the eyebrow, mud and sweat, torn dirty mundu, cracked sunglasses, torn satchel strap. The same height as in the walk sheet (a normal adult), the same size in every frame.
+He is hurt, so every move is effortful and a little clumsy.
+1. Jump crouch: bending his knees with a wince, one hand on his side.
+2. Take-off: pushing off, arms pulling up weakly, teeth gritted.
+3. Rising: both feet off the ground, knees tucked, one arm up, mouth open.
+4. Peak: a clumsy hang in the air, legs dangling, arms out for balance.
+5. Falling: legs reaching down, arms up, wincing.
+6. Landing: knees buckling, a hard thud, one hand brushing the ground, breath puff.
+7. Rope swing, grabbing: one arm stretched up gripping a rope, the other hand holding his side, body hanging, head low.
+8. Rope swing, swinging forward: both hands on the rope above his head, legs swinging out ahead, mouth open, strain on his face.
+9. Rope swing, letting go: the rope hand opening, body stretched forward, a tired shout.
+The rope itself is not drawn (the game draws it).
+
+## After the art arrives
+Tell me the filename. I will cut the frames (`exj_0..8`) and use them for his jump, fall, landing and rope swing in Maveli's realm until the blessing.
