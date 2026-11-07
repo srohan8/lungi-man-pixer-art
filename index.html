@@ -616,6 +616,7 @@ LV0[3].decor=[{n:'highland_wall',seg:1,off:150},{n:'low_branch',seg:2,off:160},{
 LV0[4].decor=[{n:'mangrove_roots',seg:1,off:140},{n:'stilt_hut',seg:2,off:150},{n:'houseboat',seg:3,off:30},{n:'mangrove_roots',seg:3,off:120}];
 LV0[5].decor=[{n:'temple_gate',seg:1,off:150},{n:'stone_face',seg:2,off:130},{n:'sacred_banyan',seg:3,off:160},{n:'bell',seg:3,off:60},{n:'stone_shrine',seg:4,off:100}];
 LV0[3].cameos=[{id:'basheer',kind:'bard',seg:0,off:640,verses:['A boat went down the river, low with timber.','Nobody asked whose trees they were.','A bard found the buyer, and called it kindness.','Kindness has a long shadow, brother.']}];
+LV0[3].cameos.push({id:'velu',kind:'npc',art:'mooppan_0',seg:0,off:150,h:34});/* Velu stands by the path at the start of Act III, where he speaks */
 PATH.cameos=[{id:'naga',kind:'naga',endOff:350}];
 const LV=[LV0[0],LV0[1],BIKE,LV0[2],LV0[3],DISCO,LV0[4],PATH,LV0[5]];
 LV.forEach(L=>{if(/^a\d/.test(L.key))L.chai=true});
@@ -890,7 +891,7 @@ function loadLevel(i){fogK=1;bloomAt=-1;
   boss=D?{t:L.boss,...D,x:0,y:-80,vx:0,vy:0,hp:D.hp,max:D.hp,cd:90,state:0,dir:-1,f:-1,hurt:0,arm:0,on:false,active:false,dead:false,tk:0,side:1,form:0,puff:0,vuln:true,n:0,stun:0,rayX:0,air:0,wind:0,next:0,dashes:0}
         :{t:'none',hp:0,max:1,hb:[0,0,0,0],w:0,h:0,x:0,y:0,active:false,dead:true,name:'',sub:'',foot:0,tk:0};
   locked=false;
-  if(L.sayStart&&!(L.key==='disco'&&ART.hk_8)){loadingLvl=true;say(L.sayStart[0],L.sayStart[1],undefined,L.sayStartPause);loadingLvl=false}
+  if(L.sayStart&&!noStartSay&&!(L.key==='disco'&&ART.hk_8)){loadingLvl=true;say(L.sayStart[0],L.sayStart[1],undefined,L.sayStartPause);loadingLvl=false}
 }
 function mkFoe(t,x,y,s){const e={t,x,y,alive:true,hp:1,hurt:0,cd:60+(Math.random()*60|0),dir:-1,arm:0,seen:false};
   if(t==='crab'){e.w=14;e.h=9;e.y=GY-9;e.s1=s[0];e.s2=s[1]-14}
@@ -982,12 +983,14 @@ const CINE_END=235;
 const TREE_OF={yakshi:0,chathan:1,odiyan:2,karin:3,komban:4},TREE_GLOW=['#4ad8c8','#ffb830','#8a7aff','#6adc5a','#ffd860'];
 function updCameos(){for(const c of cameos){
   if(c.kind==='bard'){if(!ART.basheer_0)continue;const near=Math.abs(P.x-c.at)<170;if(near){c.vt++;if(c.vt%190===1&&c.verse<c.verses.length-1){c.verse++;c.sing=170}}if(c.sing>0)c.sing--;continue}
+  if(c.kind==='npc')continue;
   if(c.kind==='naga'){if(c.endOff)c.at=bossX+W-c.endOff;if(!c.rumbled&&Math.abs(P.x-c.at)<130){c.rumbled=true;beep(52,.7,'sawtooth',.045);shake=Math.max(shake,3)}continue}
   if(c.t<0){if(P.x>c.at-240&&P.x<c.at+400){c.t=0;c.x=P.x-160;pops.push({x:P.x+7,y:P.y-18,s:c.text,t:110})}continue}
   if(c.t>=0&&c.t<900){c.t++;c.x+=3.4}}}
 function drawCameos(cx){for(const c of cameos){
   if(c.kind==='bard'){const im=ART['basheer_'+(c.sing>0?1+((tick>>3)%2):0)];if(!im)continue;const sx=Math.round(c.at-cx);if(sx<-60||sx>W+60)continue;g.drawImage(im,sx-Math.round(im.width/2),GY+2-im.height);
     if(c.sing>0){for(let k=0;k<3;k++){const ph=(tick*.7+k*14)%42;g.globalAlpha=1-ph/42;ntext('\u266a',sx+8+Math.sin(ph*.2+k)*8,GY-im.height-6-ph,12,'#ffd860','center')}g.globalAlpha=1;ntext(c.verses[c.verse],sx,GY-im.height-34,10.5,'#ffe8a0','center')}continue}
+  if(c.kind==='npc'){const hs=ART['hs_'+c.art],px=ART[c.art],sx=Math.round(c.at-cx);if(sx<-80||sx>W+80)continue;if(hs){const h=c.h||34,w=Math.round(h*hs.width/hs.height);nimg(hs,sx-Math.round(w/2),GY+2-h+Math.round(Math.sin(tick*.05)*.6),w,h)}else if(px)g.drawImage(px,sx-Math.round(px.width/2),GY+2-px.height);continue}
   if(c.kind==='naga'){if(c.endOff)c.at=bossX+W-c.endOff;const f=ART['naga_'+((tick>>6)%3)]||ART.naga_0;if(!f)continue;const sx=Math.round(c.at-cx);if(sx<-f.width||sx>W+f.width)continue;const br=1+.018*Math.sin(tick*.04);const h=Math.round(f.height*br);g.drawImage(f,sx-Math.round(f.width/2),GY+2-h,f.width,h);glowEll(sx-Math.round(f.width*.25),GY+2-Math.round(f.height*.55),7,5,'#ffb030',.2+.15*Math.sin(tick*.05));continue}if(c.t<0||c.t>=900)continue;const im=ART[c.id+'_'+((tick>>3)%2)];if(!im)continue;const sx=Math.round(c.x-cx);if(sx<-40||sx>W+40)continue;
   g.drawImage(im,sx,GY+2-im.height+(((tick>>3)%2)?-1:0))}}
 /* Act healing: when the boss falls (or on a replay of a beaten act) the grove comes back to life: a soft green wash, stars twinkling again, fireflies, fresh sparkle on the grass. k = 0..1. */
@@ -999,7 +1002,7 @@ function healFx(k,cx){
   g.globalAlpha=1}
 function drawSacredTree(cx){const L=LV[lvl],k0=TREE_OF[L.boss];if(k0===undefined||!L.boss)return;
   const w=ART['strees_'+k0],b=ART['strees_'+(k0+5)];if(!w||!b)return;
-  if(boss.dead&&bloomAt<0&&state!=='cine')startBloom();
+  if(boss.dead&&bloomAt<0&&state!=='cine'&&!convo)startBloom();
   const bt=bloomAt>=0?tick-bloomAt:9999,k=bloomAt>=0?Math.min(1,bt/240):(resume>lvl?1:0);
   if(k>0)healFx(k,cx);
   const x=Math.round(bossX+W/2-cx-w.width/2),y=GY+2-w.height;
@@ -1236,7 +1239,7 @@ function startIfNeeded(src){
   if(state==='pages'){pagesNext();return}
   if(state==='ending'&&endT>240){endFinish();return}
   if(state==='title')newGame();
-  else if(state==='over'&&lockT<=0){score=actScore;begin(lvl,cp);P.inv=150;spawnRoom()}
+  else if(state==='over'&&lockT<=0){score=actScore;noStartSay=true;/* a retry after a game over does not repeat the opening line of the level */begin(lvl,cp);noStartSay=false;P.inv=150;spawnRoom()}
   else if(state==='win'&&lockT<=0)newGame();
 }
 /* After coming back, nothing is removed, but anything standing within 90 px of the hero is shoved clear so he is never revived inside a dog's jaws (and he is untouchable for a moment). */
@@ -1281,7 +1284,8 @@ function update(){
     else{if(P.bk){P.bx+=P.bvx;P.bvx*=.965}P.vy+=.4;P.y+=P.vy;P.x+=P.vx;P.vx*=.94;
       if(P.vy>=0){for(const [x1,x2,top] of segs.map(s=>[s[0],s[1],GY]).concat(plats.map(p=>[p[0],p[0]+p[2],p[1]])))if(P.x+P.w>x1&&P.x<x2&&P.y+P.h-P.vy<=top+2&&P.y+P.h>=top){P.y=top-P.h;if(P.vy>1.5){burst(P.x+7,top,['#d8c8a0','#a89878'],6);shake=Math.max(shake,3)}P.vy=0;P.vx*=.5;if(!P.dl)P.dl=P.dt;break}}}
   if(--deadT<=0){if(lives<=0){state='over';lockT=60;saveHi()}else respawn()}return}
-  if(state==='clear'){if(dlg&&dlg.hold){/* the boss's last words and Amma's lines after a victory wait for a tap (the clear countdown holds); about 25 s at most */clearT=Math.max(clearT,30);dlg.pt++;const dn=Object.keys(keys).some(k=>keys[k])||touch.l||touch.r||touch.j||touch.s;if(!dn)dlg.armed=true;else if(dlg.armed&&dlg.pt>40)dlg=null;if(dlg&&dlg.pt>1500)dlg=null;return}if(clearT>0)clearT--;if(clearT<=0&&clearOK){clearOK=false;if(lvl<LV.length-1){if(lvl===0){seen=true;try{localStorage.setItem('lungiman-prologue','1')}catch(e){}}actScore=score;resume=Math.max(resume,lvl+1);try{localStorage.setItem('lungiman-act',resume)}catch(e){}const sk=LV[lvl].key,ni=lvl+1,go=()=>{loadLevel(ni);placePlayer(40);fadeCol=null;if(LV[ni].arena)fadeT=90;if(LV[ni].key==='path'){fadeT=80;fadeCol='#ffd890'}if(!LV[ni].arena&&LV[ni].key!=='path'){fadeT=90;fadeCol='#05030c'}ammo=Math.max(ammo,TUNE.ammoStart);state='play';banner={a:LV[lvl].act,b:LV[lvl].name,t:150}};
+  if(state==='clear'){if(dlg&&dlg.hold){/* the boss's last words and Amma's lines after a victory wait for a tap (the clear countdown holds); about 25 s at most */clearT=Math.max(clearT,30);dlg.pt++;const dn=Object.keys(keys).some(k=>keys[k])||touch.l||touch.r||touch.j||touch.s;if(!dn)dlg.armed=true;else if(dlg.armed&&dlg.pt>40)dlg=null;if(dlg&&dlg.pt>1500)dlg=null;return}if(clearT>0)clearT--;if(clearT<=0&&LV[lvl].boss&&TREE_OF[LV[lvl].boss]!==undefined&&ART['strees_'+TREE_OF[LV[lvl].boss]]&&ART['strees_'+(TREE_OF[LV[lvl].boss]+5)]&&clearHold++<700&&!(boss.dead&&bloomAt>=0&&tick-bloomAt>=250))clearT=1;/* the clear screen waits until the sacred tree has finished blooming */
+  if(clearT<=0&&clearOK){clearOK=false;clearHold=0;if(lvl<LV.length-1){if(lvl===0){seen=true;try{localStorage.setItem('lungiman-prologue','1')}catch(e){}}actScore=score;resume=Math.max(resume,lvl+1);try{localStorage.setItem('lungiman-act',resume)}catch(e){}const sk=LV[lvl].key,ni=lvl+1,go=()=>{loadLevel(ni);placePlayer(40);fadeCol=null;if(LV[ni].arena)fadeT=90;if(LV[ni].key==='path'){fadeT=80;fadeCol='#ffd890'}if(!LV[ni].arena&&LV[ni].key!=='path'){fadeT=90;fadeCol='#05030c'}ammo=Math.max(ammo,TUNE.ammoStart);state='play';banner={a:LV[lvl].act,b:LV[lvl].name,t:150}};
     if(sk==='a4'){startCine('pt',go);return}
     if(SCENES[sk]){const bgk=SCENES[sk].bg;let cxs=Math.round(camx);if(bgk==='next'){loadLevel(ni);cxs=0}else if(bgk!=='cur'){loadLevel(LV.findIndex(l=>l.key===bgk));cxs=0}
       const snap=snapshotBackdrop(cxs);state='story';startStory(SCENES[sk],go,snap)}else go()}else{state='ending';endT=0;saveHi();resume=1;try{localStorage.setItem('lungiman-act','1')}catch(e){}}}return}
@@ -1895,10 +1899,10 @@ function drawSlash(cx){
   g.globalAlpha=1;g.fillStyle='#ffffff';g.fillRect(x1,y-1,len,2);
 }
 const dlgHist=[];
-let loadingLvl=false;
+let loadingLvl=false,noStartSay=false;
 function say(who,text,t,pause){if(pause!==false&&!loadingLvl&&(state==='play'||state==='clear'||state==='scene'||state==='ending')){/* every box is a small conversation: back shows the earlier lines of this act, next / the arrow closes it, X closes it at once */if(convo&&dlg&&dlg.who===who&&dlg.text===text)return;dlgHist.push({who,text});if(dlgHist.length>6)dlgHist.shift();startConvo(dlgHist.slice(),null,dlgHist.length-1);return}pause=pause!==false;/* owner request after playtests: every in-play dialogue box stops the game until the player taps (people could not read them while running) */dlg={who,text,t:t||210,pause:pause,hold:state==='clear',pt:0,armed:false,x0:(typeof P!=='undefined'&&P)?P.x:0,dist:pause?0:((typeof lvl!=='undefined'&&LV[lvl]&&LV[lvl].bike)?520:1000)}}/* a box also closes by itself once the hero has moved on (the bike cannot stop, so there it is about 2.5 s of riding) */
 /* A conversation (several lines from one NPC): the game stands still, each line has back and next buttons (tap the left of the screen or the left arrow for back, anywhere else, the right arrow or Space for next); the last next closes it. Used for the throne scene and the ending. */
-let convo=null,clearOK=false;
+let convo=null,clearOK=false,clearHold=0;
 function startConvo(lines,done,idx){convo={lines,i:idx||0,done};convoShow()}
 function convoClose(){const c=convo;convo=null;dlg=null;if(c&&c.done)c.done()}
 function convoShow(){const c=convo,l=c.lines[c.i];dlg={who:l.who,text:l.text,t:99999,pause:true,hold:false,conv:true,n:c.lines.length,i:c.i,pt:0,armed:true,x0:(typeof P!=='undefined'&&P)?P.x:0,dist:0}}
