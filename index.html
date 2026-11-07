@@ -1795,7 +1795,7 @@ function newHeroFrame(N){const mv=P.on&&Math.abs(P.vx)>.3;
   if(P.landT>4)return{f:N.jump[5],dx:0};
   if(P.landT>0)return{f:N.jump[0],dx:0};
   if(shootCd>8&&!P.aru)return{f:N.act[mv?6:5],dx:0};
-  return mv?{f:N.run[(P.step>>1)%8],dx:0,dy:-Math.round(Math.abs(Math.sin(P.step*Math.PI/8))*2)}:{f:N.idle[(tick>>5)%2],dx:0,dy:0}}/* the 8 run frames are close to each other, so the cycle is as fast as the old 4-frame one (2 ticks a frame) and he bounces on every stride */
+  if(mv){const k=Math.floor(P.step/3)%8;return{f:N.run[k],dx:0,dy:[0,0,-1,-3,0,0,-1,-3][k]}}return{f:N.idle[(tick>>5)%2],dx:0,dy:0}}/* run strip: contact, down, passing, flight, then the other leg. 3 ticks a frame so the feet do not slide; the pictures are all bottom-aligned, so the flight frame is lifted by hand */
 let HERO_IDLE=null,HERO_SWING=null;
 function artSet(pre,n){const f=[...Array(n)].map((_,i)=>ART[pre+'_'+i]);return f.every(Boolean)?f.map(c=>[c,flipC(c)]):null}
 /* Death poses, drawn in code: topple over backwards and lie flat with circling stars, or flail in the water with bubbles and floating sunglasses. */
