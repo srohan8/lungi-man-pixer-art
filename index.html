@@ -540,7 +540,7 @@ Object.assign({},LV_OLD[0],{act:'PROLOGUE',name:'THE SWINGING AWAKENING',
  ground:{style:'earth',top:['#7ab060','#58903f','#3e7030'],blocks:['#5a3a2a','#684434','#4a2e22'],light:'#8a5a40',dark:'#321e14',mortar:'#321e14',speck:'#4a3020',edge:'#1a0e0a',topEdge:'#2c5a28',drip:['#58903f','#3e7030'],tuft:['#58903f','#c0f080'],flowers:['#e8e8f0','#c0e070'],stone:['#4a4a50','#6a6a72','#8a8a94']},
  palm:LV_OLD[0].palm,palms:false,aru:true,rocks:true,fog:true,
  bush:['#16301e','#244a2c','#3a6a40','#d83030','#ffd0c0'],
- motes:'mist',foes:['dog','bat','cobra','dog'],boss:'odiyan',len:3200,prints:4,
+ motes:'mist',foes:['dog','bat','cobra','dog'],boss:'odiyan',len:3200,
  clear:['THIRD TREE AWAKENED','A BITE BURNS... THE WORLD SPINS'],
  sayStart:['VELU','ODIYAN WEARS THREE FORMS: A HOODED MAN, A BLACK BEAST AND A BULL. I KNOW HIS PATTERNS BECAUSE I ONCE FED HIM. DO NOT ASK.'],sayAt:[{x:850,who:'KANNAN',text:'THAT SONG... A BOAT, TIMBER, A BUYER. IS BASHEER SINGING ABOUT MY VILLAGE? DID THEY HELP LET THE DEMONS OUT?',d:0},{x:1600,who:'KANNAN',text:'VELU KNOWS FAR TOO MUCH. EVERYONE FROM MY VILLAGE SEEMS TO BE HIDING SOMETHING.',d:0}],sayBoss:['ODIYAN','YOU CANNOT CATCH WHAT YOU CANNOT SEE.']},
 {act:'ACT IV',name:"KARINKANNI'S CURSE",
@@ -818,7 +818,7 @@ function genBush(seed,C){const r=rng(seed),b=buf(40,20);
 
 /* =================== game state =================== */
 /* Tunable numbers for coconuts, lives and the Sun Staff */
-const TUNE={mercyDeaths:4,/* Pey Komban: after this many deaths in his arena the next tries start with Amma's leaf spear (a gift, no button) */floodStart:-60,floodChai:-25,floodBoss:8,floodDrown:26,floodSeconds:120,/* Act IV flood: height of the water above the ground line in px; it rises with time from floodStart to floodDrown over floodSeconds, a tea stall lowers it to floodChai, the boss arena lowers it to knee height and holds it */dlgStay:true,/* true: in-play dialogue stays in its fixed place until the next line replaces it or the X is tapped (never pauses the game) */levelSelectAll:true,ammoStart:40,ammoMax:60,ammoPerKill:2,ammoRegenBelow:5,ammoRegenFrames:180,lifeEvery:5000,lifeMax:6,rayRange:150};
+const TUNE={odiyanWindow:100,/* frames Odiyan is hittable while he changes form (100 = about 1.7 s; it used to be 36 plus 16 per hoof-print collected) */mercyDeaths:4,/* Pey Komban: after this many deaths in his arena the next tries start with Amma's leaf spear (a gift, no button) */floodStart:-60,floodChai:-25,floodBoss:8,floodDrown:26,floodSeconds:120,/* Act IV flood: height of the water above the ground line in px; it rises with time from floodStart to floodDrown over floodSeconds, a tea stall lowers it to floodChai, the boss arena lowers it to knee height and holds it */dlgStay:true,/* true: in-play dialogue stays in its fixed place until the next line replaces it or the X is tapped (never pauses the game) */levelSelectAll:true,ammoStart:40,ammoMax:60,ammoPerKill:2,ammoRegenBelow:5,ammoRegenFrames:180,lifeEvery:5000,lifeMax:6,rayRange:150};
 let ammo=40,ammoT=0,lifeBank=0,rings=[],pick=-1,paused=false,cin=null,fogK=1,fadeT=0,fadeCol=null,autoKill=false,bloomAt=-1,tut=null,tutPending=false,tutAny=false,stat={thrown:0,kills:0},flashT=0,flashC='#e8f0ff',cameos=[];
 /* Palm sway: how far (px) the crown moves per level; the trunk base stays put */
 const WIND={pro:1.2,a1:1,a2:1.5,a3:2,a4:3.4,a5:1.2};
@@ -1468,7 +1468,7 @@ function mkDecoy(x){burst(x+9,GY-16,['#a070d0','#e0c0ff'],8);enemies.push({t:'de
 const ODHB=[[22,8,20,36],[12,28,40,16],[6,14,52,30]];
 function odiyanAI(b,pc,bc,face,rage){
   const ax=bossX,ax2=bossX+W,lo=ax+10,hi=ax2-b.w-10,cl=x=>Math.max(lo,Math.min(hi,x));
-  const PL=36+16*prints;
+  const PL=TUNE.odiyanWindow;/* the form-change window (the hoof-print pickups that used to lengthen it are gone: it is the full length now) */
   const smoke=()=>burst(bc,b.y+30,['#2e2444','#6a4a90','#1a1426'],14);
   if(b.kcaw>0){b.kcaw--;if(b.kcaw===30)beep(800,.08,'square',.05)}
   if(b.puff>0){b.puff--;b.vuln=true;

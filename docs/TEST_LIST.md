@@ -71,3 +71,4 @@ Uninstall the old build first, then install the newest debug APK.
 
 - [ ] Pey Komban: after dying 4 times in his arena, the next respawns start with the leaf spear and an "AMMA'S GIFT" banner (also after a game over).
 - [ ] The spear ray: no gap between the spear tip and the green flare, and the beam is continuous.
+- [ ] Act III: no hoof-prints on the ground and no PRINTS counter; Odiyan stays hittable for about 1.7 s while he changes form (the full length, so the fight is fair). Tell me if it is too easy.

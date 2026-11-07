@@ -45,7 +45,7 @@ All art is drawn in code at start-up. There are no image files yet.
 | 1 | a1 | Act I, Yakshi's Hollow | cobras, crows, crabs; boss Yakshi; first chai stall |
 | 2 | bike | Act II ride | automatic speed, only jump and throw |
 | 3 | a2 | Act II, Kuttichathan's Carnival | imps, wisps, goons; boss Kuttichathan |
-| 4 | a3 | Act III, Odiyan's Hunt | dogs, bats, cobras; four hoof-prints; boss Odiyan |
+| 4 | a3 | Act III, Odiyan's Hunt | dogs, bats, cobras; boss Odiyan (the hoof-print pickups were removed) |
 | 5 | disco | Interlude, Disco or Die (the fever dream) | one-screen arena, dance intro, defeat 16 dancers |
 | 6 | a4 | Act IV, Karinkanni's Curse | rain, many vines; boss Karinkanni |
 | 7 | path | Pathalam | enemy-free rope swinging, Maveli's throne scene, blessing |
