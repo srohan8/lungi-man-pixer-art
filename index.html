@@ -1299,8 +1299,11 @@ function update(){
   let L=inp.l(),R=inp.r();let J=inp.j();const S=inp.s();if(P.freeze>0){P.freeze--;L=false;R=false;J=false}if(P.rev>0){P.rev--;const tt=L;L=R;R=tt}const dir=(R?1:0)-(L?1:0);
   P.vx=LV[lvl].bike?Math.max(.9,Math.min(3.6,3.6*(bossX+40-P.x)/320)):dir*2.2;if(LV[lvl].bike)P.f=1;else if(dir)P.f=dir;if(P.boost>0){P.boost--;P.vx=P.bvx}
   const jEdge=J&&!jumpPrev;
-  if(jEdge&&P.on){P.vy=-10;P.on=false;if(!sfx('jump'))beep(520,.08)}
-  if(!J&&P.vy<-3)P.vy=-3;jumpPrev=J;
+  /* forgiving jump: a press up to 7 frames before landing still jumps (buffer), and a press up to 7 frames after running off an edge still jumps (coyote time); a quick tap gives a real hop, not a twitch */
+  if(P.on)P.cy=7;else if(P.cy>0)P.cy--;
+  if(jEdge)P.jb=7;else if(P.jb>0)P.jb--;
+  if(P.jb>0&&!P.vine&&(P.on||(P.cy>0&&P.vy>=0))){P.vy=-10;P.on=false;P.cy=0;P.jb=0;if(!sfx('jump'))beep(520,.08)}
+  if(!J&&P.vy<-5)P.vy=-5;jumpPrev=J;
   if(P.vineCd>0)P.vineCd--;
   if(P.vine)swingStep(jEdge);
   else{

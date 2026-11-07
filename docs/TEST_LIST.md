@@ -56,3 +56,9 @@ Uninstall the old build first, then install the newest debug APK.
 - [ ] Left / right while dancing: lean, bounce, and he turns on the beat (disco shuffle).
 - [ ] Dance stage layout: two low steps at the ends, two mid platforms, and one high golden platform in the middle (Kannan's haven). Dancers hop up onto the steps and mid platforms after you but cannot reach the haven; from a mid platform, jump and steer onto it. If the haven makes the fight too easy (a safe spot to rest), tell me and I'll lower or shrink it.
 - [ ] Dance frames: Kannan uses his own dance frames in the dance part; the crowd uses the new clean sheets.
+
+## Jump feel (after a Motorola Edge 70 Pro tester reported jump issues)
+- [ ] A quick tap on JUMP gives a real hop (about as high as a low step), not a tiny twitch.
+- [ ] Pressing JUMP a split second BEFORE landing still jumps when you land.
+- [ ] Pressing JUMP a split second AFTER running off a ledge still jumps.
+- [ ] Ask the tester what exactly goes wrong (no jump at all, low jump, late jump, double jump) if it still happens.
