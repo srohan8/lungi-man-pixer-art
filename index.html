@@ -222,7 +222,7 @@ const FONT={A:'010101111101101',B:'110101110101110',C:'011100100100011',D:'11010
 /* Story text (dialogue, scenes, captions, ending) is drawn with a normal font on a second, full-resolution canvas laid over the game, so it stays sharp and readable on a phone.
    Everything else keeps the pixel font. ntext() only queues; flushText() paints after the frame. */
 const tcv=document.getElementById('t'),tg=tcv.getContext('2d'),TQ=[],TFONT='"Trebuchet MS","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
-const NAMES=['Kannan','Biju','Thoma','Ravi','Soniya','Yakshi','Kuttichathan','Odiyan','Karinkanni','Komban','Pey Komban','Kanjiravanam Amma','Devi','Velu','Maveli','Kili','Basheer','Kanjiravanam','Kerala','Kazhukans','Kazhukan','Muruthikudi','Onam','Bullet','Pathalam','Nilavilakku'];
+const NAMES=['Kannan','Biju','Thoma','Thomakutty','Ravi','Soniya','Yakshi','Kuttichathan','Odiyan','Karinkanni','Komban','Pey Komban','Kanjiravanam Amma','Devi','Velu','Maveli','Kili','Basheer','Kanjiravanam','Kerala','Kazhukans','Kazhukan','Muruthikudi','Onam','Bullet','Pathalam','Nilavilakku'];
 /* ALL CAPS data text -> sentence case ("THE FOREST IS RESTLESS." -> "The forest is restless.") */
 function nice(s){if(!s)return s;let t=s.toLowerCase().replace(/(^|[.!?…]\s+)([a-z])/g,(m,a,b)=>a+b.toUpperCase()).replace(/\bi\b/g,'I').replace(/\bi'(m|ll|ve|d)\b/g,(m,a)=>"I'"+a);
   t=t.replace(/(^|[^a-z])chathan(?![a-z])/gi,(m,a)=>a+'Kuttichathan');
@@ -577,7 +577,7 @@ Object.assign({},LV_OLD[0],{act:'PROLOGUE',name:'THE SWINGING AWAKENING',
 /* difficulty ramp: 0 (prologue) to 5 (Act V). More enemies per stretch, wider gaps, faster shooters, tougher bosses. Layout and count only, no new rules. */
 LV0.forEach((l,i)=>l.hard=i);
 [6,0,0,10,3,5].forEach((n,i)=>{if(n)LV0[i].xpalms=n});/* more coconut palms: prologue (village), Act III (had none), Act IV, Act V */
-const BIKE=Object.assign({},LV0[2],{sayAt:[],key:'bike',sid:6,act:'ACT II',name:'THE RIDE TO THE CARNIVAL',bike:true,foes:['wisp','imp'],boss:null,len:11500,gapW:[105,18],segW:[260,160],aru:false,
+const BIKE=Object.assign({},LV0[2],{sayAt:[],key:'bike',sid:6,act:'INTERLUDE',name:'HIGHWAY TO HELL',bike:true,foes:['wisp','imp'],boss:null,len:11500,gapW:[105,18],segW:[260,160],aru:false,
   clear:['THE FESTIVAL GATES','SOMETHING WRONG IS DANCING INSIDE'],sayStart:['RAVI','KEEP THE FRONT WHEEL UP, MACHANE! AND DO NOT SCRATCH MY BULLET!'],sayBoss:null,sayClear:null,sayChai:null});
 const DISCO={key:'disco',sid:7,act:'INTERLUDE',name:'DISCO OR DIE',arena:true,kills:16,
  sky:['#0a0418','#1a0a3a','#34124e','#5a1a6a','#8a2a82','#c03a98'],stars:40,
@@ -905,7 +905,7 @@ function placePlayer(x){
   P={x,y:GY-28,w:14,h:28,vx:0,vy:0,f:1,on:false,inv:0,sp:false,aru:false,step:0,rev:0,vine:null,vineCd:0,boost:0,bvx:0,freeze:0,chaiT:0};
   camx=Math.max(0,x-60);cp=x;bestX=x;bullets=[];shots=[];locked=!!LV[lvl].arena;jumpPrev=true;shootCd=0;slashT=0;
   /* Disco or Die: he drifts slowly down from above like an angel, then lands and the dream begins */
-  if(LV[lvl]&&LV[lvl].key==='disco'&&ART.hk_8){P.x=Math.max(P.x,bossX+Math.round(W*.3));P.fly={t:0,T:260,x:P.x,xE:bossX+Math.round(W/2)-7,y0:-80,yE:GY-P.h};P.y=-80;P.inv=999;if(!sfx('angel_descent'))healSfx()}
+  if(LV[lvl]&&LV[lvl].key==='disco'&&ART.hk_8){P.x=bossX+Math.round(W/2)-7;/* he drifts straight down into the middle of the floor (the start used to be wherever the last level left him) */P.fly={t:0,T:260,x:P.x,xE:bossX+Math.round(W/2)-7,y0:-80,yE:GY-P.h};P.y=-80;P.inv=999;if(!sfx('angel_descent'))healSfx()}
 }
 /* Every 5,000 points (TUNE.lifeEvery) a golden lamp falls from the sky onto the ground just ahead of the player. Walking into it gives the extra life (it can be missed). */
 function dropLifeLamp(k){
@@ -1677,8 +1677,8 @@ function drawFoe(e,cx){
     case 'imp':if(foeArt(e,sx,sy,ART['eimp_'+(e.y<GY-16?1:(tick>>4)%2?0:2)],right,true))break;dE(IMP[(tick>>4)%2][right?1:0],sx-1,sy,12,[[3,4],[6,4]],right,e);break;
     case 'wisp':g.drawImage(WISP[(tick>>3)%2],sx,sy);break;
     case 'dog':{const ad=Math.abs(P.x-e.x),k=e.rush?(ad<70?5:(tick>>1)%4):(ad<120?4:(tick>>3)%4);if(foeArt(e,sx,sy,ART['edog_'+k],e.dir>0,true))break;dE(DOG[(tick>>3)%2][e.dir>0?1:0],sx,sy,16,[[1,3]],e.dir>0,e);break}
-    case 'dancer':{if(e.calm&&arena&&arena.warn){const p=.5+.5*Math.sin(tick*.2);glowEll(sx+6,sy+7,9,7,'#ff2040',.14+.2*p)}const k=(e.k||0)%6,fr=e.calm?[ART['dc1_'+k],ART['dc2_'+k]]:[ART['da1_'+k],ART['da2_'+k]];/* the third possessed pose (da3_*) came from the sheet with the pink flame glow and had a white band round it: not used */
-      if(fr.every(Boolean)){const im=fr[e.calm?(tick>>4)%2:(tick>>3)%2],pic=e.dir>=0?im:flipOf(im),bx=sx-4,by=sy+e.h-30;
+    case 'dancer':{if(e.calm&&arena&&arena.warn){const p=.5+.5*Math.sin(tick*.2);glowEll(sx+6,sy+7,9,7,'#ff2040',.14+.2*p)}const k=(e.k||0)%6,fr=e.calm?[ART['dc1_'+k],ART['dc2_'+k]]:[ART['da1_'+k]];/* the second pose (da2_*) has white patches under the feet from its sheet, the third one a white band: only the first is used until the sheets are redrawn. The third possessed pose (da3_*) came from the sheet with the pink flame glow and had a white band round it: not used */
+      if(fr.every(Boolean)){const im=fr[e.calm?(tick>>4)%2:0],pic=e.dir>=0?im:flipOf(im),bx=sx-4,by=sy+e.h-30+(e.calm?0:((tick>>3)&1));
         if(e.calm)g.drawImage(pic,bx,by+((tick>>3)%2));else dE(pic,bx,by,20,[],e.dir<0,e)}
       else{const dy=e.calm?(tick>>3)%2:0;if(e.calm)g.drawImage(DANCER[e.dir>0?1:0],sx,sy+dy);else dE(DANCER[e.dir>0?1:0],sx,sy,12,[[4,4],[7,4]],e.dir>0,e)}break}
     case 'decoy':{const C=ART.chaturun_0&&violetFrame((tick/5|0)%6,'chaturun');if(C){const bob=0,im=e.dir>0?C.f:C.n;/* the clone is his own imp turned to violet fire, shimmering */
@@ -1953,8 +1953,8 @@ function arenaTick(){
   if(arena.t===1000){banner={a:'THE FLOOR HEATS UP...',b:'SOMETHING IS WRONG WITH THE CROWD',t:150};flashC='#ffd0f4';flashT=6}
   /* the warning: for the last 5 s of dancing the lights flicker red and rumble, their eyes begin to glow, and 2 s before the turn the dancers stop swaying */
   arena.warn=arena.t>=DANCE_END-300&&!arena.hostile;if(arena.warn&&arena.t%45===0){flashC='#ff3050';flashT=5;beep(80,.35,'sawtooth',.04);shake=Math.max(shake,3)}
-  if(arena.t===DANCE_END-120)banner={a:'THE MUSIC DIPS...',b:'WHY DID THEY STOP DANCING?',t:140};
-  if(arena.t===DANCE_END){arena.hostile=true;banner={a:'RED EYES!',b:'THE DANCERS TURN',t:110};beep(120,.5,'sawtooth',.07);shake=18;flashC='#e8f0ff';flashT=18;thunder(true)}
+  if(arena.t===DANCE_END-120)say('KANNAN','WHY ARE THEIR EYES TURNING RED?');
+  if(arena.t===DANCE_END){arena.hostile=true;say('KANNAN',"THIS DOESN'T LOOK GOOD... THOMAKUTTY, VITTODA!");beep(120,.5,'sawtooth',.07);shake=18;flashC='#e8f0ff';flashT=18;thunder(true)}
   if(arena.hostile&&!arena.done){
     if(arena.t-DANCE_END>=90&&(arena.t-DANCE_END)%25===0){/* about 1.5 s of safety after the banner before the first dancer turns */const c=enemies.find(e=>e.alive&&e.t==='dancer'&&e.calm);if(c){c.calm=false;shake=Math.max(shake,7);flashC='#ffb0b0';flashT=8;thunder(false)}}
     const alive=enemies.filter(e=>e.alive&&e.t==='dancer').length,w2=arena.kills>=Math.round(L.kills/2);

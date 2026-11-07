@@ -52,5 +52,5 @@ Uninstall the old build first, then install the newest debug APK.
 - [ ] Then the red eyes: 16 dancers to defeat, up to 7 at once from both sides, some of them leapers (higher, faster jumps); "THE BEAT DROPS!" at half way gives more leapers and faster spawns.
 - [ ] No white borders on the possessed dancers (the third pose with the pink glow is no longer used).
 - [ ] Is it fun and hard enough? Tell me what to change (number to defeat, how many at once, leaper share).
-- [ ] The turn has a warning: the last 5 s of dancing the lights flicker red with a low rumble and the dancers' eyes glow; 2 s before, "THE MUSIC DIPS... WHY DID THEY STOP DANCING?" and they stop swaying; then "RED EYES!", about 1.5 s of safety before the first dancer turns, and new dancers only start coming about 4 s after.
+- [ ] The turn has a warning: the last 5 s of dancing the lights flicker red with a low rumble and the dancers' eyes glow; 2 s before, "Kannan thinks "Why are their eyes turning red?" and they stop swaying; then Kannan says "This doesn't look good... Thomakutty, vittoda!", about 1.5 s of safety before the first dancer turns, and new dancers only start coming about 4 s after.
 - [ ] Left / right while dancing: lean, bounce, and he turns on the beat (disco shuffle).

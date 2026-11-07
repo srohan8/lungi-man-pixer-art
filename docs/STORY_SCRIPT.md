@@ -37,7 +37,7 @@ _Scene after this level:_
 - **Ravi**: The second sacred tree stands beyond the carnival grounds. It is far, and there is no time to walk.
 - **Ravi**: Take my bike, machane. Go, and hold tight!
 
-## ACT II: The ride to the carnival
+## INTERLUDE: Highway to hell
 - **Ravi**: Keep the front wheel up, machane! And do not scratch my Bullet! _(level starts)_
 
 _Scene after this level:_
@@ -71,6 +71,8 @@ _Scene after this level:_
 - **Kannan**: Where am I...? _(drifting down, midway)_
 - **Kannan**: Why is everyone dancing? _(drifting down, near the landing)_
 - **Kannan**: This cannot be real... _(after landing)_
+- **Kannan**: Why are their eyes turning red? _(after about 15 s of dancing)_
+- **Kannan**: This does not look good... Thomakutty, vittoda! _(when the dancers turn)_
 
 _Scene after this level:_
 - **Ravi**: You kept shouting left and right.
@@ -140,7 +142,7 @@ _Scene after this level:_
 ## Act banners and clear banners (pixel font, shown in play)
 - **Prologue the swinging awakening**: clear banner: Amma smiles / The forest gives you its power
 - **Act I Yakshi's hollow**: clear banner: Tree awakened / Yakshi is free of the curse
-- **Act ii the ride to the carnival**: clear banner: The festival gates / Something wrong is dancing inside
+- **Interlude highway to hell**: clear banner: The festival gates / Something wrong is dancing inside
 - **Act ii Kuttichathan's carnival**: clear banner: Second tree awakened / Kuttichathan hands over the relic
 - **Act iii Odiyan's hunt**: clear banner: Third tree awakened / A bite burns... The world spins
 - **Interlude disco or die**: clear banner: The venom fades / You wake up...
