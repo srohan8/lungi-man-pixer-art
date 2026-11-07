@@ -53,7 +53,7 @@ addEventListener('keydown',e=>{if(e.code==='KeyM'){toggleSnd();return}
 addEventListener('keyup',e=>{keys[e.code]=false});
 document.querySelectorAll('[data-k]').forEach(b=>{
   const k=b.dataset.k;
-  const on=e=>{e.preventDefault();if(paused)return;if(convo){convoGo(k==='l'?-1:1);return}if(tut&&tut.phase==='msg'&&state==='play'){tutConfirm();return}try{b.setPointerCapture(e.pointerId)}catch(_){}touch[k]=1;b.classList.add('on');startIfNeeded(k)};
+  const on=e=>{e.preventDefault();if(paused)return;if(convo)return;/* the game buttons never skip a dialogue */if(tut&&tut.phase==='msg'&&state==='play'){tutConfirm();return}try{b.setPointerCapture(e.pointerId)}catch(_){}touch[k]=1;b.classList.add('on');startIfNeeded(k)};
   const off=e=>{e.preventDefault();touch[k]=0;b.classList.remove('on')};
   b.addEventListener('pointerdown',on);
   ['pointerup','pointercancel','lostpointercapture'].forEach(t=>b.addEventListener(t,off));
@@ -61,7 +61,7 @@ document.querySelectorAll('[data-k]').forEach(b=>{
 cv.addEventListener('pointerdown',e=>{
   const r=cv.getBoundingClientRect(),x=(e.clientX-r.left)/r.width*W,y=(e.clientY-r.top)/r.height*H;
   if(tut&&tut.phase==='msg'&&state==='play'&&!paused){const r=tut.skipR;if(r&&x>r[0]&&x<r[0]+r[2]&&y>r[1]&&y<r[1]+r[3])tutSkip();else tutConfirm();return}
-  if(convo&&!paused){if(dlg&&dlg.xr&&dlg.pt>10&&x>dlg.xr[0]&&x<dlg.xr[0]+dlg.xr[2]&&y>dlg.xr[1]&&y<dlg.xr[1]+dlg.xr[3]){convoClose();return}convoGo(x<W*.26?-1:1);return}
+  if(convo&&!paused){/* only a tap on the dialogue box itself counts: the X closes, the left arrow goes back, the box or the right arrow goes on; a tap anywhere else does nothing */const br=dlg&&dlg.br;if(!br||x<br[0]||x>br[0]+br[2]||y<br[1]||y>br[1]+br[3])return;if(dlg.xr&&dlg.pt>10&&x>dlg.xr[0]&&x<dlg.xr[0]+dlg.xr[2]&&y>dlg.xr[1]&&y<dlg.xr[1]+dlg.xr[3]){convoClose();return}convoGo(y>br[1]+br[4]&&x<br[0]+36?-1:1);return}
   if(dlg&&dlg.pause&&state==='play'&&!paused&&dlg.armed&&dlg.pt>25){dlg=null;jumpPrev=true;return}
   if(dlg&&dlg.hold&&state==='clear'&&dlg.armed&&dlg.pt>40){dlg=null;return}
   if(dlg&&dlg.xr&&state==='play'&&!paused){const r=dlg.xr;if(x>r[0]&&x<r[0]+r[2]&&y>r[1]&&y<r[1]+r[3]){dlg=null;return}}
@@ -1225,7 +1225,7 @@ function newGame(){score=0;actScore=0;const picked=pick>=0,st=pick<0?pickDefault
   if(st>0&&(picked||LV[st].key==='disco'||LV[st].key==='path')){playEntry(st);return}
   begin(st,40)}
 function startIfNeeded(src){
-  if(state==='cine'){if(cin&&cin.t>40)cineEnd();return}
+  if(state==='cine'){/* a cinematic is skipped with two taps within 2 s: one accidental tap does nothing but show the hint */if(cin&&cin.t>40){if(cin.skipUntil&&cin.t<=cin.skipUntil)cineEnd();else cin.skipUntil=cin.t+120}return}
   if(state==='play'&&tut&&tut.phase==='msg'&&!paused){tutConfirm(src);return}
   if(state==='title'&&splashT<=0){if(src==='ArrowLeft'||src==='KeyA'||src==='l'){pickLevel(-1);return}if(src==='ArrowRight'||src==='KeyD'||src==='r'){pickLevel(1);return}}
   goFull();
@@ -1243,7 +1243,7 @@ function startIfNeeded(src){
 function spawnRoom(){for(const e of enemies){if(!e.alive||Math.abs(e.x-P.x)>=90)continue;const sg=e.x>=P.x?1:-1;let nx=P.x+sg*100;if(e.s1!==undefined)nx=Math.max(e.s1,Math.min(e.s2,nx));e.x=nx}}
 function respawn(){
   P.x=cp;P.y=GY-40;P.vx=0;P.vy=0;P.on=false;P.inv=120;P.sp=false;P.aru=false;slashT=0;P.rev=0;P.vine=null;P.boost=0;P.freeze=0;P.chaiT=0;ammo=Math.max(ammo,25);P.inv=150;if(LV[lvl].key==='a4'&&!locked){flood=cpFlood;floodWarn=flood<0?0:floodWarn}
-  camx=Math.min(bossX,Math.max(0,cp-100));bullets=[];shots=[];locked=!!LV[lvl].arena;
+  camx=Math.min(bossX,Math.max(0,cp-100));bullets=[];shots=[];locked=!!LV[lvl].arena;if(boss&&boss.active&&!boss.dead&&!LV[lvl].arena){/* the boss starts its pattern again, with a pause, when the hero comes back */boss.state=0;boss.cd=110;boss.arm=0;boss.para=false;boss.aim=false;boss.stun=0}
   spawnRoom();
   if(boss.active&&!boss.dead){boss.x=bossX+W-boss.w-20;boss.y=GY-1-boss.foot;boss.vx=0;boss.vy=0;boss.state=0}
   state='play';jumpPrev=true;
@@ -1527,7 +1527,7 @@ function slashHits(){
 function spawnBoss(){if(LV[lvl].key==='a4'){flood=Math.min(flood,TUNE.floodBoss);cpFlood=Math.min(cpFlood,flood)}boss.active=true;if(LV[lvl].sayBoss)say(LV[lvl].sayBoss[0],LV[lvl].sayBoss[1],330,true);boss.x=bossX+W-boss.w-30;boss.y=-80;boss.vy=0;banner={a:boss.name,b:boss.sub,t:140};if(!sfx('boss_roar_'+(boss.t==='karin'?'karinkanni':boss.t))&&!sfx('boss_roar'))beep(110,.6,'sawtooth',.06);sting('sting_boss_intro')}
 function updBoss(){
   {const b=boss;if(tick%11===0&&b.active&&!b.dead&&((b.t==='komban'&&b.state===2&&b.stun<=0)||(b.t==='odiyan'&&!b.puff&&(b.form===1||(b.form===2&&b.wind<=0)))))stepSfx(true)}
-  const b=boss;if(!b.active||b.dead)return;b.tk++;if(b.hurt>0)b.hurt--;if(b.arm>0)b.arm--;
+  const b=boss;if(!b.active||b.dead)return;if(!locked&&!LV[lvl].arena)return;/* after a death the boss waits (no ray, no falling stones) until the hero walks back into the arena */b.tk++;if(b.hurt>0)b.hurt--;if(b.arm>0)b.arm--;
   const ax=bossX,ax2=bossX+W,pc=P.x+7,bc=b.x+b.w/2,face=pc<bc?-1:1,rage=b.hp<b.max/2;
   const fly=b.t==='yakshi'||b.t==='karin',floor=GY-1-b.foot;let landed=false;
   if(!fly){b.vy+=.4;b.y+=b.vy;
@@ -1944,7 +1944,7 @@ function drawDlg(){
   g.fillStyle='rgba(12,8,28,.86)';g.fillRect(bx,by,bw,bh);
   g.fillStyle='#f0c040';g.fillRect(bx,by,bw,1);g.fillRect(bx,by+bh-1,bw,1);g.fillRect(bx,by,1,bh);g.fillRect(bx+bw-1,by,1,bh);
   drawPortrait(dlg.who,bx+4,by+4,Math.min(34,bh-8));
-  if(dlg.conv){/* back and next buttons under the box, with the line counter */const ty=by+bh+5,tri=(x,dir,on)=>{g.fillStyle=on?'#f0c040':'#6a5a30';for(let k=0;k<7;k++){const w=7-k;g.fillRect(dir>0?x+k:x+7-k-1,ty+k,1,1);g.fillRect(dir>0?x+k:x+7-k-1,ty+13-k,1,1);g.fillRect(dir>0?x+k:x+(7-k-1),ty+k,1,14-2*k)}};
+  if(dlg.conv){dlg.br=[bx,by,bw,bh+24,bh];/* back and next buttons under the box, with the line counter */const ty=by+bh+5,tri=(x,dir,on)=>{g.fillStyle=on?'#f0c040':'#6a5a30';for(let k=0;k<7;k++){const w=7-k;g.fillRect(dir>0?x+k:x+7-k-1,ty+k,1,1);g.fillRect(dir>0?x+k:x+7-k-1,ty+13-k,1,1);g.fillRect(dir>0?x+k:x+(7-k-1),ty+k,1,14-2*k)}};
     g.fillStyle='rgba(12,8,28,.86)';g.fillRect(bx+bw-84,by+bh+1,84,22);g.fillRect(bx,by+bh+1,30,22);
     tri(bx+10,-1,dlg.i>0);tri(bx+bw-18,1,true);if(dlg.n>1)ntext((dlg.i+1)+' / '+dlg.n,bx+bw-51,by+bh+6,8,'#f0c040','center');
     {const xx=bx+bw-18,yy=by+4;g.fillStyle='#f0c040';for(let k=0;k<8;k++){g.fillRect(xx+k,yy+k,2,2);g.fillRect(xx+7-k,yy+k,2,2)}dlg.xr=[bx+bw-28,by,28,28]}}
@@ -2246,7 +2246,7 @@ function drawPagePic(P0,L,t){
   if(P0.pic==='maveli'){for(let y=0;y<H;y+=2){g.fillStyle='rgb('+(14+(y/20|0))+','+(10+(y/30|0))+','+(34+(y/14|0))+')';g.fillRect(0,y,L,2)}
     g.fillStyle='#4a8a3a';g.fillRect(0,40,L,4);g.fillStyle='#2a1c14';g.fillRect(0,44,L,10);
     for(let k=0;k<12;k++){const rx=Math.round(L*(k+.5)/12);g.fillStyle='#3a2616';let x=rx;for(let y=54;y<54+30+(k*17)%60;y+=4){x+=((y*7+k)%5)-2;g.fillRect(x,y,2,4)}}
-    const mv=ART.maveli_1,mh=ART.mvh_3;glowEll(Math.round(L/2),H-90,70,60,'#ffb830',.28);
+    const mv=ART.maveli_1,mh=ART.mvh_3&&FLIPPED(ART.mvh_3);/* he looks to the left, towards Kannan */glowEll(Math.round(L/2),H-90,70,60,'#ffb830',.28);
     if(mh){const hh=214,ww=Math.round(hh*mh.width/mh.height);g.globalAlpha=al;nimg(mh,Math.round(L/2-ww/2),H-hh-8+Math.round(Math.sin(t*.05)*2),ww,hh)}
     else if(mv){const sc=3,w=mv.width*sc,h=mv.height*sc;g.drawImage(mv,Math.round(L/2-w/2),H-h-8+Math.round(Math.sin(t*.05)*2),w,h)}
     for(let k=0;k<5;k++){const lx=Math.round(L*(k+.5)/5),ly=120+((k*41)%60)+Math.round(Math.sin(t*.04+k)*4);glowEll(lx,ly,9,9,'#ffb830',.5);g.fillStyle='#fff0b0';g.fillRect(lx-1,ly-1,3,3)}}
@@ -2500,7 +2500,7 @@ function draw(){TQ.length=0;syncPad();
   else if(p.k==='rice'){glowEll(px+5,py+6,12,10,'#f4ecd0',.22+.1*Math.sin(tick*.1));g.fillStyle='#2e7a2e';g.fillRect(px-1,py+6,12,4);g.fillStyle='#4aa040';g.fillRect(px,py+6,10,1);g.fillStyle='#f8f4e8';g.fillRect(px+2,py+3,6,4);g.fillRect(px+3,py+2,4,1)}
   else{const po=ART.porotta_0;if(po){glowEll(px+5,py+5,12,9,'#ffd890',.2+.08*Math.sin(tick*.1));g.drawImage(po,px-4,py-1+Math.round(Math.sin(tick*.08)))}else g.drawImage(PICK,px-2,py-1)}}
   for(const e of enemies)if(e.alive&&e.x-cx<W+20&&e.x-cx>-40)drawFoe(e,cx);
-  drawCameos(cx);drawSacredTree(cx);if(!(state==='cine'&&cin&&cin.k==='mk'))drawBoss(cx);drawCine(cx);
+  drawCameos(cx);drawSacredTree(cx);if(!(state==='cine'&&cin&&cin.k==='mk'))drawBoss(cx);drawCine(cx);if(state==='cine'&&cin&&cin.skipUntil&&cin.t<=cin.skipUntil&&(tick>>3)%2===0)ntext(isTouch?'Tap again to skip':'Press again to skip',W/2,H-30,10,'#f0c040','center');
   if(boss.dead&&boss.drop&&!(state==='cine'&&cin&&cin.t<66)){const q=Math.round(boss.drop.x-cx);if(boss.t==='chathan')g.drawImage(COCO,q-3,GY-7);else{g.fillStyle='#0a0810';g.fillRect(q-14,GY-2,28,2);g.fillRect(q-9,GY-3,18,1);g.fillStyle='#6a4a90';g.fillRect(q-5,GY-2,3,1)}}
   for(const s of shots)drawShot(s,cx);
   for(const b of bullets)g.drawImage(COCO,Math.round(b.x-cx-3),Math.round(b.y-3));
