@@ -1288,12 +1288,12 @@ function update(){
   if(state==='ending'){endTick();return}
   if(state==='scene'){sceneTick();return}
   if(state!=='play')return;
-  if(P.fly){const f=P.fly;f.t++;const u=Math.min(1,f.t/f.T),e=1-Math.pow(1-u,2);P.y=f.y0+(f.yE-f.y0)*e;P.x=f.x+(f.xE-f.x)*(u*u*(3-2*u))+Math.sin(f.t*.05)*5*(1-u);P.vy=0;P.on=false;P.vx=0;
+  if(P.fly){const f=P.fly;f.t++;const u=Math.min(1,f.t/f.T),e=1-Math.pow(1-u,2);P.y=f.y0+(f.yE-f.y0)*e;P.x=bossX+Math.round(W/2)-7+Math.sin(f.t*.05)*5*(1-u);/* always the middle of the floor at the current screen width */P.vy=0;P.on=false;P.vx=0;
     if(f.t%4===0)parts.push({x:P.x+7+(Math.random()-.5)*26,y:P.y+8+Math.random()*16,vx:(Math.random()-.5)*.3,vy:.35,l:40,c:f.t%8?'#fff6c0':'#ffd860'});
     /* disco dream: Kannan speaks as he drifts down (midway, near the landing) and once landed */
     if(f.t===100)say('KANNAN','WHERE AM I...?',200);
     if(f.t===205)say('KANNAN','WHY IS EVERYONE DANCING?',200);
-    if(f.t>=f.T){say('KANNAN','THIS CANNOT BE REAL...',undefined,true);P.fly=null;P.x=f.xE;P.f=1;P.y=f.yE;P.on=true;P.inv=70;flashC='#fff6d0';flashT=14;burst(P.x+7,GY,['#ffd860','#fff6c0','#ffffff'],16);beep(1320,.3,'sine',.06);beep(1760,.4,'sine',.04)}
+    if(f.t>=f.T){say('KANNAN','THIS CANNOT BE REAL...',undefined,true);P.fly=null;P.x=bossX+Math.round(W/2)-7;P.f=1;P.y=f.yE;P.on=true;P.inv=70;flashC='#fff6d0';flashT=14;burst(P.x+7,GY,['#ffd860','#fff6c0','#ffffff'],16);beep(1320,.3,'sine',.06);beep(1760,.4,'sine',.04)}
     if(LV[lvl].arena)arenaTick();return}
 
   let L=inp.l(),R=inp.r();let J=inp.j();const S=inp.s();if(P.freeze>0){P.freeze--;L=false;R=false;J=false}if(P.rev>0){P.rev--;const tt=L;L=R;R=tt}const dir=(R?1:0)-(L?1:0);
