@@ -91,7 +91,7 @@ Never rename the audio files, the game looks them up by name. Keep the SND toggl
 Prologue, Act I, **Act II ride** (auto-run bike, only jump and throw), Act II, Act III, **Interlude** (fever-dream dance arena), Act IV, **Pathalam**, Act V, ending.
 - Act II ride: forward speed is automatic, gaps are jumped, no left/right.
 - Act III: four hoof-print pickups; Odiyan is only hittable while he changes form (about 0.6 s, +0.27 s per hoof-print), Kili the crow caws a moment before each change. Human form is harmless to touch.
-- Interlude: 6 calm dancers; for about 8 seconds the hero dances with the same buttons (left or right = lean, jump = spin, throw = clap, no coconut, the dancers hop along), then they turn red-eyed one by one; defeat 16 to wake up (up to 7 at once, some of them leapers, they come from both sides, the beat drops at half way for more leapers and faster spawns). Locked one-screen arena.
+- Interlude: 6 calm dancers; for about 20 seconds the hero dances with the same buttons (left or right = lean, jump = spin, throw = clap, no coconut, the dancers hop along), then they turn red-eyed one by one; defeat 16 to wake up (up to 7 at once, some of them leapers, they come from both sides, the beat drops at half way for more leapers and faster spawns). Locked one-screen arena.
 - Pathalam: enemy-free rope-swinging level, then Maveli's throne scene (3 dialogue boxes, player stands still), blessing = one free hit in Act V (golden lamps).
 - Ending: five trees bloom (teal, amber, indigo, green, gold) with 3 closing dialogue boxes. Tap to skip after a few seconds.
 - Bosses with a hit window show a blue shield while invulnerable and a one-time hint ("HIT HIM WHEN HE CRASHES"). Charges show a red "!" first.

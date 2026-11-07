@@ -48,7 +48,7 @@ Uninstall the old build first, then install the newest debug APK.
 - [ ] Between acts: after a boss falls (and after each level clear) the game waits with "Tap to continue" before the next scene; the story scene between acts waits at its last line until you tap (a tap during the scene skips it).
 
 ## Dance stage (new)
-- [ ] First ~8 seconds: Kannan dances (lean when moving, spin when jumping, clap on throw, no coconut thrown); the calm dancers hop when you clap; "ANY BUTTON IS A STEP" banner.
+- [ ] First ~20 seconds after landing: Kannan dances (lean when moving, spin when jumping, clap on throw, no coconut thrown); the calm dancers hop when you clap; "ANY BUTTON IS A STEP" banner.
 - [ ] Then the red eyes: 16 dancers to defeat, up to 7 at once from both sides, some of them leapers (higher, faster jumps); "THE BEAT DROPS!" at half way gives more leapers and faster spawns.
 - [ ] No white borders on the possessed dancers (the third pose with the pink glow is no longer used).
 - [ ] Is it fun and hard enough? Tell me what to change (number to defeat, how many at once, leaper share).

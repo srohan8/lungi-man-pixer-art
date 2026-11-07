@@ -1945,10 +1945,12 @@ function mkDancer(x,calm,k){return {t:'dancer',k:k===undefined?(Math.random()*6|
 function arenaTick(){
   const L=LV[lvl];if(!arena)arena={t:0,kills:0,hostile:false,done:false,sp:0};
   if(P.fly){/* while the hero drifts down the crowd already dances, but the dance clock starts when he lands */if(!arena.crowd){arena.crowd=true;for(let k=0;k<6;k++)enemies.push(mkDancer(70+k*(W-140)/5,true,k))}return}
-  arena.t++;const DANCE_END=480;/* about 8 s of dancing before the dancers turn */
+  arena.t++;const DANCE_END=1200;/* about 20 s of dancing before the dancers turn */
   if(P.clap>0)P.clap--;if(P.on)P.spin=0;else P.spin=(P.spin||0)+.4*(P.f||1);
   if(arena.t===20){banner={a:'DANCE!',b:'THE FLOOR IS YOURS',t:150};if(!arena.crowd){arena.crowd=true;for(let k=0;k<6;k++)enemies.push(mkDancer(70+k*(W-140)/5,true,k))}}
   if(arena.t===200)banner={a:'DANCE!',b:'ANY BUTTON IS A STEP, MACHANE!',t:150};
+  if(arena.t===620)banner={a:'KEEP THE BEAT!',b:'LEAN, SPIN AND CLAP',t:130};
+  if(arena.t===1000){banner={a:'THE FLOOR HEATS UP...',b:'SOMETHING IS WRONG WITH THE CROWD',t:150};flashC='#ffd0f4';flashT=6}
   if(arena.t===DANCE_END){arena.hostile=true;banner={a:'RED EYES!',b:'THE DANCERS TURN',t:110};beep(120,.5,'sawtooth',.07);shake=18;flashC='#e8f0ff';flashT=18;thunder(true)}
   if(arena.hostile&&!arena.done){
     if((arena.t-DANCE_END)%25===0){const c=enemies.find(e=>e.alive&&e.t==='dancer'&&e.calm);if(c){c.calm=false;shake=Math.max(shake,7);flashC='#ffb0b0';flashT=8;thunder(false)}}
