@@ -98,6 +98,7 @@ Prologue, Act I, **Act II ride** (auto-run bike, only jump and throw), Act II, A
 - Ending: five trees bloom (teal, amber, indigo, green, gold) with 3 closing dialogue boxes. Tap to skip after a few seconds.
 - Bosses with a hit window show a blue shield while invulnerable and a one-time hint ("HIT HIM WHEN HE CRASHES"). Charges show a red "!" first.
 - Kuttichathan: fireball charge into a wall, stunned for 1.7 s (1.3 s enraged) = only hit window; a coconut needs about a second to cross the arena, so the window must be longer than that; clones explode when popped up close.
+Banners first: an act-name or WELL DONE banner shows before the dialogue box that goes with it (the game stands still for the act banner). The clear screen continues on a tap after about 1.2 s (levels without a boss), and right after the closing box.
 Dialogue rule: at most 5 boxes per act; the throne scene (6 Maveli lines) and the ending (3) are scripted exceptions.
 
 ## Story scenes (owner-approved exception to the no-cutscene rule)

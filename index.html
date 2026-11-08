@@ -925,7 +925,7 @@ function dropLifeLamp(k){
   /* it leaves the score counter at the top left and arcs down to the ground ahead, so the player sees where it came from */
   pickups.push({x:camx+46,y:12,w:12,h:14,got:false,k:'life',drop:true,sx:camx+46,sy:12,lx:lx-6,landY:ly-14,t:0,T:75});
   pops.push({x:P.x+7,y:P.y-8,s:'5000 POINTS! A LAMP DROPS',t:100});if(!sfx('powerup'))beep(1000,.2,'triangle',.06)}
-function begin(i,x){quiet=false;if(i!==retryLvl&&!noStartSay)retryLvl=-1;bikeT=0;if(i===0&&tutPending){tut={step:0,phase:'wait',t:0};tutPending=false;tutAny=true;tutPulse(null)}else if(i!==0&&tut){tut=null;tutPulse(null)}lives=i>=1?4:3;actScore=actScore||0;ammo=TUNE.ammoStart;ammoT=0;lifeBank=Math.floor(score/TUNE.lifeEvery);loadLevel(i);placePlayer(x);state='play';mercyGift();for(const t of (LV[i].sayAt||[]))if(t.x<x)t.d=1;/* starting beyond a line (a retry from the checkpoint) does not replay it */if(dlg&&dlg.pause&&!dlg.conv){const d0=dlg;dlg=null;say(d0.who,d0.text)}/* a line said while the level loaded becomes a normal conversation box */banner={a:LV[i].act,b:LV[i].name,t:150}}
+function begin(i,x){quiet=false;clearAge=0;pendSay=[];if(i!==retryLvl&&!noStartSay)retryLvl=-1;bikeT=0;if(i===0&&tutPending){tut={step:0,phase:'wait',t:0};tutPending=false;tutAny=true;tutPulse(null)}else if(i!==0&&tut){tut=null;tutPulse(null)}lives=i>=1?4:3;actScore=actScore||0;ammo=TUNE.ammoStart;ammoT=0;lifeBank=Math.floor(score/TUNE.lifeEvery);loadLevel(i);placePlayer(x);state='play';mercyGift();for(const t of (LV[i].sayAt||[]))if(t.x<x)t.d=1;/* starting beyond a line (a retry from the checkpoint) does not replay it */banner={a:LV[i].act,b:LV[i].name,t:150};if(dlg&&dlg.pause&&!dlg.conv){const d0=dlg;dlg=null;say(d0.who,d0.text)}/* a line said while the level loaded becomes a normal conversation box (after the act-name banner) */}
 /* Title screen level selector: left / right (arrows, A / D, or tap the arrows). TUNE.levelSelectAll=false limits it to the levels reached so far. */
 /* Pause: icon (top, left of the sound icon), P / Esc, and automatically when the app goes to the background. Only two choices: RESUME and MENU (back to the title screen). */
 function setPause(on){if(on&&state!=='play')return;if(paused===on)return;paused=on;
@@ -1244,7 +1244,7 @@ function startIfNeeded(src){
   goFull();
   if(!AUD.go){AUD.go=true;try{actx()&&ac.resume()}catch(e){}SFX_NAMES.forEach(n=>loadBuf(n,'sfx'))}
   if(splashT>0){splashT=0;return}
-  if(state==='clear'&&clearT<=0&&!(dlg&&dlg.hold)){clearOK=true;return}
+  if(state==='clear'&&!(dlg&&dlg.hold)&&!convo&&!pendSay.length){if(clearT<=0){clearOK=true;return}if(!LV[lvl].boss&&clearAge>75){clearT=0;clearOK=true;return}}/* after a short look at the banner a tap goes on (boss clears still wait for the tree bloom) */
   if(state==='story'){if(story&&story.t>30)story.skip=true;return}
   if(state==='pages'){pagesNext();return}
   if(state==='ending'&&endT>240){endFinish();return}
@@ -1287,6 +1287,7 @@ function update(){
   if(innerHeight>innerWidth&&isTouch)return;
   if(state==='title'){camx=(camx+.4)%(bossX-W);return}
   if(state==='play'&&dlg&&dlg.pause&&!dlg.conv&&!convo&&!paused){const d0=dlg;dlg=null;say(d0.who,d0.text)}/* a line said while a level was loading becomes a normal conversation box */
+  if(pendSay.length){if(!banner||banner.t<=12){const q=pendSay;pendSay=[];q.forEach(a=>say(...a))}else{if(state==='clear')clearT=Math.max(clearT,6);else if(state==='play'&&!paused)return}}/* the act-name banner holds the game still for about 2 s, then the opening box appears */
   if(convo&&!paused){if(dlg)dlg.pt++;return}
   if(state==='play'&&dlg&&dlg.pause&&!paused){dlgPauseTick();return}
   if(state==='dead'){P.dt++;
@@ -1294,7 +1295,7 @@ function update(){
     else{if(P.bk){P.bx+=P.bvx;P.bvx*=.965}P.vy+=.4;P.y+=P.vy;P.x+=P.vx;P.vx*=.94;
       if(P.vy>=0){for(const [x1,x2,top] of segs.map(s=>[s[0],s[1],GY]).concat(plats.map(p=>[p[0],p[0]+p[2],p[1]])))if(P.x+P.w>x1&&P.x<x2&&P.y+P.h-P.vy<=top+2&&P.y+P.h>=top){P.y=top-P.h;if(P.vy>1.5){burst(P.x+7,top,['#d8c8a0','#a89878'],6);shake=Math.max(shake,3)}P.vy=0;P.vx*=.5;if(!P.dl)P.dl=P.dt;break}}}
   if(--deadT<=0){if(lives<=0){state='over';lockT=60;saveHi()}else respawn()}return}
-  if(state==='clear'){if(dlg&&dlg.hold){/* the boss's last words and Amma's lines after a victory wait for a tap (the clear countdown holds); about 25 s at most */clearT=Math.max(clearT,30);dlg.pt++;const dn=Object.keys(keys).some(k=>keys[k])||touch.l||touch.r||touch.j||touch.s;if(!dn)dlg.armed=true;else if(dlg.armed&&dlg.pt>40)dlg=null;if(dlg&&dlg.pt>1500)dlg=null;return}if(clearT>0)clearT--;if(clearT<=0&&LV[lvl].boss&&TREE_OF[LV[lvl].boss]!==undefined&&ART['strees_'+TREE_OF[LV[lvl].boss]]&&ART['strees_'+(TREE_OF[LV[lvl].boss]+5)]&&clearHold++<700&&!(boss.dead&&bloomAt>=0&&tick-bloomAt>=250))clearT=1;/* the clear screen waits until the sacred tree has finished blooming */
+  if(state==='clear'){clearAge++;if(dlg&&dlg.hold){/* the boss's last words and Amma's lines after a victory wait for a tap (the clear countdown holds); about 25 s at most */clearT=Math.max(clearT,30);dlg.pt++;const dn=Object.keys(keys).some(k=>keys[k])||touch.l||touch.r||touch.j||touch.s;if(!dn)dlg.armed=true;else if(dlg.armed&&dlg.pt>40)dlg=null;if(dlg&&dlg.pt>1500)dlg=null;return}if(clearT>0)clearT--;if(clearT<=0&&LV[lvl].boss&&TREE_OF[LV[lvl].boss]!==undefined&&ART['strees_'+TREE_OF[LV[lvl].boss]]&&ART['strees_'+(TREE_OF[LV[lvl].boss]+5)]&&clearHold++<700&&!(boss.dead&&bloomAt>=0&&tick-bloomAt>=250))clearT=1;/* the clear screen waits until the sacred tree has finished blooming */
   if(clearT<=0&&clearOK){clearOK=false;clearHold=0;if(lvl<LV.length-1){if(lvl===0){seen=true;try{localStorage.setItem('lungiman-prologue','1')}catch(e){}}actScore=score;resume=Math.max(resume,lvl+1);try{localStorage.setItem('lungiman-act',resume)}catch(e){}const sk=LV[lvl].key,ni=lvl+1,go=()=>{loadLevel(ni);placePlayer(40);fadeCol=null;if(LV[ni].arena)fadeT=90;if(LV[ni].key==='path'){fadeT=80;fadeCol='#ffd890'}if(!LV[ni].arena&&LV[ni].key!=='path'){fadeT=90;fadeCol='#05030c'}ammo=Math.max(ammo,TUNE.ammoStart);state='play';banner={a:LV[lvl].act,b:LV[lvl].name,t:150}};
     if(sk==='a4'){startCine('pt',go);return}
     if(SCENES[sk]){const bgk=SCENES[sk].bg;let cxs=Math.round(camx);if(bgk==='next'){loadLevel(ni);cxs=0}else if(bgk!=='cur'){loadLevel(LV.findIndex(l=>l.key===bgk));cxs=0}
@@ -1354,7 +1355,7 @@ function update(){
   tutStep();
   for(const t of (LV[lvl].sayAt||[]))if(!t.d&&P.x>t.x){t.d=1;if(!quiet)say(t.who,t.text)}/* not while a finishing scene is only being replayed from the selector */
   if(LV[lvl].scene&&!scene&&P.x>bossX+W-230){state='scene';scene={t:0};P.vx=0;return}
-  if(!LV[lvl].boss&&!LV[lvl].arena&&!LV[lvl].scene&&P.x>bossX+40){state='clear';clearT=lvl===0?360:200;banner=lvl===0?{a:'WELL DONE, KANNAN!',b:'YOU LEARNED FAST. THE REAL GROVE NEEDS YOU.',t:340}:{a:LV[lvl].clear[0],b:LV[lvl].clear[1],t:190};if(LV[lvl].sayClear&&!quiet)say(LV[lvl].sayClear[0],LV[lvl].sayClear[1]);return}
+  if(!LV[lvl].boss&&!LV[lvl].arena&&!LV[lvl].scene&&P.x>bossX+40){state='clear';clearT=lvl===0?360:200;banner=lvl===0?{a:'WELL DONE, KANNAN!',b:'YOU LEARNED FAST. THE REAL GROVE NEEDS YOU.',t:150}:{a:LV[lvl].clear[0],b:LV[lvl].clear[1],t:190};if(LV[lvl].sayClear&&!quiet)say(LV[lvl].sayClear[0],LV[lvl].sayClear[1]);return}
 
   shootCd--;
   if(S&&shootCd<=0&&P.aru){shootCd=16;slashT=8;swingId++;if(!sfx('slash'))beep(220,.08,'sawtooth',.05)}
@@ -1939,13 +1940,13 @@ function drawSlash(cx){
 }
 const dlgHist=[];
 let loadingLvl=false,noStartSay=false,quiet=false,bossHeard=-1,retryLvl=-1;/* quiet: a finishing scene is only being replayed from the level selector, so no dialogue boxes */
-function say(who,text,t,pause){if(pause!==false&&!loadingLvl&&(state==='play'||state==='clear'||state==='scene'||state==='ending')){/* every box is a small conversation: back shows the earlier lines of this act, next / the arrow closes it, X closes it at once */if(convo&&dlg&&dlg.who===who&&dlg.text===text)return;dlgHist.push({who,text});if(dlgHist.length>6)dlgHist.shift();startConvo(dlgHist.slice(),null,dlgHist.length-1);return}pause=pause!==false;/* owner request after playtests: every in-play dialogue box stops the game until the player taps (people could not read them while running) */dlg={who,text,t:t||210,pause:pause,hold:state==='clear',pt:0,armed:false,x0:(typeof P!=='undefined'&&P)?P.x:0,dist:pause?0:((typeof lvl!=='undefined'&&LV[lvl]&&LV[lvl].bike)?520:1000)}}/* a box also closes by itself once the hero has moved on (the bike cannot stop, so there it is about 2.5 s of riding) */
+function say(who,text,t,pause){if(pause!==false&&!loadingLvl&&!convo&&banner&&banner.t>12&&(state==='clear'||(state==='play'&&LV[lvl]&&banner.a===LV[lvl].act))){pendSay.push([who,text,t,pause]);return}/* the act name or the WELL DONE banner shows first, the box comes when it has gone (they used to be drawn on top of each other) */if(pause!==false&&!loadingLvl&&(state==='play'||state==='clear'||state==='scene'||state==='ending')){/* every box is a small conversation: back shows the earlier lines of this act, next / the arrow closes it, X closes it at once */if(convo&&dlg&&dlg.who===who&&dlg.text===text)return;dlgHist.push({who,text});if(dlgHist.length>6)dlgHist.shift();startConvo(dlgHist.slice(),null,dlgHist.length-1);return}pause=pause!==false;/* owner request after playtests: every in-play dialogue box stops the game until the player taps (people could not read them while running) */dlg={who,text,t:t||210,pause:pause,hold:state==='clear',pt:0,armed:false,x0:(typeof P!=='undefined'&&P)?P.x:0,dist:pause?0:((typeof lvl!=='undefined'&&LV[lvl]&&LV[lvl].bike)?520:1000)}}/* a box also closes by itself once the hero has moved on (the bike cannot stop, so there it is about 2.5 s of riding) */
 /* A conversation (several lines from one NPC): the game stands still, each line has back and next buttons (tap the left of the screen or the left arrow for back, anywhere else, the right arrow or Space for next); the last next closes it. Used for the throne scene and the ending. */
-let convo=null,clearOK=false,clearHold=0;
+let convo=null,clearOK=false,clearHold=0,clearAge=0,pendSay=[];/* pendSay: boxes that wait until the act-name banner has gone; clearAge: frames spent on the clear screen */
 function startConvo(lines,done,idx){convo={lines,i:idx||0,done};convoShow()}
-function convoClose(){const c=convo;convo=null;dlg=null;if(c&&c.done)c.done()}
+function convoClose(){const c=convo;convo=null;dlg=null;if(state==='clear'&&!LV[lvl].boss)clearT=Math.min(clearT,40);if(c&&c.done)c.done()}
 function convoShow(){const c=convo,l=c.lines[c.i];dlg={who:l.who,text:l.text,t:99999,pause:true,hold:false,conv:true,n:c.lines.length,i:c.i,pt:0,armed:true,x0:(typeof P!=='undefined'&&P)?P.x:0,dist:0}}
-function convoGo(d){if(!convo)return false;if(dlg&&dlg.pt<10)return true;const c=convo;if(d>0&&c.i>=c.lines.length-1){convo=null;dlg=null;if(c.done)c.done();return true}c.i=Math.max(0,Math.min(c.lines.length-1,c.i+d));convoShow();return true}
+function convoGo(d){if(!convo)return false;if(dlg&&dlg.pt<10)return true;const c=convo;if(d>0&&c.i>=c.lines.length-1){convo=null;dlg=null;if(state==='clear'&&!LV[lvl].boss)clearT=Math.min(clearT,40);if(c.done)c.done();return true}c.i=Math.max(0,Math.min(c.lines.length-1,c.i+d));convoShow();return true}
 /* a pausing dialogue: the game stands still until the player taps or presses a key (a fresh press, so a held button does not close it) */
 function dlgPauseTick(){dlg.pt++;const down=Object.keys(keys).some(k=>keys[k])||touch.l||touch.r||touch.j||touch.s;if(!down)dlg.armed=true;else if(dlg.armed&&dlg.pt>25){dlg=null;jumpPrev=true}}
 const PORT={MAVELI:'#e0b030',KANNAN:'#b06a40','KANJIRAVANAM AMMA':'#6adc5a',YAKSHI:'#dcd8ec',SONIYA:'#e8a050',CHATHAN:'#e8602a',BASHEER:'#5a8ac0',ODIYAN:'#4a3a70',BIJU:'#4a9a8a',KARINKANNI:'#4ac060',DEVI:'#e8d8a8',KOMBAN:'#6a6a7a',RAVI:'#c8903a',THOMA:'#8a7a60',VELU:'#7a5a3a',KILI:'#3a3a4a'};
@@ -2569,7 +2570,7 @@ function draw(){TQ.length=0;syncPad();
     ptext(LV[lvl].act,10,36,1,'#d8d0e8');
     ptext(P.aru?'LEAF SPEAR':P.sp?'PAROTTA X3  '+ammo:'COCONUT  '+ammo,10,46,1,P.aru?'#ffe898':ammo<=5?'#ff9a80':'#c8b890');
     if(P.rev>0)ptext('DIZZY! CONTROLS FLIPPED',W/2,36,1,'#ff9ac0','center');
-    if(state==='clear'&&clearT<=0&&!dlg&&(tick>>5)%2===0)ntext(isTouch?'Tap to continue':'Press any key to continue',W/2,H-34,10,'#f0c040','center');
+    if(state==='clear'&&(clearT<=0||(!LV[lvl].boss&&clearAge>75))&&!dlg&&!convo&&!pendSay.length){g.globalAlpha=.75+.25*Math.sin(tick*.12);ntext(isTouch?'Tap to continue':'Press any key to continue',W/2,H-34,10,'#f0c040','center');g.globalAlpha=1}
     if(P.freeze>0)ptext('PARALYZED!',W/2,36,1,'#9aff60','center');
     if(LV[lvl].prints)ptext('PRINTS '+prints+'/'+LV[lvl].prints,10,56,1,'#d8b0ff');
     if(blessing)ptext('BLESSED',10,56+(LV[lvl].prints?10:0),1,'#ffe070');

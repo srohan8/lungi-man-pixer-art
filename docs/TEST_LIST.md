@@ -104,3 +104,5 @@ Uninstall the old build first, then install the newest debug APK.
 - Blessing: during the float he shows the healed angel pose (ang_*) at hero size; before and after he stands normally (the landing crouch no longer sticks after the scene).
 - Stage start: while the opening box holds the game he stands (no crouched peak/landing pose); the landing crouch is not drawn while a box or the pause freezes the game.
 - Sacred trees: roots sunk 5 px into the ground (they looked like they stood on top of it).
+- Banner and box order: the act-name banner (and the WELL DONE banner) shows first, the dialogue box comes when it has gone (they were drawn on top of each other). At a stage start the game stands still during the banner (about 2 s), then the box.
+- Clear screen: after the closing box (Amma in the prologue) the wait drops to under a second; on levels without a boss, a tap works after about 1.2 s; "Tap to continue" appears right away and stays steady (no blinking). The prologue banner is 2.5 s now (was 5.6 s). Boss clears still wait for the tree bloom.
