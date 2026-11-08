@@ -100,3 +100,7 @@ Uninstall the old build first, then install the newest debug APK.
 - Run cycle: the new 8 run frames are very similar, so it read as "leaning forward". The cycle now plays at the old speed (2 ticks a frame, 16-tick loop) and he bounces up and down on every stride. Check it looks like running; if not, the next step is a new run sheet with clearer contact / passing / flight poses (prompt in docs/HERO_FULL_SET_PROMPT.md).
 - New run strip (South Indian Runner, assets/reference): contact, down, passing, flight x2, cut to the hero height (hnrun_0..7), 3 ticks a frame, flight frame lifted 3 px. Check it reads as running and the feet do not slide on the ground.
 - Skin tone of the whole hero family (hn*, exh/exw/exj) re-matched to the story-scene hero (scenehero_*): about 180,103,59 on the skin pixels.
+- Sizes: Maveli in play is about 1.5 hero heights (was 2.6x; seated and standing now match the scene ratio of 1.3-1.5x); the hurt Kannan strip (Act III fall) is drawn at the hero's height (30, was 34). NPCs in story scenes were already consistent (74-82 px, Maveli 128), Soniya at the stall is 30 px.
+- Blessing: during the float he shows the healed angel pose (ang_*) at hero size; before and after he stands normally (the landing crouch no longer sticks after the scene).
+- Stage start: while the opening box holds the game he stands (no crouched peak/landing pose); the landing crouch is not drawn while a box or the pause freezes the game.
+- Sacred trees: roots sunk 5 px into the ground (they looked like they stood on top of it).

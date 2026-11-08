@@ -1007,7 +1007,7 @@ function drawSacredTree(cx){const L=LV[lvl],k0=TREE_OF[L.boss];if(k0===undefined
   if(boss.dead&&bloomAt<0&&state!=='cine'&&!convo)startBloom();
   const bt=bloomAt>=0?tick-bloomAt:9999,k=bloomAt>=0?Math.min(1,bt/240):(resume>lvl?1:0);
   if(k>0)healFx(k,cx);
-  const x=Math.round(bossX+W/2-cx-w.width/2),y=GY+2-w.height;
+  const x=Math.round(bossX+W/2-cx-w.width/2),y=GY+7-w.height;/* roots sunk into the ground (at GY+2 the tree looked like it stood on top of it) */
   if(x>W||x<-w.width)return;
   g.drawImage(w,x,y);
   if(k>0){const gc=TREE_GLOW[k0];glowEll(x+66,y+40,60,44,gc,.18*k);g.globalAlpha=k;g.drawImage(b,x,y);g.globalAlpha=1}
@@ -1036,7 +1036,7 @@ function drawCine(cx){const c=cin;if(state==='cine'&&c&&c.k==='pt'){drawPt(cx);r
     if(fr){g.globalAlpha=al;const im=flipOf(fr),x=Math.round(c.ox-cx-32),y=GY-46+(t>=22?0:-2);g.drawImage(im,x,y);g.globalAlpha=1}}
 }
 /* Kannan's venomous collapse (hand-drawn frames hk_0..11): ready, bitten, hopping, staggering, knees buckle, kneeling, tipping, down, then lying and breathing (8-10) and on his side (11). Drawn sharp on the full-resolution layer. */
-const HK_H=34,HK_BREATH=[8,9,10,9];
+const HK_H=30,/* the hurt Kannan strip is drawn at the hero's height (it was 34, a head taller than the normal hero) */HK_BREATH=[8,9,10,9];
 function hkImg(i,flip){const im=ART['hk_'+i];return im?(flip?FLIPPED(im):im):null}
 function hkDraw(i,px,by,hs,flip){const im=hkImg(i,flip);if(!im)return false;const sc=hs/ART.hk_0.height,w=Math.round(im.width*sc),h=Math.round(im.height*sc);nimg(im,px-Math.round(w/2),by-h,w,h);return true}
 function hkCine(t,px,by){if(!ART.hk_0||!ART.hk_8)return false;
@@ -1788,12 +1788,14 @@ function trishFrame(T,hop){return slashT>0?T.throw[slashT>4?1:0]:!P.on?T.jump[P.
 /* Kannan's normal hand-drawn set (hnidle 2, hnrun 8, hnjump 6: crouch, take-off, rising, peak, falling, landing; hnact 7: rope grab, swing, flip, let-go, throw wind-up, throw release, running throw). Each entry is [facing right, facing left]; used only when every file is loaded, otherwise the older hero_* frames stay. */
 let NHERO=null;
 function newHeroArt(){if(NHERO!==null)return NHERO||null;const set=(p,n)=>{const f=[...Array(n)].map((_,i)=>ART[p+'_'+i]);return f.every(Boolean)?f.map(c=>[c,flipC(c)]):null},I=set('hnidle',2),R=set('hnrun',8),J=set('hnjump',6),A=set('hnact',7);return NHERO=(I&&R&&J&&A)?{idle:I,run:R,jump:J,act:A}:false}
-function newHeroFrame(N){const mv=P.on&&Math.abs(P.vx)>.3;
+/* while a dialogue box or the pause holds the game still, the landing timer stands still too, so the landing crouch must not be drawn then (he looked like he was sitting at the start of a stage) */
+function frozenNow(){return !!(convo||paused||(dlg&&dlg.pause)||(tut&&tut.phase==='msg'))}
+function newHeroFrame(N){const mv=P.on&&Math.abs(P.vx)>.3,fz=frozenNow();
   if(P.vine)return{f:N.act[(P.vT||0)<10?0:1],dx:7};
   if(P.relT>0)return{f:N.act[3],dx:0};
-  if(!P.on)return{f:N.jump[P.vy<-6?1:P.vy<-1.5?2:P.vy<=2?3:4],dx:0};
-  if(P.landT>4)return{f:N.jump[5],dx:0};
-  if(P.landT>0)return{f:N.jump[0],dx:0};
+  if(!P.on&&!(fz&&P.vy===0))return{f:N.jump[P.vy<-6?1:P.vy<-1.5?2:P.vy<=2?3:4],dx:0};/* at the start of a stage he has not dropped yet while the opening box holds the game: stand, do not hang in the crouched peak pose */
+  if(P.landT>4&&!fz)return{f:N.jump[5],dx:0};
+  if(P.landT>0&&!fz)return{f:N.jump[0],dx:0};
   if(shootCd>8&&!P.aru)return{f:N.act[mv?6:5],dx:0};
   if(mv){const k=Math.floor(P.step/3)%8;return{f:N.run[k],dx:0,dy:[0,0,-1,-3,0,0,-1,-3][k]}}return{f:N.idle[(tick>>5)%2],dx:0,dy:0}}/* run strip: contact, down, passing, flight, then the other leg. 3 ticks a frame so the feet do not slide; the pictures are all bottom-aligned, so the flight frame is lifted by hand */
 let HERO_IDLE=null,HERO_SWING=null;
@@ -1841,6 +1843,7 @@ let HD_FR=null;function herodFrames(){if(HD_FR!==null)return HD_FR||null;const f
 function herodPick(){const mv=Math.abs(P.vx)>.3;if(P.clap>0)return 8+((tick>>2)&1);if(!P.on)return P.vy>2?7:(arena&&arena.airT<5)?5:6;/* falling = the feet-first crouch, which also shows a stomp on a head */if(arena&&arena.landT>0)return 7;if(mv)return [2,3,2,4][(tick/6|0)%4];return (tick>>4)&1}
 function drawPlayer(cx){
   if(P.fly&&P.fly.keep&&ART.exh_7){const f=P.fly,im=ART.exh_7,cxp=Math.round(P.x+P.w/2-cx),cyp=Math.round(P.y+P.h/2),bob=Math.round(Math.sin(f.t*.07)*2);glowEll(cxp,cyp,26,24,'#ffd860',.18+.08*Math.sin(tick*.1));g.drawImage(im,cxp-Math.round(im.width/2),cyp-Math.round(im.height/2)+bob);return}/* floating down into Maveli's realm */
+  if(state==='scene'&&scene&&scene.t>=1340&&scene.t<1440&&ART.ang_4){/* the blessing: the healed angel pose of the descent, only while he floats; before and after he stands normally */const t2=scene.t-1340,im=ART['ang_'+[3,4,2,4][Math.floor(t2/25)%4]]||ART.ang_4,sc=30/ART.ang_4.height,w=Math.round(im.width*sc),h=Math.round(im.height*sc),cxp=Math.round(P.x+P.w/2-cx);nimg(im,cxp-Math.round(w/2),Math.round(P.y+P.h)-h+1,w,h);return}
   if(P.fly&&(ART.ang_4||ART.hk_1)){const f=P.fly,A4=ART.ang_4,sc=A4?30/A4.height:HK_H/ART.hk_0.height*1.05,cxp=Math.round(P.x+P.w/2-cx),cyp=Math.round(P.y+P.h/2),bob=Math.round(Math.sin(f.t*.07)*2);
     glowEll(cxp,cyp,28,26,'#ffd860',.22+.1*Math.sin(tick*.1));glowEll(cxp,cyp,15,14,'#fff6d0',.2);
     let im,look=Math.sin(f.t*.045)<0;
@@ -1864,7 +1867,7 @@ function drawPlayer(cx){
   if(dMode){/* dancing: the hero bounces to the beat, leans when he moves, spins in a jump, claps on throw */const mv=Math.abs(P.vx)>.3,pcx=Math.round(P.x+P.w/2-cx),pcy=Math.round(P.y+P.h),bob=Math.round(Math.abs(Math.sin(tick*(mv?.35:.2)))*(mv?5:3)),ang=!P.on?(P.spin||0):mv?Math.sin(tick*.4)*.34:Math.sin(tick*.14)*.12;if(mv&&tick%14===0)burst(P.x+7,P.y+2,['#ffd860','#ff7ae0','#40e0ff'],2);g.save();if(!herodFrames()){g.translate(pcx,pcy-bob);g.rotate(ang);g.translate(-pcx,-pcy)}}
   const HA=heroArt();
   /* in Maveli's realm, until his blessing, Kannan is still beaten up and tired: hunched and breathing when he stands, leaning and heavy when he walks (art: exh_0 and exh_1; a hand-drawn tired walk can replace the lean) */
-  const tired=LV[lvl].key==='path'&&!goldLamp()&&(state==='play'||state==='scene')&&!onBike,EXJ=[0,1,2,3,4,5,6,7,8].map(i=>ART['exj_'+i]),exh0=ART.exh_0,exh1=ART.exh_1,tiredAir=tired&&EXJ.every(Boolean)&&(P.vine||!P.on||P.landT>0||P.relT>0),tiredIdle=tired&&!tiredAir&&P.on&&Math.abs(P.vx)<.3&&exh0&&exh1,EXW=[0,1,2,3,4,5,6,7].map(i=>ART['exw_'+i]),tiredStep=tired&&!tiredAir&&P.on&&Math.abs(P.vx)>=.3&&EXW.every(Boolean),tiredWalk=tired&&!tiredAir&&!tiredIdle&&!tiredStep&&!P.vine;
+  const tired=LV[lvl].key==='path'&&!goldLamp()&&(state==='play'||state==='scene')&&!onBike,EXJ=[0,1,2,3,4,5,6,7,8].map(i=>ART['exj_'+i]),exh0=ART.exh_0,exh1=ART.exh_1,tiredAir=tired&&EXJ.every(Boolean)&&(P.vine||!P.on||((P.landT>0||P.relT>0)&&!frozenNow())),tiredIdle=tired&&!tiredAir&&P.on&&Math.abs(P.vx)<.3&&exh0&&exh1,EXW=[0,1,2,3,4,5,6,7].map(i=>ART['exw_'+i]),tiredStep=tired&&!tiredAir&&P.on&&Math.abs(P.vx)>=.3&&EXW.every(Boolean),tiredWalk=tired&&!tiredAir&&!tiredIdle&&!tiredStep&&!P.vine;
   if(tiredWalk){const px0=Math.round(P.x+P.w/2-cx),py0=Math.round(P.y+P.h);g.save();g.translate(px0,py0+(P.on?Math.round(Math.abs(Math.sin(P.step*.5))*1):0)+1);g.rotate(.15*(P.f>0?1:-1));g.translate(-px0,-py0)}
   const HDF=(dMode||(LV[lvl].arena&&arena&&!arena.done&&state==='play'&&(!P.on||arena.landT>0)))?herodFrames():null;/* in the whole dance stage a jump or a stomp uses the dance jump frames, not the running pose */
   if(tiredAir){/* the hand-drawn beaten-up jump and rope swing (exj_0..8) */const k=P.vine?((P.vT||0)<10?6:7):P.relT>0?8:!P.on?(P.vy<-6?1:P.vy<-1.5?2:P.vy<=2?3:4):((P.fv||0)>8?0:5),im=EXJ[k],pic=P.f>0?im:flipOf(im);g.drawImage(pic,Math.round(P.x+P.w/2-im.width/2-cx),Math.round(P.y+P.h-im.height)+1)}
@@ -2025,7 +2028,7 @@ function sceneTick(){
   if(t===1)startConvo(L.mav.map(x=>({who:'MAVELI',text:x})),()=>{scene.t=1290});
   if(t>1290&&t<1340){if(t===1292)healSfx();if(t%5===0)burst(P.x+7,P.y+8+Math.random()*14,['#ffe070','#fff6d0'],2)}/* the blessing gathers around the battered hero */
   if(t===1340)scene.y0=P.y;
-  if(t>=1340&&t<1440){const k=(t-1340)/100,e=Math.sin(k*Math.PI);P.on=false;P.vy=0;P.y=scene.y0-Math.round(e*e*(3-2*e)*40)}else if(t===1440){P.y=scene.y0;P.on=true;P.landT=6}/* revived: he floats up like in the angel scene, arms out, and drifts back down; the beaten-up look is gone */
+  if(t>=1340&&t<1440){const k=(t-1340)/100,e=Math.sin(k*Math.PI);P.on=false;P.vy=0;P.y=scene.y0-Math.round(e*e*(3-2*e)*40)}else if(t===1440){P.y=scene.y0;P.on=true;P.landT=0;P.relT=0}/* revived: he floats up like in the angel scene, arms out, and drifts back down; the beaten-up look is gone */
   if(t===1340){banner={a:"MAVELI'S BLESSING",b:'THE LAMPS TURN GOLD. ONE FREE HIT.',t:150};beep(880,.3,'triangle',.06);beep(1320,.4,'triangle',.05);burst(P.x+7,P.y+10,['#ffe070','#ffffff'],20)}
   if(t>=1500){state='clear';clearT=60;banner={a:L.clear[0],b:L.clear[1],t:120}}
 }
@@ -2076,9 +2079,9 @@ function drawRisingWater(cx){
   if(state==='play'&&P.on&&Math.abs(P.vx)>.3&&surf<P.y+P.h-2&&tick%5===0)parts.push({x:P.x+7+(Math.random()-.5)*10,y:surf,vx:(Math.random()-.5)*.8,vy:-1.2-Math.random(),l:16,c:fo})}
 function drawMaveli(cx){
   const x=Math.round(bossX+W-110-cx),y=GY-56;if(x<-60||x>W+60||!A.mav)return;
-  if(scene&&scene.t>=1340){glowEll(x+24,GY-44,44,54,'#ffe070',.2+.1*Math.sin(tick*.15))}
+  if(scene&&scene.t>=1340){glowEll(x+24,GY-26,28,34,'#ffe070',.2+.1*Math.sin(tick*.15))}
   /* once the scene starts he rises and faces the hero (the art faces right, so it is mirrored) */
-  const st=scene&&ART.mvh_3,mh=st?FLIPPED(ART.mvh_3):(ART.mvh_0?FLIPPED(ART.mvh_0):null);if(mh){const hh=st?100:92,src=st?ART.mvh_3:mh,ww=Math.round(hh*src.width/src.height),bob=st?Math.round(Math.sin(tick*.07)):0;nimg(mh,x+24-Math.round(ww/2),GY+4-hh+bob,ww,hh)}else g.drawImage(A.mav,x,y);
+  const st=scene&&ART.mvh_3,mh=st?FLIPPED(ART.mvh_3):(ART.mvh_0?FLIPPED(ART.mvh_0):null);if(mh){const hh=st?58:68,/* the king is about 1.5 hero heights (in the story scenes he is 1.3 times Kannan; he used to be 2.6 times in play) */src=st?ART.mvh_3:mh,ww=Math.round(hh*src.width/src.height),bob=st?Math.round(Math.sin(tick*.07)):0;nimg(mh,x+24-Math.round(ww/2),GY+4-hh+bob,ww,hh)}else g.drawImage(A.mav,x,y);
 }
 /* Interlude: an 80s Kerala disco-cabaret bar, indoors (no sky, trees or water). The lights turn red when the crowd turns hostile. */
 function drawDiscoBar(){
@@ -2432,7 +2435,7 @@ const TREEC=['#2ac0b0','#f0a030','#6a5ae0','#2a8a40','#f0c040'];
 function blob(cx,cy,r,col){g.fillStyle=col;for(let y=-r;y<=r;y++){const w=Math.floor(Math.sqrt(r*r-y*y));g.fillRect(cx-w,cy+y,w*2,1)}}
 /* The five sacred trees of the ending: the withered sprite fades into the bloomed one, one after another, each in its own colour. */
 const DOTC={};function softDot(col){return DOTC[col]||(()=>{const c=document.createElement('canvas');c.width=c.height=16;const x=c.getContext('2d'),gr=x.createRadialGradient(8,8,0,8,8,8);gr.addColorStop(0,col);gr.addColorStop(.35,col);gr.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=gr;x.fillRect(0,0,16,16);return DOTC[col]=c})()}
-function drawEndTrees(){for(let k=0;k<5;k++){const w=ART['strees_'+k],b=ART['strees_'+(k+5)],x=Math.round(W*(.1+.2*k)),t0=60+k*110,p=Math.max(0,Math.min(1,(endT-t0)/90)),y=GY+4-w.height,gc=TREE_GLOW[k];
+function drawEndTrees(){for(let k=0;k<5;k++){const w=ART['strees_'+k],b=ART['strees_'+(k+5)],x=Math.round(W*(.1+.2*k)),t0=60+k*110,p=Math.max(0,Math.min(1,(endT-t0)/90)),y=GY+7-w.height,gc=TREE_GLOW[k];
   const hw=ART['hs_strees_'+k],hb=ART['hs_strees_'+(k+5)],TW=128,TH=hw?Math.round(TW*hw.height/hw.width):0;/* sharp hand-drawn trees on the full-resolution layer; the pixel sprites are the fallback */
   const sw=1+.012*Math.sin(tick*.025+k*1.7),TWs=TW*sw,THs=TH*(1+.014*Math.sin(tick*.021+k*2.3));/* the crowns breathe and sway a little */
   if(hw&&hb)nimg(hw,x-TWs/2+Math.sin(tick*.018+k)*1.2,GY+4-THs,TWs,THs);else g.drawImage(w,x-Math.round(w.width/2),y);
