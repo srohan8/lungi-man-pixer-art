@@ -241,6 +241,8 @@ function tr(s){
 const GSEG=(typeof Intl!=='undefined'&&Intl.Segmenter)?new Intl.Segmenter('ml',{granularity:'grapheme'}):null;
 function glen(s){return GSEG?[...GSEG.segment(s)].length:s.length}
 function gsl(s,n){return GSEG?[...GSEG.segment(s)].slice(0,n).map(x=>x.segment).join(''):s.slice(0,n)}
+/* the title logo picture: the Malayalam one when that language is chosen and the file exists */
+function logoHi(){return (LANG==='ml'&&ART.logo_ml_hi)||ART.logo_hi}
 function setLang(l){LANG=l==='ml'?'ml':'en';try{localStorage.setItem('lungiman-lang',LANG)}catch(e){}applyLang()}
 function applyLang(){TFONT=(LANG==='ml'?'"MalayalamUI",':'')+TFONT_BASE;
   if(document.fonts&&document.fonts.load)try{document.fonts.load('700 16px MalayalamUI','അആ')}catch(e){}
@@ -2247,7 +2249,7 @@ function drawRoll(t){
   const M=rollMetrics(),top=H+10-t*.55;
   M.rows.forEach(({c,y,h})=>{const yy=Math.round(top+y);if(yy<-130||yy>H+10)return;const k=c[0],cx=Math.round(W/2);
     if(k==='T')ntext(c[1],cx,yy,20,'#f0c040','center');else if(k==='H')ntext(c[1],cx,yy,13,'#f0c040','center');else if(k==='S')ntext(c[1],cx,yy,11,'#b8b0d0','center');else if(k==='L')ntext(c[1],cx,yy,12,'#f4ecd0','center');
-    else if(k==='LOGO'){const hi=ART.logo_hi;if(hi){const lw=Math.min(W-40,260),lh=Math.round(lw*hi.height/hi.width);nimg(hi,Math.round((W-lw)/2),yy,lw,lh)}}});
+    else if(k==='LOGO'){const hi=logoHi();if(hi){const lw=Math.min(W-40,260),lh=Math.round(lw*hi.height/hi.width);nimg(hi,Math.round((W-lw)/2),yy,lw,lh)}}});
   return top+M.total<-20}
 function endFinish(){const list=EPILOGUE.filter(p=>p.pic!=='ep'||ART[p.npc+'_0']);EPILOGUE.splice(0,EPILOGUE.length,...list);startPages(EPILOGUE,()=>{state='win';lockT=90},null)}
 const TREECOL=['#4ad8c8','#ffb830','#7a7aff','#4ac060','#ffd860'];
@@ -2344,7 +2346,7 @@ function drawPagePic(P0,L,t){
   }
   if(P0.pic==='credits'){for(let y=0;y<H;y+=2){g.fillStyle='rgb('+(12+(y/12|0))+','+(10+(y/20|0))+','+(30+(y/9|0))+')';g.fillRect(0,y,L,2)}
     for(let i=0;i<30;i++){const x=(i*71+13)%L,y=6+((i*37)%(H-40)),a=.4+.5*Math.sin(t*.05+i*2.3);if(a>.3){g.globalAlpha=al*a;g.fillStyle='#fff6d0';g.fillRect(x,y,1,1);g.globalAlpha=al}}
-    const hi=ART.logo_hi;if(hi){const lw=Math.min(L-16,320),lh=lw*hi.height/hi.width;nimg(hi,Math.round((L-lw)/2),Math.round((H-lh)/2),lw,lh)}}
+    const hi=logoHi();if(hi){const lw=Math.min(L-16,320),lh=lw*hi.height/hi.width;nimg(hi,Math.round((L-lw)/2),Math.round((H-lh)/2),lw,lh)}}
   if(P0.pic==='kannan'){for(let y=0;y<H;y+=2){g.fillStyle='rgb('+(18+(y/8|0))+','+(14+(y/14|0))+','+(38+(y/12|0))+')';g.fillRect(0,y,L,2)}
     g.fillStyle='#1c1830';g.fillRect(0,gy,L,H-gy);
     /* Kanjiravanam Amma stands below and reaches out; a golden beam from her hand catches Kannan in the air */
@@ -2610,7 +2612,7 @@ function draw(){TQ.length=0;syncPad();
   if(banner&&state!=='title'&&!(tut&&tut.phase==='msg')){const bY=(state==='clear'&&TREE_OF[LV[lvl].boss]!==undefined)?14:78;g.fillStyle='rgba(12,8,28,.55)';g.fillRect(0,bY,W,48);ptext(banner.a,W/2,bY+8,4,'#f0c040','center');if(banner.b)ntext(nice(banner.b),W/2,bY+30,12,'#f4ecd0','center')}
   if(state==='title'){overlay();drawCover();
     const lg=ART.logo_0,mlA=LANG==='ml'&&ART.logo_ml_hi,mlTxt=LANG==='ml'&&!mlA,hi=mlA||ART.logo_hi;
-    if(mlTxt){/* until a Malayalam logo picture exists (assets/art/bosses/logo_ml_hi.png, see docs/LOGO_ML_PROMPT.md) the title is set in the bundled font */const by=3+Math.sin(tick*.04)*1.5;g.fillStyle='rgba(12,8,28,.5)';g.fillRect(Math.round(W/2-150),Math.round(by+8),300,96);ntext('കണ്ണനും',W/2,by+8,46,'#f0c040','center');ntext('കാഞ്ഞിരവനം കഥകളും',W/2,by+66,24,'#ffe58a','center');g.fillStyle='#c8841a';g.fillRect(Math.round(W/2-110),Math.round(by+98),220,2)}
+    if(mlTxt){/* until a Malayalam logo picture exists (assets/art/bosses/logo_ml_hi.png, see docs/LOGO_ML_PROMPT.md) the title is set in the bundled font */const by=3+Math.sin(tick*.04)*1.5;g.fillStyle='rgba(12,8,28,.5)';g.fillRect(Math.round(W/2-150),Math.round(by+8),300,96);ntext('കണ്ണൻ',W/2,by+8,46,'#f0c040','center');ntext('ആൻഡ് ദി കാഞ്ഞിരവനം ക്രോണിക്കിൾസ്',W/2,by+66,17,'#ffe58a','center');g.fillStyle='#c8841a';g.fillRect(Math.round(W/2-110),Math.round(by+98),220,2)}
     else if(hi){const lw=Math.min(W-30,312),lh=lw*hi.height/hi.width;nimg(hi,(W-lw)/2,3+Math.sin(tick*.04)*1.5,lw,lh)}
     else if(lg){g.drawImage(lg,Math.round((W-lg.width)/2),4+Math.round(Math.sin(tick*.04)*1.5))}
     else{ptext('KANNAN',W/2,24,7,'#f0c040','center');ptext('AND THE',W/2,66,2,'#f4ecd0','center');ptext('KANJIRAVANAM CHRONICLES',W/2,82,3,'#ffe58a','center');ptext('KANNAN MUST SEAL THE PORTAL.',W/2,114,2,'#f4ecd0','center')}

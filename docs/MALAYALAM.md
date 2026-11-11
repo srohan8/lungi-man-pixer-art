@@ -3,7 +3,7 @@
 Every text the player can see, in play order. The English column is the key the game looks up (do not change it); write or fix the Malayalam in the second column.
 After editing run `node tools/lang.js build` (it rewrites `assets/lang/ml.js`). `node tools/lang.js doc` adds any new English string the game has gained, with an empty Malayalam cell, and keeps what is already written.
 
-The title logo picture ("Kannan and the Kanjiravanam Chronicles") is an image and stays in English. Names of artists and track titles in the credits stay in their original spelling.
+The title logo is a picture: assets/art/bosses/logo_hi.png (English) and logo_ml_hi.png (Malayalam, transliteration of the title). Names of artists and track titles in the credits stay in their original spelling.
 
 ## Opening pages (first play)
 
@@ -240,8 +240,8 @@ The title logo picture ("Kannan and the Kanjiravanam Chronicles") is an image an
 
 | English | മലയാളം |
 |---|---|
-| KANNAN AND THE | കണ്ണനും |
-| KANJIRAVANAM CHRONICLES | കാഞ്ഞിരവനം കഥകളും |
+| KANNAN AND THE | കണ്ണൻ ആൻഡ് ദി |
+| KANJIRAVANAM CHRONICLES | കാഞ്ഞിരവനം ക്രോണിക്കിൾസ് |
 | A Moonga Studio game | ഒരു മൂംഗ സ്റ്റുഡിയോ ഗെയിം |
 | Music | സംഗീതം |
 | Final stage: Train to Ernakulam Town by ItsWatR | അവസാന ഘട്ടം: Train to Ernakulam Town - ItsWatR |
@@ -415,4 +415,4 @@ The title logo picture ("Kannan and the Kanjiravanam Chronicles") is an image an
 | ARE YOU ALL JUST STANDING THERE? WANT CHAI? | നിങ്ങളെല്ലാവരും വെറുതെ നിൽക്കുകയാണോ? ചായ വേണോ? |
 | ONAM IS IN THREE WEEKS. I HOPE THE FEAST IS GOOD. | ഓണത്തിന് മൂന്ന് ആഴ്ചയേയുള്ളൂ. സദ്യ നന്നായിരിക്കുമെന്ന് കരുതുന്നു. |
 | MAVELI | മാവേലി |
-| KANNAN AND THE KANJIRAVANAM CHRONICLES | കണ്ണനും കാഞ്ഞിരവനം കഥകളും |
+| KANNAN AND THE KANJIRAVANAM CHRONICLES | കണ്ണൻ ആൻഡ് ദി കാഞ്ഞിരവനം ക്രോണിക്കിൾസ് |
