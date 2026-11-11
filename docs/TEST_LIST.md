@@ -106,3 +106,4 @@ Uninstall the old build first, then install the newest debug APK.
 - Sacred trees: roots sunk 5 px into the ground (they looked like they stood on top of it).
 - Banner and box order: the act-name banner (and the WELL DONE banner) shows first, the dialogue box comes when it has gone (they were drawn on top of each other). At a stage start the game stands still during the banner (about 2 s), then the box.
 - Clear screen: after the closing box (Amma in the prologue) the wait drops to under a second; on levels without a boss, a tap works after about 1.2 s; "Tap to continue" appears right away and stays steady (no blinking). The prologue banner is 2.5 s now (was 5.6 s). Boss clears still wait for the tree bloom.
+- Bullock cart (Act II scenery): the baked-in white background (inside the wheels and a grey ground patch under it) was removed; the wheels are see-through now and it sits on the real ground. Check it in Act II.
