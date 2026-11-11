@@ -3,7 +3,7 @@
 Every text the player can see, in play order. The English column is the key the game looks up (do not change it); write or fix the Malayalam in the second column.
 After editing run `node tools/lang.js build` (it rewrites `assets/lang/ml.js`). `node tools/lang.js doc` adds any new English string the game has gained, with an empty Malayalam cell, and keeps what is already written.
 
-The title logo is a picture: assets/art/bosses/logo_hi.png (English) and logo_ml_hi.png (Malayalam, transliteration of the title). Names of artists and track titles in the credits stay in their original spelling.
+The title logo picture ("Kannan and the Kanjiravanam Chronicles") is an image and stays in English. Names of artists and track titles in the credits stay in their original spelling.
 
 ## Opening pages (first play)
 
@@ -332,7 +332,7 @@ The title logo is a picture: assets/art/bosses/logo_hi.png (English) and logo_ml
 | EXTRA LIFE! | ഒരു ജീവൻ കൂടി! |
 | THE BEAT DROPS! | താളം മാറുന്നു! |
 | They leap, machane! | അവർ ചാടുന്നു, മച്ചാനേ! |
-| I cannot do this any more... | എനിക്കിത് ഇനി വയ്യ... |
+| Maveli | മാവേലി |
 | The lamps turn gold. One free hit. | വിളക്കുകൾ സ്വർണ്ണനിറമാകുന്നു. ഒരു സൗജന്യ അടി. |
 | BLESSED | അനുഗ്രഹിതൻ |
 | CRASH! | ഠമാർ! |
@@ -397,6 +397,19 @@ The title logo is a picture: assets/art/bosses/logo_hi.png (English) and logo_ml
 | Jump into the hanging vine and it swings you across. | തൂങ്ങിക്കിടക്കുന്ന വള്ളിയിലേക്ക് ചാടൂ, അത് നിന്നെ അക്കരെ ആടിക്കടത്തും. |
 | Press JUMP to hop over things. You can stomp crabs too. | തടസ്സങ്ങൾ കടക്കാൻ ചാടുക ബട്ടൺ അമർത്തൂ. ഞണ്ടുകളെ ചവിട്ടിയും കൊല്ലാം. |
 
+## Prologue tutorial hints
+
+| English | മലയാളം |
+|---|---|
+| Hold the right button | വലത് ബട്ടൺ അമർത്തിപ്പിടിക്കൂ |
+| Press the right arrow | വലത്തേക്കുള്ള അമ്പടയാളം അമർത്തൂ |
+| Hold THROW | എറിയുക അമർത്തിപ്പിടിക്കൂ |
+| Hold X | X അമർത്തിപ്പിടിക്കൂ |
+| Press JUMP | ചാടുക അമർത്തൂ |
+| Press Space | Space അമർത്തൂ |
+| Walk into the parotta | പൊറോട്ടയിലേക്ക് നടക്കൂ |
+| Jump into the vine | വള്ളിയിലേക്ക് ചാടൂ |
+
 ## Dance interlude lines
 
 | English | മലയാളം |
@@ -411,8 +424,8 @@ The title logo is a picture: assets/art/bosses/logo_hi.png (English) and logo_ml
 
 | English | മലയാളം |
 |---|---|
+| I CANNOT DO THIS ANY MORE... | എനിക്കിത് ഇനി വയ്യ... |
 | I TOLD YOU TO STAY ON THE TREES. YOU DID NOT LISTEN ONCE. | മരങ്ങളിൽത്തന്നെ നിൽക്കാൻ ഞാൻ പറഞ്ഞതല്ലേ. നീ ഒരു തവണ പോലും കേട്ടില്ല. |
 | ARE YOU ALL JUST STANDING THERE? WANT CHAI? | നിങ്ങളെല്ലാവരും വെറുതെ നിൽക്കുകയാണോ? ചായ വേണോ? |
 | ONAM IS IN THREE WEEKS. I HOPE THE FEAST IS GOOD. | ഓണത്തിന് മൂന്ന് ആഴ്ചയേയുള്ളൂ. സദ്യ നന്നായിരിക്കുമെന്ന് കരുതുന്നു. |
-| MAVELI | മാവേലി |
 | KANNAN AND THE KANJIRAVANAM CHRONICLES | കണ്ണൻ ആൻഡ് ദി കാഞ്ഞിരവനം ക്രോണിക്കിൾസ് |

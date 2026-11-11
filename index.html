@@ -230,12 +230,13 @@ const FONT={A:'010101111101101',B:'110101110101110',C:'011100100100011',D:'11010
 let LANG='en';try{LANG=localStorage.getItem('lungiman-lang')==='ml'?'ml':'en'}catch(e){}
 const MLMAP=new Map();(function(){const d=(typeof window!=='undefined'&&window.ML_DICT)||{};for(const k in d)MLMAP.set(lkey(k),d[k])})();
 function lkey(s){return String(s).replace(/\s+/g,' ').trim().toUpperCase()}
-const TRLOG=(typeof window!=='undefined'&&window.__TRLOG)||null;/* development: a Set that collects every string the game draws */
+const TRLOG=(typeof window!=='undefined'&&window.__TRLOG)||null,TRMISS=(typeof window!=='undefined'&&window.__TRMISS)||null;/* development: a Set that collects every string the game draws */
 function tr(s){
   if(!s||typeof s!=='string')return s;if(TRLOG)TRLOG.add(s);if(LANG!=='ml')return s;
   const k=lkey(s),v=MLMAP.get(k);if(v!==undefined)return v;
   const m=s.match(/^(.*?)(\s*[+x\u00d7]?\s*\d[\d,.\s]*)$/);/* a label followed by a number: "COCONUT  40" */
   if(m&&m[1]){const v2=MLMAP.get(lkey(m[1]));if(v2!==undefined)return v2+m[2]}
+  if(TRMISS&&/[A-Za-z]{2}/.test(s))TRMISS.add(s);/* development: strings that have no Malayalam yet */
   return s}
 /* text typed out letter by letter must count whole letters (a Malayalam letter is several code units) */
 const GSEG=(typeof Intl!=='undefined'&&Intl.Segmenter)?new Intl.Segmenter('ml',{granularity:'grapheme'}):null;
@@ -253,10 +254,10 @@ const NAMES=['Kannan','Biju','Thoma','Thomakutty','Ravi','Soniya','Yakshi','Kutt
 function nice(s){if(!s)return s;if(LANG==='ml')return tr(s);let t=s.toLowerCase().replace(/(^|[.!?…]\s+)([a-z])/g,(m,a,b)=>a+b.toUpperCase()).replace(/\bi\b/g,'I').replace(/\bi'(m|ll|ve|d)\b/g,(m,a)=>"I'"+a);
   t=t.replace(/(^|[^a-z])chathan(?![a-z])/gi,(m,a)=>a+'Kuttichathan');
   for(const n of NAMES)t=t.replace(new RegExp('(^|[^a-z])'+n.toLowerCase()+'(?![a-z])','gi'),(m,a)=>a+n);return t}
-function tfont(px,k){return '700 '+(px*k).toFixed(1)+'px '+TFONT}
-function tmeasure(s,px){tg.font=tfont(px,1);return tg.measureText(s).width}
+function tfont(px,k){return '700 '+(px*k*(LANG==='ml'?.84:1)).toFixed(1)+'px '+TFONT}/* Malayalam letters are tall and wide: the same size looks bigger, so it is drawn 16% smaller */
+function tmeasure(s,px){s=tr(s);tg.font=tfont(px,1);return tg.measureText(s).width}
 /* wrap into at most maxLines lines of width maxW (internal px); the font shrinks a little if it does not fit */
-function twrap(s,px,maxW,maxLines){let p=px;for(;;){tg.font=tfont(p,4);const lines=[''];for(const w of s.split(' ')){const c=lines[lines.length-1]?lines[lines.length-1]+' '+w:w;if(tg.measureText(c).width/4>maxW&&lines[lines.length-1])lines.push(w);else lines[lines.length-1]=c}
+function twrap(s,px,maxW,maxLines){s=tr(s);let p=px;for(;;){tg.font=tfont(p,4);const lines=[''];for(const w of s.split(' ')){const c=lines[lines.length-1]?lines[lines.length-1]+' '+w:w;if(tg.measureText(c).width/4>maxW&&lines[lines.length-1])lines.push(w);else lines[lines.length-1]=c}
     if(lines.length<=maxLines||p<=6.5)return {lines,px:p};p-=.5}}
 function ntext(s,x,y,px,col,align='left'){s=tr(s);TQ.push({s,x,y,px,col,align,a:g.globalAlpha})}
 /* a picture drawn on the full-resolution layer, so a big logo stays sharp on a phone (smoothed, not pixelated) */
@@ -996,7 +997,7 @@ function drawTut(){
     g.fillStyle='rgba(10,6,24,.55)';g.fillRect(0,0,W,H);
     const bw=Math.min(W-60,400),bx=Math.round((W-bw)/2),by=72,T=twrap(S.msg(),13,bw-32,3),bh=64+T.lines.length*17;
     g.fillStyle='rgba(12,8,28,.95)';g.fillRect(bx,by,bw,bh);g.fillStyle='#f0c040';g.fillRect(bx,by,bw,1);g.fillRect(bx,by+bh-1,bw,1);g.fillRect(bx,by,1,bh);g.fillRect(bx+bw-1,by,1,bh);
-    ntext('Step '+(tut.step+1)+' of '+TUT.length,bx+16,by+10,8,'#b8b0d0');ntext(S.h,bx+16,by+22,15,'#f0c040');
+    ntext(LANG==='ml'?tr('Step')+' '+(tut.step+1)+' / '+TUT.length:'Step '+(tut.step+1)+' of '+TUT.length,bx+16,by+10,8,'#b8b0d0');ntext(S.h,bx+16,by+22,15,'#f0c040');
     T.lines.forEach((ln,k)=>ntext(ln,bx+16,by+44+k*17,T.px,'#f4ecd0'));
     if((tick>>4)%2===0||tut.t>0)ntext(isTouch?'Tap to continue':'Press any key',bx+bw-16,by+bh-18,9,'#cfe9c8','right');
     ntext('Skip tutorial',bx+16,by+bh-18,9,'#d8d0f0');tut.skipR=[bx+8,by+bh-26,110,24];

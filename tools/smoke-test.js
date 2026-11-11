@@ -19,7 +19,8 @@ global.window = global; global.innerWidth = 844; global.innerHeight = 390;
 global.matchMedia = () => ({ matches: false }); global.addEventListener = () => {};
 global.localStorage = { getItem: () => 0, setItem() {} }; global.requestAnimationFrame = () => {};
 
-if (process.env.LANG_LOG) global.__TRLOG = new Set();   // development: collect every string the game draws (tools/lang-collect.js)
+if (process.env.LANG_LOG) global.__TRLOG = new Set();
+if (process.env.LANG_ML) { global.localStorage = { getItem: k => k === 'lungiman-lang' ? 'ml' : 0, setItem() {} }; eval(fs.readFileSync(path.join(__dirname, '..', 'assets', 'lang', 'ml.js'), 'utf8')); global.__TRMISS = new Set() }   // Malayalam run: lists every drawn string that has no Malayalam   // development: collect every string the game draws (tools/lang-collect.js)
 eval(js + `
 seen = true; score = 0; lives = 4;
 console.log('levels:', LV.map((l, i) => i + ':' + l.key).join('  '));
@@ -53,5 +54,6 @@ for (let f = 0; f < 400000; f++) {
 if (!ok) console.log('STUCK AT', state, 'lvl', lvl, LV[lvl].key, 'x', Math.round(P.x), 'convo', !!convo, 'dlg', dlg && dlg.who, 'story', !!story, 'cin', cin && cin.k, 'clearT', clearT, 'arena', arena && JSON.stringify({t: arena.t, k: arena.kills, h: arena.hostile}), 'dancers', JSON.stringify(enemies.filter(e => e.alive).map(e => [e.t, Math.round(e.x), Math.round(e.y), e.calm ? 'calm' : 'hostile', e.jm ? 'leaper' : 'walker', Math.round(e.vy || 0)])), 'P', Math.round(P.x), Math.round(P.y), P.on, 'W', W, 'plats', JSON.stringify(plats.map(p => [Math.round(p[0]), p[1], p[2]])));
 console.log('mode', ${mortal} ? 'mortal' : 'invulnerable', '| deaths', deaths, '| vine grabs', grabs, '| result', ok ? 'PASS' : 'FAIL (stuck)');
 process.exitCode = ok ? 0 : 1;
+if (global.__TRMISS) console.log('NO MALAYALAM FOR:' + String.fromCharCode(10) + [...global.__TRMISS].join(String.fromCharCode(10)));
 if (global.__TRLOG) require('fs').writeFileSync(process.env.LANG_LOG, [...global.__TRLOG].join(String.fromCharCode(10)));
 `);
