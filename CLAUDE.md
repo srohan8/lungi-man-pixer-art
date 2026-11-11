@@ -120,3 +120,10 @@ Rules that change as each step lands:
 - **Quest beats** (Ravi's race, Kili's rice, Devi's bell) were removed again: they were unexplained. The pickup code stays but no level uses it.
 - **Pathalam Naga**: a huge sleeping serpent as pure scenery beside the swinging path (breathing, eye glow, soft rumble when passed). No collision, no danger.
 - **Built so far**: story panel + opening pages (with motion), prologue tutorial, trishul, sacred trees and act healing, Act III / Pathalam / Act V finishing cinematics, selector entry scenes, backstory clue lines, ending epilogue, Ustad Basheer and the Pathalam Naga (code done; they appear once their art, basheer_0..2 and naga_0..2 in assets/art/bosses, exists).
+
+## Language (owner request): English and Malayalam
+- A language choice on the title screen only (tap the word under the level selector, or L); it is remembered. Never in play, not a gameplay setting.
+- All game text stays written in English in index.html. In Malayalam mode every drawn string is looked up (`tr()`, uppercase English text is the key) in `assets/lang/ml.js`, built from `docs/MALAYALAM.md` by `node tools/lang.js build`. A missing translation shows the English text, so the game always runs without the file.
+- Malayalam is always drawn with the bundled Noto Sans Malayalam (`assets/fonts/`, SIL OFL), never the pixel font. Names of the credits' artists and track titles stay in their original spelling.
+- When you add or change any visible text: run `node tools/lang.js doc` (adds the new English string to docs/MALAYALAM.md with an empty cell), write the Malayalam, run `node tools/lang.js build`. New strings written directly in code must also be added to the EXTRA list in `tools/lang-collect.js`.
+- The title logo is an image with English lettering; in Malayalam it is set in the bundled font until `logo_ml_hi.png` exists (docs/LOGO_ML_PROMPT.md).

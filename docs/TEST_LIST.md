@@ -107,3 +107,9 @@ Uninstall the old build first, then install the newest debug APK.
 - Banner and box order: the act-name banner (and the WELL DONE banner) shows first, the dialogue box comes when it has gone (they were drawn on top of each other). At a stage start the game stands still during the banner (about 2 s), then the box.
 - Clear screen: after the closing box (Amma in the prologue) the wait drops to under a second; on levels without a boss, a tap works after about 1.2 s; "Tap to continue" appears right away and stays steady (no blinking). The prologue banner is 2.5 s now (was 5.6 s). Boss clears still wait for the tree bloom.
 - Bullock cart (Act II scenery): the baked-in white background (inside the wheels and a grey ground patch under it) was removed; the wheels are see-through now and it sits on the real ground. Check it in Act II.
+
+## Language: English / Malayalam (new)
+- Title screen: tap "English" or "മലയാളം" under the level selector (or press L). The choice is remembered. Check on the phone that the words are easy to hit with a thumb.
+- In Malayalam everything is drawn with the bundled Noto Sans Malayalam: HUD, banners, dialogue boxes, story pages and scenes, the pause menu, game over, tutorial, credits, the on-screen THROW / JUMP buttons. Check that long lines fit in the dialogue boxes (the text shrinks to fit, 2 lines) and that no letters look broken on the phone.
+- The title logo is text-set in Malayalam for now (the logo picture is English); see docs/LOGO_ML_PROMPT.md.
+- Translation script: docs/MALAYALAM.md (English and Malayalam side by side). The Malayalam is my draft: to be verified before release. Edit the second column, then run `node tools/lang.js build`.

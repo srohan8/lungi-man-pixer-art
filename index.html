@@ -26,14 +26,16 @@ body.nopad .pad{display:none}
 #rot span{font-size:46px}
 @media (hover:hover) and (pointer:fine){.pad{display:none}}
 @media (orientation:portrait) and (hover:none){#rot{display:flex}}
+@font-face{font-family:'MalayalamUI';src:url(assets/fonts/NotoSansMalayalam.ttf);font-weight:100 900;font-display:swap}
 </style>
 </head>
 <body>
 <div id="wrap"><canvas id="c"></canvas></div><canvas id="t"></canvas>
 <div class="pad" id="padL"><button data-k="l" aria-label="Move left">◀</button><button data-k="r" aria-label="Move right">▶</button></div>
-<div class="pad" id="padR"><button data-k="s">THROW</button><button data-k="j" id="bJ">JUMP</button></div>
+<div class="pad" id="padR"><button data-k="s" data-en="THROW">THROW</button><button data-k="j" id="bJ" data-en="JUMP">JUMP</button></div>
 <div id="rot"><span>📱↻</span>Turn your phone sideways to play</div>
 
+<script src="assets/lang/ml.js"></script>
 <script>
 /* =================== setup =================== */
 const cv=document.getElementById('c'),g=cv.getContext('2d');
@@ -70,6 +72,7 @@ cv.addEventListener('pointerdown',e=>{
   if(state==='pages'&&pg&&pg.pr&&x>pg.pr[0]&&x<pg.pr[0]+pg.pr[2]&&y>pg.pr[1]&&y<pg.pr[1]+pg.pr[3]){pagesPrev();return}
   if(state==='play'&&x>W-76&&x<W-46&&y<44){setPause(true);return}
   if(x>W-48&&y<44){toggleSnd();return}
+  if(state==='title'&&splashT<=0&&y>199&&y<221&&Math.abs(x-W/2)<100){setLang(x<W/2?'en':'ml');beep(660,.05,'square',.04);return}/* language: English on the left, Malayalam on the right */
   if(state==='title'&&splashT<=0&&y>120&&y<228&&(x<W*.36||x>W*.64)){pickLevel(x<W*.5?-1:1);return}
   startIfNeeded()});
 addEventListener('contextmenu',e=>e.preventDefault());
@@ -221,10 +224,31 @@ const FONT={A:'010101111101101',B:'110101110101110',C:'011100100100011',D:'11010
 '0':'111101101101111','1':'010110010010111','2':'110001010100111','3':'110001010001110','4':'101101111001001','5':'111100110001110','6':'011100111101111','7':'111001010010010','8':'111101111101111','9':'111101111001110','!':'010010010000010','.':'000000000000010','-':'000000111000000',',':'000000000010100',"'":'010010000000000'};
 /* Story text (dialogue, scenes, captions, ending) is drawn with a normal font on a second, full-resolution canvas laid over the game, so it stays sharp and readable on a phone.
    Everything else keeps the pixel font. ntext() only queues; flushText() paints after the frame. */
-const tcv=document.getElementById('t'),tg=tcv.getContext('2d'),TQ=[],TFONT='"Trebuchet MS","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
+/* =================== language: English / Malayalam ===================
+   All game text is written in English (mostly capitals) in the code. In Malayalam mode every string is looked up in ML_DICT (assets/lang/ml.js, built from docs/MALAYALAM.md)
+   at the moment it is drawn, and everything is drawn with the bundled Noto Sans Malayalam (the pixel font has no Malayalam letters). A missing translation shows the English text. */
+let LANG='en';try{LANG=localStorage.getItem('lungiman-lang')==='ml'?'ml':'en'}catch(e){}
+const MLMAP=new Map();(function(){const d=(typeof window!=='undefined'&&window.ML_DICT)||{};for(const k in d)MLMAP.set(lkey(k),d[k])})();
+function lkey(s){return String(s).replace(/\s+/g,' ').trim().toUpperCase()}
+const TRLOG=(typeof window!=='undefined'&&window.__TRLOG)||null;/* development: a Set that collects every string the game draws */
+function tr(s){
+  if(!s||typeof s!=='string')return s;if(TRLOG)TRLOG.add(s);if(LANG!=='ml')return s;
+  const k=lkey(s),v=MLMAP.get(k);if(v!==undefined)return v;
+  const m=s.match(/^(.*?)(\s*[+x\u00d7]?\s*\d[\d,.\s]*)$/);/* a label followed by a number: "COCONUT  40" */
+  if(m&&m[1]){const v2=MLMAP.get(lkey(m[1]));if(v2!==undefined)return v2+m[2]}
+  return s}
+/* text typed out letter by letter must count whole letters (a Malayalam letter is several code units) */
+const GSEG=(typeof Intl!=='undefined'&&Intl.Segmenter)?new Intl.Segmenter('ml',{granularity:'grapheme'}):null;
+function glen(s){return GSEG?[...GSEG.segment(s)].length:s.length}
+function gsl(s,n){return GSEG?[...GSEG.segment(s)].slice(0,n).map(x=>x.segment).join(''):s.slice(0,n)}
+function setLang(l){LANG=l==='ml'?'ml':'en';try{localStorage.setItem('lungiman-lang',LANG)}catch(e){}applyLang()}
+function applyLang(){TFONT=(LANG==='ml'?'"MalayalamUI",':'')+TFONT_BASE;
+  if(document.fonts&&document.fonts.load)try{document.fonts.load('700 16px MalayalamUI','അആ')}catch(e){}
+  document.querySelectorAll('[data-en]').forEach(b=>{b.textContent=tr(b.getAttribute('data-en'))})}
+const tcv=document.getElementById('t'),tg=tcv.getContext('2d'),TQ=[],TFONT_BASE='"Trebuchet MS","Segoe UI",Roboto,"Helvetica Neue",Arial,"MalayalamUI",sans-serif';let TFONT=TFONT_BASE;
 const NAMES=['Kannan','Biju','Thoma','Thomakutty','Ravi','Soniya','Yakshi','Kuttichathan','Odiyan','Karinkanni','Komban','Pey Komban','Kanjiravanam Amma','Devi','Velu','Maveli','Kili','Basheer','Kanjiravanam','Kerala','Kazhukans','Kazhukan','Muruthikudi','Onam','Bullet','Pathalam','Nilavilakku'];
 /* ALL CAPS data text -> sentence case ("THE FOREST IS RESTLESS." -> "The forest is restless.") */
-function nice(s){if(!s)return s;let t=s.toLowerCase().replace(/(^|[.!?…]\s+)([a-z])/g,(m,a,b)=>a+b.toUpperCase()).replace(/\bi\b/g,'I').replace(/\bi'(m|ll|ve|d)\b/g,(m,a)=>"I'"+a);
+function nice(s){if(!s)return s;if(LANG==='ml')return tr(s);let t=s.toLowerCase().replace(/(^|[.!?…]\s+)([a-z])/g,(m,a,b)=>a+b.toUpperCase()).replace(/\bi\b/g,'I').replace(/\bi'(m|ll|ve|d)\b/g,(m,a)=>"I'"+a);
   t=t.replace(/(^|[^a-z])chathan(?![a-z])/gi,(m,a)=>a+'Kuttichathan');
   for(const n of NAMES)t=t.replace(new RegExp('(^|[^a-z])'+n.toLowerCase()+'(?![a-z])','gi'),(m,a)=>a+n);return t}
 function tfont(px,k){return '700 '+(px*k).toFixed(1)+'px '+TFONT}
@@ -232,7 +256,7 @@ function tmeasure(s,px){tg.font=tfont(px,1);return tg.measureText(s).width}
 /* wrap into at most maxLines lines of width maxW (internal px); the font shrinks a little if it does not fit */
 function twrap(s,px,maxW,maxLines){let p=px;for(;;){tg.font=tfont(p,4);const lines=[''];for(const w of s.split(' ')){const c=lines[lines.length-1]?lines[lines.length-1]+' '+w:w;if(tg.measureText(c).width/4>maxW&&lines[lines.length-1])lines.push(w);else lines[lines.length-1]=c}
     if(lines.length<=maxLines||p<=6.5)return {lines,px:p};p-=.5}}
-function ntext(s,x,y,px,col,align='left'){TQ.push({s,x,y,px,col,align,a:g.globalAlpha})}
+function ntext(s,x,y,px,col,align='left'){s=tr(s);TQ.push({s,x,y,px,col,align,a:g.globalAlpha})}
 /* a picture drawn on the full-resolution layer, so a big logo stays sharp on a phone (smoothed, not pixelated) */
 function nimg(img,x,y,w,h){TQ.push({img,x,y,w,h,a:g.globalAlpha})}
 function flushText(){
@@ -245,6 +269,7 @@ function flushText(){
   for(const q of TQ){if(q.a<=0.02)continue;tg.globalAlpha=q.a;if(q.img){tg.imageSmoothingEnabled=true;tg.imageSmoothingQuality='high';tg.drawImage(q.img,q.x*k,q.y*k,q.w*k,q.h*k);continue}tg.font=tfont(q.px,k);tg.textAlign=q.align;tg.lineWidth=Math.max(2,q.px*k*.22);tg.strokeStyle='rgba(12,8,28,.92)';tg.strokeText(q.s,q.x*k,q.y*k);tg.fillStyle=q.col;tg.fillText(q.s,q.x*k,q.y*k)}tg.globalAlpha=1;
 }
 function ptext(s,x,y,sc,col,align='left',sh='#120a1c'){
+  if(LANG==='ml'||TRLOG){const t=tr(s);if(LANG==='ml'){/* the pixel font has no Malayalam: the same text in the bundled font, about the same size, shrunk to fit the screen */let px=sc<1.5?9:Math.round(5.2*sc+3.5);const w=tmeasure(t,px);if(w>W-14)px=Math.max(6,px*(W-14)/w);ntext(t,x,y-(sc<1.5?1:2),px,col,align);return}}
   /* readable at phone size: the tiny 3x5 size becomes the thick outlined normal font (see ntext); sizes 2 and up stay pixel */
   if(sc<1.5&&typeof ntext==='function'){ntext(s,x,y-1,9,col,align);return}
   s=s.toUpperCase();const w=s.length*4*sc-sc;let X=align==='center'?x-w/2:align==='right'?x-w:x;X=Math.round(X);y=Math.round(y);
@@ -426,7 +451,7 @@ const BOSSDEF={
 /* scenery props: shrunk to a believable size and dimmed with the act's haze so they read as background, not as obstacles */
 const PRS={goat:.7,bell:.55,paddy_bundle:.6,broken_idol:.8,stone_face:.85,stone_shrine:.85,highland_wall:.8,low_branch:.8,mangrove_roots:.9,bullock_cart:.9,houseboat:.85,stilt_hut:.9},PRC={};
 function propImg(n){const key=n+'|'+lvl;if(PRC[key]!==undefined)return PRC[key];const im=ART['pr_'+n+'_0'];if(!im)return null;const k=PRS[n]||1,w=Math.max(1,Math.round(im.width*k)),h=Math.max(1,Math.round(im.height*k)),c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');x.imageSmoothingEnabled=false;x.drawImage(im,0,0,w,h);x.globalCompositeOperation='source-atop';x.globalAlpha=.3;x.fillStyle='#161236';x.fillRect(0,0,w,h);return PRC[key]=c}
-const ART={},ART_FILES=['chathan_0','chathan_1','yakshi_0','yakshi_1','odiyan_0','odiyan_1','odiyan_2','karin_0','karin_1','karin_2','komban_0','komban_1','komban_2','hero_0','hero_1','hero_2','hero_3','heroidle_0','heroidle_1','heroidle_2','heroidle_3','heroswing_0','heroswing_1','heroswing_2','croc_0','croc_1','croc_2','croc_3','bike_0','bike_1','bike_2','bike_3','ravi_0','ravi_1','biju_0','biju_1','soniya_0','thoma_0','maveli_0','mooppan_0','scenehero_0','soniya_1','thoma_1','maveli_1','mooppan_1','scenehero_1','soniya_2','thoma_2','maveli_2','mooppan_2','scenehero_2','soniya_3','thoma_3','maveli_3','mooppan_3','scenehero_3','kili_0','kili_1','kili_2','stall_0','devi_0','komrun_0','komrun_1','komrun_2','komrun_3','komrun_4','komrun_5','komrun_6','komrun_7','komrun_8','komrun_9','odirun_0','odirun_1','odirun_2','odirun_3','odirun_4','odirun_5','odirun_6','odirun_7','odirun_8','odirun_9','odirun_10','odirun_11','strees_0','strees_1','strees_2','strees_3','strees_4','strees_5','strees_6','strees_7','strees_8','strees_9','hf_0','hf_1','hf_2','hf_3','hf_4','hf_5','hf_6','hf_7','hf_8','hf_9','hf_10','mvh_0','mvh_3','mvh_7','pr_broken_idol_0','pr_stone_shrine_0','pr_carnival_banner_0','pr_bullock_cart_0','pr_highland_wall_0','pr_low_branch_0','pr_mangrove_roots_0','pr_stilt_hut_0','pr_temple_gate_0','pr_stone_face_0','pr_sacred_banyan_0','pr_paddy_bundle_0','pr_goat_0','hnidle_0','hnidle_1','hnrun_0','hnrun_1','hnrun_2','hnrun_3','hnrun_4','hnrun_5','hnrun_6','hnrun_7','hnjump_0','hnjump_1','hnjump_2','hnjump_3','hnjump_4','hnjump_5','hnact_0','hnact_1','hnact_2','hnact_3','hnact_4','hnact_5','hnact_6','mk_c_0','mk_c_1','mk_c_2','mk_c_3','mk_c_4','mk_c_5','mk_c_6','mk_c_7','mk_c_8','mk_c_9','mk_c_9L','mk_c_9R','mk_k_0','mk_k_1','mk_k_2','mk_k_3','mk_k_4','mk_k_5','mk_k_6','mk_k_7','mk_b_0','mk_b_1','mk_b_2','mk_b_3','mk_b_4','mk_b_5','hs_fall_0','hs_fall_1','hs_fall_2','hs_fall_3','hs_fall_4','hs_fall_5','herot_run_0','herot_run_1','herot_run_2','herot_run_3','herot_run_4','herot_run_5','herot_run_6','herot_run_7','herot_idle_0','herot_idle_1','herot_jump0_0','herot_jump1_0','herot_throw0_0','herot_throw1_0','hp_yakshi_0','hp_chathan_0','hp_odiyan_0','hp_komban_0','hp_karin_2','hp_devi_0','hs_bhadra_0','hs_bhadra_1','pr_blockade_0','hs_blockade_0','exj_0','exj_1','exj_2','exj_3','exj_4','exj_5','exj_6','exj_7','exj_8','exw_0','exw_1','exw_2','exw_3','exw_4','exw_5','exw_6','exw_7','exh_0','exh_1','exh_2','exh_3','exh_4','exh_5','exh_6','exh_7','herod_0','herod_1','herod_2','herod_3','herod_4','herod_5','herod_6','herod_7','herod_8','herod_9','chi_0','chi_1','chi_2','chi_3','chi_4','chi_5','chi_6','chi_7','chaturun_0','chaturun_1','chaturun_2','chaturun_3','chaturun_4','chaturun_5','hs_amma_0','hs_amma_1','hs_amma_p','hs_amma_spear','hs_strees_0','hs_strees_1','hs_strees_2','hs_strees_3','hs_strees_4','hs_strees_5','hs_strees_6','hs_strees_7','hs_strees_8','hs_strees_9','pr_disco_ball_0','pr_speaker_stack_0','pr_bell_0','pr_houseboat_0','ang_0','ang_1','ang_2','ang_3','ang_4','ang_5','hk_0','hk_1','hk_2','hk_3','hk_4','hk_5','hk_6','hk_7','hk_8','hk_9','hk_10','hk_11','hs_soniya_0','hs_soniya_1','hs_soniya_2','hs_soniya_3','hs_kili_0','hs_kili_1','hs_kili_2','hs_mooppan_0','hs_mooppan_1','hs_scenehero_0','hs_scenehero_1','hs_scenehero_2','hs_scenehero_3','hs_thoma_0','hs_thoma_1','hs_thoma_2','hs_thoma_3','hs_biju_0','hs_biju_1','hs_ravi_0','hs_ravi_1','hs_basheer_0','hs_basheer_1','edog_0','edog_1','edog_2','edog_3','edog_4','edog_5','logo_0','logo_hi','porotta_0','basheer_0','basheer_1','basheer_2','bshp_0','naga_0','naga_1','naga_2','pg_0','pg_1','pg_2','pg_3','pg_4','tstaff_0','tstaffs_1','tstaffs_2','tdrops_0','tbeam_0','tbeam_1','tbeam_2','hdrown_0','hdrown_1','hdrown_2','hdrown_3','hdrown_4','hdrown_5','hdead_0','hdead_1','hdead_2','hdead_3','ecobra_0','ecobra_1','ecobra_2','ecobra_3','ebat_0','ebat_1','ebat_2','ebat_3','ebat_4','ecrow_0','ecrow_1','ecrow_2','ecrow_3','egoon_0','egoon_1','egoon_2','eimp_0','eimp_1','eimp_2','bhadra_0','bhadra_1','palm_0','palm_1','palm_2','dc1_0','dc1_1','dc1_2','dc1_3','dc1_4','dc1_5','dc2_0','dc2_1','dc2_2','dc2_3','dc2_4','dc2_5','da1_0','da1_1','da1_2','da1_3','da1_4','da1_5','da2_0','da2_1','da2_2','da2_3','da2_4','da2_5','da3_0','da3_1','da3_2','da3_3','da3_4','da3_5'];
+const ART={},ART_FILES=['chathan_0','chathan_1','yakshi_0','yakshi_1','odiyan_0','odiyan_1','odiyan_2','karin_0','karin_1','karin_2','komban_0','komban_1','komban_2','hero_0','hero_1','hero_2','hero_3','heroidle_0','heroidle_1','heroidle_2','heroidle_3','heroswing_0','heroswing_1','heroswing_2','croc_0','croc_1','croc_2','croc_3','bike_0','bike_1','bike_2','bike_3','ravi_0','ravi_1','biju_0','biju_1','soniya_0','thoma_0','maveli_0','mooppan_0','scenehero_0','soniya_1','thoma_1','maveli_1','mooppan_1','scenehero_1','soniya_2','thoma_2','maveli_2','mooppan_2','scenehero_2','soniya_3','thoma_3','maveli_3','mooppan_3','scenehero_3','kili_0','kili_1','kili_2','stall_0','devi_0','komrun_0','komrun_1','komrun_2','komrun_3','komrun_4','komrun_5','komrun_6','komrun_7','komrun_8','komrun_9','odirun_0','odirun_1','odirun_2','odirun_3','odirun_4','odirun_5','odirun_6','odirun_7','odirun_8','odirun_9','odirun_10','odirun_11','strees_0','strees_1','strees_2','strees_3','strees_4','strees_5','strees_6','strees_7','strees_8','strees_9','hf_0','hf_1','hf_2','hf_3','hf_4','hf_5','hf_6','hf_7','hf_8','hf_9','hf_10','mvh_0','mvh_3','mvh_7','pr_broken_idol_0','pr_stone_shrine_0','pr_carnival_banner_0','pr_bullock_cart_0','pr_highland_wall_0','pr_low_branch_0','pr_mangrove_roots_0','pr_stilt_hut_0','pr_temple_gate_0','pr_stone_face_0','pr_sacred_banyan_0','pr_paddy_bundle_0','pr_goat_0','hnidle_0','hnidle_1','hnrun_0','hnrun_1','hnrun_2','hnrun_3','hnrun_4','hnrun_5','hnrun_6','hnrun_7','hnjump_0','hnjump_1','hnjump_2','hnjump_3','hnjump_4','hnjump_5','hnact_0','hnact_1','hnact_2','hnact_3','hnact_4','hnact_5','hnact_6','mk_c_0','mk_c_1','mk_c_2','mk_c_3','mk_c_4','mk_c_5','mk_c_6','mk_c_7','mk_c_8','mk_c_9','mk_c_9L','mk_c_9R','mk_k_0','mk_k_1','mk_k_2','mk_k_3','mk_k_4','mk_k_5','mk_k_6','mk_k_7','mk_b_0','mk_b_1','mk_b_2','mk_b_3','mk_b_4','mk_b_5','hs_fall_0','hs_fall_1','hs_fall_2','hs_fall_3','hs_fall_4','hs_fall_5','herot_run_0','herot_run_1','herot_run_2','herot_run_3','herot_run_4','herot_run_5','herot_run_6','herot_run_7','herot_idle_0','herot_idle_1','herot_jump0_0','herot_jump1_0','herot_throw0_0','herot_throw1_0','hp_yakshi_0','hp_chathan_0','hp_odiyan_0','hp_komban_0','hp_karin_2','hp_devi_0','hs_bhadra_0','hs_bhadra_1','pr_blockade_0','hs_blockade_0','exj_0','exj_1','exj_2','exj_3','exj_4','exj_5','exj_6','exj_7','exj_8','exw_0','exw_1','exw_2','exw_3','exw_4','exw_5','exw_6','exw_7','exh_0','exh_1','exh_2','exh_3','exh_4','exh_5','exh_6','exh_7','herod_0','herod_1','herod_2','herod_3','herod_4','herod_5','herod_6','herod_7','herod_8','herod_9','chi_0','chi_1','chi_2','chi_3','chi_4','chi_5','chi_6','chi_7','chaturun_0','chaturun_1','chaturun_2','chaturun_3','chaturun_4','chaturun_5','hs_amma_0','hs_amma_1','hs_amma_p','hs_amma_spear','hs_strees_0','hs_strees_1','hs_strees_2','hs_strees_3','hs_strees_4','hs_strees_5','hs_strees_6','hs_strees_7','hs_strees_8','hs_strees_9','pr_disco_ball_0','pr_speaker_stack_0','pr_bell_0','pr_houseboat_0','ang_0','ang_1','ang_2','ang_3','ang_4','ang_5','hk_0','hk_1','hk_2','hk_3','hk_4','hk_5','hk_6','hk_7','hk_8','hk_9','hk_10','hk_11','hs_soniya_0','hs_soniya_1','hs_soniya_2','hs_soniya_3','hs_kili_0','hs_kili_1','hs_kili_2','hs_mooppan_0','hs_mooppan_1','hs_scenehero_0','hs_scenehero_1','hs_scenehero_2','hs_scenehero_3','hs_thoma_0','hs_thoma_1','hs_thoma_2','hs_thoma_3','hs_biju_0','hs_biju_1','hs_ravi_0','hs_ravi_1','hs_basheer_0','hs_basheer_1','edog_0','edog_1','edog_2','edog_3','edog_4','edog_5','logo_0','logo_hi','logo_ml_hi','porotta_0','basheer_0','basheer_1','basheer_2','bshp_0','naga_0','naga_1','naga_2','pg_0','pg_1','pg_2','pg_3','pg_4','tstaff_0','tstaffs_1','tstaffs_2','tdrops_0','tbeam_0','tbeam_1','tbeam_2','hdrown_0','hdrown_1','hdrown_2','hdrown_3','hdrown_4','hdrown_5','hdead_0','hdead_1','hdead_2','hdead_3','ecobra_0','ecobra_1','ecobra_2','ecobra_3','ebat_0','ebat_1','ebat_2','ebat_3','ebat_4','ecrow_0','ecrow_1','ecrow_2','ecrow_3','egoon_0','egoon_1','egoon_2','eimp_0','eimp_1','eimp_2','bhadra_0','bhadra_1','palm_0','palm_1','palm_2','dc1_0','dc1_1','dc1_2','dc1_3','dc1_4','dc1_5','dc2_0','dc2_1','dc2_2','dc2_3','dc2_4','dc2_5','da1_0','da1_1','da1_2','da1_3','da1_4','da1_5','da2_0','da2_1','da2_2','da2_3','da2_4','da2_5','da3_0','da3_1','da3_2','da3_3','da3_4','da3_5'];
 if(typeof Image!=='undefined')ART_FILES.forEach(n=>{const im=new Image();
   im.onload=()=>{const c=document.createElement('canvas');c.width=im.width;c.height=im.height;c.getContext('2d').drawImage(im,0,0);ART[n]=c;
     if(A&&A.boss&&LV[lvl]&&LV[lvl].boss)A.boss=bossFrames(LV[lvl].boss);if(n.startsWith('palm_')&&A&&A.palms&&LV[lvl]&&!LV[lvl].bamboo){const pa=palmArt(LV[lvl]);if(pa)A.palms=pa}};
@@ -1240,7 +1265,7 @@ function newGame(){bossHeard=-1;retryLvl=-1;score=0;actScore=0;const picked=pick
 function startIfNeeded(src){
   if(state==='cine'){return}/* owner decision: the finishing cinematics cannot be skipped, they always play to the end */
   if(state==='play'&&tut&&tut.phase==='msg'&&!paused){tutConfirm(src);return}
-  if(state==='title'&&splashT<=0){if(src==='ArrowLeft'||src==='KeyA'||src==='l'){pickLevel(-1);return}if(src==='ArrowRight'||src==='KeyD'||src==='r'){pickLevel(1);return}}
+  if(state==='title'&&splashT<=0){if(src==='KeyL'){setLang(LANG==='ml'?'en':'ml');beep(660,.05,'square',.04);return}if(src==='ArrowLeft'||src==='KeyA'||src==='l'){pickLevel(-1);return}if(src==='ArrowRight'||src==='KeyD'||src==='r'){pickLevel(1);return}}
   goFull();
   if(!AUD.go){AUD.go=true;try{actx()&&ac.resume()}catch(e){}SFX_NAMES.forEach(n=>loadBuf(n,'sfx'))}
   if(splashT>0){splashT=0;return}
@@ -2227,11 +2252,11 @@ function drawRoll(t){
 function endFinish(){const list=EPILOGUE.filter(p=>p.pic!=='ep'||ART[p.npc+'_0']);EPILOGUE.splice(0,EPILOGUE.length,...list);startPages(EPILOGUE,()=>{state='win';lockT=90},null)}
 const TREECOL=['#4ad8c8','#ffb830','#7a7aff','#4ac060','#ffd860'];
 let pg=null;
-function startPages(list,next,snap){pg={list,next,snap,i:0,t:0,rev:0,len:list[0].text.length};state='pages';dlg=null}
+function startPages(list,next,snap){pg={list,next,snap,i:0,t:0,rev:0,len:glen(tr(list[0].text))};state='pages';dlg=null}
 function pagesTick(){pg.t++;if(pg.rev<pg.len)pg.rev+=1.4}
 function pagesNext(){if(!pg||pg.t<12)return;if(pg.list[pg.i].pic==='roll'){pagesSkip();return}if(pg.rev<pg.len){pg.rev=pg.len;return}
-  if(pg.i>=pg.list.length-1){pagesSkip();return}pg.i++;pg.t=0;pg.rev=0;pg.len=pg.list[pg.i].text.length}
-function pagesPrev(){if(!pg||pg.i<=0||pg.t<12)return;if(pg.list[pg.i].pic==='roll')return;pg.i--;pg.t=0;pg.len=pg.list[pg.i].text.length;pg.rev=pg.len}
+  if(pg.i>=pg.list.length-1){pagesSkip();return}pg.i++;pg.t=0;pg.rev=0;pg.len=glen(tr(pg.list[pg.i].text))}
+function pagesPrev(){if(!pg||pg.i<=0||pg.t<12)return;if(pg.list[pg.i].pic==='roll')return;pg.i--;pg.t=0;pg.len=glen(tr(pg.list[pg.i].text));pg.rev=pg.len}
 function pagesSkip(){const n=pg&&pg.next;pg=null;if(n)n()}
 function fillEll(cx,cy,rx,ry,c){g.fillStyle=c;for(let j=-ry;j<=ry;j++){const w=Math.round(rx*Math.sqrt(1-(j*j)/(ry*ry)));g.fillRect(cx-w,cy+j,w*2,1)}}
 function pageTree(x,gy,col,dim){const c=dim?'#2a2a3a':col;
@@ -2355,8 +2380,8 @@ function drawPages(){
   g.fillStyle='rgba(12,8,28,.92)';g.fillRect(px,14,pw,H-28);g.fillStyle='#f0c040';g.fillRect(px,14,pw,1);g.fillRect(px,H-15,pw,1);g.fillRect(px,14,1,H-28);g.fillRect(px+pw-1,14,1,H-28);
   let ty=24;if(P0.who){drawPortrait(P0.who,px+10,ty,34);ntext(nice(P0.who),px+52,ty+4,8,'#b8b0d0');ntext(P0.h,px+52,ty+16,11,'#f0c040');ty+=46}
   else{ntext(P0.h,px+12,ty+2,12,'#f0c040');ty+=24}
-  const T=twrap(P0.text,11.5,pw-26,11);let left=Math.floor(pg.rev);
-  T.lines.forEach((ln,k)=>{if(left<=0)return;ntext(ln.slice(0,left),px+12,ty+k*(T.px+4),T.px,'#f4ecd0');left-=ln.length+1});
+  const T=twrap(tr(P0.text),11.5,pw-26,11);let left=Math.floor(pg.rev);
+  T.lines.forEach((ln,k)=>{if(left<=0)return;ntext(gsl(ln,left),px+12,ty+k*(T.px+4),T.px,'#f4ecd0');left-=glen(ln)+1});
   for(let k=0;k<pg.list.length;k++){g.fillStyle=k===pg.i?'#f0c040':'#3a2c58';g.fillRect(px+12+k*10,H-26,6,3)}
   if((tick>>5)%2===0)ntext(pg.rev>=pg.len?(isTouch?'Tap for next':'Press any key'):'',px+pw-12,H-32,8,'#cfe9c8','right');
   /* back button (bottom left of the text panel) */
@@ -2584,15 +2609,17 @@ function draw(){TQ.length=0;syncPad();
   drawTut();drawSndIcon();if(state==='play')drawPauseIcon();
   if(banner&&state!=='title'&&!(tut&&tut.phase==='msg')){const bY=(state==='clear'&&TREE_OF[LV[lvl].boss]!==undefined)?14:78;g.fillStyle='rgba(12,8,28,.55)';g.fillRect(0,bY,W,48);ptext(banner.a,W/2,bY+8,4,'#f0c040','center');if(banner.b)ntext(nice(banner.b),W/2,bY+30,12,'#f4ecd0','center')}
   if(state==='title'){overlay();drawCover();
-    const lg=ART.logo_0,hi=ART.logo_hi;
-    if(hi){const lw=Math.min(W-30,312),lh=lw*hi.height/hi.width;nimg(hi,(W-lw)/2,3+Math.sin(tick*.04)*1.5,lw,lh)}
+    const lg=ART.logo_0,mlA=LANG==='ml'&&ART.logo_ml_hi,mlTxt=LANG==='ml'&&!mlA,hi=mlA||ART.logo_hi;
+    if(mlTxt){/* until a Malayalam logo picture exists (assets/art/bosses/logo_ml_hi.png, see docs/LOGO_ML_PROMPT.md) the title is set in the bundled font */const by=3+Math.sin(tick*.04)*1.5;g.fillStyle='rgba(12,8,28,.5)';g.fillRect(Math.round(W/2-150),Math.round(by+8),300,96);ntext('കണ്ണനും',W/2,by+8,46,'#f0c040','center');ntext('കാഞ്ഞിരവനം കഥകളും',W/2,by+66,24,'#ffe58a','center');g.fillStyle='#c8841a';g.fillRect(Math.round(W/2-110),Math.round(by+98),220,2)}
+    else if(hi){const lw=Math.min(W-30,312),lh=lw*hi.height/hi.width;nimg(hi,(W-lw)/2,3+Math.sin(tick*.04)*1.5,lw,lh)}
     else if(lg){g.drawImage(lg,Math.round((W-lg.width)/2),4+Math.round(Math.sin(tick*.04)*1.5))}
     else{ptext('KANNAN',W/2,24,7,'#f0c040','center');ptext('AND THE',W/2,66,2,'#f4ecd0','center');ptext('KANJIRAVANAM CHRONICLES',W/2,82,3,'#ffe58a','center');ptext('KANNAN MUST SEAL THE PORTAL.',W/2,114,2,'#f4ecd0','center')}
     {const pk=pick<0?pickDefault():pick,L=LV[pk],sh=(tick>>4)%2;
       for(const d of [-1,1]){const on=d<0?pk>0:pk<pickMax(),ax=Math.round(W/2+d*Math.min(140,W*.33))+(on?d*sh*3:0),ay=166;g.fillStyle='#120a1c';for(let i=-1;i<16;i++)g.fillRect(ax-d*i-d,ay-i-2,1,i*2+5);g.fillStyle=on?'#ffe58a':'#4a4060';for(let i=0;i<14;i++)g.fillRect(ax-d*i,ay-i,1,i*2+1)}
       ptext(L.act||'PROLOGUE',W/2,148,3,'#ffe58a','center');ptext(L.name||'',W/2,172,1,'#f4ecd0','center');
       if((tick>>5)%2===0)ptext(isTouch?'TAP TO START':'PRESS SPACE TO START',W/2,192,2,'#cfe9c8','center')}
-    if(!isTouch)ptext('LEFT RIGHT CHOOSE   SPACE JUMP   X THROW',W/2,222,1,'#b8b0d0','center');
+    {const en=LANG!=='ml';ntext('English',W/2-44,205,9,en?'#ffe58a':'#8a82a8','center');ntext('|',W/2,205,9,'#8a82a8','center');ntext('മലയാളം',W/2+44,205,9,en?'#8a82a8':'#ffe58a','center');g.fillStyle=en?'#ffe58a':'#8a82a8';g.fillRect(en?Math.round(W/2-62):Math.round(W/2+26),217,36,1)}/* language choice: tap a word, or press L */
+    if(!isTouch)ptext('LEFT RIGHT CHOOSE   SPACE JUMP   X THROW',W/2,226,1,'#b8b0d0','center');
   }
   if(state==='over'){overlay();ptext('GAME OVER',W/2,80,5,'#e8402e','center');ptext('SCORE '+score,W/2,112,2,'#f4ecd0','center');ptext('BEST '+Math.max(hi,score),W/2,130,2,'#ffe58a','center');if(lockT<=0)ptext(isTouch?'TAP TO CONTINUE':'PRESS ANY KEY',W/2,160,2,'#cfe9c8','center')}
   if(state==='win'){overlay();ptext('PORTAL SEALED!',W/2,70,5,'#f0c040','center');ptext('KANNAN SAVED KANJIRAVANAM.',W/2,108,2,'#f4ecd0','center');ptext('SCORE '+score+(score>=hi?'  NEW BEST':''),W/2,126,2,'#cfe9c8','center');if(lockT<=0)ptext(isTouch?'TAP TO PLAY AGAIN':'PRESS ANY KEY',W/2,156,2,'#ffe58a','center')}
@@ -2640,6 +2667,7 @@ fit();loadLevel(0);
 
 let last=0,acc=0;
 function loop(t){requestAnimationFrame(loop);acc+=Math.min(t-last,100);last=t;while(acc>=16.667){if(!paused)update();acc-=16.667}if(!paused)audioTick();else engineSet(false,0,999);draw();if(paused){TQ.length=0;drawPause()}flushText()}
+applyLang();
 requestAnimationFrame(loop);
 </script>
 </body>
