@@ -52,6 +52,10 @@ Act II ride end: the road is blocked by the hand-drawn blockade (assets/referenc
 Act IV flood (owner-approved timer): the water rises with time from the start of the act (TUNE.floodStart to floodDrown over floodSeconds = 120 s). A tea stall lowers it to ankle height (floodChai) and respawning restores the level of the last stall. At head height the hero drowns (water death, back to the last stall). The boss arena lowers it to knee height and holds it, so the fight is never timed; it drains away when the eye bursts. Warnings pop up as it reaches the ankles and the knees.
 Level selector (owner request): the title screen has left/right arrows (keys, A/D, or tap the arrows) to choose any level, default is the furthest act reached. It is on the title only, never during play. `TUNE.levelSelectAll=false` limits it to levels reached.
 
+## Game length (owner decision, planned, not built; plan in `docs/GAME_LENGTH.md`)
+- The main (Android) build gets longer acts: target about 75 to 90 minutes for a first playthrough, by more ground, more enemies from the same set and more checkpoint stalls (about one per 1,000 px). No new mechanics.
+- **The Reddit version stays as short as it is today** (the layouts of the tag `v0.9-full-story`). The Reddit build will set `window.GAME_SHORT = 1` and the lengthening must read it, so short mode is generated exactly as now. Never lengthen the Reddit build.
+
 ## Adding story or new acts (checklist)
 - Reuses the same three buttons and the same one-hit rules.
 - New scene + 2-3 enemy types + 1 boss. That is the whole act.
