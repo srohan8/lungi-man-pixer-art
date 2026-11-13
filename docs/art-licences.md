@@ -9,7 +9,7 @@ Read on 2026-11-13. These are summaries of the public terms, not legal advice. R
 
 ## Where the shipped art came from (owner's account, 2026-11-13)
 Everything shipped was either (1) generated with AI image tools from reference images supplied by the owner, or (2) created by Claude from the storyline (the game's built-in code-drawn sprites and scenes). The owner created the character concepts. `assets/reference/` holds the references and sheets and is not shipped (the build skips it and git ignores it).
-Open question: whether every reference image is the owner's own work, or whether some are third-party images (found online, photos, other games). Record the answer here.
+Owner's answer: the references were for style (what pixel art is and how it should feel), not images to copy. Style is not owned by anyone, but the rule that stays: no shipped sprite may copy a specific character, scene or layout from another game or artist, and prompts should never have named a real artist, game or franchise. Still to do: a quick look through the sprites for anything that resembles a known character, and, if the prompts are saved, a check that they name no artist, game or franchise.
 
 ## What the terms say
 | Tool | Terms read | Ownership of what you make |
