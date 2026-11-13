@@ -138,3 +138,7 @@ Uninstall the old build first, then install the newest debug APK.
 ## Locked levels are visible (selector)
 - The title selector now lets you look at every level: levels not reached yet show the act name and level name dimmed, a padlock and the word LOCKED (LOCKED in Malayalam too). Tapping or pressing Space on a locked level only makes a low beep; the arrows still move on. Reached levels start as before.
 - Check on the phone: fresh install shows Prologue unlocked, Act I onward locked; after clearing the Prologue Act I opens. Tap the arrows to the end; tap the locked level (should not start). In Malayalam the word fits.
+
+## Title screen spacing
+- The lower part of the title screen was crowded (level name, START prompt, language row, key hints all within 40 px). Now: act name, level name, START (or LOCKED) prompt, the language row and the key hints each have their own space down to the bottom edge. The arrows sit beside the act and level name. The language tap area moved down with the row.
+- Check on the phone: tap "English" / "മലയാളം" (should switch), tap the arrows (should change level), tap elsewhere (should start); in Malayalam the labels do not touch each other.

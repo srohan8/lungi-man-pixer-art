@@ -84,8 +84,8 @@ cv.addEventListener('pointerdown',e=>{
   if(state==='pages'&&pg&&pg.pr&&x>pg.pr[0]&&x<pg.pr[0]+pg.pr[2]&&y>pg.pr[1]&&y<pg.pr[1]+pg.pr[3]){pagesPrev();return}
   if(state==='play'&&x>W-76&&x<W-46&&y<44){setPause(true);return}
   if(x>W-48&&y<44){toggleSnd();return}
-  if(state==='title'&&splashT<=0&&y>199&&y<221&&Math.abs(x-W/2)<100){setLang(x<W/2?'en':'ml');beep(660,.05,'square',.04);return}/* language: English on the left, Malayalam on the right */
-  if(state==='title'&&splashT<=0&&y>120&&y<228&&(x<W*.36||x>W*.64)){pickLevel(x<W*.5?-1:1);return}
+  if(state==='title'&&splashT<=0&&y>207&&y<232&&Math.abs(x-W/2)<100){setLang(x<W/2?'en':'ml');beep(660,.05,'square',.04);return}/* language: English on the left, Malayalam on the right */
+  if(state==='title'&&splashT<=0&&y>110&&y<236&&(x<W*.36||x>W*.64)){pickLevel(x<W*.5?-1:1);return}
   startIfNeeded()});
 addEventListener('contextmenu',e=>e.preventDefault());
 const inp={
@@ -2631,14 +2631,14 @@ function draw(){TQ.length=0;syncPad();
     else{ptext('KANNAN',W/2,24,7,'#f0c040','center');ptext('AND THE',W/2,66,2,'#f4ecd0','center');ptext('KANJIRAVANAM CHRONICLES',W/2,82,3,'#ffe58a','center');ptext('KANNAN MUST SEAL THE PORTAL.',W/2,114,2,'#f4ecd0','center')}
     {const pk=pick<0?pickDefault():pick,L=LV[pk],sh=(tick>>4)%2;
       const lk=pk>pickMax();
-      for(const d of [-1,1]){const on=d<0?pk>0:pk<LV.length-1,ax=Math.round(W/2+d*Math.min(140,W*.33))+(on?d*sh*3:0),ay=166;g.fillStyle='#120a1c';for(let i=-1;i<16;i++)g.fillRect(ax-d*i-d,ay-i-2,1,i*2+5);g.fillStyle=on?'#ffe58a':'#4a4060';for(let i=0;i<14;i++)g.fillRect(ax-d*i,ay-i,1,i*2+1)}
-      ptext(L.act||'PROLOGUE',W/2,148,3,lk?'#6a6288':'#ffe58a','center');ptext(L.name||'',W/2,172,1,lk?'#7a7298':'#f4ecd0','center');
+      for(const d of [-1,1]){const on=d<0?pk>0:pk<LV.length-1,ax=Math.round(W/2+d*Math.min(140,W*.33))+(on?d*sh*3:0),ay=152;g.fillStyle='#120a1c';for(let i=-1;i<16;i++)g.fillRect(ax-d*i-d,ay-i-2,1,i*2+5);g.fillStyle=on?'#ffe58a':'#4a4060';for(let i=0;i<14;i++)g.fillRect(ax-d*i,ay-i,1,i*2+1)}
+      ptext(L.act||'PROLOGUE',W/2,136,3,lk?'#6a6288':'#ffe58a','center');ptext(L.name||'',W/2,164,1,lk?'#7a7298':'#f4ecd0','center');
       if(lk){/* a level not reached yet: name shown dimmed, a padlock and LOCKED instead of the start prompt */
-        const lx=Math.round(W/2-52),ly=183;g.fillStyle='#120a1c';g.fillRect(lx-1,ly-1,11,14);g.fillStyle='#b8a070';g.fillRect(lx+2,ly,5,1);g.fillRect(lx+1,ly+1,1,3);g.fillRect(lx+7,ly+1,1,3);g.fillStyle='#e8a050';g.fillRect(lx,ly+4,9,8);g.fillStyle='#120a1c';g.fillRect(lx+4,ly+6,1,3);
-        ptext('LOCKED',W/2+2,185,2,'#e8a050','center')}
-      else if((tick>>5)%2===0)ptext(isTouch?'TAP TO START':'PRESS SPACE TO START',W/2,192,2,'#cfe9c8','center')}
-    {const en=LANG!=='ml';ntext('English',W/2-44,205,9,en?'#ffe58a':'#8a82a8','center');ntext('|',W/2,205,9,'#8a82a8','center');ntext('മലയാളം',W/2+44,205,9,en?'#8a82a8':'#ffe58a','center');g.fillStyle=en?'#ffe58a':'#8a82a8';g.fillRect(en?Math.round(W/2-62):Math.round(W/2+26),217,36,1)}/* language choice: tap a word, or press L */
-    if(!isTouch)ptext('LEFT RIGHT CHOOSE   SPACE JUMP   X THROW',W/2,226,1,'#b8b0d0','center');
+        const lx=Math.round(W/2-52),ly=184;g.fillStyle='#120a1c';g.fillRect(lx-1,ly-1,11,14);g.fillStyle='#b8a070';g.fillRect(lx+2,ly,5,1);g.fillRect(lx+1,ly+1,1,3);g.fillRect(lx+7,ly+1,1,3);g.fillStyle='#e8a050';g.fillRect(lx,ly+4,9,8);g.fillStyle='#120a1c';g.fillRect(lx+4,ly+6,1,3);
+        ptext('LOCKED',W/2+2,186,2,'#e8a050','center')}
+      else if((tick>>5)%2===0)ptext(isTouch?'TAP TO START':'PRESS SPACE TO START',W/2,186,2,'#cfe9c8','center')}
+    {const en=LANG!=='ml';ntext('English',W/2-44,214,9,en?'#ffe58a':'#8a82a8','center');ntext('|',W/2,214,9,'#8a82a8','center');ntext('മലയാളം',W/2+44,214,9,en?'#8a82a8':'#ffe58a','center');g.fillStyle=en?'#ffe58a':'#8a82a8';g.fillRect(en?Math.round(W/2-62):Math.round(W/2+26),226,36,1)}/* language choice: tap a word, or press L */
+    if(!isTouch)ptext('LEFT RIGHT CHOOSE   SPACE JUMP   X THROW',W/2,244,1,'#b8b0d0','center');
   }
   if(state==='over'){overlay();ptext('GAME OVER',W/2,80,5,'#e8402e','center');ptext('SCORE '+score,W/2,112,2,'#f4ecd0','center');ptext('BEST '+Math.max(hi,score),W/2,130,2,'#ffe58a','center');if(lockT<=0)ptext(isTouch?'TAP TO CONTINUE':'PRESS ANY KEY',W/2,160,2,'#cfe9c8','center')}
   if(state==='win'){overlay();ptext('PORTAL SEALED!',W/2,70,5,'#f0c040','center');ptext('KANNAN SAVED KANJIRAVANAM.',W/2,108,2,'#f4ecd0','center');ptext('SCORE '+score+(score>=hi?'  NEW BEST':''),W/2,126,2,'#cfe9c8','center');if(lockT<=0)ptext(isTouch?'TAP TO PLAY AGAIN':'PRESS ANY KEY',W/2,156,2,'#ffe58a','center')}
