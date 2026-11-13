@@ -94,3 +94,19 @@ Pixabay Terms of Service, last updated 2026-10-20 (https://pixabay.com/service/t
 - Risk stays with the owner: some tracks may carry other rights (samples, Content ID). Pixabay gives no warranty, and if a claim is made about a track it must stop being used at once. Pixabay may also change its terms.
 - To do: for each of the five Pixabay files, save that track's own Pixabay page or licence certificate with the download date (not done yet).
 - Not covered here: the ElevenLabs terms and the art tools' terms (the in-game credits say the pictures are AI-made).
+
+### Track page details (copied from each track's Pixabay page by the owner, 2026-11-13)
+Every page states "Free for use under the Pixabay Content License". A screenshot or saved licence certificate is still to do.
+
+| Game file | Page title | Artist (as shown) | Page description (short) | Plays / downloads when checked |
+|---|---|---|---|---|
+| `bgm_act5.ogg` | "WATR - Train to Ernakulam Town" | ItsWatR (1,170 followers) | Indian fusion electronic: traditional rhythms and ethnic vocal chops with modern bass and synths | 8,553 / 799 |
+| `bgm_disco.ogg` | "Tamil comedy music upbeat rhythmic music" | KamaleshSiddu (340 followers) | South Indian folk rhythms with quirky vocal shouts; the artist's page says "No Copyrights" | 691,035 / 79,890 |
+| `bgm_bike.ogg` | "Kaleidoscope funky Indian fusion music" | LineshJose (8 followers) | Funky bass grooves with traditional elements | 31,039 / 2,536 |
+| `bgm_boss_komban.ogg`, `bgm_finale.ogg` | "360° - Indian fusion music" | LineshJose (8 followers) | Indian classical vocals, flute and percussion | 58,693 / 8,772 |
+| `bike_start.ogg`, `bike_loop.ogg` | "350cc bike firing motorcycle engine sound effect" | rsn267 (Freesound), shown on Pixabay as freesound_community | A 350cc motorcycle starting, idling and revving | 302,940 / 47,559 |
+
+Notes:
+- Three of the tracks contain human voices or vocal chops (ItsWatR, Kamalesh Siddu, "360°"). Pixabay's terms say audio may carry sample or other rights, so these carry slightly more risk than the instrumental ones. Keep the evidence.
+- The bike engine's real author is rsn267 (Freesound). The in-game credits say "freesound_community"; consider naming rsn267 as well.
+- The page titles differ slightly from the names used in the in-game credits ("Tamil Comedy Music", "360 Indian Fusion Music"). That is fine, but keep them recognisable.
