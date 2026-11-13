@@ -24,15 +24,17 @@ body.nopad .pad{display:none}
 #bJ{width:78px;height:78px;margin-bottom:24px}
 #rot{position:fixed;inset:0;z-index:5;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:var(--bg);color:var(--ink);font:700 18px "Trebuchet MS",Verdana,sans-serif;text-align:center;padding:24px}
 #rot span{font-size:46px}
+#stage{display:contents}html.rot #stage{display:block;position:fixed;top:0;transform-origin:0 0;transform:rotate(90deg)}html.rot #rot{display:none!important}
 @media (hover:hover) and (pointer:fine){.pad{display:none}}
 @media (orientation:portrait) and (hover:none){#rot{display:flex}}
 @font-face{font-family:'MalayalamUI';src:url(assets/fonts/NotoSansMalayalam.ttf);font-weight:100 900;font-display:swap}
 </style>
 </head>
 <body>
-<div id="wrap"><canvas id="c"></canvas></div><canvas id="t"></canvas>
+<div id="stage"><div id="wrap"><canvas id="c"></canvas></div><canvas id="t"></canvas>
 <div class="pad" id="padL"><button data-k="l" aria-label="Move left">◀</button><button data-k="r" aria-label="Move right">▶</button></div>
 <div class="pad" id="padR"><button data-k="s" data-en="THROW">THROW</button><button data-k="j" id="bJ" data-en="JUMP">JUMP</button></div>
+</div>
 <div id="rot"><span>📱↻</span>Turn your phone sideways to play</div>
 
 <script src="assets/lang/ml.js"></script>
@@ -40,10 +42,10 @@ body.nopad .pad{display:none}
 /* =================== setup =================== */
 const cv=document.getElementById('c'),g=cv.getContext('2d');
 const H=270,GY=210;let W=480;
-const isTouch=matchMedia('(hover:none)').matches;
+const isTouch=matchMedia('(hover:none)').matches;let rotOn=false;/* Reddit build only: window.REDDIT_ROT turns the game 90 degrees when a phone is held upright */
 
 /* =================== input =================== */
-const keys={},touch={l:0,r:0,j:0,s:0};
+const keys={},touch={l:0,r:0,j:0,s:0,jt:0,st:0};
 addEventListener('keydown',e=>{if(e.code==='KeyM'){toggleSnd();return}
   if(convo&&!paused&&e.code!=='KeyP'&&e.code!=='Escape'){if(e.code==='ArrowLeft'||e.code==='KeyA')convoGo(-1);else if(!e.repeat)convoGo(1);e.preventDefault();return}
   if(state==='pages'&&e.code==='Escape'){pagesSkip();return}
@@ -53,15 +55,24 @@ addEventListener('keydown',e=>{if(e.code==='KeyM'){toggleSnd();return}
   if(paused){if(e.code==='Space'||e.code==='Enter')setPause(false);else if(e.code==='KeyQ')pauseToMenu();e.preventDefault();return}
   keys[e.code]=true;if(['Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code))e.preventDefault();if(!e.repeat)startIfNeeded(e.code)});
 addEventListener('keyup',e=>{keys[e.code]=false});
+/* On-screen buttons. Each finger is tracked by its pointer id and may slide from one button to the next (a thumb rolling from THROW to JUMP presses JUMP and lets go of THROW; before, the first button kept the finger and the jump was lost). A press is also held for a few ticks (touch.jt / touch.st) so a very short tap during a slow frame is not missed. */
+const padBtn={},padPtr=new Map();
+document.querySelectorAll('[data-k]').forEach(b=>{padBtn[b.dataset.k]=b});
+function padHit(x,y){let best=null,bd=1e9;for(const k in padBtn){const r=padBtn[k].getBoundingClientRect(),d=Math.hypot(x-(r.left+r.width/2),y-(r.top+r.height/2));if(d<r.width/2+14&&d<bd){bd=d;best=k}}return best}
+function padSet(id,k){const old=padPtr.get(id);if(old===k)return;
+  if(old){touch[old]=Math.max(0,touch[old]-1);if(!touch[old])padBtn[old].classList.remove('on')}
+  if(k){padPtr.set(id,k);touch[k]++;padBtn[k].classList.add('on');if(k==='j')touch.jt=4;if(k==='s')touch.st=2;startIfNeeded(k)}else padPtr.delete(id)}
+function padClear(){padPtr.clear();touch.l=touch.r=touch.j=touch.s=0;for(const k in padBtn)padBtn[k].classList.remove('on')}
 document.querySelectorAll('[data-k]').forEach(b=>{
   const k=b.dataset.k;
-  const on=e=>{e.preventDefault();if(paused)return;if(convo)return;/* the game buttons never skip a dialogue */if(tut&&tut.phase==='msg'&&state==='play'){tutConfirm();return}try{b.setPointerCapture(e.pointerId)}catch(_){}touch[k]=1;b.classList.add('on');startIfNeeded(k)};
-  const off=e=>{e.preventDefault();touch[k]=0;b.classList.remove('on')};
-  b.addEventListener('pointerdown',on);
+  const on=e=>{e.preventDefault();if(paused)return;if(convo)return;/* the game buttons never skip a dialogue */if(tut&&tut.phase==='msg'&&state==='play'){tutConfirm();return}try{b.setPointerCapture(e.pointerId)}catch(_){}padSet(e.pointerId,k)};
+  const mv=e=>{if(!padPtr.has(e.pointerId)||paused||convo)return;e.preventDefault();padSet(e.pointerId,padHit(e.clientX,e.clientY))};
+  const off=e=>{e.preventDefault();padSet(e.pointerId,null)};
+  b.addEventListener('pointerdown',on);b.addEventListener('pointermove',mv);
   ['pointerup','pointercancel','lostpointercapture'].forEach(t=>b.addEventListener(t,off));
 });
 cv.addEventListener('pointerdown',e=>{
-  const r=cv.getBoundingClientRect(),x=(e.clientX-r.left)/r.width*W,y=(e.clientY-r.top)/r.height*H;
+  const r=cv.getBoundingClientRect(),x=rotOn?(e.clientY-r.top)/r.height*W:(e.clientX-r.left)/r.width*W,y=rotOn?(r.left+r.width-e.clientX)/r.width*H:(e.clientY-r.top)/r.height*H;
   if(tut&&tut.phase==='msg'&&state==='play'&&!paused){const r=tut.skipR;if(r&&x>r[0]&&x<r[0]+r[2]&&y>r[1]&&y<r[1]+r[3])tutSkip();else tutConfirm();return}
   if(convo&&!paused){/* only a tap on the dialogue box itself counts: the X closes, the left arrow goes back, the box or the right arrow goes on; a tap anywhere else does nothing */const br=dlg&&dlg.br;if(!br||x<br[0]||x>br[0]+br[2]||y<br[1]||y>br[1]+br[3])return;if(dlg.xr&&dlg.pt>10&&x>dlg.xr[0]&&x<dlg.xr[0]+dlg.xr[2]&&y>dlg.xr[1]&&y<dlg.xr[1]+dlg.xr[3]){convoClose();return}convoGo(y>br[1]+br[4]&&x<br[0]+36?-1:1);return}
   if(dlg&&dlg.pause&&state==='play'&&!paused&&dlg.armed&&dlg.pt>25){dlg=null;jumpPrev=true;return}
@@ -79,8 +90,8 @@ addEventListener('contextmenu',e=>e.preventDefault());
 const inp={
   l:()=>!!(keys.ArrowLeft||keys.KeyA||touch.l),
   r:()=>!!(keys.ArrowRight||keys.KeyD||touch.r),
-  j:()=>!!(keys.Space||keys.ArrowUp||keys.KeyW||keys.KeyZ||touch.j),
-  s:()=>!!(keys.KeyX||keys.KeyJ||keys.KeyK||keys.ShiftLeft||touch.s)
+  j:()=>!!(keys.Space||keys.ArrowUp||keys.KeyW||keys.KeyZ||touch.j||touch.jt>0),
+  s:()=>!!(keys.KeyX||keys.KeyJ||keys.KeyK||keys.ShiftLeft||touch.s||touch.st>0)
 };
 function goFull(){
   if(!isTouch||document.fullscreenElement)return;
@@ -264,7 +275,7 @@ function ntext(s,x,y,px,col,align='left'){s=tr(s);TQ.push({s,x,y,px,col,align,a:
 function nimg(img,x,y,w,h){TQ.push({img,x,y,w,h,a:g.globalAlpha})}
 function flushText(){
   if(!tg||!tg.fillText)return;
-  const r=cv.getBoundingClientRect(),d=Math.min(3,window.devicePixelRatio||1),w=Math.round(r.width*d),h=Math.round(r.height*d);
+  const r=rotOn?{left:(innerHeight-cv.offsetWidth)/2,top:(innerWidth-cv.offsetHeight)/2,width:cv.offsetWidth,height:cv.offsetHeight}:cv.getBoundingClientRect(),d=Math.min(3,window.devicePixelRatio||1),w=Math.round(r.width*d),h=Math.round(r.height*d);
   if(tcv.width!==w||tcv.height!==h){tcv.width=w;tcv.height=h}
   tcv.style.left=r.left+'px';tcv.style.top=r.top+'px';tcv.style.width=r.width+'px';tcv.style.height=r.height+'px';
   tg.setTransform(1,0,0,1,0,0);tg.clearRect(0,0,w,h);if(!TQ.length)return;
@@ -957,7 +968,7 @@ function begin(i,x){quiet=false;clearAge=0;pendSay=[];if(i!==retryLvl&&!noStartS
 /* Title screen level selector: left / right (arrows, A / D, or tap the arrows). TUNE.levelSelectAll=false limits it to the levels reached so far. */
 /* Pause: icon (top, left of the sound icon), P / Esc, and automatically when the app goes to the background. Only two choices: RESUME and MENU (back to the title screen). */
 function setPause(on){if(on&&state!=='play')return;if(paused===on)return;paused=on;
-  if(on){touch.l=touch.r=touch.j=touch.s=0;document.querySelectorAll('[data-k]').forEach(b=>b.classList.remove('on'))}else jumpPrev=true;
+  if(on){padClear();touch.jt=touch.st=0}else jumpPrev=true;
   try{if(typeof ac!=='undefined'&&ac)on?ac.suspend():ac.resume()}catch(e){}}
 function togglePause(){if(splashT>0)return;setPause(!paused)}
 function pauseToMenu(){convo=null;dlgHist.length=0;paused=false;try{if(typeof ac!=='undefined'&&ac)ac.resume()}catch(e){}saveHi();pick=-1;loadLevel(0);state='title';camx=0;banner=null;dlg=null}
@@ -1048,7 +1059,7 @@ function drawSacredTree(cx){const L=LV[lvl],k0=TREE_OF[L.boss];if(k0===undefined
     g.globalAlpha=1}
   else{const p=.5+.5*Math.sin(tick*.06);g.fillStyle='rgba(255,58,42,'+(.15+.1*p).toFixed(2)+')';g.fillRect(x+60,y+50,3,8)}
 }
-function startCine(k,next){const b=boss;cin={k,t:0,next,ox:b.x+b.w/2,hx:Math.round(P.x+P.w/2)};if(k==='pt'){P.f=1;P.vx=0;cin.gx=P.x+P.w/2}if(k==='mk'){cin.bx0=b.x;cin.bxT=Math.round(bossX+W*.56-b.w/2);cin.bcx=cin.bxT+Math.round(b.w/2);cin.sx=Math.round(P.x+P.w/2);cin.dir=cin.bcx>cin.sx?1:-1;cin.sx=cin.bcx-cin.dir*Math.min(165,Math.abs(cin.bcx-cin.sx));P.f=cin.dir}state='cine';dlg=null;banner=null;bullets=[];touch.l=touch.r=touch.j=touch.s=0;tutPulse(null)}
+function startCine(k,next){const b=boss;cin={k,t:0,next,ox:b.x+b.w/2,hx:Math.round(P.x+P.w/2)};if(k==='pt'){P.f=1;P.vx=0;cin.gx=P.x+P.w/2}if(k==='mk'){cin.bx0=b.x;cin.bxT=Math.round(bossX+W*.56-b.w/2);cin.bcx=cin.bxT+Math.round(b.w/2);cin.sx=Math.round(P.x+P.w/2);cin.dir=cin.bcx>cin.sx?1:-1;cin.sx=cin.bcx-cin.dir*Math.min(165,Math.abs(cin.bcx-cin.sx));P.f=cin.dir}state='cine';dlg=null;banner=null;bullets=[];padClear();touch.jt=touch.st=0;tutPulse(null)}
 function cineEnd(){if(cin&&cin.k==='pt'){const n=cin.next;cin=null;flashT=0;if(n)n();return}cin=null;fogK=0;state='clear';clearT=330;flashT=0}
 function cineTick(){const c=cin;if(c.k==='pt'){ptTick();return}if(c.k==='mk'){mkTick();return}c.t++;const t=c.t,b=boss;
   if(t===16){burst(c.ox,GY-22,['#2e2444','#6a4a90','#1a1426'],18);beep(140,.35,'sawtooth',.06)}
@@ -1312,7 +1323,7 @@ function update(){
   if(tut&&tut.phase==='msg'&&state==='play'&&!paused){tut.t++;return}
   tick++;if(splashT>0&&--splashT<=30&&preDone<preN&&tick<600)splashT=31;if(lockT>0)lockT--;if(shake>0)shake--;if(banner&&--banner.t<=0)banner=null;for(const q of pops)q.t--;pops=pops.filter(q=>q.t>0);if(dlg&&(!TUNE.dlgStay||dlg.fight)&&--dlg.t<=0)dlg=null;if(dlg&&dlg.dist&&state==='play'&&P&&Math.abs(P.x-dlg.x0)>dlg.dist)dlg=null;
   for(const p of parts){p.x+=p.vx;p.vy+=.15;p.y+=p.vy;p.l--}parts=parts.filter(p=>p.l>0);if(flashT>0)flashT--;if(fadeT>0)fadeT--;for(const q of rings)q.t++;rings=rings.filter(q=>q.t<16);
-  if(innerHeight>innerWidth&&isTouch)return;
+  if(innerHeight>innerWidth&&isTouch&&!rotOn)return;
   if(state==='title'){camx=(camx+.4)%(bossX-W);return}
   if(state==='play'&&dlg&&dlg.pause&&!dlg.conv&&!convo&&!paused){const d0=dlg;dlg=null;say(d0.who,d0.text)}/* a line said while a level was loading becomes a normal conversation box */
   if(pendSay.length){if(!banner||banner.t<=12){const q=pendSay;pendSay=[];q.forEach(a=>say(...a))}else{if(state==='clear')clearT=Math.max(clearT,6);else if(state==='play'&&!paused)return}}/* the act-name banner holds the game still for about 2 s, then the opening box appears */
@@ -1343,7 +1354,7 @@ function update(){
     else if(f.t>=f.T){say('KANNAN','THIS CANNOT BE REAL...',undefined,true);P.fly=null;P.x=bossX+Math.round(W/2)-7;P.f=1;P.y=f.yE;P.on=true;P.inv=70;flashC='#fff6d0';flashT=14;burst(P.x+7,GY,['#ffd860','#fff6c0','#ffffff'],16);beep(1320,.3,'sine',.06);beep(1760,.4,'sine',.04)}
     if(LV[lvl].arena)arenaTick();return}
 
-  let L=inp.l(),R=inp.r();let J=inp.j();const S=inp.s();if(P.freeze>0){P.freeze--;L=false;R=false;J=false}if(P.rev>0){P.rev--;const tt=L;L=R;R=tt}const dir=(R?1:0)-(L?1:0);
+  let L=inp.l(),R=inp.r();let J=inp.j();const S=inp.s();if(touch.jt>0)touch.jt--;if(touch.st>0)touch.st--;if(P.freeze>0){P.freeze--;L=false;R=false;J=false}if(P.rev>0){P.rev--;const tt=L;L=R;R=tt}const dir=(R?1:0)-(L?1:0);
   P.vx=LV[lvl].bike?Math.max(.9,Math.min(3.6,3.6*(bossX+40-P.x)/320)):dir*2.2;if(LV[lvl].bike)P.f=1;else if(dir)P.f=dir;if(P.boost>0){P.boost--;P.vx=P.bvx}
   const jEdge=J&&!jumpPrev;
   /* forgiving jump: a press up to 7 frames before landing still jumps (buffer), and a press up to 7 frames after running off an edge still jumps (coyote time); a quick tap gives a real hop, not a twitch */
@@ -2658,8 +2669,9 @@ function drawCover(){
 }
 
 /* =================== screen fit =================== */
+function applyRot(){if(!window.REDDIT_ROT){rotOn=false;return}const on=!!window.REDDIT_ROT&&(isTouch||navigator.maxTouchPoints>0||matchMedia('(pointer:coarse)').matches)&&innerHeight>innerWidth;rotOn=on;document.documentElement.classList.toggle('rot',on);const s=document.getElementById('stage');if(on){s.style.width=innerHeight+'px';s.style.height=innerWidth+'px';s.style.left=innerWidth+'px'}else{s.style.width=s.style.height=s.style.left=''}}
 function fit(){
-  const vw=innerWidth,vh=innerHeight;
+  applyRot();const vw=rotOn?innerHeight:innerWidth,vh=rotOn?innerWidth:innerHeight;
   W=Math.max(400,Math.min(640,Math.round(H*vw/vh/2)*2));
   cv.width=W;cv.height=H;g.imageSmoothingEnabled=false;
   const s=Math.min(vw/W,vh/H);cv.style.width=Math.floor(W*s)+'px';cv.style.height=Math.floor(H*s)+'px';
