@@ -13,7 +13,7 @@ The Reddit build must keep today's act layouts, enemy counts and checkpoint spot
 
 ## The setting: `actLength`
 
-The switch is called `actLength`: `'long'` (the main build, the default when no platform profile is set) or `'short'` (Reddit, today's layouts). It lives in the platform profile (`window.PLATFORM`, read in `index.html` as `PLAT`). The profile key is `short` until the other chat's edits are committed, then it is renamed to `actLength` in one small change (`tools/build-reddit.js`, `index.html`, `CLAUDE.md`, this file).
+The switch is called `actLength`: `'long'` (the main build, the default when no platform profile is set) or `'short'` (Reddit, today's layouts). It lives in the platform profile (`window.PLATFORM`, read in `index.html` as `PLAT`). The profile key is `actLength`; the Reddit build sets `'short'` in `tools/build-reddit.js`, and a missing profile means `'long'`.
 
 **Rule (owner, never to be broken): `actLength` never contains any conversation or game story element, unless the owner adds it.**
 
@@ -51,9 +51,9 @@ Order of work: Act I first, then III and IV, then recheck II and V. One act per 
 
 ## How the Reddit build stays short
 
-- One switch decides it: the Reddit build sets the platform profile `window.PLATFORM = {platform:'reddit', short:true, rotateInPortrait:true}` (in `tools/build-reddit.js`; `index.html` reads it as `PLAT`, a missing profile means the main build). The lengthening reads `PLAT.short`, so with the switch on every level is generated exactly as in `v0.9-full-story`.
+- One switch decides it: the Reddit build sets the platform profile `window.PLATFORM = {platform:'reddit', actLength:'short', rotateInPortrait:true}` (in `tools/build-reddit.js`; `index.html` reads it as `PLAT`, a missing profile means the main build). The lengthening reads `PLAT.actLength`, so with the switch on every level is generated exactly as in `v0.9-full-story`.
 - The long layout must not change the random streams of the short layout (same rule as the extra palms: use their own random stream), so short mode stays identical, not just similar.
-- Check before every release: `node tools/smoke-test.js` for the main build, and the same run with `window.PLATFORM = {short:true}` set must give the same level lengths and checkpoint positions as the tag (Act I lamps 1382, 2514, 3208; Act II 1427, 2568, 3341; Act III 1451, 2287, 3554; Act IV 1385, 2270, 3513; Act V 1543, 2929, 3627).
+- Check before every release: `node tools/smoke-test.js` for the main build, and the same run with `window.PLATFORM = {actLength:'short'}` set must give the same level lengths and checkpoint positions as the tag (Act I lamps 1382, 2514, 3208; Act II 1427, 2568, 3341; Act III 1451, 2287, 3554; Act IV 1385, 2270, 3513; Act V 1543, 2929, 3627).
 - Progress saved on the device is per version (the Reddit webview has its own storage), so the two versions never share saves.
 
 ## Open

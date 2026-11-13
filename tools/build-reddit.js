@@ -19,7 +19,7 @@ fs.rmSync(path.join(pub, 'assets', 'fonts', 'NotoSansMalayalam.ttf'), { force: t
 // Reddit's webview may refuse inline <script>/<style>, so move them into game.js / game.css.
 let html = fs.readFileSync(path.join(www, 'index.html'), 'utf8');
 // Platform profile read by index.html (see PLAT): the Reddit build is the short game and may rotate in portrait.
-const profile = { platform: 'reddit', short: true, rotateInPortrait: true, languages: ['en'] };
+const profile = { platform: 'reddit', actLength: 'short', rotateInPortrait: true, languages: ['en'] };
 let js = 'window.PLATFORM = ' + JSON.stringify(profile) + ';' + String.fromCharCode(10), css = '';
 html = html.replace('<script src="assets/lang/ml.js"></script>', '');
 html = html.replace(/<script>([\s\S]*?)<\/script>/g, (m, body) => { js += body + '\n;\n'; return '<script src="game.js"></script>'; });
