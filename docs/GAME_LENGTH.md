@@ -11,6 +11,18 @@ Owner decisions (November 2026). Status: planned, not built yet. The tag `v0.9-f
 
 The Reddit build must keep today's act layouts, enemy counts and checkpoint spots exactly. It still gets every other fix (art, text, bugs, Malayalam), only not the lengthening.
 
+## The setting: `actLength`
+
+The switch is called `actLength`: `'long'` (the main build, the default when no platform profile is set) or `'short'` (Reddit, today's layouts). It lives in the platform profile (`window.PLATFORM`, read in `index.html` as `PLAT`). The profile key is `short` until the other chat's edits are committed, then it is renamed to `actLength` in one small change (`tools/build-reddit.js`, `index.html`, `CLAUDE.md`, this file).
+
+**Rule (owner, never to be broken): `actLength` never contains any conversation or game story element, unless the owner adds it.**
+
+- It changes layout only: ground length, enemy count per stretch, checkpoint stall spacing.
+- It never adds, removes, moves or rewrites a dialogue box, act banner, story page, scene, cinematic, cameo (Soniya and the others), tutorial message, or any line of text.
+- A long act has exactly the same story beats as a short one, in the same order. A longer act simply has more ground between them. The existing lines (Soniya's line at the first stall, the opening box, the boss lines) stay where they are in the level logic; new stalls and new ground carry no lines.
+- Any story or dialogue for the longer acts is a separate request from the owner, written into `docs/STORY_CARDS.md` first, and not part of `actLength`.
+- Check for every lengthened act: the list of drawn strings (`LANG_LOG=strings.txt node tools/smoke-test.js` writes the list to that file) is identical for `'short'` and `'long'`.
+
 ## How the long acts work (main build only)
 
 The same three buttons and the same one-hit rules. Only layout grows:
