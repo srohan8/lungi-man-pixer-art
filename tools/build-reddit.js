@@ -29,7 +29,7 @@ let html = fs.readFileSync(path.join(www, 'index.html'), 'utf8');
 const profile = { platform: 'reddit', actLength: 'short', rotateInPortrait: true, languages: ['en'], audioSet: 'generated' };
 let js = 'window.PLATFORM = ' + JSON.stringify(profile) + ';' + String.fromCharCode(10), css = '';
 html = html.replace('<script src="assets/lang/ml.js"></script>', '');
-html = html.replace(/<script>([\s\S]*?)<\/script>/g, (m, body) => { js += body + '\n;\n'; return '<script src="game.js"></script>'; });
+html = html.replace(/<script>([\s\S]*?)<\/script>/g, (m, body) => { js += body + '\n;\n'; return '<script src="boot.js" type="module"></script>'; });
 html = html.replace(/<style>([\s\S]*?)<\/style>/g, (m, body) => { css += body + '\n'; return '<link rel="stylesheet" href="game.css">'; });
 // A pulsing LOADING text shows until the game's canvas draws its first frame over it (it sits behind the game layers).
 html = html.replace('<div id="stage">', '<div id="boot">LOADING</div><div id="stage">');

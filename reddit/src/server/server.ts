@@ -1,13 +1,26 @@
+import {once} from 'node:events'
 import type {IncomingMessage, ServerResponse} from 'node:http'
-import {reddit} from '@devvit/web/server'
+import {context, reddit} from '@devvit/web/server'
 import type {
   PartialJsonValue,
   TriggerResponse,
   UiResponse,
 } from '@devvit/web/shared'
-import {Endpoint, EndpointMethod, type ErrorRsp} from '../shared/api.ts'
+import {
+  Endpoint,
+  EndpointMethod,
+  type ErrorRsp,
+  type GetProgressRsp,
+  type SaveProgressRsp,
+} from '../shared/api.ts'
+import {cleanProgress, dbGetProgress, dbSaveProgress} from './db.ts'
 
-type AnyRsp = UiResponse | TriggerResponse | ErrorRsp
+type AnyRsp =
+  | GetProgressRsp
+  | SaveProgressRsp
+  | UiResponse
+  | TriggerResponse
+  | ErrorRsp
 
 const POST_TITLE = 'Kannan and the Kanjiravanam Chronicles'
 
@@ -36,6 +49,12 @@ async function route(
     rsp = {error: 'not found', status: 404}
   } else {
     switch (endpoint) {
+      case Endpoint.GetProgress:
+        rsp = await routeGetProgress()
+        break
+      case Endpoint.SaveProgress:
+        rsp = await routeSaveProgress(reqMsg)
+        break
       case Endpoint.OnMenuNewPost:
         rsp = await routeMenuNewPost()
         break
@@ -52,6 +71,21 @@ async function route(
   writeJson<PartialJsonValue>('status' in rsp ? rsp.status : 200, rsp, rspMsg)
 }
 
+async function routeGetProgress(): Promise<GetProgressRsp> {
+  const userId = context.userId
+  if (!userId) return {progress: null}
+  return {progress: await dbGetProgress(userId)}
+}
+
+async function routeSaveProgress(
+  reqMsg: IncomingMessage,
+): Promise<SaveProgressRsp | ErrorRsp> {
+  const userId = context.userId
+  if (!userId) return {error: 'not logged in', status: 401}
+  const req = cleanProgress(await readJson<unknown>(reqMsg))
+  return {progress: await dbSaveProgress(userId, req)}
+}
+
 async function routeMenuNewPost(): Promise<UiResponse> {
   const post = await reddit.submitCustomPost({title: POST_TITLE})
   return {
@@ -63,6 +97,13 @@ async function routeMenuNewPost(): Promise<UiResponse> {
 async function routeAppInstall(): Promise<TriggerResponse> {
   await reddit.submitCustomPost({title: POST_TITLE})
   return {}
+}
+
+async function readJson<T>(reqMsg: IncomingMessage): Promise<T> {
+  const chunks: Uint8Array[] = []
+  reqMsg.on('data', chunk => chunks.push(chunk))
+  await once(reqMsg, 'end')
+  return JSON.parse(`${Buffer.concat(chunks)}`)
 }
 
 function writeJson<T extends PartialJsonValue>(

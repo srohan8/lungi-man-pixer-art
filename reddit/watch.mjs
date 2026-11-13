@@ -13,7 +13,7 @@ const common = {
 }
 const client = await context({
   ...common,
-  entryPoints: ['src/client/splash.ts'],
+  entryPoints: ['src/client/splash.ts', 'src/client/boot.ts'],
   format: 'esm',
   outdir: 'public',
   platform: 'browser',

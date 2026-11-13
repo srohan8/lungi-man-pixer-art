@@ -37,7 +37,7 @@ This is a fantasy adventure with cartoon-style pixel art. Enemies are spirits, a
 
 ## Data and privacy
 
-The app does not collect, store or share any personal information. It does not use your Reddit username. Your progress and language choice stay on your own device only. The app has no accounts, no leaderboards, no ads, no purchases, and it makes no requests to outside sites: all art, fonts and sounds are included in the app.
+The app does not collect or share personal information and does not use your Reddit username. It saves your game progress (the furthest act you reached, whether you have seen the intro, and your best score) on the app's server, tied to your Reddit account ID, so it survives updates and carries to other devices. Saved progress is deleted automatically 30 days after your last save. Your sound choice stays on your own device. The app has no accounts, no leaderboards, no ads, no purchases, and it makes no requests to outside sites: all art, fonts and sounds are included in the app.
 
 ## For moderators: installing and using
 
