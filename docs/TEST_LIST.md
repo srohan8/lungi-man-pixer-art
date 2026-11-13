@@ -125,3 +125,7 @@ Uninstall the old build first, then install the newest debug APK.
 ## Dialogue arrows and the stage-start pose (fix)
 - The "next" arrow strip under a dialogue box was as wide as the "3 / 6" counter even when the box is a single line with no counter. It is now only as wide as the arrow when there is no counter.
 - At the start of an act the hero stood in the jump pose while the act banner held the game and the opening box waited. He now stands (idle) until the box appears and the game starts. Check Act I and the other acts: banner, then box, hero standing the whole time.
+
+## Old hero sprites after a fast start (fix)
+- The game checked once whether the whole new hero set (hnidle, hnrun, hnjump, hnact) was loaded. If the first check came before every picture had loaded (fresh start, slow phone), the answer "no" was kept for the whole session and the old, smaller hero frames were used. The check now keeps only a "yes" and retries every half second.
+- Check on the phone right after a cold start (close the app, open, tap fast): the hero should be the new set from the first stage (idle, 8-frame run, new jump poses), never the old one.
