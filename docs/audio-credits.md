@@ -85,3 +85,12 @@ The ride now uses the original recording again: `freesound_community-350cc-bike-
 
 ## Exhausted Kannan before Pathalam (2026-11-07)
 `assets/audio/sfx/kannan_pant.ogg` (panting, plays every 110 ticks while he is beaten up and out of breath) and `kannan_fall_scream.ogg` (his scream at the start of the fall into Pathalam). Made with ElevenLabs sound effects (`eleven_text_to_sound_v2`), one take each, loudness-normalised to -16 LUFS. Sources `kannan_pant_a.mp3` and `kannan_fall_scream_a.mp3` (not packaged in the app). The model returned 2 s and 1 s instead of the 6 s and 2.5 s that were asked for.
+
+## Pixabay licence check (read 2026-11-13)
+Pixabay Terms of Service, last updated 2026-10-20 (https://pixabay.com/service/terms/), section 5. Applies to the Pixabay files above: Act V (ItsWatR), disco (Kamalesh Siddu), bike ride and Pey Komban fight / finale (Linesh Jose), and the bike engine recording.
+- Allowed: irrevocable, worldwide, perpetual, free licence to use, copy, modify and adapt, for commercial and non-commercial use. No attribution needed (the in-game credits give it anyway).
+- Not allowed: selling or distributing a track on a Standalone basis (unchanged, or only filtered, resized or cropped). Trimmed, looped and normalised inside a game with art, text and other audio is a new creative work, so it is not Standalone. Do not let the music files be offered as downloads on their own.
+- Not allowed: giving the impression the tracks were made by us. The credits name the artists; keep it that way.
+- Risk stays with the owner: some tracks may carry other rights (samples, Content ID). Pixabay gives no warranty, and if a claim is made about a track it must stop being used at once. Pixabay may also change its terms.
+- To do: for each of the five Pixabay files, save that track's own Pixabay page or licence certificate with the download date (not done yet).
+- Not covered here: the ElevenLabs terms and the art tools' terms (the in-game credits say the pictures are AI-made).
