@@ -7,6 +7,10 @@ Read on 2026-11-13. These are summaries of the public terms, not legal advice. R
 - **Editing:** Figma.
 - **Code and scripts:** Claude (Anthropic).
 
+## Where the shipped art came from (owner's account, 2026-11-13)
+Everything shipped was either (1) generated with AI image tools from reference images supplied by the owner, or (2) created by Claude from the storyline (the game's built-in code-drawn sprites and scenes). The owner created the character concepts. `assets/reference/` holds the references and sheets and is not shipped (the build skips it and git ignores it).
+Open question: whether every reference image is the owner's own work, or whether some are third-party images (found online, photos, other games). Record the answer here.
+
 ## What the terms say
 | Tool | Terms read | Ownership of what you make |
 |---|---|---|
