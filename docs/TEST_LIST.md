@@ -129,3 +129,8 @@ Uninstall the old build first, then install the newest debug APK.
 ## Old hero sprites after a fast start (fix)
 - The game checked once whether the whole new hero set (hnidle, hnrun, hnjump, hnact) was loaded. If the first check came before every picture had loaded (fresh start, slow phone), the answer "no" was kept for the whole session and the old, smaller hero frames were used. The check now keeps only a "yes" and retries every half second.
 - Check on the phone right after a cold start (close the app, open, tap fast): the hero should be the new set from the first stage (idle, 8-frame run, new jump poses), never the old one.
+
+## Level selector locked by progress
+- Title screen: the selector now only goes as far as the furthest level reached (the right arrow dims there). A brand-new player can only pick the Prologue. Clearing a level unlocks the next one. The furthest level ever reached is remembered separately from where a new game starts.
+- Finish the game (ending): afterwards every level can be picked, and a new game still starts at Act I (default pick). Check Acts II to V can be replayed after the ending.
+- Players who already had saved progress keep it (their furthest act is the unlock). Someone who finished the game before this change had progress reset to Act I by the old ending, so they unlock again as they play (or by finishing once more).
