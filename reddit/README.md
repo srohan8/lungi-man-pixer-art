@@ -58,8 +58,6 @@ The game is plain HTML, Canvas and JavaScript with no dependencies. This folder 
 - `public/game.html`, `game.js`, `game.css` and `public/assets/` are generated from the main game by `../tools/build-reddit.js`. Do not edit them by hand.
 - `src/server` creates the game post. The game itself runs in the browser.
 
-Length: this version is deliberately the short one. The main (Android) build is being lengthened to roughly 75 to 90 minutes, but the Reddit build keeps the current short acts, for quick play inside a post. `../tools/build-reddit.js` will set `window.GAME_SHORT = 1` for that (plan in `../docs/GAME_LENGTH.md`).
-
 Commands (run inside this folder; on Windows PowerShell use `npm.cmd`):
 
 - `npm run dev`: playtest in your test subreddit.

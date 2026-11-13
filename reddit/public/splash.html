@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Kannan and the Kanjiravanam Chronicles</title>
+    <link rel="modulepreload" href="splash.js">
+    <style>
+    body {
+      margin: 0;
+      width: 100dvw;
+      height: 100dvh;
+      overflow: hidden;
+      display: grid;
+      place-items: center;
+      background: #120a1e;
+      color: #f4ecd0;
+      font-family: system-ui, sans-serif;
+    }
+    main {
+      display: grid;
+      gap: 1rem;
+      justify-items: center;
+      text-align: center;
+      padding: 0 16px;
+    }
+    .logo {
+      width: min(86vw, 420px);
+      height: auto;
+    }
+    p {
+      margin: 0;
+      opacity: 0.8;
+      font-size: 0.9rem;
+    }
+    button {
+      font-size: 1.1rem;
+      font-weight: 700;
+      padding: 0.7rem 2.2rem;
+      border: 0;
+      border-radius: 8px;
+      background: #f0c040;
+      color: #120a1e;
+    }
+    </style>
+  </head>
+  <body>
+    <main>
+      <img
+        class="logo"
+        src="assets/art/bosses/logo_hi.png"
+        width="1000"
+        height="397"
+        alt="Kannan and the Kanjiravanam Chronicles"
+      >
+      <p>Run, jump, throw coconuts. Best played in landscape.</p>
+      <button id="start-btn" type="button">PLAY</button>
+    </main>
+    <script src="splash.js" type="module"></script>
+  </body>
+</html>

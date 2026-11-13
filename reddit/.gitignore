@@ -1,0 +1,10 @@
+/node_modules/
+/dist/
+/public/*.js*
+/.env
+
+# game files copied in by ../tools/build-reddit.js
+/public/assets/
+/public/game.html
+/public/game.js
+/public/game.css

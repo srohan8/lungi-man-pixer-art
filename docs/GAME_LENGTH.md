@@ -39,9 +39,9 @@ Order of work: Act I first, then III and IV, then recheck II and V. One act per 
 
 ## How the Reddit build stays short
 
-- One switch decides it: the Reddit build sets `window.GAME_SHORT = 1` (added in `tools/build-reddit.js`, next to the existing `window.REDDIT_ROT = 1`). The lengthening reads it, so with the switch on every level is generated exactly as in `v0.9-full-story`.
+- One switch decides it: the Reddit build sets the platform profile `window.PLATFORM = {platform:'reddit', short:true, rotateInPortrait:true}` (in `tools/build-reddit.js`; `index.html` reads it as `PLAT`, a missing profile means the main build). The lengthening reads `PLAT.short`, so with the switch on every level is generated exactly as in `v0.9-full-story`.
 - The long layout must not change the random streams of the short layout (same rule as the extra palms: use their own random stream), so short mode stays identical, not just similar.
-- Check before every release: `node tools/smoke-test.js` for the main build, and the same run with `GAME_SHORT` set must give the same level lengths and checkpoint positions as the tag (Act I lamps 1382, 2514, 3208; Act II 1427, 2568, 3341; Act III 1451, 2287, 3554; Act IV 1385, 2270, 3513; Act V 1543, 2929, 3627).
+- Check before every release: `node tools/smoke-test.js` for the main build, and the same run with `window.PLATFORM = {short:true}` set must give the same level lengths and checkpoint positions as the tag (Act I lamps 1382, 2514, 3208; Act II 1427, 2568, 3341; Act III 1451, 2287, 3554; Act IV 1385, 2270, 3513; Act V 1543, 2929, 3627).
 - Progress saved on the device is per version (the Reddit webview has its own storage), so the two versions never share saves.
 
 ## Open

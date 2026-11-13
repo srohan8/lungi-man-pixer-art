@@ -54,7 +54,7 @@ Level selector (owner request): the title screen has left/right arrows (keys, A/
 
 ## Game length (owner decision, planned, not built; plan in `docs/GAME_LENGTH.md`)
 - The main (Android) build gets longer acts: target about 75 to 90 minutes for a first playthrough, by more ground, more enemies from the same set and more checkpoint stalls (about one per 1,000 px). No new mechanics.
-- **The Reddit version stays as short as it is today** (the layouts of the tag `v0.9-full-story`). The Reddit build will set `window.GAME_SHORT = 1` and the lengthening must read it, so short mode is generated exactly as now. Never lengthen the Reddit build.
+- **The Reddit version stays as short as it is today** (the layouts of the tag `v0.9-full-story`). The Reddit build sets the platform profile `window.PLATFORM = {platform:'reddit', short:true, rotateInPortrait:true}` (tools/build-reddit.js; read in index.html as `PLAT`) and the lengthening must read `PLAT.short`, so short mode is generated exactly as now. Never lengthen the Reddit build.
 
 ## Adding story or new acts (checklist)
 - Reuses the same three buttons and the same one-hit rules.
