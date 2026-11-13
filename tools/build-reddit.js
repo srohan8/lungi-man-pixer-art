@@ -13,11 +13,15 @@ execFileSync(process.execPath, [path.join(__dirname, 'build-www.js')], { stdio: 
 
 fs.rmSync(path.join(pub, 'assets'), { recursive: true, force: true });
 fs.cpSync(path.join(www, 'assets'), path.join(pub, 'assets'), { recursive: true });
+// English only for now: leave out the Malayalam translations and font (profile.languages)
+fs.rmSync(path.join(pub, 'assets', 'lang'), { recursive: true, force: true });
+fs.rmSync(path.join(pub, 'assets', 'fonts', 'NotoSansMalayalam.ttf'), { force: true });
 // Reddit's webview may refuse inline <script>/<style>, so move them into game.js / game.css.
 let html = fs.readFileSync(path.join(www, 'index.html'), 'utf8');
 // Platform profile read by index.html (see PLAT): the Reddit build is the short game and may rotate in portrait.
-const profile = { platform: 'reddit', short: true, rotateInPortrait: true };
+const profile = { platform: 'reddit', short: true, rotateInPortrait: true, languages: ['en'] };
 let js = 'window.PLATFORM = ' + JSON.stringify(profile) + ';' + String.fromCharCode(10), css = '';
+html = html.replace('<script src="assets/lang/ml.js"></script>', '');
 html = html.replace(/<script>([\s\S]*?)<\/script>/g, (m, body) => { js += body + '\n;\n'; return '<script src="game.js"></script>'; });
 html = html.replace(/<style>([\s\S]*?)<\/style>/g, (m, body) => { css += body + '\n'; return '<link rel="stylesheet" href="game.css">'; });
 fs.writeFileSync(path.join(pub, 'game.html'), html);

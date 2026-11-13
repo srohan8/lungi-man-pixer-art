@@ -84,7 +84,7 @@ cv.addEventListener('pointerdown',e=>{
   if(state==='pages'&&pg&&pg.pr&&x>pg.pr[0]&&x<pg.pr[0]+pg.pr[2]&&y>pg.pr[1]&&y<pg.pr[1]+pg.pr[3]){pagesPrev();return}
   if(state==='play'&&x>W-76&&x<W-46&&y<44){setPause(true);return}
   if(x>W-48&&y<44){toggleSnd();return}
-  if(state==='title'&&splashT<=0&&y>207&&y<232&&Math.abs(x-W/2)<100){setLang(x<W/2?'en':'ml');beep(660,.05,'square',.04);return}/* language: English on the left, Malayalam on the right */
+  if(state==='title'&&splashT<=0&&LANGS.includes('ml')&&y>207&&y<232&&Math.abs(x-W/2)<100){setLang(x<W/2?'en':'ml');beep(660,.05,'square',.04);return}/* language: English on the left, Malayalam on the right */
   if(state==='title'&&splashT<=0&&y>110&&y<236&&(x<W*.36||x>W*.64)){pickLevel(x<W*.5?-1:1);return}
   startIfNeeded()});
 addEventListener('contextmenu',e=>e.preventDefault());
@@ -239,7 +239,8 @@ const FONT={A:'010101111101101',B:'110101110101110',C:'011100100100011',D:'11010
 /* =================== language: English / Malayalam ===================
    All game text is written in English (mostly capitals) in the code. In Malayalam mode every string is looked up in ML_DICT (assets/lang/ml.js, built from docs/MALAYALAM.md)
    at the moment it is drawn, and everything is drawn with the bundled Noto Sans Malayalam (the pixel font has no Malayalam letters). A missing translation shows the English text. */
-let LANG='en';try{LANG=localStorage.getItem('lungiman-lang')==='ml'?'ml':'en'}catch(e){}
+const LANGS=PLAT.languages||['en','ml'];/* languages this build offers (platform profile); the Reddit build is English only for now */
+let LANG='en';try{LANG=(LANGS.includes('ml')&&localStorage.getItem('lungiman-lang')==='ml')?'ml':'en'}catch(e){}
 const MLMAP=new Map();(function(){const d=(typeof window!=='undefined'&&window.ML_DICT)||{};for(const k in d)MLMAP.set(lkey(k),d[k])})();
 function lkey(s){return String(s).replace(/\s+/g,' ').trim().toUpperCase()}
 const TRLOG=(typeof window!=='undefined'&&window.__TRLOG)||null,TRMISS=(typeof window!=='undefined'&&window.__TRMISS)||null;/* development: a Set that collects every string the game draws */
@@ -256,7 +257,7 @@ function glen(s){return GSEG?[...GSEG.segment(s)].length:s.length}
 function gsl(s,n){return GSEG?[...GSEG.segment(s)].slice(0,n).map(x=>x.segment).join(''):s.slice(0,n)}
 /* the title logo picture: the Malayalam one when that language is chosen and the file exists */
 function logoHi(){return (LANG==='ml'&&ART.logo_ml_hi)||ART.logo_hi}
-function setLang(l){LANG=l==='ml'?'ml':'en';try{localStorage.setItem('lungiman-lang',LANG)}catch(e){}applyLang()}
+function setLang(l){LANG=l==='ml'&&LANGS.includes('ml')?'ml':'en';try{localStorage.setItem('lungiman-lang',LANG)}catch(e){}applyLang()}
 function applyLang(){TFONT=(LANG==='ml'?'"MalayalamUI",':'')+TFONT_BASE;
   if(document.fonts&&document.fonts.load)try{document.fonts.load('700 16px MalayalamUI','അആ')}catch(e){}
   document.querySelectorAll('[data-en]').forEach(b=>{b.textContent=tr(b.getAttribute('data-en'))})}
@@ -1280,7 +1281,7 @@ function newGame(){bossHeard=-1;retryLvl=-1;score=0;actScore=0;const picked=pick
 function startIfNeeded(src){
   if(state==='cine'){return}/* owner decision: the finishing cinematics cannot be skipped, they always play to the end */
   if(state==='play'&&tut&&tut.phase==='msg'&&!paused){tutConfirm(src);return}
-  if(state==='title'&&splashT<=0){if(src==='KeyL'){setLang(LANG==='ml'?'en':'ml');beep(660,.05,'square',.04);return}if(src==='ArrowLeft'||src==='KeyA'||src==='l'){pickLevel(-1);return}if(src==='ArrowRight'||src==='KeyD'||src==='r'){pickLevel(1);return}}
+  if(state==='title'&&splashT<=0){if(src==='KeyL'&&LANGS.includes('ml')){setLang(LANG==='ml'?'en':'ml');beep(660,.05,'square',.04);return}if(src==='ArrowLeft'||src==='KeyA'||src==='l'){pickLevel(-1);return}if(src==='ArrowRight'||src==='KeyD'||src==='r'){pickLevel(1);return}}
   goFull();
   if(!AUD.go){AUD.go=true;try{actx()&&ac.resume()}catch(e){}SFX_NAMES.forEach(n=>loadBuf(n,'sfx'))}
   if(splashT>0){splashT=0;return}
@@ -2637,7 +2638,7 @@ function draw(){TQ.length=0;syncPad();
         const lx=Math.round(W/2-52),ly=184;g.fillStyle='#120a1c';g.fillRect(lx-1,ly-1,11,14);g.fillStyle='#b8a070';g.fillRect(lx+2,ly,5,1);g.fillRect(lx+1,ly+1,1,3);g.fillRect(lx+7,ly+1,1,3);g.fillStyle='#e8a050';g.fillRect(lx,ly+4,9,8);g.fillStyle='#120a1c';g.fillRect(lx+4,ly+6,1,3);
         ptext('LOCKED',W/2+2,186,2,'#e8a050','center')}
       else if((tick>>5)%2===0)ptext(isTouch?'TAP TO START':'PRESS SPACE TO START',W/2,186,2,'#cfe9c8','center')}
-    {const en=LANG!=='ml';ntext('English',W/2-44,214,9,en?'#ffe58a':'#8a82a8','center');ntext('|',W/2,214,9,'#8a82a8','center');ntext('മലയാളം',W/2+44,214,9,en?'#8a82a8':'#ffe58a','center');g.fillStyle=en?'#ffe58a':'#8a82a8';g.fillRect(en?Math.round(W/2-62):Math.round(W/2+26),226,36,1)}/* language choice: tap a word, or press L */
+    if(LANGS.includes('ml')){const en=LANG!=='ml';ntext('English',W/2-44,214,9,en?'#ffe58a':'#8a82a8','center');ntext('|',W/2,214,9,'#8a82a8','center');ntext('മലയാളം',W/2+44,214,9,en?'#8a82a8':'#ffe58a','center');g.fillStyle=en?'#ffe58a':'#8a82a8';g.fillRect(en?Math.round(W/2-62):Math.round(W/2+26),226,36,1)}/* language choice: tap a word, or press L */
     if(!isTouch)ptext('LEFT RIGHT CHOOSE   SPACE JUMP   X THROW',W/2,244,1,'#b8b0d0','center');
   }
   if(state==='over'){overlay();ptext('GAME OVER',W/2,80,5,'#e8402e','center');ptext('SCORE '+score,W/2,112,2,'#f4ecd0','center');ptext('BEST '+Math.max(hi,score),W/2,130,2,'#ffe58a','center');if(lockT<=0)ptext(isTouch?'TAP TO CONTINUE':'PRESS ANY KEY',W/2,160,2,'#cfe9c8','center')}

@@ -22,7 +22,6 @@ On a computer: arrow keys or A and D to move, the up arrow, W or Space to jump, 
 - You die in one hit, but you get lives and restart from your last checkpoint.
 - Dialogue boxes stop the game until you tap them, so you can read at your own pace.
 - Best played in landscape. If you hold your phone upright, the game turns itself sideways, so you can play either way.
-- Text is available in English and Malayalam (choose on the title screen).
 - Sound can be switched off with the SND button at the top right (M on a keyboard).
 
 ## How to play
