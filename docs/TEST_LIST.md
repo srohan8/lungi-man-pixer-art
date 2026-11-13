@@ -121,3 +121,7 @@ Uninstall the old build first, then install the newest debug APK.
 - Reported: switching between THROW and JUMP sometimes lost the jump, most in the fast Act II ride. Cause: a button kept the finger that first touched it, so a thumb rolling from THROW to JUMP without lifting never pressed JUMP; also a very short tap during a slow frame could fall between two game ticks.
 - Now each finger is tracked by itself and can slide from one button to the next (left/right too): the new button is pressed, the old one released. A press is held for a few ticks so a quick tap is never missed. Still two thumbs, still three buttons, no new control.
 - Check on the phone, Act II ride and Act I: hold THROW, roll the thumb onto JUMP (should jump and stop throwing); tap JUMP very quickly while mashing THROW; use two thumbs (one on each); in the other acts slide between the arrows.
+
+## Dialogue arrows and the stage-start pose (fix)
+- The "next" arrow strip under a dialogue box was as wide as the "3 / 6" counter even when the box is a single line with no counter. It is now only as wide as the arrow when there is no counter.
+- At the start of an act the hero stood in the jump pose while the act banner held the game and the opening box waited. He now stands (idle) until the box appears and the game starts. Check Act I and the other acts: banner, then box, hero standing the whole time.

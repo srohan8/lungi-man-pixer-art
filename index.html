@@ -42,7 +42,8 @@ body.nopad .pad{display:none}
 /* =================== setup =================== */
 const cv=document.getElementById('c'),g=cv.getContext('2d');
 const H=270,GY=210;let W=480;
-const isTouch=matchMedia('(hover:none)').matches;let rotOn=false;/* Reddit build only: window.REDDIT_ROT turns the game 90 degrees when a phone is held upright */
+const isTouch=matchMedia('(hover:none)').matches;let rotOn=false;/* Platform profile: each build may set window.PLATFORM = {platform, short, rotateInPortrait} before this script. Missing = the main build (long, no forced rotation). rotateInPortrait turns the game 90 degrees when a phone is held upright (Reddit app). */
+const PLAT=window.PLATFORM||{};
 
 /* =================== input =================== */
 const keys={},touch={l:0,r:0,j:0,s:0,jt:0,st:0};
@@ -1829,7 +1830,7 @@ function trishFrame(T,hop){return slashT>0?T.throw[slashT>4?1:0]:!P.on?T.jump[P.
 let NHERO=null;
 function newHeroArt(){if(NHERO!==null)return NHERO||null;const set=(p,n)=>{const f=[...Array(n)].map((_,i)=>ART[p+'_'+i]);return f.every(Boolean)?f.map(c=>[c,flipC(c)]):null},I=set('hnidle',2),R=set('hnrun',8),J=set('hnjump',6),A=set('hnact',7);return NHERO=(I&&R&&J&&A)?{idle:I,run:R,jump:J,act:A}:false}
 /* while a dialogue box or the pause holds the game still, the landing timer stands still too, so the landing crouch must not be drawn then (he looked like he was sitting at the start of a stage) */
-function frozenNow(){return !!(convo||paused||(dlg&&dlg.pause)||(tut&&tut.phase==='msg'))}
+function frozenNow(){return !!(convo||paused||(dlg&&dlg.pause)||(tut&&tut.phase==='msg')||(pendSay.length&&banner))}/* the last part: the act banner holds the game still while the opening box waits for it (he had not landed yet and stood in the jump pose) */
 function newHeroFrame(N){const mv=P.on&&Math.abs(P.vx)>.3,fz=frozenNow();
   if(P.vine)return{f:N.act[(P.vT||0)<10?0:1],dx:7};
   if(P.relT>0)return{f:N.act[3],dx:0};
@@ -2031,7 +2032,7 @@ function drawDlg(){
   g.fillStyle='#f0c040';g.fillRect(bx,by,bw,1);g.fillRect(bx,by+bh-1,bw,1);g.fillRect(bx,by,1,bh);g.fillRect(bx+bw-1,by,1,bh);
   drawPortrait(dlg.who,bx+4,by+4,Math.min(34,bh-8));
   if(dlg.conv){dlg.br=[bx,by,bw,bh+24,bh];/* back and next buttons under the box, with the line counter */const ty=by+bh+5,tri=(x,dir,on)=>{g.fillStyle=on?'#f0c040':'#6a5a30';for(let k=0;k<7;k++){const w=7-k;g.fillRect(dir>0?x+k:x+7-k-1,ty+k,1,1);g.fillRect(dir>0?x+k:x+7-k-1,ty+13-k,1,1);g.fillRect(dir>0?x+k:x+(7-k-1),ty+k,1,14-2*k)}};
-    g.fillStyle='rgba(12,8,28,.86)';g.fillRect(bx+bw-84,by+bh+1,84,22);g.fillRect(bx,by+bh+1,30,22);
+    g.fillStyle='rgba(12,8,28,.86)';const nw=dlg.n>1?84:30;/* the wide strip is only for the "3 / 6" counter; with no counter the next button gets just its own square */g.fillRect(bx+bw-nw,by+bh+1,nw,22);g.fillRect(bx,by+bh+1,30,22);
     tri(bx+10,-1,dlg.i>0);tri(bx+bw-18,1,true);if(dlg.n>1)ntext((dlg.i+1)+' / '+dlg.n,bx+bw-51,by+bh+6,8,'#f0c040','center');
     {const xx=bx+bw-18,yy=by+4;g.fillStyle='#f0c040';for(let k=0;k<8;k++){g.fillRect(xx+k,yy+k,2,2);g.fillRect(xx+7-k,yy+k,2,2)}dlg.xr=[bx+bw-28,by,28,28]}}
   else if(DP&&dlg.pt>DPT&&(tick>>4)%2===0)ntext(isTouch?'Tap to continue':'Press any key to continue',bx+bw-8,by+bh+3,8,'#f0c040','right');
@@ -2669,7 +2670,7 @@ function drawCover(){
 }
 
 /* =================== screen fit =================== */
-function applyRot(){if(!window.REDDIT_ROT){rotOn=false;return}const on=!!window.REDDIT_ROT&&(isTouch||navigator.maxTouchPoints>0||matchMedia('(pointer:coarse)').matches)&&innerHeight>innerWidth;rotOn=on;document.documentElement.classList.toggle('rot',on);const s=document.getElementById('stage');if(on){s.style.width=innerHeight+'px';s.style.height=innerWidth+'px';s.style.left=innerWidth+'px'}else{s.style.width=s.style.height=s.style.left=''}}
+function applyRot(){if(!PLAT.rotateInPortrait){rotOn=false;return}const on=(isTouch||navigator.maxTouchPoints>0||matchMedia('(pointer:coarse)').matches)&&innerHeight>innerWidth;rotOn=on;document.documentElement.classList.toggle('rot',on);const s=document.getElementById('stage');if(on){s.style.width=innerHeight+'px';s.style.height=innerWidth+'px';s.style.left=innerWidth+'px'}else{s.style.width=s.style.height=s.style.left=''}}
 function fit(){
   applyRot();const vw=rotOn?innerHeight:innerWidth,vh=rotOn?innerWidth:innerHeight;
   W=Math.max(400,Math.min(640,Math.round(H*vw/vh/2)*2));
