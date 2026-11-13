@@ -7,7 +7,7 @@ Set in the folk-tale landscape of Kerala, in India: bamboo hollows, festival gro
 
 **What it is.** A short action game with a story, in the spirit of Contra and Prince of Persia. You play Kannan, a young man in a lungi, who must free five sacred groves from a creeping red corruption. Each of the five acts has the same shape: run to the right, dodge or hit a few kinds of enemies, pass the tea-stall checkpoints, beat the boss.
 
-**Who it is for.** Anyone who wants a quick game with no learning curve, on a phone or a computer. It is meant for players aged 13 and over.
+**Who it is for.** Anyone who wants a quick game with no learning curve, on a phone or a computer. (Reddit requires its users to be 13 or over.)
 
 **The controls are only three buttons.**
 
