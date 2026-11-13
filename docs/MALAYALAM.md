@@ -329,10 +329,10 @@ The title logo picture ("Kannan and the Kanjiravanam Chronicles") is an image an
 | Lean, spin and clap | ചരിയൂ, കറങ്ങൂ, കൈയടിക്കൂ |
 | THE FLOOR HEATS UP... | നൃത്തവേദി ചൂടുപിടിക്കുന്നു... |
 | Something is wrong with the crowd | ആൾക്കൂട്ടത്തിന് എന്തോ കുഴപ്പമുണ്ട് |
+| This doesn't look good... Thomakutty, vittoda! | ഇത് പന്തിയല്ല... തോമാക്കുട്ടീ, വിട്ടോടാ! |
 | EXTRA LIFE! | ഒരു ജീവൻ കൂടി! |
 | THE BEAT DROPS! | താളം മാറുന്നു! |
 | They leap, machane! | അവർ ചാടുന്നു, മച്ചാനേ! |
-| Maveli | മാവേലി |
 | The lamps turn gold. One free hit. | വിളക്കുകൾ സ്വർണ്ണനിറമാകുന്നു. ഒരു സൗജന്യ അടി. |
 | BLESSED | അനുഗ്രഹിതൻ |
 | CRASH! | ഠമാർ! |
@@ -387,6 +387,7 @@ The title logo picture ("Kannan and the Kanjiravanam Chronicles") is an image an
 | GLUB GLUB... | ഗ്ലും ഗ്ലും... |
 | AMMA'S GIFT. TRY AGAIN, KANNAN | അമ്മയുടെ സമ്മാനം. ഒന്നുകൂടി ശ്രമിക്കൂ, കണ്ണാ |
 | AMMA'S GIFT. RAYS PIERCE EVERYTHING | അമ്മയുടെ സമ്മാനം. രശ്മികൾ എല്ലാം തുളച്ചുകയറും |
+| LOCKED | പൂട്ടിയിരിക്കുന്നു |
 
 ## Prologue tutorial (touch versions)
 
@@ -418,7 +419,6 @@ The title logo picture ("Kannan and the Kanjiravanam Chronicles") is an image an
 | WHY IS EVERYONE DANCING? | എല്ലാവരും എന്തിനാണ് നൃത്തം ചെയ്യുന്നത്? |
 | THIS CANNOT BE REAL... | ഇത് സത്യമാകാൻ വഴിയില്ല... |
 | WHY ARE THEIR EYES TURNING RED? | അവരുടെ കണ്ണുകൾ എന്തിനാണ് ചുവക്കുന്നത്? |
-| THIS DOESN'T LOOK GOOD... THOMAKUTTY, VITTODA! | ഇത് പന്തിയല്ല... തോമാക്കുട്ടീ, വിട്ടോടാ! |
 
 ## Cinematic and ending lines
 
@@ -428,4 +428,5 @@ The title logo picture ("Kannan and the Kanjiravanam Chronicles") is an image an
 | I TOLD YOU TO STAY ON THE TREES. YOU DID NOT LISTEN ONCE. | മരങ്ങളിൽത്തന്നെ നിൽക്കാൻ ഞാൻ പറഞ്ഞതല്ലേ. നീ ഒരു തവണ പോലും കേട്ടില്ല. |
 | ARE YOU ALL JUST STANDING THERE? WANT CHAI? | നിങ്ങളെല്ലാവരും വെറുതെ നിൽക്കുകയാണോ? ചായ വേണോ? |
 | ONAM IS IN THREE WEEKS. I HOPE THE FEAST IS GOOD. | ഓണത്തിന് മൂന്ന് ആഴ്ചയേയുള്ളൂ. സദ്യ നന്നായിരിക്കുമെന്ന് കരുതുന്നു. |
+| MAVELI | മാവേലി |
 | KANNAN AND THE KANJIRAVANAM CHRONICLES | കണ്ണൻ ആൻഡ് ദി കാഞ്ഞിരവനം ക്രോണിക്കിൾസ് |

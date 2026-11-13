@@ -134,3 +134,7 @@ Uninstall the old build first, then install the newest debug APK.
 - Title screen: the selector now only goes as far as the furthest level reached (the right arrow dims there). A brand-new player can only pick the Prologue. Clearing a level unlocks the next one. The furthest level ever reached is remembered separately from where a new game starts.
 - Finish the game (ending): afterwards every level can be picked, and a new game still starts at Act I (default pick). Check Acts II to V can be replayed after the ending.
 - Players who already had saved progress keep it (their furthest act is the unlock). Someone who finished the game before this change had progress reset to Act I by the old ending, so they unlock again as they play (or by finishing once more).
+
+## Locked levels are visible (selector)
+- The title selector now lets you look at every level: levels not reached yet show the act name and level name dimmed, a padlock and the word LOCKED (LOCKED in Malayalam too). Tapping or pressing Space on a locked level only makes a low beep; the arrows still move on. Reached levels start as before.
+- Check on the phone: fresh install shows Prologue unlocked, Act I onward locked; after clearing the Prologue Act I opens. Tap the arrows to the end; tap the locked level (should not start). In Malayalam the word fits.
