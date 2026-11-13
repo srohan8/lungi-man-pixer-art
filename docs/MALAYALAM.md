@@ -329,7 +329,7 @@ The title logo picture ("Kannan and the Kanjiravanam Chronicles") is an image an
 | Lean, spin and clap | ചരിയൂ, കറങ്ങൂ, കൈയടിക്കൂ |
 | THE FLOOR HEATS UP... | നൃത്തവേദി ചൂടുപിടിക്കുന്നു... |
 | Something is wrong with the crowd | ആൾക്കൂട്ടത്തിന് എന്തോ കുഴപ്പമുണ്ട് |
-| This doesn't look good... Thomakutty, vittoda! | ഇത് പന്തിയല്ല... തോമാക്കുട്ടീ, വിട്ടോടാ! |
+| Why are their eyes turning red? | അവരുടെ കണ്ണുകൾ എന്തിനാണ് ചുവക്കുന്നത്? |
 | EXTRA LIFE! | ഒരു ജീവൻ കൂടി! |
 | THE BEAT DROPS! | താളം മാറുന്നു! |
 | They leap, machane! | അവർ ചാടുന്നു, മച്ചാനേ! |
@@ -339,6 +339,8 @@ The title logo picture ("Kannan and the Kanjiravanam Chronicles") is an image an
 | Here. A fresh mundu. Try not to lose this one. | ഇതാ. ഒരു പുത്തൻ മുണ്ട്. ഇത് കളയാതെ നോക്കണം. |
 | Tap to skip | ഒഴിവാക്കാൻ തൊടൂ |
 | Kanjiravanam breathes again | കാഞ്ഞിരവനം വീണ്ടും ശ്വസിക്കുന്നു |
+| Maveli | മാവേലി |
+| Skip | ഒഴിവാക്കുക |
 
 ## Menus and screens
 
@@ -362,7 +364,6 @@ The title logo picture ("Kannan and the Kanjiravanam Chronicles") is an image an
 | Any key to skip | ഒഴിവാക്കാൻ ഏതെങ്കിലും കീ |
 | Tap again to skip | ഒഴിവാക്കാൻ വീണ്ടും തൊടൂ |
 | Press again to skip | ഒഴിവാക്കാൻ വീണ്ടും അമർത്തൂ |
-| Skip | ഒഴിവാക്കുക |
 | Skip tutorial | പരിശീലനം ഒഴിവാക്കുക |
 | Step | ഘട്ടം |
 | Tap for next | അടുത്തതിന് തൊടൂ |
@@ -418,7 +419,13 @@ The title logo picture ("Kannan and the Kanjiravanam Chronicles") is an image an
 | WHERE AM I...? | ഞാൻ എവിടെയാണ്...? |
 | WHY IS EVERYONE DANCING? | എല്ലാവരും എന്തിനാണ് നൃത്തം ചെയ്യുന്നത്? |
 | THIS CANNOT BE REAL... | ഇത് സത്യമാകാൻ വഴിയില്ല... |
-| WHY ARE THEIR EYES TURNING RED? | അവരുടെ കണ്ണുകൾ എന്തിനാണ് ചുവക്കുന്നത്? |
+| THIS DOESN'T LOOK GOOD... THOMAKUTTY, VITTODA! | ഇത് പന്തിയല്ല... തോമാക്കുട്ടീ, വിട്ടോടാ! |
+
+## Rolling credits (Reddit audio set)
+
+| English | മലയാളം |
+|---|---|
+| All music and the sound effects: ElevenLabs | എല്ലാ സംഗീതവും ശബ്ദ ഇഫക്റ്റുകളും: ElevenLabs |
 
 ## Cinematic and ending lines
 
@@ -428,5 +435,4 @@ The title logo picture ("Kannan and the Kanjiravanam Chronicles") is an image an
 | I TOLD YOU TO STAY ON THE TREES. YOU DID NOT LISTEN ONCE. | മരങ്ങളിൽത്തന്നെ നിൽക്കാൻ ഞാൻ പറഞ്ഞതല്ലേ. നീ ഒരു തവണ പോലും കേട്ടില്ല. |
 | ARE YOU ALL JUST STANDING THERE? WANT CHAI? | നിങ്ങളെല്ലാവരും വെറുതെ നിൽക്കുകയാണോ? ചായ വേണോ? |
 | ONAM IS IN THREE WEEKS. I HOPE THE FEAST IS GOOD. | ഓണത്തിന് മൂന്ന് ആഴ്ചയേയുള്ളൂ. സദ്യ നന്നായിരിക്കുമെന്ന് കരുതുന്നു. |
-| MAVELI | മാവേലി |
 | KANNAN AND THE KANJIRAVANAM CHRONICLES | കണ്ണൻ ആൻഡ് ദി കാഞ്ഞിരവനം ക്രോണിക്കിൾസ് |

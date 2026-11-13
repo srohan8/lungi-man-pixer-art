@@ -110,3 +110,11 @@ Notes:
 - Three of the tracks contain human voices or vocal chops (ItsWatR, Kamalesh Siddu, "360°"). Pixabay's terms say audio may carry sample or other rights, so these carry slightly more risk than the instrumental ones. Keep the evidence.
 - The bike engine's real author is rsn267 (Freesound). The in-game credits say "freesound_community"; consider naming rsn267 as well.
 - The page titles differ slightly from the names used in the in-game credits ("Tamil Comedy Music", "360 Indian Fusion Music"). That is fine, but keep them recognisable.
+
+## Reddit build audio (audioSet 'generated', 2026-11-13)
+The Reddit build (`reddit/`, platform profile `audioSet: 'generated'`) ships only ElevenLabs audio, so it does not depend on the Pixabay licences or on any recording with another artist's vocals.
+- `tools/build-reddit.js` copies the earlier ElevenLabs tracks from `assets/audio/music-old/` over the matching names: `bgm_act5`, `bgm_disco`, `bgm_bike`, `bgm_boss_komban`, `bgm_finale`.
+- The Pixabay bike engine files (`bike_start.ogg`, `bike_loop.ogg`) are left out; the game then uses its built-in synthesised engine.
+- The rolling credits list only "All music and the sound effects: ElevenLabs" for this build. The main build is unchanged.
+- ElevenLabs terms read 2026-11-13 (https://elevenlabs.io/terms-of-use, section 1(c) and the Output paragraph): paid subscribers may use the services commercially, and the user keeps the rights in the output, subject to the Prohibited Use Policy; no warranty, and the user must review output before use. The owner's plan page shows Starter ($6/month, "Commercial License for Speech and Music"), started 2026-11-02, so every generation date in this file (2026-11-03 to 2026-11-07) was on a paid plan. Keep the invoices. Not yet read: the Prohibited Use Policy. The terms do not treat sound effects separately from the other services.
+- Not exclusive: other users may get similar output.
