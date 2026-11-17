@@ -2677,7 +2677,7 @@ function drawCover(){
 /* =================== screen fit =================== */
 function applyRot(){if(!PLAT.rotateInPortrait){rotOn=false;return}const on=(isTouch||navigator.maxTouchPoints>0||matchMedia('(pointer:coarse)').matches)&&innerHeight>innerWidth;rotOn=on;document.documentElement.classList.toggle('rot',on);const s=document.getElementById('stage');if(on){s.style.width=innerHeight+'px';s.style.height=innerWidth+'px';s.style.left=innerWidth+'px'}else{s.style.width=s.style.height=s.style.left=''}}
 function fit(){
-  applyRot();const vw=rotOn?innerHeight:innerWidth,vh=rotOn?innerWidth:innerHeight;
+  applyRot();/* a view that is not laid out yet reports 0 x 0: never divide by it (the resize event fits the real size) */const vw=Math.max(1,rotOn?innerHeight:innerWidth),vh=Math.max(1,rotOn?innerWidth:innerHeight);
   W=Math.max(400,Math.min(640,Math.round(H*vw/vh/2)*2));
   cv.width=W;cv.height=H;g.imageSmoothingEnabled=false;
   const s=Math.min(vw/W,vh/H);cv.style.width=Math.floor(W*s)+'px';cv.style.height=Math.floor(H*s)+'px';
