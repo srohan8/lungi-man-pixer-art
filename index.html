@@ -860,7 +860,7 @@ function genBush(seed,C){const r=rng(seed),b=buf(40,20);
 
 /* =================== game state =================== */
 /* Tunable numbers for coconuts, lives and the Sun Staff */
-const TUNE={odiyanWindow:100,/* frames Odiyan is hittable while he changes form (100 = about 1.7 s; it used to be 36 plus 16 per hoof-print collected) */mercyDeaths:4,/* Pey Komban: after this many deaths in his arena the next tries start with Amma's leaf spear (a gift, no button) */floodStart:-60,floodChai:-25,floodBoss:8,floodDrown:26,floodSeconds:120,/* Act IV flood: height of the water above the ground line in px; it rises with time from floodStart to floodDrown over floodSeconds, a tea stall lowers it to floodChai, the boss arena lowers it to knee height and holds it */dlgStay:true,/* true: in-play dialogue stays in its fixed place until the next line replaces it or the X is tapped (never pauses the game) */levelSelectAll:false,ammoStart:40,ammoMax:60,ammoPerKill:2,ammoRegenBelow:5,ammoRegenFrames:180,lifeEvery:5000,lifeMax:6,rayRange:150};
+const TUNE={actLong:{a1:2.2},stallEvery:1000,stallFirst:800,/* actLength 'long' (the main build, default): act key -> how many times longer the ground is; only listed acts are lengthened. Checkpoint stalls are then placed about every stallEvery px (first at stallFirst). 'short' (platform profile, Reddit) keeps the original layout exactly. Layout only: never any dialogue or story element (CLAUDE.md, Game length). */odiyanWindow:100,/* frames Odiyan is hittable while he changes form (100 = about 1.7 s; it used to be 36 plus 16 per hoof-print collected) */mercyDeaths:4,/* Pey Komban: after this many deaths in his arena the next tries start with Amma's leaf spear (a gift, no button) */floodStart:-60,floodChai:-25,floodBoss:8,floodDrown:26,floodSeconds:120,/* Act IV flood: height of the water above the ground line in px; it rises with time from floodStart to floodDrown over floodSeconds, a tea stall lowers it to floodChai, the boss arena lowers it to knee height and holds it */dlgStay:true,/* true: in-play dialogue stays in its fixed place until the next line replaces it or the X is tapped (never pauses the game) */levelSelectAll:false,ammoStart:40,ammoMax:60,ammoPerKill:2,ammoRegenBelow:5,ammoRegenFrames:180,lifeEvery:5000,lifeMax:6,rayRange:150};
 let ammo=40,ammoT=0,lifeBank=0,rings=[],pick=-1,paused=false,cin=null,fogK=1,fadeT=0,fadeCol=null,autoKill=false,bloomAt=-1,tut=null,tutPending=false,tutAny=false,stat={thrown:0,kills:0},flashT=0,flashC='#e8f0ff',cameos=[];
 /* Palm sway: how far (px) the crown moves per level; the trunk base stays put */
 const WIND={pro:1.2,a1:1,a2:1.5,a3:2,a4:3.4,a5:1.2};
@@ -875,7 +875,8 @@ const SC={crab:100,crow:150,bat:150,goon:200,cobra:200,monkey:250,imp:120,wisp:1
 function loadLevel(i){fogK=1;bloomAt=-1;
   lvl=i;dlg=null;convo=null;dlgHist.length=0;chaiSaid=false;flood=TUNE.floodStart;cpFlood=TUNE.floodStart;floodWarn=0;const L=LV[i],si=L.sid,seed=si*31+7,r=rng(500+si*97);
   segs=[[0,620]];let x=620,gi=0;vines=[];
-  while(x<L.len){let gap=L.gapW?L.gapW[0]+(r()*L.gapW[1]|0):52+(r()*16|0)+2*(L.hard||0);const w=L.segW?L.segW[0]+(r()*L.segW[1]|0):300+(r()*380|0);
+  const longK=PLAT.actLength==='short'?1:(TUNE.actLong[L.key]||1),lenEff=L.len*longK;/* actLength: 'short' = the original layout, otherwise the listed acts get longer ground */
+  while(x<lenEff){let gap=L.gapW?L.gapW[0]+(r()*L.gapW[1]|0):52+(r()*16|0)+2*(L.hard||0);const w=L.segW?L.segW[0]+(r()*L.segW[1]|0):300+(r()*380|0);
     const ve=L.vineEvery||3;if(L.vines&&gi%ve===(ve===3?1:0)){gap=140+(r()*16|0);vines.push({x:x+60,top:GY-110,len:86})}
     segs.push([x+gap,x+gap+w]);x+=gap+w;gi++}
   bossX=x+320;const eg=L.endVine?150:60;if(L.endVine)vines.push({x:x+60,top:GY-110,len:86});
@@ -886,12 +887,15 @@ function loadLevel(i){fogK=1;bloomAt=-1;
   segs.forEach((s,si)=>{
     const last=si===segs.length-1;
     if(!last){let px=s[0]+60;while(px<s[1]-120){if(r()<.6){const pw=60+(r()*40|0);plats.push([px,128+(r()*28|0),pw]);px+=pw+60}else px+=80}}
-    if(si>0&&si%2===0&&!last)lamps.push(s[0]+30);
+    if(longK===1&&si>0&&si%2===0&&!last)lamps.push(s[0]+30);
     for(let px=s[0]+40;px<s[1]-40;px+=60+r()*120){const q=r();if(L.rocks&&q<.55)props.push({k:q<.3?'rock':'wall',x:px,v:r()*3|0});else if(L.ruins&&q<.14)props.push({k:'pillar',x:px,v:r()*2|0});else if(L.palms&&q<(L.bamboo?.6:.35))props.push({k:'palm',x:px,v:r()*3|0});else props.push({k:'bush',x:px,v:r()*3|0})}
   });
   /* extra coconut palms (own random stream, so enemy and gap layout stay as they were) */
   if(L.xpalms){const rr=rng(900+L.sid);for(let k=0;k<L.xpalms;k++){const sg=segs[Math.floor(rr()*Math.max(1,segs.length-1))];if(!sg)continue;props.push({k:'palm',x:Math.round(sg[0]+50+rr()*Math.max(10,sg[1]-sg[0]-100)),v:rr()*3|0})}}
-  (L.decor||[]).forEach(d=>{
+  if(longK>1){/* checkpoint stalls about every stallEvery px, each on solid ground and clear of the ground edges; the last one stays at bossX-150 */
+    let want=TUNE.stallFirst;while(want<bossX-150-TUNE.stallEvery*.6){let best=null,bd=1e9;for(const sg of segs.slice(0,-1)){const a=sg[0]+60,b=sg[1]-60;if(b<=a)continue;const c=Math.max(a,Math.min(b,want)),d=Math.abs(c-want);if(d<bd){bd=d;best=c}}
+      if(best!==null&&(!lamps.length||best-lamps[lamps.length-1]>TUNE.stallEvery*.55)){lamps.push(Math.round(best));want=best+TUNE.stallEvery}else want+=TUNE.stallEvery*.5}}
+  (L.decor||[]).forEach(d0=>{const d=longK>1?Object.assign({},d0,{seg:Math.round(d0.seg*longK)}):d0;/* scenery keeps its order but is spread over the longer act */
     if(d.n==='houseboat'){/* floats on the river: centre of the widest gap */let bg=-1,bw=0;for(let i=1;i<segs.length-1;i++){const w=segs[i+1][0]-segs[i][1];if(w>bw){bw=w;bg=i}}if(bg>0&&bw>=110)props.push({k:'art',n:d.n,x:Math.round((segs[bg][1]+segs[bg+1][0])/2),float:true});return}
     const sg=segs[Math.min(d.seg,Math.max(0,segs.length-2))];if(!sg)return;let x=sg[0]+Math.min(d.off,Math.max(40,sg[1]-sg[0]-60));
     for(let k=0;k<4&&lamps.some(l=>Math.abs(l-x)<90);k++)x=Math.min(sg[1]-40,x+100);

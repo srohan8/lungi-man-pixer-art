@@ -142,3 +142,7 @@ Uninstall the old build first, then install the newest debug APK.
 ## Title screen spacing
 - The lower part of the title screen was crowded (level name, START prompt, language row, key hints all within 40 px). Now: act name, level name, START (or LOCKED) prompt, the language row and the key hints each have their own space down to the bottom edge. The arrows sit beside the act and level name. The language tap area moved down with the row.
 - Check on the phone: tap "English" / "മലയാളം" (should switch), tap the arrows (should change level), tap elsewhere (should start); in Malayalam the labels do not touch each other.
+
+## Longer Act I (actLength long, main build only)
+- Act I ground is about 2.1 times longer (7,200 px instead of 3,400), with about 2.2 times the enemies and a Chayakada stall about every 1,000 px (7 stalls). Same enemies, same boss, same dialogue: Kannan's line still comes at the same spot, Soniya still only speaks at the first stall.
+- Check on the phone: Act I from the start to Yakshi, no stretch feels empty or unfair, stalls are never inside a gap or on the very edge, coconuts hold out (stalls refill them), the vine gaps are still fair, and how long it takes you (write it down, so the factor can be tuned). Reddit build must still play the old short Act I.

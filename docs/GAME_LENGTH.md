@@ -1,6 +1,6 @@
 # Game length: long acts for the main build, short acts for Reddit
 
-Owner decisions (November 2026). Status: planned, not built yet. The tag `v0.9-full-story` is the current short build, the one friends played.
+Owner decisions (November 2026). Status: mechanism built and Act I lengthened (Acts II to V still to do). The tag `v0.9-full-story` is the current short build, the one friends played.
 
 ## Two versions, two lengths
 
@@ -22,6 +22,13 @@ The switch is called `actLength`: `'long'` (the main build, the default when no 
 - A long act has exactly the same story beats as a short one, in the same order. A longer act simply has more ground between them. The existing lines (Soniya's line at the first stall, the opening box, the boss lines) stay where they are in the level logic; new stalls and new ground carry no lines.
 - Any story or dialogue for the longer acts is a separate request from the owner, written into `docs/STORY_CARDS.md` first, and not part of `actLength`.
 - Check for every lengthened act: the list of drawn strings (`LANG_LOG=strings.txt node tools/smoke-test.js` writes the list to that file) is identical for `'short'` and `'long'`.
+
+## Built so far
+- `TUNE.actLong` = {a1: 2.2}: act key -> ground length factor. Only listed acts are lengthened; the rest stay as they are until added. `TUNE.stallFirst` (800) and `TUNE.stallEvery` (1000) place the checkpoint stalls evenly in a long act; the stall just before the boss stays at bossX-150. Decor props keep their order but are spread over the longer ground.
+- Act I long: ground 7,220 px instead of 3,358, 7 stalls instead of 3 (800, 1800, 2800, 3800, 4800, 5780, 7070), 40 enemies instead of 18. Bot time for Act I: about 53 s before, about 80 s now (the bot is invulnerable and faster than a person).
+- Honest time estimate: the bot clears all of today's acts in 1 to 3 minutes each, so a 2.2x longer act adds only about 1 to 1.5 minutes of walking for the bot and maybe 2 to 4 for a person. Reaching 12 minutes per act needs a factor nearer 4 to 5 (acts of 14,000 to 17,000 px), or slower, denser stretches. Tune the factor per act in `TUNE.actLong` after phone playtests.
+- Story lines keep their fixed positions (for example Kannan's Act I line at x 1500), so in a long act they sit in the first part and the later ground has none, by the rule above.
+- `node tools/act-length-check.js` prints short vs long layouts per level, checks short = the tag's lamps and that story data is identical in both. `ACT_LENGTH=short node tools/smoke-test.js` plays the Reddit layouts.
 
 ## How the long acts work (main build only)
 
