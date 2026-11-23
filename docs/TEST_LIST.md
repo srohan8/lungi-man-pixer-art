@@ -146,3 +146,7 @@ Uninstall the old build first, then install the newest debug APK.
 ## Longer Act I (actLength long, main build only)
 - Act I ground is about 2.1 times longer (7,200 px instead of 3,400), with about 2.2 times the enemies and a Chayakada stall about every 1,000 px (7 stalls). Same enemies, same boss, same dialogue: Kannan's line still comes at the same spot, Soniya still only speaks at the first stall.
 - Check on the phone: Act I from the start to Yakshi, no stretch feels empty or unfair, stalls are never inside a gap or on the very edge, coconuts hold out (stalls refill them), the vine gaps are still fair, and how long it takes you (write it down, so the factor can be tuned). Reddit build must still play the old short Act I.
+
+## Mixed enemy stretches in long Act I
+- Act I (main build) now comes in waves: a normal stretch, then enemy pairs (ground plus flyer), then a stretch of crows, then a nearly empty breather, a normal one, then an ambush of four a little after a stall. The Reddit build and the other acts are unchanged.
+- Check on the phone: does it feel like waves, not a constant sprinkle? Is the ambush fair (can you see it coming, is the stall before it close enough)? Does the breather feel like a rest? Time the whole act and count deaths (long Act I without the mix averaged about 84 s for the bot; a person takes longer).

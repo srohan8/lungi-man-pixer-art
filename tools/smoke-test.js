@@ -19,7 +19,7 @@ global.window = global; global.innerWidth = 844; global.innerHeight = 390;
 global.matchMedia = () => ({ matches: false }); global.addEventListener = () => {};
 global.localStorage = { getItem: () => 0, setItem() {} }; global.requestAnimationFrame = () => {};
 
-if (process.env.ACT_LENGTH) global.PLATFORM = { actLength: process.env.ACT_LENGTH };   // ACT_LENGTH=short plays the Reddit layouts
+if (process.env.ACT_LENGTH || process.env.ACT_MIX) global.PLATFORM = { actLength: process.env.ACT_LENGTH, actMix: process.env.ACT_MIX === 'off' ? false : undefined };   // ACT_LENGTH=short plays the Reddit layouts
 if (process.env.LANG_LOG) global.__TRLOG = new Set();
 if (process.env.LANG_ML) { global.localStorage = { getItem: k => k === 'lungiman-lang' ? 'ml' : 0, setItem() {} }; eval(fs.readFileSync(path.join(__dirname, '..', 'assets', 'lang', 'ml.js'), 'utf8')); global.__TRMISS = new Set() }   // Malayalam run: lists every drawn string that has no Malayalam   // development: collect every string the game draws (tools/lang-collect.js)
 eval(js + `

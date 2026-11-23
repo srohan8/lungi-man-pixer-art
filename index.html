@@ -860,7 +860,7 @@ function genBush(seed,C){const r=rng(seed),b=buf(40,20);
 
 /* =================== game state =================== */
 /* Tunable numbers for coconuts, lives and the Sun Staff */
-const TUNE={actLong:{a1:2.2},stallEvery:1000,stallFirst:800,/* actLength 'long' (the main build, default): act key -> how many times longer the ground is; only listed acts are lengthened. Checkpoint stalls are then placed about every stallEvery px (first at stallFirst). 'short' (platform profile, Reddit) keeps the original layout exactly. Layout only: never any dialogue or story element (CLAUDE.md, Game length). */odiyanWindow:100,/* frames Odiyan is hittable while he changes form (100 = about 1.7 s; it used to be 36 plus 16 per hoof-print collected) */mercyDeaths:4,/* Pey Komban: after this many deaths in his arena the next tries start with Amma's leaf spear (a gift, no button) */floodStart:-60,floodChai:-25,floodBoss:8,floodDrown:26,floodSeconds:120,/* Act IV flood: height of the water above the ground line in px; it rises with time from floodStart to floodDrown over floodSeconds, a tea stall lowers it to floodChai, the boss arena lowers it to knee height and holds it */dlgStay:true,/* true: in-play dialogue stays in its fixed place until the next line replaces it or the X is tapped (never pauses the game) */levelSelectAll:false,ammoStart:40,ammoMax:60,ammoPerKill:2,ammoRegenBelow:5,ammoRegenFrames:180,lifeEvery:5000,lifeMax:6,rayRange:150};
+const TUNE={actLong:{a1:2.2},actMix:{a1:true},/* acts whose long layout mixes the stretches (breather, pair, air, ambush) instead of an even sprinkle; same enemy types and behaviours, layout only */stallEvery:1000,stallFirst:800,/* actLength 'long' (the main build, default): act key -> how many times longer the ground is; only listed acts are lengthened. Checkpoint stalls are then placed about every stallEvery px (first at stallFirst). 'short' (platform profile, Reddit) keeps the original layout exactly. Layout only: never any dialogue or story element (CLAUDE.md, Game length). */odiyanWindow:100,/* frames Odiyan is hittable while he changes form (100 = about 1.7 s; it used to be 36 plus 16 per hoof-print collected) */mercyDeaths:4,/* Pey Komban: after this many deaths in his arena the next tries start with Amma's leaf spear (a gift, no button) */floodStart:-60,floodChai:-25,floodBoss:8,floodDrown:26,floodSeconds:120,/* Act IV flood: height of the water above the ground line in px; it rises with time from floodStart to floodDrown over floodSeconds, a tea stall lowers it to floodChai, the boss arena lowers it to knee height and holds it */dlgStay:true,/* true: in-play dialogue stays in its fixed place until the next line replaces it or the X is tapped (never pauses the game) */levelSelectAll:false,ammoStart:40,ammoMax:60,ammoPerKill:2,ammoRegenBelow:5,ammoRegenFrames:180,lifeEvery:5000,lifeMax:6,rayRange:150};
 let ammo=40,ammoT=0,lifeBank=0,rings=[],pick=-1,paused=false,cin=null,fogK=1,fadeT=0,fadeCol=null,autoKill=false,bloomAt=-1,tut=null,tutPending=false,tutAny=false,stat={thrown:0,kills:0},flashT=0,flashC='#e8f0ff',cameos=[];
 /* Palm sway: how far (px) the crown moves per level; the trunk base stays put */
 const WIND={pro:1.2,a1:1,a2:1.5,a3:2,a4:3.4,a5:1.2};
@@ -903,8 +903,20 @@ function loadLevel(i){fogK=1;bloomAt=-1;
   lamps.push(bossX-150);
   plats.push([bossX+110,150,60],[bossX+290,150,60]);
   if(L.arena)plats.push([bossX+10,GY-30,56],[bossX+W-66,GY-30,56],[bossX+Math.round(W/2)-60,GY-140,120,1]);/* the last one is high above the floor: Kannan's haven, the dancers cannot hop up to it *//* low steps at both ends of the dance floor: up and down for the hero, and the dancers follow */
+  /* actLength long + actMix: every stretch gets one pattern (normal, pair = ground + flyer together, air = flyers only, breather = almost empty, ambush = a tight group a little after a stall), so the pressure comes in waves. Same enemy types, nothing new. */
+  const FLY=t=>t==='crow'||t==='bat'||t==='wisp',gnd=(L.foes||[]).filter(t=>!FLY(t)&&t!=='monkey'),fly=(L.foes||[]).filter(FLY);
+  const putFoe=(t,ex,sg)=>{if(FLY(t)){enemies.push(mkFoe(t,ex,70+r()*60,sg));return}ex=Math.min(Math.max(ex,sg[0]+4),sg[1]-20);enemies.push(mkFoe(t,ex,GY-16,sg))};
+  const pickG=()=>gnd.length?gnd[r()*gnd.length|0]:L.foes[0],pickF=()=>fly.length?fly[r()*fly.length|0]:pickG();
+  const mixSeg=(sg,si)=>{const st=sg[0]+(si===0?260:90),en=sg[1]-40,span=en-st;if(span<60)return;
+    const k=si===0?'normal':['normal','pair','air','breather','normal','ambush'][si%6],lampIn=lamps.find(l=>l>=sg[0]&&l<sg[1]);
+    if(k==='breather'){if(span>300)putFoe(pickG(),st+span*.5,sg);return}
+    if(k==='pair'){const n=Math.max(1,Math.floor(span/170));for(let i=0;i<n;i++){const ex=st+(i+.5)*span/n;putFoe(pickG(),ex,sg);putFoe(pickF(),ex+50,sg)}return}
+    if(k==='air'){const n=Math.max(2,Math.floor(span/130));for(let i=0;i<n;i++)putFoe(pickF(),st+(i+.5)*span/n,sg);return}
+    if(k==='ambush'){const n=4+((L.hard||0)>=2?1:0),cx=Math.min(en-90,Math.max(st+40,lampIn!==undefined?lampIn+300:st+span*.5));for(let i=0;i<n;i++)putFoe(i%2?pickF():pickG(),cx+i*34-n*17,sg);return}
+    const n=Math.max(1,Math.floor(span/(105-13*(L.hard||0))));for(let i=0;i<n;i++)putFoe(L.foes[r()*L.foes.length|0],st+(i+.5)*span/n+(r()-.5)*30,sg)};
   segs.slice(0,-1).forEach((s,si)=>{
     if(!L.foes||!L.foes.length)return;
+    if(longK>1&&TUNE.actMix[L.key]&&PLAT.actMix!==false){mixSeg(s,si);return}
     const st=s[0]+(si===0?260:50),en=s[1]-30,span=en-st;if(span<40)return;
     const prog=si/Math.max(1,segs.length-2),xtra=L.key==='pro'?0:(prog>.4?1:0)+(prog>.75?1:0);/* the nearer the boss, the more enemies */
     const n=Math.min(Math.max(1,Math.floor((s[1]-s[0])/(170-13*(L.hard||0))))+xtra,Math.max(1,Math.floor((s[1]-s[0])/95)));
