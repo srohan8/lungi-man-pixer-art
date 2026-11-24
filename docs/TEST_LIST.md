@@ -154,3 +154,7 @@ Uninstall the old build first, then install the newest debug APK.
 ## Act I at 4 times the old length
 - 2.2 times still felt short on the phone, so long Act I is now about 12,600 px (old: 3,400): 13 stalls, 57 enemies, the same waves (normal, pair, air, breather, ambush). Reddit build unchanged.
 - Check on the phone: time the whole act and count deaths; does the middle drag, or are the waves enough to carry it? That decides the factor for Acts III and IV.
+
+## Yakshi is tougher (balance, both builds)
+- Yakshi was beaten too fast after the long Act I, so her health went from 20 to 30 (the health bar is longer, the rage phase starts at half as before, her two moves are unchanged). Same hit values, no new move. This is a balance change, so the Reddit build gets it too (the Reddit "stay short" rule is about layout only).
+- Check on the phone: is the fight about right now (a bit of a fight, not a wall)? Tell me roughly how many seconds it took. The other bosses (Kuttichathan 21, Odiyan 23, Pey Komban 40) are untouched.
