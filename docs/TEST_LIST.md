@@ -150,3 +150,7 @@ Uninstall the old build first, then install the newest debug APK.
 ## Mixed enemy stretches in long Act I
 - Act I (main build) now comes in waves: a normal stretch, then enemy pairs (ground plus flyer), then a stretch of crows, then a nearly empty breather, a normal one, then an ambush of four a little after a stall. The Reddit build and the other acts are unchanged.
 - Check on the phone: does it feel like waves, not a constant sprinkle? Is the ambush fair (can you see it coming, is the stall before it close enough)? Does the breather feel like a rest? Time the whole act and count deaths (long Act I without the mix averaged about 84 s for the bot; a person takes longer).
+
+## Act I at 4 times the old length
+- 2.2 times still felt short on the phone, so long Act I is now about 12,600 px (old: 3,400): 13 stalls, 57 enemies, the same waves (normal, pair, air, breather, ambush). Reddit build unchanged.
+- Check on the phone: time the whole act and count deaths; does the middle drag, or are the waves enough to carry it? That decides the factor for Acts III and IV.
